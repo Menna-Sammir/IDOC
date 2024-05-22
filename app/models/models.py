@@ -1,8 +1,9 @@
-from app import db
+from app import db, login_manager
 from app.models.base import BaseModel
 from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from flask_login import UserMixin
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
@@ -49,7 +50,7 @@ class Governorate(BaseModel):
     governorate_name = db.Column(VARCHAR(100), nullable=False)
     clinics = relationship("Clinic", back_populates="governorate")
 
-class User(BaseModel):
+class User(BaseModel, UserMixin):
     __tablename__ = 'user'
 
     name = db.Column(VARCHAR(100), nullable=False)
@@ -58,10 +59,18 @@ class User(BaseModel):
 
     doctor_id = db.Column(VARCHAR(60), ForeignKey('doctor.id'), unique=True)
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), unique=True)
-
-    # doctor = relationship("Doctor", back_populates="user", uselist=False)
-    # clinic = relationship("Clinic", back_populates="user", uselist=False)
     roles = relationship("Role", uselist=False, back_populates="user")
+
+    @property
+    def password_hash(self):
+        return self.password_hash
+
+    @password_hash.setter
+    def password_hash(self, plain_text_password):
+        self.password = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+
+    def check_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.password, attempted_password)
 
 class Role(BaseModel):
     __tablename__ = 'roles'
@@ -72,7 +81,6 @@ class Role(BaseModel):
 
 class Patient(BaseModel):
     __tablename__ = 'patient'
-
     name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
@@ -103,3 +111,8 @@ class Message(BaseModel):
 
     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
     appointment = relationship("Appointment", back_populates="messages")
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
