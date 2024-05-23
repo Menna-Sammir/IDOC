@@ -366,3 +366,13 @@ $(document).ready(function() {
     $('.doctor-select2').select2({containerCssClass: "doctor-select", width: '100%' });
     $('.location-select2').select2({containerCssClass: "location-select", width: '100%' });
 });
+
+$(document).on("change", ".Specialization", function () {
+
+	if ($(this).is(':checked')) {
+		$(this).prop('checked', true);
+			   } else {
+		$(this).prop('checked', false);
+			   }
+
+});
