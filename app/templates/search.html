@@ -3,6 +3,7 @@
 	block body %}
 
 
+	
 			<!-- Breadcrumb -->
 			<div class="breadcrumb-bar">
 				<div class="container-fluid">
@@ -37,16 +38,17 @@
 									<h4 class="card-title mb-0">Search Filter</h4>
 								</div>
 								<div class="card-body">
+									<form action="{{ url_for('search_doctor') }}" method="POST" id="search-form">
 								<div class="filter-widget">
 									<div class="cal-icon">
-										<input type="text" class="form-control datetimepicker" placeholder="Select Date">
+										<input type="text" class="form-control datetimepicker" placeholder="Select Date" name="date">
 									</div>			
 								</div>
 								<div class="filter-widget">
 								</div>
 								<div class="filter-widget">
 									
-									<h4>Select Specialist</h4>
+									<h4>Select specialization</h4>
 									{% for specialization in specializations %}
 									<div>
 										<label class="custom_check">
@@ -56,65 +58,16 @@
 									</div>
 									{% endfor %}
 								</div>
-								{% block scripts %}
-								    <!-- jQuery -->
-                                    <script src="static/js/jquery.min.js"></script>
-
-                                    <!-- Bootstrap Core JS -->
-                                    <script src="static/js/popper.min.js"></script>
-                                    <script src="static/js/bootstrap.min.js"></script>
-
-                                    <!-- Sticky Sidebar JS -->
-                                    <script src="static/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-                                    <script src="static/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
-
-                                    <!-- Circle Progress JS -->
-                                    <script src="static/js/circle-progress.min.js"></script>
-                                    <script src="static/js/slick.js"></script>
-
-
-                                    <!-- Custom JS -->
-                                    <script src="static/js/script.js"></script>
 									<div class="btn-search">
-										<button type="button" class="btn btn-block">Search</button>
-										<script>
-											$(document).ready(function() {
-												$('#search-btn').click(function() {
-													var select_specialization = [];
-													$("input[name='select_specialization']:checked").each(function() {
-														select_specialization.push($(this).val());
-													});
-													var date = $('.datetimepicker').val();
-													$.ajax({
-														method: "POST",
-														url: "/search_doctor",
-														data: {
-															select_specialization: select_specialization,
-															date: date
-														},
-														success: function(data) {
-															$('#search-results').empty();
-															$.each(data.doctors, function(index, doctor) {
-																var cardHtml = `
-
-																`;
-																$('#search-results').append(cardHtml);
-															});
-														},
-														error: function(xhr, status, error) {
-															console.error('Error:', error);
-														}
-													});
-												});
-											});
-										</script>
-									</div>	
-								</div>
+										<button type="submit" class="btn btn-block">Search</button>
+									</div>
+								</form>
 							</div>
-							{% endblock %}
+						</div>
+							
 							<!-- /Search Filter -->
 							
-						</div>
+				</div>
 						
 						<div class="col-md-12 col-lg-8 col-xl-9">
 
@@ -168,5 +121,7 @@
 
 			</div>		
 			<!-- /Page Content -->
+			
+		
 {% endblock %}
 
