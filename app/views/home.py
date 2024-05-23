@@ -4,12 +4,19 @@ from app.models.models import *
 from app.views.auth_form import RegisterForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
+from flask import Flask, render_template
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from app.models.models import Specialization
 
 
 @app.route('/')
 @app.route('/home')
 def home_page():
-    return render_template('index.html')
+    specializations = Specialization.query.all()
+    specializations_valu = [(spe.id, spe.specialization_name) for spe in specializations]
+    print(specializations_valu)
+    return render_template('index.html', specializations=specializations_valu)
 
 
 @app.route('/test')
