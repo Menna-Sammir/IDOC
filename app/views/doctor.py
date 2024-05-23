@@ -43,10 +43,17 @@ def book_appointment():
 
 @app.route('/doctor_dashboard')
 def doctor_dashboard():
-    
     return render_template('doctor-dashboard.html')
 
-
+    # query = db.session.query(Appointment, Patient, Clinic, Governorate) \
+    #     .join(Patient, Appointment.patient_id == Patient.id) \
+    #     .join(Clinic, Appointment.clinic_id == Clinic.id) \
+    #     .join(Governorate, Clinic.governorate_id == Governorate.id)
+        
+    # Patient = Patient.query.all()
+    # Clinic = Clinic.query.all()
+    # Governorate = Governorate.query.all()
+    # Appointment = Appointment.query.all()
 
 
 
