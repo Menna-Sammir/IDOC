@@ -6,7 +6,7 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('home_page') }}">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">Checkout</li>
           </ol>
         </nav>
@@ -25,35 +25,39 @@
         <div class="card">
           <div class="card-body">
             <!-- Checkout Form -->
-            <form
-              action="https://dreamguys.co.in/demo/doccure/booking-success.html"
-            >
+            <form method="POST">
+              {{ form.hidden_tag() }}
               <!-- Personal Information -->
               <div class="info-widget">
                 <h4 class="card-title">Personal Information</h4>
                 <div class="row">
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
-                      <label>First Name</label>
-                      <input class="form-control" type="text" />
+                      {{ form.firstname.label() }}
+                        {{
+                        form.firstname(class="form-control" )}}
                     </div>
                   </div>
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
-                      <label>Last Name</label>
-                      <input class="form-control" type="text" />
+                      {{ form.lastname.label() }}
+                      {{
+                      form.lastname(class="form-control")}}
+
                     </div>
                   </div>
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
-                      <label>Email</label>
-                      <input class="form-control" type="email" />
+                      {{ form.email_address.label() }}
+                      {{
+                      form.email_address(class="form-control")}}
                     </div>
                   </div>
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
-                      <label>Phone</label>
-                      <input class="form-control" type="text" />
+                      {{ form.phone.label() }}
+                      {{
+                      form.phone(class="form-control")}}
                     </div>
                   </div>
                 </div>
@@ -62,9 +66,7 @@
 
               <!-- Submit Section -->
               <div class="submit-section mt-4">
-                <button type="submit" class="btn btn-primary submit-btn">
-                  Confirm Book
-                </button>
+                {{ form.submit(class="btn btn-primary submit-btn")}}
               </div>
               <!-- /Submit Section -->
             </form>
@@ -82,25 +84,18 @@
           <div class="card-body">
             <!-- Booking Doctor Info -->
             <div class="booking-doc-info">
-              <a href="doctor-profile.html" class="booking-doc-img">
+              <a href="#" class="booking-doc-img">
+                {% set base_path = 'static/images/doctors/' %}
                 <img
-                  src="assets/img/doctors/doctor-thumb-02.jpg"
+                  src="{{base_path ~ doctor.photo}}"
                   alt="User Image"
                 />
               </a>
               <div class="booking-info">
-                <h4><a href="doctor-profile.html">Dr. Darren Elder</a></h4>
-                <div class="rating">
-                  <i class="fas fa-star filled"></i>
-                  <i class="fas fa-star filled"></i>
-                  <i class="fas fa-star filled"></i>
-                  <i class="fas fa-star filled"></i>
-                  <i class="fas fa-star"></i>
-                  <span class="d-inline-block average-rating">35</span>
-                </div>
+                <h4><a href="#">{{doctor.name}}</a></h4>
                 <div class="clinic-details">
                   <p class="doc-location">
-                    <i class="fas fa-map-marker-alt"></i> Newyork, USA
+                    <i class="fas fa-map-marker-alt"></i> {{clinic.address}}, {{gov.governorate_name}}
                   </p>
                 </div>
               </div>
@@ -109,20 +104,18 @@
 
             <div class="booking-summary">
               <div class="booking-item-wrap">
-                <ul class="booking-date">
-                  <li>Date <span>16 Nov 2019</span></li>
-                  <li>Time <span>10:00 AM</span></li>
+                <ul class="booking-date mt-3">
+                  <li>Date <span>{{date}}</span></li>
+                  <li>Time <span>{{clinic.working_hours}}</span></li>
                 </ul>
                 <ul class="booking-fee">
-                  <li>Consulting Fee <span>$100</span></li>
-                  <li>Booking Fee <span>$10</span></li>
-                  <li>Video Call <span>$50</span></li>
+                  <li>Consulting Fee <span>${{doctor.price}}</span></li>
                 </ul>
                 <div class="booking-total">
                   <ul class="booking-total-list">
                     <li>
                       <span>Total</span>
-                      <span class="total-cost">$160</span>
+                      <span class="total-cost">${{doctor.price}}</span>
                     </li>
                   </ul>
                 </div>
