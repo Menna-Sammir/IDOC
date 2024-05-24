@@ -414,18 +414,22 @@
               </div>
               <div class="card-body">
                 <div class="d-md-flex justify-content-center overflow-hidden">
-                  <select class="doctor-select2 col-md-3 border-rd-r-0" name="state" data-width="100%">
-                    {% for specialization in specializations %}
-                      <option >{{ specialization.id }}</option>
-                    {% endfor %}
-                  </select>
-                  <select class="location-select2 col-md-3 border-rd-r-0" name="state" data-width="100%">
-                    <option default>Choose location</option>
-                    <option value="AL">Alabama</option>
-                    <option value="WY">Wyoming</option>
-                  </select>
-                  <input class="col-md-3 form-control border-left-0 border-right-0 home-form" />
-                  <input type="submit" class="col-md-3 btn-primary home-sub" />
+                  <form method="POST"  class="doctor-select2 col-md-3 border-rd-r-0">
+                    {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.specialization.label }}<br>
+                        {{ form.specialization }}
+                    </p>
+                    <p>
+                        {{ form.governorate.label }}<br>
+                        {{ form.governorate }}
+                    </p>
+                    <p>
+                        {{ form.doctor_name.label }}<br>
+                        {{ form.doctor_name }}
+                    </p>
+                    <p>{{ form.submit }}</p>
+                  </form>
                 </div>
               </div>
             </div>

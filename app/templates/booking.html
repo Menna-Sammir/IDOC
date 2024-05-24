@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% block title %} Booking {% endblock %} {%
-	block content %}
+{% extends 'base.html' %} {% block title %} Booking {% endblock %} 
+{%block body %}
 			<!-- Breadcrumb -->
 			<div class="breadcrumb-bar">
 				<div class="container-fluid">
@@ -46,7 +46,23 @@
 									</div>
 								</div>
 							</div>
-
+							<form method="POST">
+								{{ form.hidden_tag() }}
+								<p>
+									{% for date in dates %}
+										<strong>{{ date[0] }} - {{ date[1] }}</strong><br>
+									{% endfor %}
+								</p>
+								<p>
+									{{ form.timeslots.label }}<br>
+									{% for choice in form.timeslots %}
+										<div>
+											{{ choice }} {{ choice.label.text }}
+										</div>
+									{% endfor %}
+								</p>
+								<p>{{ form.submit }}</p>
+							</form>
 							<!-- Schedule Widget -->
 							<div class="card booking-schedule schedule-widget">
 
