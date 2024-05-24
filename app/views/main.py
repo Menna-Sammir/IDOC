@@ -53,7 +53,7 @@ def doctor_signup_page():
                 f'account created Success! You are logged in as: {user_to_create.name}',
                 category='success'
             )
-            return redirect(url_for('doctor_dashboard'))
+            return redirect(url_for('doctor_dashboard'), current_user = user_to_create.id)
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -122,7 +122,7 @@ def login_page():
                     category='success'
                 )
                 if(attempted_user.roles.role_name == 'Admin'):
-                    return redirect(url_for('home_page'), current_user = attempted_user.id)
+                    return redirect(url_for('doctor_dashboard'), current_user = attempted_user.id)
 
                 return redirect(url_for('home_page'))
             else:
