@@ -53,7 +53,7 @@ def doctor_signup_page():
                 f'account created Success! You are logged in as: {user_to_create.name}',
                 category='success'
             )
-            return redirect(url_for('doctor_dashboard'), current_user = user_to_create.id)
+            return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -93,7 +93,7 @@ def clinic_signup_page():
                 f'account created Success! You are logged in as: {user_to_create.name}',
                 category='success'
             )
-            return redirect(url_for('clinic_dashboard'))
+            return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -122,8 +122,11 @@ def login_page():
                     category='success'
                 )
                 if(attempted_user.roles.role_name == 'Admin'):
-                    return redirect(url_for('doctor_dashboard'), current_user = attempted_user.id)
-
+                    return redirect(url_for('doctor_dashboard'), current_user=attempted_user.id)
+                elif(attempted_user.roles.role_name == 'doctor'):
+                    return redirect(url_for('doctor_dashboard'), current_user=attempted_user.id)
+                elif(attempted_user.roles.role_name == 'clinic'):
+                    return redirect(url_for('doctor_dashboard'), current_user=attempted_user.id)
                 return redirect(url_for('home_page'))
             else:
                 flash('user name and password are not match', category='danger')
@@ -149,9 +152,9 @@ def permission_denied(e):
     flash('You not authorized to open this page, please login', category='warning')
     return redirect(url_for('login_page'))
 
+
 @app.route('/doctor-dashboard', methods=['GET', 'POST'])
 @login_required
-@admin_permission.require(http_exception=403)
 def doctor_dashboard():
     return render_template('doctor-dashboard.html')
 
@@ -159,9 +162,6 @@ def doctor_dashboard():
 @app.route('/clinic_dashboard', methods=['GET', 'POST'])
 def clinic_dashboard():
     return render_template('doctor-dashboard.html')
-
-
-
 
 @app.route('/booking', methods=['GET', 'POST'])
 def doctor_appointments():
