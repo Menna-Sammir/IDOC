@@ -41,7 +41,7 @@
 									<form action="{{ url_for('search_doctor') }}" method="POST" id="search-form">
 								<div class="filter-widget">
 									<div class="cal-icon">
-										<input type="text" class="form-control datetimepicker" placeholder="Select Date" name="date">
+										<input type="text" class="form-control datetimepicker" placeholder="Select Date" name="date" value="{{ selected_date }}">
 									</div>			
 								</div>
 								<div class="filter-widget">
@@ -52,7 +52,7 @@
 									{% for specialization in specializations %}
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialization" value="{{ specialization.id}}" class="Specialization" {% if specialization.checked %} checked {% endif %}>
+											<input type="checkbox" name="select_specialization" value="{{ specialization.id}}" class="Specialization" {% if specialization.id in selected_specializations %} checked {% endif %}>
 											<span class="checkmark"></span> {{ specialization.specialization_name}}
 										</label>
 									</div>
