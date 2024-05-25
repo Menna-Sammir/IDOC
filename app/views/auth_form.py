@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField, SubmitField, SelectField
+from wtforms import StringField,PasswordField, SubmitField, SelectField, RadioField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from app.models.models import *
 
@@ -56,3 +56,7 @@ class LoginForm(FlaskForm):
     email_address = StringField(label='Email Address:', validators=[Email(), DataRequired()])
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='log in')
+
+class AppointmentForm(FlaskForm):
+    timeslots = RadioField('Available Timeslots', choices=[], validators=[DataRequired()])
+    submit = SubmitField('Book Appointment')
