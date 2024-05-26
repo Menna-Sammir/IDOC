@@ -38,22 +38,29 @@ def doctor_signup_page():
     form.doctor_id.choices = [(doc.id, doc.name) for doc in doctors]
     if request.method == 'POST':
         if form.validate_on_submit():
-            user_to_create = User(
-                name=form.username.data,
-                email=form.email_address.data,
-                password_hash=form.password1.data,
-                doctor_id=form.doctor_id.data
-            )
-            role_to_create = Role(role_name='doctor', user=user_to_create)
-            db.session.add(user_to_create)
-            db.session.add(role_to_create)
-            db.session.commit()
-            login_user(user_to_create)
+            user = User.query.filter_by(name= form.username.data).first()
+            if not user:
+                user_to_create = User(
+                    name=form.username.data,
+                    email=form.email_address.data,
+                    password_hash=form.password1.data,
+                    doctor_id=form.doctor_id.data
+                )
+                role_to_create = Role(role_name='doctor', user=user_to_create)
+                db.session.add(user_to_create)
+                db.session.add(role_to_create)
+                db.session.commit()
+                login_user(user_to_create)
+                flash(
+                    f'account created Success! You are logged in as: {user_to_create.name}',
+                    category='success'
+                )
+                return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
             flash(
-                f'account created Success! You are logged in as: {user_to_create.name}',
-                category='success'
-            )
-            return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
+                    f'this account already exists',
+                    category='danger'
+                )
+
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
