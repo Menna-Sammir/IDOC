@@ -74,51 +74,61 @@ def book_appointment_form():
 # doctor dashboard page >>> view appointments today
 @app.route('/doctor_dashboard', methods=['GET', 'POST'])
 @login_required
+@doctor_permission.require(http_exception=403)
 def doctor_dash():
     user_id = request.args.get('current_user', None)
     user = User.query.filter_by(id=user_id).first()
 
+    if user is None:
+        return "User not found", 404
+
+    if not hasattr(user, 'doctor_id'):
+        return "User is not a doctor", 403
+
     doctor_id = user.doctor_id
     doctor = Doctor.query.filter_by(id=doctor_id).first()
 
+    if doctor is None:
+        return "Doctor not found", 404
+
     today = date.today()
 
-    appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name)\
+    appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name, Patient.phone)\
         .join(Doctor, Doctor.id == Appointment.doctor_id)\
         .join(Specialization, Specialization.id == Doctor.specialization_id)\
         .join(Patient, Patient.id == Appointment.patient_id)\
-        .filter(Appointment.doctor_id == doctor_id, Appointment.date == today).all()
-        
+        .filter(Appointment.doctor_id == doctor_id, Appointment.date == today, Appointment.seen == False).all()
+
     specialization = Specialization.query.filter(Specialization.id == doctor.specialization_id).first()
     
-    
     appointments_list = []
-    for appointment, doctor_name, specialization_name, patient_name in appointments:
+    for appointment, doctor_name, specialization_name, patient_name, patient_phone in appointments:
         appointments_list.append({
             'appointment_id': appointment.id,
             'appointment_time': appointment.time,
             'appointment_date': appointment.date,
             'patient_name': patient_name,
             'doctor_name': doctor_name,
+            'photo': doctor.photo,
+            'patient_phone': patient_phone,
             'specialization_name': specialization_name,
             'status': appointment.status,
             'seen': appointment.seen
         })
-    patient_count = len(appointments_list)
         
+    patient_count = len(appointments_list)
+    
     if request.method == 'POST':
-        return redirect(url_for('logout'))
+        if 'logout' in request.form:
+            return redirect(url_for('logout'))
+        
+        if 'seen' in request.form:
+            appointment_id = request.form.get('appointment_id')
+            appointment = Appointment.query.get(appointment_id)
+            if appointment:
+                appointment.seen = True
+                db.session.commit()
+            return redirect(url_for('doctor_dash', current_user=user_id))
 
     return render_template('doctor-dashboard.html', current_user=user_id, doctor=doctor, appointments=appointments_list, specialization=specialization, patient_count=patient_count, today=today)
-
-
-@app.route('/mark_seen/<appointment_id>', methods=['PUT'])
-def mark_seen(appointment_id):
-    appointment = Appointment.query.get(appointment_id)
-    if appointment:
-        appointment.seen = True
-        db.session.commit()
-        return jsonify({'message': 'Appointment marked as seen'}), 200
-    else:
-        return jsonify({'error': 'Appointment not found'}), 404
 
