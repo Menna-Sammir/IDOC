@@ -8211,6 +8211,7 @@ html.menu-opened body {
 	}
 }
 
+<<<<<<< HEAD
 .logout-btn {
     background: none;
     border: none;
@@ -8531,3 +8532,48 @@ html.menu-opened body {
     font-size:12px;
   }
 
+=======
+/* loading */
+.main-wrapper{
+	opacity: 0;
+}
+
+.loader{
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background-color: #9dffe81f;
+	z-index: 1500;
+	overflow: hidden;
+}
+.loader svg {
+	width: 11%;
+}
+
+.stethoscope {
+	stroke: url(#gradient);
+	stroke-width: 3;
+	fill: none;
+	stroke-dasharray: 2900;
+	stroke-dashoffset: 0;
+	animation: dash 4s infinite normal forwards;
+	animation-direction: alternate-reverse;
+}
+
+@keyframes dash {
+	0% {
+		stroke-dashoffset: 0;
+	}
+
+	100% {
+		stroke-dashoffset: 2900;
+	}
+}
+
+textarea {
+    resize: none;
+}
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
