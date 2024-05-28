@@ -78,6 +78,7 @@ def admin_dash():
                            doctor_details=doctor_details,
                            clinic_details=clinic_details,
                            doctor_count=doctor_count,
+                           current_user=user,
                            clinic_count=clinic_count)
 
 
