@@ -1,7 +1,6 @@
 from app import app, db
 from app.models.adminUser import *
 from app.models.addGovs import *
-
 from app import app, socketio
 
 
