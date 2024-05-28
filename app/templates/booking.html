@@ -32,7 +32,7 @@
 											<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
 										</a>
 										<div class="booking-info">
-											<h4><a href="doctor-profile.html">Dr. Darren Elder</a></h4>
+											<h4><a href="doctor-profile.html">{{ doctor.name }}</a></h4>
 											<div class="rating">
 												<i class="fas fa-star filled"></i>
 												<i class="fas fa-star filled"></i>
@@ -48,20 +48,27 @@
 							</div>
 							<form method="POST">
 								{{ form.hidden_tag() }}
-								<p>
-									{% for date in dates %}
-										<strong>{{ date[0] }} - {{ date[1] }}</strong><br>
-									{% endfor %}
-								</p>
-								<p>
-									{{ form.timeslots.label }}<br>
-									{% for choice in form.timeslots %}
-										<div>
-											{{ choice }} {{ choice.label.text }}
-										</div>
-									{% endfor %}
-								</p>
-								<p>{{ form.submit }}</p>
+								<table>
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Day</th>
+											<th>Available Times</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for date, day in dates %}
+										<tr>
+											<td>{{ date }}</td>
+											<td>{{ day }}</td>
+											<td>
+												{{ form.timeslots }}
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								<button type="submit">Book Appointment</button>
 							</form>
 							<!-- Schedule Widget -->
 							<div class="card booking-schedule schedule-widget">
