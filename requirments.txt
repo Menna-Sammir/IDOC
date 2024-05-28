@@ -10,7 +10,7 @@ flask_mail
 wtforms-components
 Flask-WTF Flask-Uploads
 
-***** push database migration **********
+#***** push database migration **********
 # from app import app, db
 # from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
 # app.app_context().push()
