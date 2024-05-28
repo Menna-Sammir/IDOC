@@ -18,6 +18,26 @@ Version      : 1.0
     }
   }
 
+  $(window).on("load", function() {
+    $(".loader").fadeOut( "slow");
+        $(".main-wrapper").css("opacity", "1");
+    // setTimeout(function() {
+    //     $(".loader").fadeOut( "slow");
+    //     $(".main-wrapper").css("opacity", "1");
+    // }, 4000);
+
+// preview image after upload
+    $('.upload').on('change', function(event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function(event) {
+          $('#imagePreview').attr('src', event.target.result);
+      };
+      reader.readAsDataURL(file);
+  });
+});
+
+
   // Sidebar
   if ($(window).width() <= 991) {
     var Sidemenu = function () {
@@ -139,7 +159,7 @@ Version      : 1.0
 			if(!$(this).next('.dropdown-menu').hasClass('show')) {
 				$(this).next('.dropdown-menu').slideDown(350);
 			}
-			
+
 		});
 	}*/
 
@@ -367,11 +387,11 @@ Version      : 1.0
     animateElements();
   }
   $(window).scroll(animateElements);
-  $(".alert")
-    .fadeTo(2000, 500)
-    .slideUp(500, function () {
-      $(".alert").slideUp(500);
-    });
+//   $(".alert")
+//     .fadeTo(2000, 500)
+//     .slideUp(1000, function () {
+//       $(".alert").slideUp(1000);
+//     });
 })(jQuery);
 
 // select2
@@ -395,6 +415,7 @@ $(document).on("change", ".Specialization", function () {
 			   }
 
 });
+
 
 
 
@@ -505,6 +526,8 @@ $(function(){
   });
   
   });
+  
+  
   
   
   

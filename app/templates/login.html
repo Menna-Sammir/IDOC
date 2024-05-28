@@ -14,6 +14,10 @@
   <body class="account-page">
     {% block head %} {% include 'base-alert.html' %} {% endblock %}
     <!-- Main Wrapper -->
+    <div class="loader">
+      {% block loading %} {% include 'base-loading.html' %} {% endblock %}
+
+    </div>
     <div class="main-wrapper">
       <!-- Page Content -->
       <div class="content">
@@ -35,7 +39,7 @@
                       <h3>Login <span>IDOC</span></h3>
                     </div>
                     <form method="POST">
-						{{ form.hidden_tag() }}
+						          {{ form.hidden_tag() }}
                       <div class="form-group form-focus">
                         {{ form.email_address.label(class="focus-label") }}
                         {{
@@ -50,17 +54,6 @@
 											</div> -->
                       {{ form.submit(class="btn btn-primary btn-block btn-lg
                       login-btn") }}
-
-                      <div class="login-or">
-                        <span class="or-line"></span>
-
-                      </div>
-                      <div class="text-center dont-have">
-                        Don’t have an account?
-                        <a href="{{ url_for('doctor_signup_page') }}"
-                          >Register</a
-                        >
-                      </div>
                     </form>
                   </div>
                 </div>

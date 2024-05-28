@@ -1,7 +1,7 @@
 from app import app, db, principal
 from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import User, Clinic, Doctor, Role,Appointment
-from app.views.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm
+from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
@@ -14,7 +14,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 @app.route('/')
-@app.route('/home')
+@app.route('/home', strict_slashes=False)
 def home_page():
     return render_template('index.html')
 
@@ -23,7 +23,7 @@ def home_page():
 def test_page():
     return render_template('search.html')
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 @admin_permission.require(http_exception=403)
 def doctor_signup_page():
@@ -38,22 +38,29 @@ def doctor_signup_page():
     form.doctor_id.choices = [(doc.id, doc.name) for doc in doctors]
     if request.method == 'POST':
         if form.validate_on_submit():
-            user_to_create = User(
-                name=form.username.data,
-                email=form.email_address.data,
-                password_hash=form.password1.data,
-                doctor_id=form.doctor_id.data
-            )
-            role_to_create = Role(role_name='doctor', user=user_to_create)
-            db.session.add(user_to_create)
-            db.session.add(role_to_create)
-            db.session.commit()
-            login_user(user_to_create)
+            user = User.query.filter_by(name= form.username.data).first()
+            if not user:
+                user_to_create = User(
+                    name=form.username.data,
+                    email=form.email_address.data,
+                    password_hash=form.password1.data,
+                    doctor_id=form.doctor_id.data
+                )
+                role_to_create = Role(role_name='doctor', user=user_to_create)
+                db.session.add(user_to_create)
+                db.session.add(role_to_create)
+                db.session.commit()
+                login_user(user_to_create)
+                flash(
+                    f'account created Success! You are logged in as: {user_to_create.name}',
+                    category='success'
+                )
+                return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
             flash(
-                f'account created Success! You are logged in as: {user_to_create.name}',
-                category='success'
-            )
-            return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
+                    f'this account already exists',
+                    category='danger'
+                )
+
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -63,7 +70,7 @@ def doctor_signup_page():
     return render_template('doctor-signup.html', form=form)
 
 
-@app.route('/register-clinic', methods=['GET', 'POST'])
+@app.route('/register-clinic', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 @admin_permission.require(http_exception=403)
 def clinic_signup_page():
@@ -104,7 +111,7 @@ def clinic_signup_page():
         return render_template('clinic-signup.html', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login_page():
     form = LoginForm()
     if request.method == 'POST':
@@ -121,7 +128,6 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
-                
                 if(attempted_user.roles.role_name == 'Admin'):
                     return redirect(url_for('admin_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'doctor'):
@@ -129,6 +135,7 @@ def login_page():
                 elif(attempted_user.roles.role_name == 'clinic'):
                     return redirect(url_for('doctor_dash'), current_user=attempted_user.id)
                 return redirect(url_for('home_page'))
+
             else:
                 flash('user name and password are not match', category='danger')
         if form.errors != {}:
@@ -140,7 +147,7 @@ def login_page():
     return render_template('login.html', form=form)
 
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
     logout_user()
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
@@ -154,17 +161,20 @@ def permission_denied(e):
     return redirect(url_for('login_page'))
 
 
-@app.route('/doctor-dashboard', methods=['GET', 'POST'])
-@login_required
-def doctor_dashboard():
-    return render_template('doctor-dashboard.html')
+# @app.route('/doctor-dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# @login_required
+# def doctor_dashboard():
+#     current_user = request.args.get('current_user',None)
+#     print(current_user)
+
+#     return render_template('doctor-dashboard.html')
 
 
-@app.route('/clinic_dashboard', methods=['GET', 'POST'])
-def clinic_dashboard():
-    return render_template('doctor-dashboard.html')
+# @app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# def clinic_dashboard():
+#     return render_template('doctor-dashboard.html')
 
-@app.route('/booking', methods=['GET', 'POST'])
+@app.route('/booking', methods=['GET', 'POST'], strict_slashes=False)
 def doctor_appointments():
     form = AppointmentForm()
 
