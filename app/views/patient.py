@@ -780,3 +780,11 @@ def patient_checkout():
         date=date.strftime('%d %b %Y'),
         form=checkout_form
     )
+
+
+# todo special page
+@app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
+def specialities():
+    return render_template(
+        'specialities.html'
+    )

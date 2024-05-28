@@ -19,12 +19,12 @@ Version      : 1.0
   }
 
   $(window).on("load", function() {
-    // $(".loader").fadeOut( "slow");
-    //     $(".main-wrapper").css("opacity", "1");
-    setTimeout(function() {
-        $(".loader").fadeOut( "slow");
+    $(".loader").fadeOut( "slow");
         $(".main-wrapper").css("opacity", "1");
-    }, 4000);
+    // setTimeout(function() {
+    //     $(".loader").fadeOut( "slow");
+    //     $(".main-wrapper").css("opacity", "1");
+    // }, 4000);
 
 // preview image after upload
     $('.upload').on('change', function(event) {
