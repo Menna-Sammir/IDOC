@@ -10,7 +10,6 @@ from app.views.auth_form import LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask import Flask, render_template
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from app.models.models import Specialization, Doctor, Clinic, Governorate, Appointment, Patient
 from app.views.search import SearchForm
@@ -21,7 +20,7 @@ doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
 
 
-@app.route('/cliiiiiinic')
+@app.route('/clinic')
 def clinic_details():
     clinic_id = 'cl1'
     clinic = Clinic.query.get_or_404(clinic_id)
