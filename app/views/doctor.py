@@ -9,6 +9,7 @@ from flask import session
 from datetime import date
 from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
+from app.views import AppointmentForm
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -20,7 +21,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 def search_doctor():
     page = request.args.get('page', 1, type=int)
     per_page = 10 
-    
+    form = AppointmentForm()
     query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
         .join(Specialization, Doctor.specialization_id == Specialization.id) \
         .join(Clinic, Doctor.clinic_id == Clinic.id) \
@@ -56,7 +57,8 @@ def search_doctor():
                            specializations=specializations, governorates=governorates,
                            selected_specializations=selected_specializations,
                            selected_date=selected_date,
-                           pagination=pagination)
+                           pagination=pagination,
+                           form=form)
     
 
 # doctor search page >>> book appointment
@@ -64,18 +66,9 @@ def search_doctor():
 def book_appointment():
     if request.method == 'POST':
         doctor_id = request.form.get('doctor_id')
-
         session['doctor_id'] = doctor_id
+       
         return redirect(url_for('doctor_appointments'))
-
-
-# @app.route('/book_appointment_form')
-# def book_appointment_form():
-#     doctor_id = session.get('doctor_id', None)
-#     if doctor_id:
-#         return f'Booking appointment with doctor_id={doctor_id}'
-#     else:
-#         return 'No doctor_id found in session.'
 
 
 # doctor dashboard page >>> view appointments today
@@ -85,6 +78,7 @@ def book_appointment():
 def doctor_dash():
     user_id = session.get('current_user', None)
     user = User.query.filter_by(id=user_id).first()
+    print("User:", user)
 
     if user is None:
         return "User not found", 404
@@ -97,6 +91,8 @@ def doctor_dash():
 
     if doctor is None:
         return "Doctor not found", 404
+    form = AppointmentForm()
+
 
     today = date.today()
     appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name, Patient.phone)\
@@ -131,7 +127,13 @@ def doctor_dash():
             if appointment:
                 appointment.seen = True
                 db.session.commit()
-            return redirect(url_for('doctor_dash', current_user=user_id))
+                flash('Appointment marked as seen', category='success')
+                return redirect(url_for('doctor_dash', current_user=user_id))
 
-    return render_template('doctor-dashboard.html', current_user=user, doctor=doctor, appointments=appointments_list, specialization=specialization, patient_count=patient_count, today=today)
+    return render_template('doctor-dashboard.html', current_user=user,
+                           doctor=doctor,
+                           appointments=appointments_list,
+                           specialization=specialization,
+                           patient_count=patient_count,
+                           today=today, form=form)
 

@@ -1,4 +1,4 @@
-from app import app, db, principal
+from app import app, db, principal, socketio
 from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
@@ -19,10 +19,20 @@ def checkout_success():
     date = session.get('date', None)
     time = session.get('time', None)
 
+    socketio.emit('appointment_notification', {
+        'doctor': doctor,
+        'date': date,
+        'time': time
+    }, namespace='/')
+    
     session.pop('doctor', None)
     session.pop('date', None)
     session.pop('time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
+
+# @app.route('/clinic_dash', methods=['GET'], strict_slashes=False)
+# def clinic():
+#     return render_template('clinic.html')
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
