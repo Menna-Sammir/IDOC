@@ -8620,14 +8620,14 @@ color: #4cb5ab;
 
 .circle-border-pink{
 	border: 6px solid #da3f81;
-    padding: 20px 5px;
+    padding: 10px 10px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
 }
 
 .circle-border-cyan{
-	border: 6px solid #da3f81;
+	border: 6px solid #68DDA9;
     padding: 20px 5px;
     border-radius: 50%;
     display: flex;
