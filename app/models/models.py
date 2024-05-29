@@ -7,6 +7,8 @@ from app import bcrypt
 from flask_login import UserMixin
 from flask_principal import RoleNeed, identity_loaded, UserNeed
 from flask_login import current_user
+from sqlalchemy import func
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -28,8 +30,6 @@ def inject_cache_id():
 @app.context_processor
 def inject_current_user():
     return {'current_user': app.config['Current_user']}
-
-
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
@@ -54,6 +54,10 @@ class Doctor(BaseModel):
     specialization = relationship("Specialization", back_populates="doctors")
     clinic = relationship("Clinic", back_populates="doctors")
     appointments = relationship("Appointment", back_populates="doctor")
+
+    def total_earnings(self):
+        appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
+        return appointment_count * (self.price or 0)
 
 class Clinic(BaseModel):
     __tablename__ = 'clinic'
@@ -83,6 +87,7 @@ class User(BaseModel, UserMixin):
     name = db.Column(VARCHAR(100), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
     password = db.Column(VARCHAR(255), nullable=False)
+    photo = db.Column(VARCHAR(255), nullable=True)
 
     doctor_id = db.Column(VARCHAR(60), ForeignKey('doctor.id'), unique=True)
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), unique=True)

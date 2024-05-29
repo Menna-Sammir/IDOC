@@ -25,7 +25,7 @@ class ClinicForm(FlaskForm):
     clinicAddress =TextAreaField(label='Clinic Address', validators=[Length(min=2,max=90), DataRequired()])
     email_address = StringField(label='Email Address', validators=[Email(), DataRequired(),Length(max=50)])
     gov_id = SelectField(label='governorate', validators=[DataRequired()])
-    phone = StringField(label='Phone', validators=[Length(min=11, max=11)])
+    phone = StringField(label='Phone', validators=[Length(min=0, max=11)])
     fromHour=TimeField(label='From', validators=[DataRequired()])
     toHour=TimeField(label='To', validators=[DataRequired()])
     logo=FileField(label='Clinic Logo', validators=[DataRequired(),file_size_check])
