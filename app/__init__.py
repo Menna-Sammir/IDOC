@@ -36,7 +36,7 @@ login_manager.login_view = "login_page"
 
 principal = Principal(app)
 
-from app.views import home
+from app.views import main
 from app.views import clinic_dash
 from app.views import bookdate
 

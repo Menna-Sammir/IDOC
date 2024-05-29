@@ -14,33 +14,45 @@ from flask_sqlalchemy import SQLAlchemy
 from app.models.models import Specialization, Doctor, Clinic, Governorate, Appointment
 from app.views.search import SearchForm
 from datetime import datetime, timedelta
-from app.views.booking import AppointmentForm 
+from app.views.calnderdoc import AppointmentForm 
+
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
 
-@app.route('/booooooking', methods=['GET', 'POST'])
+def convert_to_24_hour(time_str):
+    return datetime.strptime(time_str, '%I%p').time()
+
+@app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
-    if request.method == 'GET':
-        doctor_id = 'doc1'
-        doctor = Doctor.query.get_or_404(doctor_id)
-        clinic = doctor.clinic
-        dates = []
-        for i in range(6):
-            date = datetime.now() + timedelta(days=i)
-            dates.append((date.strftime('%Y-%m-%d'), date.strftime('%A')))
+    doctor_id = 'doc1'  # يمكنك تعيين ID الدكتور هنا
+    doctor = Doctor.query.get_or_404(doctor_id)
+    clinic = doctor.clinic
+    dates = []
 
-        timeslots = []
-        for date in dates:
-            for hours in clinic.working_hours.split(','):
-                start_hour, end_hour = map(lambda x: int(x.strip()), hours.split('-'))
-                for hour in range(start_hour, end_hour):
-                    start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
-                    end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
-                    timeslot = f"{date[0]} {start_time}-{end_time}"
-                    timeslots.append((timeslot, f"{date[1]} - {start_time}-{end_time}"))
+    for i in range(6):
+        date = datetime.now() + timedelta(days=i)
+        dates.append((date.strftime('%Y-%m-%d'), date.strftime('%A')))
 
-        form.timeslots.choices = timeslots
+    timeslots_by_date = {}
 
-    return render_template('booking.html', form=form, doctor=doctor, dates=dates, clinic=clinic)
+    for date in dates:
+        daily_timeslots = []
+        for hours in clinic.working_hours.split(','):
+            start_hour, end_hour = map(lambda x: x.strip(), hours.split('-'))
+            start_hour_24 = convert_to_24_hour(start_hour)
+            end_hour_24 = convert_to_24_hour(end_hour)
+
+            start_hour_int = start_hour_24.hour
+            end_hour_int = end_hour_24.hour
+
+            for hour in range(start_hour_int, end_hour_int):
+                start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
+                end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
+                timeslot = f"{date[0]} {start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+                daily_timeslots.append((timeslot, f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"))
+
+        timeslots_by_date[date[0]] = daily_timeslots
+
+    return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic)
