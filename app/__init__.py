@@ -1,19 +1,20 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_principal import Principal
+from flask_socketio import SocketIO, emit
 import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO
 
 load_dotenv()
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-
+    
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
 IDOC_HOST = os.getenv('IDOC_HOST')
