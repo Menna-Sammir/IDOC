@@ -62,25 +62,25 @@ def admin_dash():
         clinic_info = {
             'clinic_name': doctor.clinic.name,
             'clinic_phone': doctor.clinic.phone,
-            'clinic_address': doctor.clinic.address
+            'clinic_address': doctor.clinic.address,
+            'clinic_photo': doctor.clinic.photo
         }
         clinic_details.add(frozenset(clinic_info.items()))
 
     clinic_details = [dict(clinic) for clinic in clinic_details]
 
-    doctor_count = db.session.query(Doctor).count()
-    clinic_count = db.session.query(Clinic).count()
-
     if request.method == 'POST':
         return redirect(url_for('logout'))
 
+    doctor_details=db.session.query(Doctor).all()
+    clinic_details=db.session.query(Clinic).all()
+    doctor_count = db.session.query(Doctor).count()
+    clinic_count = db.session.query(Clinic).count()
     return render_template('admin-dashboard.html',
                            doctor_details=doctor_details,
                            clinic_details=clinic_details,
                            doctor_count=doctor_count,
-                           current_user=user,
                            clinic_count=clinic_count)
-
 
 
 @app.route('/add_clinic', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_clinic')
