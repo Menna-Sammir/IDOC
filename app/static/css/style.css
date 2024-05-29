@@ -4798,6 +4798,7 @@ html.menu-opened body {
 .dash-widget {
 	-webkit-box-align: center;
 	-ms-flex-align: center;
+	justify-content: space-around;
 	align-items: center;
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -8587,4 +8588,20 @@ color: #4cb5ab;
 	font-weight: 500;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+
+.circle-border-pink{
+	border: 6px solid #da3f81;
+    padding: 20px 5px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.circle-border-cyan{
+	border: 6px solid #da3f81;
+    padding: 20px 5px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
 }
