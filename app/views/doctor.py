@@ -21,7 +21,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 def search_doctor():
     page = request.args.get('page', 1, type=int)
     per_page = 10 
-    
+    form = AppointmentForm()
     query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
         .join(Specialization, Doctor.specialization_id == Specialization.id) \
         .join(Clinic, Doctor.clinic_id == Clinic.id) \
@@ -57,7 +57,8 @@ def search_doctor():
                            specializations=specializations, governorates=governorates,
                            selected_specializations=selected_specializations,
                            selected_date=selected_date,
-                           pagination=pagination)
+                           pagination=pagination,
+                           form=form)
     
 
 # doctor search page >>> book appointment
@@ -65,8 +66,8 @@ def search_doctor():
 def book_appointment():
     if request.method == 'POST':
         doctor_id = request.form.get('doctor_id')
-
         session['doctor_id'] = doctor_id
+       
         return redirect(url_for('doctor_appointments'))
 
 
