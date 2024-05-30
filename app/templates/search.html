@@ -39,6 +39,8 @@
 								</div>
 								<div class="card-body">
 									<form action="{{ url_for('search_doctor') }}" method="POST" id="search-form">
+										{{ form.hidden_tag() }}
+										{{ form.csrf_token }}
 								<div class="filter-widget">
 									<div class="cal-icon">
 										<input type="text" class="form-control datetimepicker" placeholder="Select Date" name="date" value="{{ selected_date }}">
