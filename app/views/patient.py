@@ -16,7 +16,6 @@ from flask_login import login_required
 
 @app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():
-    print("hellooooooooooooooooooooooo")
     doctor = session.get('doctor', None)
     date = session.get('date', None)
     time = session.get('time', None)

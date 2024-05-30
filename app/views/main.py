@@ -166,7 +166,7 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
-                return redirect(url_for('home'))
+                # return redirect(url_for('home'))
                 session['current_user'] = attempted_user.id
                 if attempted_user.roles.role_name == 'Admin':
                     return redirect(url_for('dashboard'))
@@ -194,7 +194,7 @@ def logout_page():
     )
     flash('You have been logged out!', category='info')
     return redirect(url_for('home'))
-    return redirect(url_for('login_page'))
+    # return redirect(url_for('login_page'))
 
 
 @app.route(
@@ -245,39 +245,3 @@ def doctor_dashboard():
 def clinic_dashboard():
     return render_template('doctor-dashboard.html')
 
-
-@app.route('/booking', methods=['GET', 'POST'], strict_slashes=False)
-def doctor_appointments():
-    form = AppointmentForm()
-
-    doctor_id = 'doc1'
-    doctor = Doctor.query.get_or_404(doctor_id)
-    clinic = doctor.clinic
-    dates = []
-    for i in range(6):
-        date = datetime.now() + timedelta(days=i)
-        dates.append((date.strftime('%Y-%m-%d'), date.strftime('%A')))
-    working_hours = clinic.working_hours.split(',')
-    timeslots = []
-    for date in dates:
-        for hour in working_hours:
-            timeslot = f"{date[0]} {hour.strip()}"
-            timeslots.append((timeslot, f"{date[1]} - {hour.strip()}"))
-    form.timeslots.choices = timeslots
-    if form.validate_on_submit():
-        selected_timeslot = form.timeslots.data
-        appointment = Appointment(
-            date=selected_timeslot.split()[0],
-            time=selected_timeslot.split()[1],
-            status=False,
-            seen=False,
-            clinic_id=clinic.id,
-            doctor_id=doctor.id
-        )
-        db.session.add(appointment)
-        db.session.commit()
-        flash('Appointment booked successfully!', 'success')
-        return redirect(url_for('doctor_appointments', doctor_id=doctor.id))
-    return render_template(
-        'booking.html', form=form, doctor=doctor, dates=dates, clinic=clinic
-    )
