@@ -29,49 +29,10 @@ def allowed_file(filename):
 
 
 # admin dashboard page >>> view appointments today
-@app.route('/admin_dashboard', methods=['GET', 'POST'], endpoint='dashboard')
-@login_required
+@app.route('/admin_dashboard', methods=['GET', 'POST'], strict_slashes=False, endpoint='dashboard')
+# @login_required
 # @admin_permission.require(http_exception=403)
 def admin_dash():
-    user_id = request.args.get('current_user', None)
-    user = User.query.filter_by(id=user_id).first()
-
-    doctors = db.session.query(Doctor).options(
-        joinedload(Doctor.specialization),
-        joinedload(Doctor.clinic)
-    ).all()
-
-    doctor_details = []
-    clinic_details = set()
-    for doctor in doctors:
-        appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == doctor.id).scalar() or 0
-        total_earnings = appointment_count * (doctor.price or 0)
-
-        details = {
-            'doctor_name': doctor.name,
-            'specialization': doctor.specialization.specialization_name,
-            'photo': doctor.photo,
-            'price': doctor.price,
-            'clinic_name': doctor.clinic.name,
-            'clinic_phone': doctor.clinic.phone,
-            'clinic_address': doctor.clinic.address,
-            'total_earnings': total_earnings
-        }
-        doctor_details.append(details)
-
-        clinic_info = {
-            'clinic_name': doctor.clinic.name,
-            'clinic_phone': doctor.clinic.phone,
-            'clinic_address': doctor.clinic.address,
-            'clinic_photo': doctor.clinic.photo
-        }
-        clinic_details.add(frozenset(clinic_info.items()))
-
-    clinic_details = [dict(clinic) for clinic in clinic_details]
-
-    if request.method == 'POST':
-        return redirect(url_for('logout'))
-
     doctor_details=db.session.query(Doctor).all()
     clinic_details=db.session.query(Clinic).all()
     doctor_count = db.session.query(Doctor).count()
@@ -121,7 +82,7 @@ def add_clinic():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = (
-                        f"{unique_str}_{add_clinic_form.clinicName.data}{extension}"
+                        f"{unique_str}_{add_clinic_form.clinicName.data.strip()}{extension}"
                     )
                     Clinic_create.photo = new_filename
 
@@ -188,7 +149,7 @@ def add_doctor():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = (
-                        f"{unique_str}_{clinic}_{doctor_name.strip()}{extension}"
+                        f"{unique_str}_{clinic.strip()}_{doctor_name.strip()}{extension}"
                     )
                     Doctor_create.photo = new_filename
                     if file and allowed_file(file.filename):
@@ -196,7 +157,7 @@ def add_doctor():
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], "doctors", filename))
                     db.session.add(Doctor_create)
                     db.session.commit()
-                    return redirect(url_for('doctor_dash'))
+                    return redirect(url_for('admin_dash'))
                 except Exception as e:
                     flash(f'something wrong', category='danger')
                     print(str(e))

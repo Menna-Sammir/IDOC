@@ -4799,6 +4799,7 @@ html.menu-opened body {
 .dash-widget {
 	-webkit-box-align: center;
 	-ms-flex-align: center;
+	justify-content: space-around;
 	align-items: center;
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -4829,14 +4830,14 @@ html.menu-opened body {
 	color: #757575;
 	font-size: 14px;
 	margin-bottom: 0;
-	
+
 }
 
 .circle-bar>div {
 	display: inline-block;
 	position: relative;
 	text-align: center;
-	border-radius: 100%; 
+	border-radius: 100%;
 }
 
 .circle-bar>div img {
@@ -8235,9 +8236,8 @@ html.menu-opened body {
 
 
   #clock{
-    width:400px;
-    padding:40px;
-    margin:100px auto 60px;
+    width:350px;
+    padding:10px;
     position:relative;
   }
 
@@ -8266,33 +8266,22 @@ html.menu-opened body {
     Light color theme
   --------------------------*/
 
-
-  #clock.light{
-    background-color:#f3f3f3;
-    color:#272e38;
-  }
-
   #clock.light:after{
     box-shadow:0 4px 10px rgba(0,0,0,0.15);
   }
 
   #clock.light .digits div span{
-    background-color:#272e38;
-    border-color:#272e38;
+    background-color:#032e6a;
+    border-color:#032e6a;
   }
 
   #clock.light .digits div.dots:before,
   #clock.light .digits div.dots:after{
-    background-color:#272e38;
-  }
-
-  #clock.light .alarm{
-    background:url('../img/alarm_light.jpg');
+    background-color:#032e6a;
   }
 
   #clock.light .display{
-    background-color:#dddddd;
-    box-shadow:0 1px 1px rgba(0,0,0,0.08) inset, 0 1px 1px #fafafa;
+	color: #007bff;
   }
 
   /*-------------------------
@@ -8604,4 +8593,43 @@ textarea {
 
 .badge-pill {
 	border-radius: 50px;
+}
+
+/* doctor dashboard */
+
+.doctor-card{
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.doctordash-back{
+	background-color: #e2f9f8;
+	display: inline-block;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.text-cyan{
+color: #4cb5ab;
+}
+
+.doctor-title{
+	font-weight: 500;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.circle-border-pink{
+	border: 6px solid #da3f81;
+    padding: 10px 10px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.circle-border-cyan{
+	border: 6px solid #68DDA9;
+    padding: 20px 5px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
 }

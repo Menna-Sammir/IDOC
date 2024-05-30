@@ -39,14 +39,13 @@
                   <div class="row">
                     <div class="col-md-12 col-lg-4">
                       <div class="dash-widget">
-                        <div class="circle-bar circle-bar1">
-                          <div class="circle-graph1" data-percent="100">
+
+                          <div class="circle-border-pink">
                             <img
                               src="static/img/medical-team.png"
-                              class="img-fluid"
+                              width="60"
                               alt="patient"
                             />
-                          </div>
                         </div>
                         <div class="dash-widget-info">
                           <h6>Registered Doctors</h6>
@@ -71,14 +70,14 @@
   
                     <div class="col-md-12 col-lg-4">
                       <div class="dash-widget">
-                        <div class="circle-bar circle-bar3">
-                          <div class="circle-graph3" data-percent="100">
+                        <div class="circle-border-cyan" >
+
                             <img
                               src="static/img/clinic.png"
                               class="img-fluid"
-                              alt="Patient"
+                              alt="Patient" style="width:70px"
                             />
-                          </div>
+                        
                         </div>
                         <div class="dash-widget-info">
                           <h6>Registered Clinics</h6>
@@ -116,9 +115,10 @@
                                   <tr>
                                       <td>
                                           <h2 class="table-avatar">
-                                            <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ doctor.photo }}" alt="User Image"></a>
+                                            {% set base_path = 'static/images/doctors/' %}
+                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.photo}}" alt="User Image"></a>
 
-                                              <a href="profile.html">{{ doctor.name }}</a>
+                                              <a href="#">{{ doctor.name }}</a>
                                           </h2>
                                       </td>
                                       <td>{{ doctor.specialization.specialization_name }}</td>
@@ -155,14 +155,17 @@
                                   <tr>
                                       <td>
                                           <h2 class="table-avatar">
-                                            <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ clinic.photo }}" alt="User Image"></a>
+                                            {% set base_path = 'static/images/clinic/' %}
+                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.photo}}" alt="User Image"></a>
                                               <a href="profile.html">{{ clinic.name }}</a>
                                           </h2>
                                       </td>
                                       <td>{{ clinic.address }}</td>
+                                      <td>{{ clinic.address }}</td>
                                       <td>
                                           <h2 class="table-avatar">
                                               
+                                              <a>{{ clinic.phone }}</a>
                                               <a>{{ clinic.phone }}</a>
                                           </h2>
                                       </td>
