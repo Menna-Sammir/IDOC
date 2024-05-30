@@ -46,34 +46,26 @@
 									</div>
 								</div>
 							</div>
-							<form action="" method="get">
-								<table class="w-100">
-									{% for date, day in dates %}
-									<thead class="d-flex w-100 bg-secondary text-white">
-										<tr class="w-100">
-											<th class="d-flex justify-content-center w-100 text-center">{{ date }} <br> {{ day }}</th>
-										</tr>
-									</thead>
-									<tbody class="d-flex">
-										
-										<tr class="w-100">
-											<td class="d-flex justify-content-center w-100"> 
-												{% for timeslot, display in timeslots_by_date[date] %}
-													<div class="m-5 p-3 mb-2 bg-info text-white rounded font-weight-bold text-center d-flex align-items-center">
-														<input type="radio" id="timeslot_{{ loop.index }}" name="timeslot_{{ date }}" value="{{ timeslot }}">
-														<label for="timeslot_{{ loop.index }}" class="m-auto">{{ display }}</label>
-													</div>
-												{% endfor %}
-											</td>
-										</tr>
-										
-									</tbody>
+							<form method="post" action="">
+								<div class="date-container">
+								  {% for date, day in dates %}
+									<div class="date-item slot-date">
+									  <h6 class="m-auto">{{ day }}<br>{{ date }}</h6>
+									</div>
+								  {% endfor %}
+								</div>
+								{% for date, day in dates %}
+								  <div class="timeslots">
+									{% for timeslot in timeslots_by_date[date] %}
+									  <div class="timeslot">
+										<input type="radio" name="timeslot" id="{{ timeslot[0] }}" value="{{ timeslot[0] }}" class="rounded-sm">
+										<label for="{{ timeslot[0] }}">{{ timeslot[1] }}</label>
+									  </div>
 									{% endfor %}
-								</table>
-
-								<input type="hidden" name="doctor_id" value="{{ doctor.id }}">
-								<button type="submit" class="btn btn-primary submit-btn">Proceed to Pay</button>
-							</form>
+								  </div>
+								{% endfor %}
+								<button type="submit" class="btn btn-primary submit-btn mt-5">Proceed to Pay</button>
+							  </form>
 						</div>
 					</div>
 				</div>
