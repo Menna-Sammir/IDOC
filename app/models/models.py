@@ -59,10 +59,6 @@ class Doctor(BaseModel):
         appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
         return appointment_count * (self.price or 0)
 
-    def total_earnings(self):
-        appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
-        return appointment_count * (self.price or 0)
-
 class Clinic(BaseModel):
     __tablename__ = 'clinic'
 
@@ -107,6 +103,8 @@ class User(BaseModel, UserMixin):
 
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password, attempted_password)
+
+
 
 class Role(BaseModel):
     __tablename__ = 'roles'
