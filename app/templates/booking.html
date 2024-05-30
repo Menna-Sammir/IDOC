@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block body %}
+{% extends 'base.html' %}  {% block title %} Booking {% endblock %}
+{%block body %}
 			<!-- Breadcrumb -->
 			<div class="breadcrumb-bar">
 				<div class="container-fluid">
@@ -28,10 +29,10 @@
 								<div class="card-body">
 									<div class="booking-doc-info">
 										<a href="doctor-profile.html" class="booking-doc-img">
-											<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
+											<img src="../static/img/{{ doctor.image }}" alt="User Image">
 										</a>
 										<div class="booking-info">
-											<h4><a href="doctor-profile.html">Dr. Darren Elder</a></h4>
+											<h4><a href="doctor-profile.html">{{ doctor.name }}</a></h4>
 											<div class="rating">
 												<i class="fas fa-star filled"></i>
 												<i class="fas fa-star filled"></i>
@@ -40,188 +41,33 @@
 												<i class="fas fa-star"></i>
 												<span class="d-inline-block average-rating">35</span>
 											</div>
-											<p class="text-muted mb-0"><i class="fas fa-map-marker-alt"></i> Newyork, USA</p>
+											<p class="text-muted mb-0"><i class="fas fa-map-marker-alt"></i> {{ clinic.name }}</p>
+											<p class="text-muted mb-0"><i class="fas fa-stethoscope"></i> {{ specialization_name }}</p>
+											<p class="text-muted mb-0"><i class="fas fa-clinic-medical"></i> {{ clinic.name }}</p>
 										</div>
 									</div>
 								</div>
 							</div>
-							<form method="POST">
-								{{ form.hidden_tag() }}
-								<p>
-									{% for date in dates %}
-										<strong>{{ date[0] }} - {{ date[1] }}</strong><br>
+							<form method="post" action="">
+								<div class="date-container">
+								  {% for date, day in dates %}
+									<div class="date-item slot-date{% if not loop.last %} border-right{% endif %}">
+									  <h6 class="m-auto ">{{ day }}<br>{{ date }}</h6>
+									</div>
+								  {% endfor %}
+								</div>
+								{% for date, day in dates %}
+								  <div class="timeslots">
+									{% for timeslot in timeslots_by_date[date] %}
+									  <div class="timeslot">
+										<input type="radio" name="timeslot" id="{{ timeslot[0] }}" value="{{ timeslot[0] }}" class="rounded-sm">
+										<label for="{{ timeslot[0] }}">{{ timeslot[1] }}</label>
+									  </div>
 									{% endfor %}
-								</p>
-								<p>
-									{{ form.timeslots.label }}<br>
-									{% for choice in form.timeslots %}
-										<div>
-{{ choice }} {{ choice.label.text }}
-										</div>
-									{% endfor %}
-								</p>
-								<p>{{ form.submit }}</p>
-							</form>
-							<!-- Schedule Widget -->
-							<div class="card booking-schedule schedule-widget">
-
-								<!-- Schedule Header -->
-								<div class="schedule-header">
-									<div class="row">
-										<div class="col-md-12">
-
-											<!-- Day Slot -->
-											<div class="day-slot">
-												<ul>
-													<li class="left-arrow">
-														<a href="#">
-															<i class="fa fa-chevron-left"></i>
-														</a>
-													</li>
-													<li>
-														<span>Mon</span>
-														<span class="slot-date">11 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Tue</span>
-														<span class="slot-date">12 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Wed</span>
-														<span class="slot-date">13 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Thu</span>
-														<span class="slot-date">14 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Fri</span>
-														<span class="slot-date">15 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Sat</span>
-														<span class="slot-date">16 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Sun</span>
-														<span class="slot-date">17 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li class="right-arrow">
-														<a href="#">
-															<i class="fa fa-chevron-right"></i>
-														</a>
-													</li>
-												</ul>
-											</div>
-											<!-- /Day Slot -->
-
-										</div>
-									</div>
-								</div>
-								<!-- /Schedule Header -->
-								<!-- Schedule Content -->
-								<div class="schedule-cont">
-									<div class="row">
-										<div class="col-md-12">
-
-											<!-- Time Slot -->
-											<div class="time-slot">
-												<ul class="clearfix">
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing selected" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-												</ul>
-											</div>
-											<!-- /Time Slot -->
-
-										</div>
-									</div>
-								</div>
-								<!-- /Schedule Content -->
-
-							</div>
-							<!-- /Schedule Widget -->
-
-							<!-- Submit Section -->
-							<div class="submit-section proceed-btn text-right">
-								<a href="checkout.html" class="btn btn-primary submit-btn">Proceed to Pay</a>
-							</div>
-							<!-- /Submit Section -->
-
+								  </div>
+								{% endfor %}
+								<button type="submit" class="btn btn-primary submit-btn mt-5">Proceed to Pay</button>
+							  </form>
 						</div>
 					</div>
 				</div>
