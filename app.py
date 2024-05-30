@@ -1,4 +1,5 @@
 from app import app, db, socketio
+from flask_session import Session
 from app.models.adminUser import *
 from app.models.addGovs import *
 
@@ -7,4 +8,5 @@ if __name__ == '__main__':
         db.create_all()
         seed_governorates()
         create_admin_user()
-    socketio.run(app, debug=True)
+        
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
