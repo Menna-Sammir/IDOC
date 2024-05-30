@@ -1,20 +1,8 @@
 from app import app, db, principal
-from flask import render_template, redirect, url_for, flash, request, current_app
-from app.models.models import User, Clinic, Doctor, Role
-from app.views.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm
-from flask_login import login_user, logout_user, login_required, current_user
-from sqlalchemy import not_
-from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
+from flask import render_template
 from app.models.models import *
-from app.views.auth_form import LoginForm
-from flask_login import login_user, logout_user, login_required, current_user
-from sqlalchemy import not_
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from app.models.models import Specialization, Doctor, Clinic, Governorate, Appointment, Patient
-from app.views.search import SearchForm
-from datetime import datetime, timedelta
-from app.views.booking import AppointmentForm 
+from flask_principal import Permission, RoleNeed
+
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
@@ -40,7 +28,7 @@ def clinic_details():
         join(Patient, Appointment.patient_id == Patient.id).\
         join(Doctor, Appointment.doctor_id == Doctor.id).\
         filter(Appointment.clinic_id == clinic_id, Appointment.date >= today).all()
-    
+
     patient_image_paths = {}
     for appointment, patient, doctor in appointments:
         patient_image_paths[patient.id] = "../static/img/patient/" + str(patient.photo)
