@@ -20,7 +20,7 @@ def checkout_success():
     date = session.get('date', None)
     time = session.get('time', None)
     
-    clinic_id = 'cl8'
+    clinic_id = 'd6ed1f04-9b92-46ec-969c-7441690c348e'
     if clinic_id:
         socketio.emit('appointment_notification', {
             'doctor': doctor,
@@ -53,7 +53,7 @@ def send_appointment_notification(clinic_id, data):
 @app.route('/clinic_dash', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def clinic_dash():
-    clinic_id = 'cl8'
+    clinic_id = 'd6ed1f04-9b92-46ec-969c-7441690c348e'
     session['clinic_id'] = clinic_id
     return render_template('clinic-dashboard.html', clinic_id=clinic_id)
 
@@ -61,7 +61,7 @@ def clinic_dash():
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
-    doctor_id = 'doc8'
+    doctor_id = 'd9f2f180-fa4e-4d20-8898-6c40ed7c75a7'
     date = datetime.now()
     time = datetime.now()
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()

@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from flask import session
 
 
+
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
@@ -225,3 +226,4 @@ def doctor_appointments():
         return redirect(url_for('doctor_appointments', doctor_id=doctor.id))
 
     return render_template('booking.html', form=form, doctor=doctor, dates=dates, clinic=clinic)
+
