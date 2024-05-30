@@ -20,7 +20,7 @@ def checkout_success():
     date = session.get('date', None)
     time = session.get('time', None)
     
-    clinic_id = session.get('clinic_id', None)
+    clinic_id = 'cl8'
     if clinic_id:
         socketio.emit('appointment_notification', {
             'doctor': doctor,
@@ -40,12 +40,12 @@ def handle_connect():
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        leave_room(clinic_id)
-        emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
+# # @socketio.on('disconnect')
+# # def handle_disconnect():
+# #     clinic_id = request.args.get('clinic_id')
+# #     if clinic_id:
+# #         leave_room(clinic_id)
+# #         emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
 
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
@@ -53,16 +53,15 @@ def send_appointment_notification(clinic_id, data):
 @app.route('/clinic_dash', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def clinic_dash():
-    # clinic_id = 'cl2'  # Get the clinic_id from wherever it's stored
-    # session['clinic_id'] = clinic_id
-    clinic_id = session.get('clinic_id', None)
+    clinic_id = 'cl8'
+    session['clinic_id'] = clinic_id
     return render_template('clinic-dashboard.html', clinic_id=clinic_id)
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
-    doctor_id = 'd9f2f180-fa4e-4d20-8898-6c40ed7c75a7'
+    doctor_id = 'doc8'
     date = datetime.now()
     time = datetime.now()
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()
@@ -674,6 +673,7 @@ def patient_checkout():
         session['date'] = date.strftime('%d %b %Y')
         session['time'] = time.strftime('%H:%M:%S')
         session['clinic_id'] = clinic_data.id
+        
         return redirect(url_for('checkout_success'))
     return render_template(
         'checkout.html',
