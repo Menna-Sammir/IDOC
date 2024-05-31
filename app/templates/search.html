@@ -104,12 +104,9 @@
 												</ul>
 											</div>
 											<div class="clinic-booking">
-												<form action="{{ url_for('doctor_appointments') }}" method="POST">
-													{{ form.hidden_tag() }}
-													{{ form.csrf_token }}
-													<input type="hidden" name="doctor_id" value="{{ doctor.id }}">
-													<button class="apt-btn" style="background-color: #20c0f3; color: #fff; border: none; padding: 10px 20px; font-size: 14px; border-radius: 5px; font-weight: 500; display: block;" type="submit">Book Appointment</button>
-												</form>
+												<a href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}" class="apt-btn" style="background-color: #20c0f3; color: #fff; padding: 10px 20px; font-size: 14px; border-radius: 5px; font-weight: 500; display: block;">Book Appointment</a>
+
+
 											</div>
 										</div>
 									</div>
