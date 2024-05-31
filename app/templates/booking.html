@@ -49,6 +49,8 @@
 								</div>
 							</div>
 							<form method="post" action="">
+								{{ form.hidden_tag() }}
+								<input type="hidden" name="doctor_id" value="{{ doctor.id }}">
 								<div class="date-container">
 								  {% for date, day in dates %}
 									<div class="date-item slot-date{% if not loop.last %} border-right{% endif %}">
@@ -66,7 +68,7 @@
 									{% endfor %}
 								  </div>
 								{% endfor %}
-								{{ form.submit(class="btn btn-primary submit-btn mt-5") }}
+								<p>{{ form.submit(class="btn btn-primary submit-btn mt-5") }}</p>
 							  </form>
 						</div>
 					</div>
