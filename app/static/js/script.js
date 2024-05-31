@@ -391,6 +391,30 @@ Version      : 1.0
   //     .slideUp(1000, function () {
   //       $(".alert").slideUp(1000);
   //     });
+
+
+
+var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+var dayNames= [ "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday" ];
+
+var newDatecal = new Date();
+newDatecal.setDate(newDatecal.getDate());
+
+setInterval( function() {
+	var hours = new Date().getHours();
+	$(".hour").html(( hours < 10 ? "0" : "" ) + hours);
+    var seconds = new Date().getSeconds();
+	$(".second").html(( seconds < 10 ? "0" : "" ) + seconds);
+    var minutes = new Date().getMinutes();
+	$(".minute").html(( minutes < 10 ? "0" : "" ) + minutes);
+
+    $(".month span,.month2 span").text(monthNames[newDatecal.getMonth()]);
+    $(".date span,.date2 span").text(newDatecal.getDate());
+    $(".day span,.day2 span").text(dayNames[newDatecal.getDay()]);
+    $(".year span").html(newDatecal.getFullYear());
+}, 1000);
+
+
 })(jQuery);
 
 // select2
@@ -415,6 +439,7 @@ document.addEventListener("DOMContentLoaded", function() {
       timeslotsContainers[index].classList.add("active");
     });
   });
+
   });
 
 

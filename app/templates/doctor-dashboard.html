@@ -27,47 +27,8 @@
       <div class="row">
         <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
           <!-- Profile Sidebar -->
-          <div class="profile-sidebar">
-            <div class="widget-profile pro-widget-content">
-              <div class="profile-info-widget">
-                <a href="profile.html" class="booking-doc-img"
-                  >
-                  {% set base_path = 'static/images/doctors/' %}
-                  <img
-                    class="avatar-img rounded-circle"
-                    src="{{base_path ~ doctor.photo}}"
-                    alt="User Image"
-                /></a>
-                <div class="profile-det-info">
-                  <h3>{{ doctor.name }}</h3>
 
-                  <div class="patient-details specialization">
-                    <h5 class="mb-0">{{ doctor.specialization.specialization_name }}</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="dashboard-widget">
-              <nav class="dashboard-menu">
-                <ul>
-                  <li class="active">
-                    <a href="doctor-dashboard.html">
-                      <i class="fas fa-columns"></i>
-                      <span>Dashboard</span>
-                    </a>
-                  </li>
-                  <li></li>
-                  <li></li>
-                  <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
-                    <a href="{{ url_for('logout_page') }}">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          {% block sidebar %} {% include 'base-doctor-side.html' %} {% endblock %}
           <!-- /Profile Sidebar -->
         </div>
 
@@ -194,8 +155,12 @@
                                 {% for appointment in appointments %}
                                 <tr>
                                   <td>
+                                    {% if nextAppt == appointment.id%}
+                                    <i class="far fa-hand-point-right text-danger"></i>
+
+                                      {%endif%}
                                     <h2 class="table-avatar">
-                                      <a href="patient-profile.html"
+                                      <a href="#"
                                         >{{ appointment.patient.name }}
                                         <span
                                           >{{ appointment.appointment_id }}</span
@@ -235,6 +200,7 @@
                                       {% endif %}
                                     </div>
                                   </td>
+
                                 </tr>
                                 {% endfor %}
                               </tbody>

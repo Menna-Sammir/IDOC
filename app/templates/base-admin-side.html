@@ -2,11 +2,11 @@
     <div class="widget-profile pro-widget-content">
         <div class="profile-info-widget">
             <a href="#" class="booking-doc-img">
-                <img src="{{ current_user.photo }}" alt="User Image">
+                <img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
             </a>
             <div class="profile-det-info">
                 <h3>{{current_user.name}}</h3>
-                
+
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
-                    <a href="{{url_for('change_password')}}">
+                    <a href="{{ url_for('change_password') }}">
                         <i class="fas fa-lock"></i>
                         <span>Change Password</span>
                     </a>

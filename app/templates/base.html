@@ -62,55 +62,13 @@
               </svg>
             </a>
           </div>
-          <div class="main-menu-wrapper">
-            <div class="menu-header">
-              <a href="index-2.html" class="menu-logo">
-                <img src="static/img/logo.png" class="img-fluid" alt="Logo" />
-              </a>
-              <a id="menu_close" class="menu-close" href="javascript:void(0);">
-                <i class="fas fa-times"></i>
-              </a>
-            </div>
-            <ul class="main-nav">
-              <li>
-                <a href="index.html">Home</a>
-              </li>
-              <li class="has-submenu active">
-                <a href="#">Doctors <i class="fas fa-chevron-down"></i></a>
-                <ul class="submenu">
-                  <li class="active">
-                    <a href="doctor-dashboard.html">Doctor Dashboard</a>
-                  </li>
-                  <li>
-                    <a href="doctor-profile-settings.html">Profile Settings</a>
-                  </li>
-                  <li><a href="doctor-register.html">Doctor Register</a></li>
-                </ul>
-              </li>
-              <li class="has-submenu">
-                <a href="#">Patients <i class="fas fa-chevron-down"></i></a>
-                <ul class="submenu">
-                  <li><a href="search.html">Search Doctor</a></li>
-                  <li><a href="booking.html">Booking</a></li>
-                  <li><a href="checkout.html">Checkout</a></li>
-                  <li><a href="booking-success.html">Booking Success</a></li>
-                </ul>
-              </li>
-
-              <li>
-                <a href="admin/index.html" target="_blank">Admin</a>
-              </li>
-              <li class="login-link">
-                <a href="login.html">Login / Signup</a>
-              </li>
-            </ul>
-          </div>
           <ul class="nav header-navbar-rht">
             <!-- User Menu -->
             <li class="nav-item dropdown has-arrow logged-item">
               <!-- Notifications -->
             </li>
-            {% if current_user.roles.role_name == 'clinic' %}
+            {% if current_user.is_authenticated and current_user.roles.role_name
+            == 'clinic' %}
             <li class="nav-item dropdown noti-dropdown">
               <a
                 href="#"
@@ -163,6 +121,7 @@
             {% endif %}
             <!-- /Notifications -->
             <!-- User Menu -->
+            {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item">
               <a
                 href="#"
@@ -170,45 +129,50 @@
                 data-toggle="dropdown"
               >
                 <span class="user-img">
+                  {% set base_path = 'static/images/' %}
                   <img
                     class="rounded-circle"
-                    src="static/img/doctors/doctor-thumb-02.jpg"
+                    src="{{base_path ~ current_user.photo}}"
                     width="31"
                     alt="Darren Elder"
                   />
                 </span>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
-                <div class="user-header">
+                <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
                     <img
-                      src="static/img/doctors/doctor-thumb-02.jpg"
+                      src="{{base_path ~ current_user.photo}}"
                       alt="User Image"
                       class="avatar-img rounded-circle"
                     />
                   </div>
                   <div class="user-text">
-                    <h6>{{ current_user.username }}</h6>
-                    <p class="text-muted mb-0">Doctor</p>
+                    <h6>{{ current_user.name }}</h6>
                   </div>
                 </div>
-
-                {% if current_user.roles.role_name == 'Admin' %}
+                {% if current_user.is_authenticated and
+                current_user.roles.role_name == 'Admin' %}
+                <a class="dropdown-item" href="{{ url_for('dashboard') }}"
+                  >Dashboard</a
+                >
+                {% elif current_user.is_authenticated and
+                current_user.roles.role_name == 'clinic' %}
+                <a class="dropdown-item" href="{{ url_for('clinic_dash') }}"
+                  >Dashboard</a
+                >
+                {% elif current_user.is_authenticated and
+                current_user.roles.role_name == 'doctor' %}
                 <a class="dropdown-item" href="{{ url_for('doctor_dash') }}"
                   >Dashboard</a
                 >
-                {% else %}
-                <p>You are not an admin.</p>
                 {% endif %}
-
-                <a class="dropdown-item" href="doctor-profile-settings.html"
-                  >Profile Settings</a
-                >
                 <a class="nav-link" href="{{ url_for('logout_page') }}"
                   >Logout</a
                 >
               </div>
             </li>
+            {% endif %}
             <!-- /User Menu -->
           </ul>
         </nav>
