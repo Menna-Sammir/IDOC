@@ -19,59 +19,88 @@
 			<!-- /Breadcrumb -->
 
 			<!-- Page Content -->
-			<div class="content">
-				<div class="container">
+			<div class="content mb-5">
+				<div class="container shadow bg-white mb-5 rounded-lg">
 
-					<div class="row">
+					<div class="row px-5">
 						<div class="col-12">
-
-							<div class="card">
-								<div class="card-body">
+							<div class="card w-100 active-card mt-5 mb-5">
+								<div class="card-body w-100 h-100">
 									<div class="booking-doc-info">
-										<a href="doctor-profile.html" class="booking-doc-img">
-											<img src="../static/img/{{ doctor.image }}" alt="User Image">
-										</a>
-										<div class="booking-info">
-											<h4><a href="doctor-profile.html">{{ doctor.name }}</a></h4>
-											<div class="rating">
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating">35</span>
-											</div>
-											<p class="text-muted mb-0"><i class="fas fa-map-marker-alt"></i> {{ clinic.name }}</p>
-											<p class="text-muted mb-0"><i class="fas fa-stethoscope"></i> {{ specialization_name }}</p>
-											<p class="text-muted mb-0"><i class="fas fa-clinic-medical"></i> {{ clinic.name }}</p>
+										<div class="h-50">
+											<a href="doctor-profile.html" class="booking-doc-img">
+												<img src="../static/img/{{ doctor.image }}" alt="User Image">
+											</a>
 										</div>
+										<div class="w-25 ml-3 h-100 mt-2">
+											<h4 class="w-100 mb-0 h-75"><a href="doctor-profile.html">{{ doctor.name }}</a></h4>
+											<div class="d-flex h-25">
+												<p class="text-muted mb-0"><i class="fas fa-stethoscope"></i> {{ specialization_name }}</p>
+											</div>
+										</div>
+										<div class="d-flex w-50 h-100 mt-3 ">
+											<p class="mb-0 text-dark"><i class="fas fa-calendar-alt mr-2"></i> {{ dates[0][1] }}, {{ dates[0][0] }}</p>
+											<p class="mb-0 ml-2 text-dark"><i class="fas fa-clock mr-2"></i> Working hours: {{ clinic.working_hours }}</p>
+										</div>
+										<!-- <div class="w-50 h-100">
+											<img src="../static/img/doctors/booking.jpg" class="w-100 h-100" alt="">
+										</div> -->
 									</div>
 								</div>
 							</div>
-							<form method="post" action="">
+							<h3 class="font-weight-bold text-muted w-100 text-center">suggestion</h3>
+							<div class="row justify-content-around mt-3">
+								
+								<!-- Display other doctors of the same specialization -->
+								
+								{% for other_doctor in other_doctors %}
+								<div class="card shadow suggestion-card col col-lg-3">
+									<div class="card-body">
+										<div class="booking-doc-info">
+											<div class="h-50">
+												<a href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}" class="booking-doc-img">
+													<img src="../static/img/{{ other_doctor.image }}" alt="User Image">
+												</a>
+											</div>
+											<div class="w-100 ml-3 h-100 mt-2">
+												<h4 class="w-100 mb-0 h-75"><a href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}">{{ other_doctor.name }}</a></h4>
+												<div class="d-flex h-25">
+													<p class="text-muted mb-0"><i class="fas fa-stethoscope"></i> {{ other_doctor.specialization.specialization_name }}</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+							
+							<form method="post" action="{{ url_for('doctor_appointments') }}">
 								{{ form.hidden_tag() }}
 								<input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+								<h4>Schedules</h4>
 								<div class="date-container">
-								  {% for date, day in dates %}
-									<div class="date-item slot-date{% if not loop.last %} border-right{% endif %}">
-									  <h6 class="m-auto ">{{ day }}<br>{{ date }}</h6>
-									</div>
-								  {% endfor %}
-								</div>
-								{% for date, day in dates %}
-								  <div class="timeslots">
-									{% for timeslot in timeslots_by_date[date] %}
-									<div class="timeslot">
-										<input type="radio" name="timeslot" id="{{ timeslot[0] }}" value="{{ timeslot[0] }}" class="rounded-sm" {% if not timeslot[2] %}disabled{% endif %} required>
-										<label for="{{ timeslot[0] }}" {% if not timeslot[2] %}style="color: grey;"{% endif %}>{{ timeslot[1] }} {% if not timeslot[2] %}(Booked){% endif %}</label>
-									</div>
+									{% for date, day, day_only in dates %}
+										<div class="date-item slot-date">
+											<h6 class="m-auto bg-white shadow-sm align-items-center d-flex ">{{ day }}<br>{{ day_only }}</h6>
+										</div>
 									{% endfor %}
-								  </div>
+								</div>
+								{% for date, day, day_only in dates %}
+									<div class="timeslots">
+										<h4>TIME</h4>
+										{% for timeslot in timeslots_by_date[date] %}
+											<div class="timeslot">
+												<input type="radio" name="timeslot" id="{{ timeslot[0] }}" value="{{ timeslot[0] }}" class="rounded-sm" {% if not timeslot[2] %}disabled{% endif %} required>
+												<label for="{{ timeslot[0] }}" {% if not timeslot[2] %}style="color: grey;"{% endif %}>{{ timeslot[1] }} {% if not timeslot[2] %}(Booked){% endif %}</label>
+											</div>
+										{% endfor %}
+									</div>
 								{% endfor %}
-								<p>{{ form.submit(class="btn btn-primary submit-btn mt-5") }}</p>
-							  </form>
+								<p>{{ form.submit(class="btn btn-primary submit-btn my-3 w-100") }}</p>
+							</form>
 						</div>
 					</div>
+					
 				</div>
 
 			</div>

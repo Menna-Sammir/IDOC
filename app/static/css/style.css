@@ -4180,8 +4180,6 @@ html.menu-opened body {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 20px;
-	border: 2px solid #ddd;
-	border-radius: 5px;
   }
   .date-item {
 	flex: 1;
@@ -4194,10 +4192,38 @@ html.menu-opened body {
 	cursor: pointer;
 	width: 100%;
   }
-  .date-item.active {
-	background-color: #5ac9d0;
+  div.date-item > h6{
+	height: 70px;
+	width: 65px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 20px !important;
+  }
+  .active-card {
+	background-color: rgba(90, 201, 208, 50%) !important;
+	border: 2px solid #8CC2C6;
+	height: 115px;
+    color: #fff;
+	box-shadow: rgba(90, 201, 208, 0.3) -10px 10px, rgba(90, 201, 208, 0.2) -15px 15px, rgba(90, 201, 208, 0.1) -20px 20px, rgba(90, 201, 208, 0.05) -25px 25px;
+}
+.card.suggestion-card {
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+.card.suggestion-card:hover {
+    opacity: 0.8;
+	border: 2px solid #8CC2C6;
+	background-color: rgba(90, 201, 208, 50%) !important;
+}
+  div.date-item > h6.active{
+	background-color: rgba(90, 201, 208, 50%) !important;
+	border: 2px solid #8CC2C6;
 	color: #fff;
   }
+  
+
   .timeslots {
 	display: none;
 	
@@ -4218,7 +4244,8 @@ html.menu-opened body {
 	display: none;
   }
   .timeslot.active {
-	background-color: #5ac9d0;
+	background-color:rgba(90, 201, 208, 50%) !important;
+	border: 2px solid #8CC2C6;
 	color: #fff;
 	margin: auto;
 	border-radius: 20px;
@@ -4227,7 +4254,6 @@ html.menu-opened body {
 	margin: auto;
 	}
   .timeslot input[type="radio"]:checked + label {
-	background-color: #5ac9d0;
 	color: #fff;
 	margin: auto;
   }
@@ -4245,11 +4271,11 @@ html.menu-opened body {
 }
 
 .booking-doc-info .booking-doc-img img {
-	border-radius: 4px;
-	height: 80px;
-	width: 80px;
+	border-radius: 50px;
+	height: 50px;
+	width: 50px;
 	object-fit: cover;
-}
+  }
 
 .schedule-widget {
 	border-radius: 4px;

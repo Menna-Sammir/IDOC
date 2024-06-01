@@ -390,9 +390,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const timeslotsContainers = document.querySelectorAll(".timeslots");
   dateItems.forEach((item, index) => {
     item.addEventListener("click", () => {
-      dateItems.forEach(i => i.classList.remove("active"));
+      dateItems.forEach(i => i.querySelector('h6').classList.remove("active"));
       timeslotsContainers.forEach(c => c.classList.remove("active"));
-      item.classList.add("active");
+      item.querySelector('h6').classList.add("active");
       timeslotsContainers[index].classList.add("active");
     });
   });
