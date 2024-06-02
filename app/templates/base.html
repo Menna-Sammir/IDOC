@@ -63,6 +63,7 @@
             </a>
           </div>
           <ul class="nav header-navbar-rht">
+            {% if current_user.is_authenticated and current_user.roles.role_name == 'clinic'%}
                         					<!-- Notifications -->
 					<li class="nav-item dropdown noti-dropdown">
 						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
@@ -91,6 +92,7 @@
 						</div>
 					</li>
 					<!-- /Notifications -->
+          {% endif %}
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item">

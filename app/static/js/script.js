@@ -244,7 +244,7 @@ Version      : 1.0
   if ($(".specialities-slider").length > 0) {
     $(".specialities-slider").slick({
       dots: true,
-      autoplay: false,
+      autoplay: true,
       infinite: true,
       variableWidth: true,
       prevArrow: false,
@@ -252,10 +252,21 @@ Version      : 1.0
     });
   }
 
+  $(".specialities-slider").on(
+    "afterChange",
+    function (event, slick, currentSlide) {
+      var $dots = $(this).find(".slick-dots li");
+      // $dots.hide();
+      $dots.slice(0, Math.min(currentSlide + 1, 4)).show();
+    }
+  );
+
   if ($(".doctor-slider").length > 0) {
     $(".doctor-slider").slick({
+      centerMode: true,
+      centerPadding: "60px",
       dots: false,
-      autoplay: false,
+      autoplay: true,
       infinite: true,
       variableWidth: true,
     });
@@ -392,56 +403,75 @@ Version      : 1.0
   //       $(".alert").slideUp(1000);
   //     });
 
+  var monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  var dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
+  var newDatecal = new Date();
+  newDatecal.setDate(newDatecal.getDate());
 
-var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-var dayNames= [ "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday" ];
-
-var newDatecal = new Date();
-newDatecal.setDate(newDatecal.getDate());
-
-setInterval( function() {
-	var hours = new Date().getHours();
-	$(".hour").html(( hours < 10 ? "0" : "" ) + hours);
+  setInterval(function () {
+    var hours = new Date().getHours();
+    $(".hour").html((hours < 10 ? "0" : "") + hours);
     var seconds = new Date().getSeconds();
-	$(".second").html(( seconds < 10 ? "0" : "" ) + seconds);
+    $(".second").html((seconds < 10 ? "0" : "") + seconds);
     var minutes = new Date().getMinutes();
-	$(".minute").html(( minutes < 10 ? "0" : "" ) + minutes);
+    $(".minute").html((minutes < 10 ? "0" : "") + minutes);
 
     $(".month span,.month2 span").text(monthNames[newDatecal.getMonth()]);
     $(".date span,.date2 span").text(newDatecal.getDate());
     $(".day span,.day2 span").text(dayNames[newDatecal.getDay()]);
     $(".year span").html(newDatecal.getFullYear());
-}, 1000);
-
-
+  }, 1000);
 })(jQuery);
 
 // select2
-// $(document).ready(function () {
-//   $(".doctor-select2").select2({
-//     containerCssClass: "doctor-select",
-//     width: "100%",
-//   });
-//   $(".location-select2").select2({
-//     containerCssClass: "location-select",
-//     width: "100%",
-//   });
-// });
-document.addEventListener("DOMContentLoaded", function() {
+$(document).ready(function () {
+  $(".doctor-select2").select2({
+    containerCssClass: "doctor-select",
+    width: "100%",
+  });
+  $(".location-select2").select2({
+    containerCssClass: "location-select",
+    width: "100%",
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
   const dateItems = document.querySelectorAll(".date-item");
   const timeslotsContainers = document.querySelectorAll(".timeslots");
   dateItems.forEach((item, index) => {
     item.addEventListener("click", () => {
-      dateItems.forEach(i => i.classList.remove("active"));
+      dateItems.forEach(i => i.querySelector('h6').classList.remove("active"));
       timeslotsContainers.forEach(c => c.classList.remove("active"));
+      item.querySelector('h6').classList.add("active");
+      dateItems.forEach((i) => i.classList.remove("active"));
+      timeslotsContainers.forEach((c) => c.classList.remove("active"));
       item.classList.add("active");
       timeslotsContainers[index].classList.add("active");
     });
   });
-
-  });
-
+});
 
 $(document).on("change", ".Specialization", function () {
   if ($(this).is(":checked")) {
@@ -454,10 +484,12 @@ $(function () {
   // Cache some selectors
 
   var clock = $("#clock"),
-      ampm = clock.find(".ampm");
+    ampm = clock.find(".ampm");
 
   // Map digits to their names (this will be an array)
-  var digit_to_name = "zero one two three four five six seven eight nine".split(" ");
+  var digit_to_name = "zero one two three four five six seven eight nine".split(
+    " "
+  );
 
   // This object will hold the digit elements
   var digits = {};
@@ -486,7 +518,7 @@ $(function () {
 
   // Add the weekday names
   var weekday_names = "SUN MON TUE WED THU FRI SAT".split(" "),
-      weekday_holder = clock.find(".weekdays");
+    weekday_holder = clock.find(".weekdays");
 
   $.each(weekday_names, function () {
     weekday_holder.append("<span>" + this + "</span>");
@@ -523,11 +555,11 @@ $(function () {
   })();
 });
 
-  const timeslots = document.querySelectorAll(".timeslot");
-  timeslots.forEach(slot => {
-    slot.addEventListener("click", () => {
-      timeslots.forEach(s => s.classList.remove("active"));
-      slot.classList.add("active");
-      slot.querySelector("input[type='radio']").checked = true;
-    });
+const timeslots = document.querySelectorAll(".timeslot");
+timeslots.forEach((slot) => {
+  slot.addEventListener("click", () => {
+    timeslots.forEach((s) => s.classList.remove("active"));
+    slot.classList.add("active");
+    slot.querySelector("input[type='radio']").checked = true;
   });
+});
