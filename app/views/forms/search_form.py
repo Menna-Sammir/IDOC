@@ -7,4 +7,4 @@ class SearchForm(FlaskForm):
     specialization = SelectField('Specialization', choices=[], validators=[DataRequired()])
     governorate = SelectField('Governorate', choices=[], validators=[DataRequired()])
     doctor_name = StringField('Doctor Name')
-    submit = SubmitField('Search')
+    submit = SubmitField('')
