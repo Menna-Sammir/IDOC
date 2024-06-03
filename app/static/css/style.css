@@ -9069,10 +9069,6 @@ textarea {
 	transform: rotate(0) translate(0) scale(0.9);
 }
 
-.outer:active .front .date {
-	-webkit-transform: scale(2);
-}
-
 .outer:active .front .day,
 .outer:active .front .month {
 	visibility: hidden;
