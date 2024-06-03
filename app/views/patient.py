@@ -38,13 +38,13 @@ def home():
             session['doctor_name'] = form.doctor_name.data
             return redirect(url_for('search_doctor'))
     if form.errors != {}:
-            for err_msg in form.errors.values():
-                flash(
-                    f'there was an error with creating a user: {err_msg}',
-                    category='danger'
-                )
-    return render_template('index.html', form=form, specialties= specialties, doctors=doctor)
-
+        for err_msg in form.errors.values():
+            flash(
+                f'there was an error with creating a user: {err_msg}', category='danger'
+            )
+    return render_template(
+        'index.html', form=form, specialties=specialties, doctors=doctor
+    )
 
 
 # doctor search page
@@ -73,14 +73,12 @@ def search_doctor():
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
             query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
-
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
         session.pop('specialization_id', None)
         session.pop('governorate_id', None)
         session.pop('doctor_name', None)
-
     else:
         selected_specializations = request.form.getlist('select_specialization')
         selected_date = request.form.get('date')
@@ -101,10 +99,8 @@ def search_doctor():
                 .filter(Appointment.id == None)
             )
             query = query.filter(Doctor.id.in_(subquery))
-
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
-
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
 
@@ -113,12 +109,13 @@ def search_doctor():
         doctors=doctors,
         specializations=specializations,
         governorates=governorates,
-        selected_specializations=selected_specializations if request.method == 'POST' else [],
+        selected_specializations=selected_specializations
+        if request.method == 'POST'
+        else [],
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
-
 
 
 @app.route('/book', methods=['GET', 'POST'])
@@ -135,26 +132,21 @@ def doctor_appointments():
         .limit(3)
         .all()
     )
-
     dates = []
-
     for i in range(9):
-        date = datetime.now() + timedelta(days=i)
-        dates.append(
-            (date.strftime('%Y-%m-%d'), date.strftime('%a'), date.strftime('%d'))
-        )
+            date = datetime.now() + timedelta(days=i)
+            dates.append(
+                (date.strftime('%Y-%m-%d'), date.strftime('%a'), date.strftime('%d'))
+            )
     timeslots_by_date = {}
-
     for date in dates:
         daily_timeslots = []
         for hours in clinic.working_hours.split(','):
             start_hour, end_hour = map(lambda x: x.strip(), hours.split('-'))
             start_hour_24 = convert_to_24_hour(start_hour)
             end_hour_24 = convert_to_24_hour(end_hour)
-
             start_hour_int = start_hour_24.hour
             end_hour_int = end_hour_24.hour
-
             for hour in range(start_hour_int, end_hour_int):
                 start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
                 end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
@@ -172,7 +164,6 @@ def doctor_appointments():
             f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(a.time + timedelta(hours=1)).strftime('%H:%M')}"
             for a in existing_appointments
         ]
-
         available_timeslots = []
         for timeslot in daily_timeslots:
             if timeslot[0] in booked_timeslots:
@@ -181,15 +172,19 @@ def doctor_appointments():
                 available_timeslots.append((timeslot[0], timeslot[1], True))
         timeslots_by_date[date[0]] = available_timeslots
     if request.method == 'POST':
-        print(request.form)
-        selected_timeslot = request.form['timeslot']
-        doctor_id = request.form['doctor_id']
 
+        selected_timeslot = request.form['timeslot']
         date_str, time_range = selected_timeslot.split()
         start_time_str, end_time_str = time_range.split('-')
-        print(
-            f"Doctor ID: {doctor_id}, Date: {date_str}, Start Time: {start_time_str}, End Time: {end_time_str}"
-        )
+        print(selected_timeslot)
+        print(date_str)
+        print(start_time_str)
+        print(end_time_str)
+        session['doctor_id'] = doctor_id
+        session['date'] = date_str
+        session['start_time'] = start_time_str
+        session['end_time'] = end_time_str
+        return redirect(url_for('patient_checkout'))
 
     return render_template(
         'booking.html',
@@ -219,31 +214,32 @@ def patient_checkout():
         clinic_data = doctor_data.clinic
         gov = clinic_data.governorate
         if request.method == 'POST':
-            patient = Patient.query.filter_by(
-                email=checkout_form.email_address.data
-            ).first()
-            if patient:
-                patient_create = patient
-            else:
-                patient_create = Patient(
-                    name=checkout_form.firstname.data
-                    + ' '
-                    + checkout_form.lastname.data,
-                    phone=checkout_form.phone.data,
+            if checkout_form.validate_on_submit():
+                patient = Patient.query.filter_by(
                     email=checkout_form.email_address.data
+                ).first()
+                if patient:
+                    patient_create = patient
+                else:
+                    patient_create = Patient(
+                        name=checkout_form.firstname.data
+                        + ' '
+                        + checkout_form.lastname.data,
+                        phone=checkout_form.phone.data,
+                        email=checkout_form.email_address.data
+                    )
+                appointment_create = Appointment(
+                    date=date.strftime('%Y-%m-%d'),
+                    time=start_time.strftime('%H:%M:%S'),
+                    status=True,
+                    seen=False,
+                    clinic_id=clinic_data.id,
+                    patient=patient_create,
+                    doctor_id=doctor_id
                 )
-            appointment_create = Appointment(
-                date=date.strftime('%Y-%m-%d'),
-                time=start_time.strftime('%H:%M:%S'),
-                status=True,
-                seen=False,
-                clinic_id=clinic_data.id,
-                patient=patient_create,
-                doctor_id=doctor_id
-            )
-            logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
-            message_create = Message(
-                message_body=f"""\
+                logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
+                message_create = Message(
+                    message_body=f"""\
 
 
 
@@ -259,7 +255,6 @@ def patient_checkout():
 
 
 
-        <html>
 
 
 
@@ -275,8 +270,8 @@ def patient_checkout():
 
 
 
-        <head>
 
+            <html>
 
 
 
@@ -291,7 +286,6 @@ def patient_checkout():
 
 
 
-            <style>
 
 
 
@@ -307,9 +301,9 @@ def patient_checkout():
 
 
 
-                body {{
 
 
+            <head>
 
 
 
@@ -323,7 +317,6 @@ def patient_checkout():
 
 
 
-                    font-family: Arial, sans-serif;
 
 
 
@@ -331,7 +324,6 @@ def patient_checkout():
 
 
 
-                    font-size: 18px;
 
 
 
@@ -343,11 +335,11 @@ def patient_checkout():
 
 
 
+                <style>
 
 
 
 
-                    margin: 0;
 
 
 
@@ -363,7 +355,6 @@ def patient_checkout():
 
 
 
-                    padding: 0;
 
 
 
@@ -376,10 +367,10 @@ def patient_checkout():
 
 
 
+                    body {{
 
 
 
-                    background-color: #f4f4f4;
 
 
 
@@ -395,7 +386,6 @@ def patient_checkout():
 
 
 
-                }}
 
 
 
@@ -409,9 +399,9 @@ def patient_checkout():
 
 
 
+                        font-family: Arial, sans-serif;
 
 
-                .container {{
 
 
 
@@ -425,9 +415,9 @@ def patient_checkout():
 
 
 
+                        font-size: 18px;
 
 
-                    width: 80%;
 
 
 
@@ -443,7 +433,6 @@ def patient_checkout():
 
 
 
-                    margin: 20px auto;
 
 
 
@@ -458,8 +447,8 @@ def patient_checkout():
 
 
 
+                        margin: 0;
 
-                    background-color: #fff;
 
 
 
@@ -475,7 +464,6 @@ def patient_checkout():
 
 
 
-                    padding: 20px;
 
 
 
@@ -491,7 +479,7 @@ def patient_checkout():
 
 
 
-                    border-radius: 10px;
+                        padding: 0;
 
 
 
@@ -507,7 +495,6 @@ def patient_checkout():
 
 
 
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
 
@@ -523,8 +510,8 @@ def patient_checkout():
 
 
 
-                }}
 
+                        background-color: #f4f4f4;
 
 
 
@@ -539,7 +526,6 @@ def patient_checkout():
 
 
 
-                .header {{
 
 
 
@@ -555,9 +541,9 @@ def patient_checkout():
 
 
 
-                    background-color: #007bff;
 
 
+                    }}
 
 
 
@@ -571,7 +557,6 @@ def patient_checkout():
 
 
 
-                    color: #fff;
 
 
 
@@ -587,10 +572,10 @@ def patient_checkout():
 
 
 
-                    padding: 10px;
 
 
 
+                    .container {{
 
 
 
@@ -603,7 +588,6 @@ def patient_checkout():
 
 
 
-                    text-align: center;
 
 
 
@@ -619,11 +603,11 @@ def patient_checkout():
 
 
 
-                    border-radius: 10px 10px 0 0;
 
 
 
 
+                        width: 80%;
 
 
 
@@ -635,7 +619,6 @@ def patient_checkout():
 
 
 
-                }}
 
 
 
@@ -651,12 +634,12 @@ def patient_checkout():
 
 
 
-                .logo {{
 
 
 
 
 
+                        margin: 20px auto;
 
 
 
@@ -667,7 +650,6 @@ def patient_checkout():
 
 
 
-                    text-align: center;
 
 
 
@@ -683,13 +665,13 @@ def patient_checkout():
 
 
 
-                    margin-bottom: 20px;
 
 
 
 
 
 
+                        background-color: #fff;
 
 
 
@@ -699,7 +681,6 @@ def patient_checkout():
 
 
 
-                }}
 
 
 
@@ -715,7 +696,6 @@ def patient_checkout():
 
 
 
-                .content {{
 
 
 
@@ -723,6 +703,7 @@ def patient_checkout():
 
 
 
+                        padding: 20px;
 
 
 
@@ -731,7 +712,6 @@ def patient_checkout():
 
 
 
-                    padding: 20px;
 
 
 
@@ -747,7 +727,6 @@ def patient_checkout():
 
 
 
-                }}
 
 
 
@@ -756,6 +735,7 @@ def patient_checkout():
 
 
 
+                        border-radius: 10px;
 
 
 
@@ -763,7 +743,6 @@ def patient_checkout():
 
 
 
-                .footer {{
 
 
 
@@ -779,7 +758,6 @@ def patient_checkout():
 
 
 
-                    text-align: left;
 
 
 
@@ -789,13 +767,13 @@ def patient_checkout():
 
 
 
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
 
 
 
 
-                    margin-top: 20px;
 
 
 
@@ -811,7 +789,6 @@ def patient_checkout():
 
 
 
-                    color: #777;
 
 
 
@@ -822,12 +799,12 @@ def patient_checkout():
 
 
 
+                    }}
 
 
 
 
 
-                }}
 
 
 
@@ -843,7 +820,6 @@ def patient_checkout():
 
 
 
-            </style>
 
 
 
@@ -855,11 +831,11 @@ def patient_checkout():
 
 
 
+                    .header {{
 
 
 
 
-        </head>
 
 
 
@@ -875,7 +851,6 @@ def patient_checkout():
 
 
 
-        <body>
 
 
 
@@ -888,10 +863,10 @@ def patient_checkout():
 
 
 
+                        background-color: #007bff;
 
 
 
-            <div class="container">
 
 
 
@@ -907,7 +882,6 @@ def patient_checkout():
 
 
 
-                <div class="header">
 
 
 
@@ -921,9 +895,1431 @@ def patient_checkout():
 
 
 
+                        color: #fff;
 
 
-                    <h2>Appointment Confirmation</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        padding: 10px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        text-align: center;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        border-radius: 10px 10px 0 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    .logo {{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        text-align: center;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        margin-bottom: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    .content {{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        padding: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    .footer {{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        text-align: left;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        margin-top: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        color: #777;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="header">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <h2>Appointment Confirmation</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="logo">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <img src="cid:logo_image" alt="Your Logo" width="200">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>Dear {patient_create.name},</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>We are writing to confirm your upcoming appointment at {clinic_data.name}.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <h3>Appointment Details:</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} to {end_time.strftime("%H:%M:%S")}</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <li><strong>Doctor:</strong> {doctor_data.name}</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>We look forward to seeing you and providing the care you need.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="footer">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>Best regards,</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>{clinic_data.name}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p>{clinic_data.phone}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -955,7 +2351,6 @@ def patient_checkout():
 
 
 
-                <div class="logo">
 
 
 
@@ -963,7 +2358,6 @@ def patient_checkout():
 
 
 
-                    <img src="cid:logo_image" alt="Your Logo" width="200">
 
 
 
@@ -971,9 +2365,9 @@ def patient_checkout():
 
 
 
-                </div>
 
 
+            </body>
 
 
 
@@ -987,7 +2381,6 @@ def patient_checkout():
 
 
 
-                <div class="content">
 
 
 
@@ -1003,10 +2396,10 @@ def patient_checkout():
 
 
 
-                    <p>Dear {patient_create.name},</p>
 
 
 
+            </html>
 
 
 
@@ -1019,7 +2412,6 @@ def patient_checkout():
 
 
 
-                    <p>We are writing to confirm your upcoming appointment at {clinic_data.name}.</p>
 
 
 
@@ -1035,346 +2427,52 @@ def patient_checkout():
 
 
 
-                    <h3>Appointment Details:</h3>
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-                    <ul>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} to {end_time.strftime("%H:%M:%S")}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <li><strong>Doctor:</strong> {doctor_data.name}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    </ul>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <p>We look forward to seeing you and providing the care you need.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <div class="footer">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <p>Best regards,</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <p>{clinic_data.name}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <p>{clinic_data.phone}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        """,
-                appointment=appointment_create,
-                status=False
-            )
-            try:
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.starttls()
-                email_address = os.getenv('EMAIL_ADDRESS')
-                app_password = os.getenv('APP_PASSWORD')
-                server.login(email_address, app_password)
-                msg = MIMEMultipart()
-                msg['From'] = email_address
-                msg['To'] = checkout_form.email_address.data
-                msg['Subject'] = f'Appointment Confirmation - {clinic_data.name}'
-                message = message_create.message_body
-                msg.attach(MIMEText(message, 'html'))
-                with open(logo_path, 'rb') as f:
-                    logo_data = f.read()
-                logo_part = MIMEImage(logo_data)
-                logo_part.add_header('Content-ID', '<logo_image>')
-                msg.attach(logo_part)
-                server.send_message(msg)
-                server.quit()
-                message_create.status = True
-            except Exception as e:
-                flash(f'something wrong', category='danger')
-                print(str(e))
-            db.session.add(patient_create)
-            db.session.add(appointment_create)
-            db.session.add(message_create)
-            db.session.commit()
-            session['doctor'] = doctor_data.name
-            session['date'] = date.strftime('%d %b %Y')
-            session['start_time'] = start_time.strftime('%H:%M:%S')
-            session['clinic_id'] = clinic_data.id
-            return redirect(url_for('checkout_success'))
+            """,
+                    appointment=appointment_create,
+                    status=False
+                )
+                try:
+                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    server.starttls()
+                    email_address = os.getenv('EMAIL_ADDRESS')
+                    app_password = os.getenv('APP_PASSWORD')
+                    server.login(email_address, app_password)
+                    msg = MIMEMultipart()
+                    msg['From'] = email_address
+                    msg['To'] = checkout_form.email_address.data
+                    msg['Subject'] = f'Appointment Confirmation - {clinic_data.name}'
+                    message = message_create.message_body
+                    msg.attach(MIMEText(message, 'html'))
+                    with open(logo_path, 'rb') as f:
+                        logo_data = f.read()
+                    logo_part = MIMEImage(logo_data)
+                    logo_part.add_header('Content-ID', '<logo_image>')
+                    msg.attach(logo_part)
+                    server.send_message(msg)
+                    server.quit()
+                    message_create.status = True
+                except Exception as e:
+                    flash(f'something wrong', category='danger')
+                    print(str(e))
+                db.session.add(patient_create)
+                db.session.add(appointment_create)
+                db.session.add(message_create)
+                db.session.commit()
+                session['doctor'] = doctor_data.name
+                session['date'] = date.strftime('%d %b %Y')
+                session['start_time'] = start_time.strftime('%H:%M:%S')
+                session['clinic_id'] = clinic_data.id
+                return redirect(url_for('checkout_success'))
+            if checkout_form.errors != {}:
+                for err_msg in checkout_form.errors.values():
+                    flash(
+                        f'there was an error with creating a user: {err_msg}',
+                        category='danger'
+                    )
     else:
         flash(f'no doctor data found', category='danger')
     return render_template(
