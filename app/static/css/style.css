@@ -81,8 +81,8 @@ html {
 body {
 	background-color: #f8f9fa;
 	color: #272b41;
-	/* font-family: "Poppins", sans-serif; */
-	font-family: "Roboto", sans-serif;
+	font-family: "Poppins", sans-serif;
+	/* font-family: "Roboto", sans-serif; */
 	font-size: 1.1rem;
 	height: 100%;
 	overflow-x: hidden;
@@ -499,6 +499,7 @@ button.bg-danger:hover {
 .dropdown-menu>li>a.text-primary {
 	color: #09e5ab !important;
 }
+
 .text-secondary,
 .dropdown-menu>li>a.text-primary {
 	color: #48CAE4 !important;
@@ -1064,6 +1065,71 @@ button.bg-danger:hover {
 .dropdown-item.active,
 .dropdown-item:active {
 	background-color: #90E0EF;
+}
+
+.navbar {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	background: transparent;
+	transition: background 0.8s ease;
+	padding: 10px 0;
+	z-index: 10000;
+	font-size: 1.2rem;
+}
+
+.navbar ul li a {
+	transition: color 0.3s ease;
+}
+
+
+/* Container for the letters */
+.nav-link span {
+	display: inline-block;
+	transition: color 0.3s ease;
+}
+
+.nav-link:hover span {
+	animation: colorChange 0.5s forwards;
+}
+
+@keyframes colorChange {
+	from {
+		color: white;
+	}
+
+	to {
+		color: #90E0EF;
+	}
+}
+
+.nav-link span:nth-child(1) {
+	animation-delay: 0s;
+}
+
+.nav-link span:nth-child(2) {
+	animation-delay: 0.1s;
+}
+
+.nav-link span:nth-child(3) {
+	animation-delay: 0.2s;
+}
+
+.nav-link span:nth-child(4) {
+	animation-delay: 0.3s;
+}
+
+.nav-link span:nth-child(5) {
+	animation-delay: 0.4s;
+}
+
+.topnavbar {
+	background-color: transparent;
+
+}
+
+.scrollednav {
+	background-color: #0096c78c;
 }
 
 .navbar-nav .open .dropdown-menu {
@@ -4181,12 +4247,20 @@ html.menu-opened body {
 	display: none;
 }
 
+.alert{
+	position: absolute;
+    top: 20px;
+	right: 20px;
+    z-index: 1050;
+}
+
 /*-----------------
 	18. Booking
 -----------------------*/
-.alert-primary-formbook{
+.alert-primary-formbook {
 	border-radius: 20px !important;
 }
+
 .date-container {
 	display: flex;
 	justify-content: space-between;
@@ -4231,13 +4305,13 @@ div.date-item>h6 {
 .card.suggestion-card:hover {
 	opacity: 0.8;
 	border: 2px solid #8CC2C6;
-	background-color:#ade8f49c;
+	background-color: #ade8f49c;
 }
 
 div.date-item>h6.active {
 	background-color: #ade8f49c;
-    border: 2px solid #8CC2C6;
-    color: #787878;
+	border: 2px solid #8CC2C6;
+	color: #787878;
 }
 
 
@@ -4295,8 +4369,8 @@ div.date-item>h6.active {
 
 .booking-doc-info .booking-doc-img img {
 	width: 60px;
-    border-radius: 50%;
-    height: 60px;
+	border-radius: 50%;
+	height: 60px;
 }
 
 .schedule-widget {
@@ -8730,7 +8804,7 @@ div.date-item>h6.active {
 }
 
 body.loading {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 .loader {
@@ -9392,8 +9466,110 @@ textarea {
 .text-main h1,
 .text-main h2,
 .text-main h3 {
-	color: #03045E;
+	color: #272b41;
 }
-.text-home{
-	color:#0077B6
+
+.text-home {
+	color: #0077B6
+}
+
+
+/* scroll bar */
+
+
+body::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	background-color: #F5F5F5;
+	border-radius: 10px;
+}
+
+body::-webkit-scrollbar {
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background-image: -webkit-gradient(linear,
+
+			left bottom,
+			left top,
+			color-stop(0, transparent),
+			color-stop(0.28, #90E0EF),
+			color-stop(0.56, #48CAE4),
+			color-stop(1, #00B4D8));
+}
+
+
+.home-login {
+	border: 1px solid #90E0EF;
+	border-radius: 15px;
+	padding: 5px;
+	align-self: flex-end;
+
+}
+
+
+
+/* Contact us  */
+
+
+.contact-card {
+	position: relative;
+	background-color: #00B4D8;
+	border-radius: 2rem;
+	padding: 20px;
+	width: 300px;
+	color: white;
+	overflow: hidden;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.contact-card p {
+	margin: 5px 0;
+}
+
+.contact-card .icon {
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.contact-card .contact-info {
+	margin: 10px 0;
+}
+
+.contact-card .location {
+	display: flex;
+	align-items: center;
+}
+
+.contact-card .location img {
+	width: 20px;
+	margin-right: 10px;
+}
+
+.circle-contact {
+	position: absolute;
+	bottom: -20px;
+	right: -22px;
+	width: 120px;
+	height: 120px;
+	background: linear-gradient(270deg, rgba(144, 224, 239, 1) 0%, rgba(144, 224, 239, 0.7091211484593838) 35%, rgba(0, 212, 255, 0.04805672268907568) 100%);
+	border-radius: 50%;
+}
+
+.section-contact {
+	font-size: 14px;
+	padding: 80px 0;
+}
+
+.head-contact {
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.e-form {
+	border: 0;
+	border-bottom: 1px solid #dcdcdc;
 }
