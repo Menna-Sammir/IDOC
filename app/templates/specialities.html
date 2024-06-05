@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %} Specialities {% endblock %} {% block
+{% extends 'base.html' %} {% block title %} {{ translate('Specialities') }} {% endblock %} {% block
 body %}
 
 <!-- Breadcrumb -->
@@ -8,13 +8,13 @@ body %}
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="index-2.html">{{ translate('Home') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">
-              Specialities
+              {{ translate('Specialities') }}
             </li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Profile Settings</h2>
+        <h2 class="breadcrumb-title">{{ translate('Profile Settings') }}</h2>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@ body %}
             data-target="#Add_Specialities_details"
               data-toggle="modal"
               class="btn btn-primary float-right mt-2"
-              >Add</a
+              >{{ translate('Add') }}</a
             >
           </div>
           <div class="card-body">
@@ -45,8 +45,8 @@ body %}
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Specialities</th>
-                    <th class="text-right">Actions</th>
+                    <th>{{ translate('Specialities') }}</th>
+                    <th class="text-right">{{ translate('Actions') }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -62,7 +62,7 @@ body %}
                             alt="Speciality"
                           />
                         </a>
-                        <a href="profile.html">Urology</a>
+                        <a href="profile.html">{{ translate('Urology') }}</a>
                       </h2>
                     </td>
 
@@ -73,14 +73,14 @@ body %}
                           data-toggle="modal"
                           href="#edit_specialities_details"
                         >
-                          <i class="fe fe-pencil"></i> Edit
+                          <i class="fe fe-pencil"></i> {{ translate('Edit') }}
                         </a>
                         <a
                           data-toggle="modal"
                           href="#delete_modal"
                           class="btn btn-sm bg-danger-light"
                         >
-                          <i class="fe fe-trash"></i> Delete
+                          <i class="fe fe-trash"></i> {{ translate('Delete') }}
                         </a>
                       </div>
                     </td>
@@ -97,7 +97,7 @@ body %}
                             alt="Speciality"
                           />
                         </a>
-                        <a href="profile.html">Neurology</a>
+                        <a href="profile.html">{{ translate('Neurology') }}</a>
                       </h2>
                     </td>
 
@@ -108,14 +108,14 @@ body %}
                           data-toggle="modal"
                           href="#edit_specialities_details"
                         >
-                          <i class="fe fe-pencil"></i> Edit
+                          <i class="fe fe-pencil"></i> {{ translate('Edit') }}
                         </a>
                         <a
                           data-toggle="modal"
                           href="#delete_modal"
                           class="btn btn-sm bg-danger-light"
                         >
-                          <i class="fe fe-trash"></i> Delete
+                          <i class="fe fe-trash"></i> {{ translate('Delete') }}
                         </a>
                       </div>
                     </td>
@@ -132,7 +132,7 @@ body %}
                             alt="Speciality"
                           />
                         </a>
-                        <a href="profile.html">Orthopedic</a>
+                        <a href="profile.html">{{ translate('Orthopedic') }}</a>
                       </h2>
                     </td>
 
@@ -143,14 +143,14 @@ body %}
                           data-toggle="modal"
                           href="#edit_specialities_details"
                         >
-                          <i class="fe fe-pencil"></i> Edit
+                          <i class="fe fe-pencil"></i> {{ translate('Edit') }}
                         </a>
                         <a
                           data-toggle="modal"
                           href="#delete_modal"
                           class="btn btn-sm bg-danger-light"
                         >
-                          <i class="fe fe-trash"></i> Delete
+                          <i class="fe fe-trash"></i> {{ translate('Delete') }}
                         </a>
                       </div>
                     </td>
@@ -167,7 +167,7 @@ body %}
                             alt="Speciality"
                           />
                         </a>
-                        <a href="profile.html">Cardiologist</a>
+                        <a href="profile.html">{{ translate('Cardiologist') }}</a>
                       </h2>
                     </td>
 
@@ -178,14 +178,14 @@ body %}
                           data-toggle="modal"
                           href="#edit_specialities_details"
                         >
-                          <i class="fe fe-pencil"></i> Edit
+                          <i class="fe fe-pencil"></i> {{ translate('Edit') }}
                         </a>
                         <a
                           data-toggle="modal"
                           href="#delete_modal"
                           class="btn btn-sm bg-danger-light"
                         >
-                          <i class="fe fe-trash"></i> Delete
+                          <i class="fe fe-trash"></i> {{ translate('Delete') }}
                         </a>
                       </div>
                     </td>
@@ -202,7 +202,7 @@ body %}
                             alt="Speciality"
                           />
                         </a>
-                        <a href="profile.html">Dentist</a>
+                        <a href="profile.html">{{ translate('Dentist') }}</a>
                       </h2>
                     </td>
 
@@ -213,14 +213,14 @@ body %}
                           data-toggle="modal"
                           href="#edit_specialities_details"
                         >
-                          <i class="fe fe-pencil"></i> Edit
+                          <i class="fe fe-pencil"></i> {{ translate('Edit') }}
                         </a>
                         <a
                           class="btn btn-sm bg-danger-light"
                           data-toggle="modal"
                           href="#delete_modal"
                         >
-                          <i class="fe fe-trash"></i> Delete
+                          <i class="fe fe-trash"></i> {{ translate('Delete') }}
                         </a>
                       </div>
                     </td>
@@ -247,7 +247,7 @@ body %}
   <div class="modal-dialog modal-dialog-centered" role="document" >
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Specialities</h5>
+        <h5 class="modal-title">{{ translate('Add Specialities') }}</h5>
         <button
           type="button"
           class="close"
@@ -262,19 +262,19 @@ body %}
           <div class="row form-row">
             <div class="col-12 col-sm-6">
               <div class="form-group">
-                <label>Specialities</label>
+                <label>{{ translate('Specialities') }}</label>
                 <input type="text" class="form-control" />
               </div>
             </div>
             <div class="col-12 col-sm-6">
               <div class="form-group">
-                <label>Image</label>
+                <label>{{ translate('Image') }}</label>
                 <input type="file" class="form-control" />
               </div>
             </div>
           </div>
           <button type="submit" class="btn btn-primary btn-block">
-            Save Changes
+            {{ translate('Save Changes') }}
           </button>
         </form>
       </div>

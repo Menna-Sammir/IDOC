@@ -562,3 +562,21 @@ timeslots.forEach((slot) => {
     slot.querySelector("input[type='radio']").checked = true;
   });
 });
+
+
+$(document).ready(function() {
+
+  function changeFont(language) {
+      if (language === 'en') {
+          $('body').css('font-family', 'Roboto, sans-serif');
+      } else if (language === 'ar') {
+          $('body').css('font-family', 'Cairo, sans-serif');
+      }
+  }
+  changeFont($('#languageSelect').val());
+
+  $('#languageSelect').change(function() {
+      var selectedLanguage = $(this).val();
+      changeFont(selectedLanguage);
+  });
+});
