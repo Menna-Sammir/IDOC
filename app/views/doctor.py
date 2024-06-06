@@ -37,7 +37,10 @@ def doctor_dash():
         return translate('Doctor not found'), 404
     form = AppointmentForm()
     appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(asc(Appointment.time))
-    nextAppt = appointments.order_by(asc(Appointment.time)).first().id
+    if appointments.all():
+        nextAppt = appointments.order_by(asc(Appointment.time)).first().id
+    else:
+        nextAppt = None
     monthAppointments = Appointment.query.filter(
         func.extract('month', Appointment.date) == datetime.now().month
     ).count()
