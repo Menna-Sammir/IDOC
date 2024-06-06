@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
-    <title>Signup</title>
+    <title>{{ translate('Signup') }}</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
@@ -35,8 +35,8 @@
                   <div class="col-md-12 col-lg-6 login-right">
                     <div class="login-header">
                       <h3>
-                        clinic Register
-                        <a href="{{ url_for('doctor_signup_page') }}">Not a clinic?</a>
+                        {{ translate('clinic Register') }}
+                        <a href="{{ url_for('doctor_signup_page') }}">{{ translate('Not a clinic?') }}</a>
                       </h3>
                     </div>
                     <!-- Register Form -->
@@ -70,7 +70,7 @@
                         <a
                           class="forgot-link"
                           href="{{ url_for('login_page') }}"
-                          >Already have an account?</a
+                          >{{ translate('Already have an account?') }}</a
                         >
                       </div>
 

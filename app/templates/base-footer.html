@@ -121,7 +121,7 @@
             </div>
             <div class="footer-about-content">
               <p>
-                Schedule your appointment with ease at IDOC Clinic today. We're here to provide you with exceptional care and support at your convenience.
+                {{ translate('Schedule your appointment with ease at IDOC Clinic today. We are here to provide you with exceptional care and support at your convenience.') }}
               </p>
             </div>
           </div>
@@ -131,22 +131,22 @@
         <div class="col-lg-3 mt-4 col-md-6">
           <!-- Footer Widget -->
           <div class="footer-widget footer-menu">
-            <h2 class="footer-title text-white">Useful Links</h2>
+            <h2 class="footer-title text-white">{{ translate('Useful Links') }}</h2>
             <ul>
               <li>
                 <a href="{{ url_for('home') }}"
                   ><i class="fas fa-angle-double-right"></i>
-                  HOME</a
+                  {{ translate('HOME') }}</a
                 >
               </li>
               <li>
                 <a href="{{ url_for('login_page') }}"
-                  ><i class="fas fa-angle-double-right"></i> Login</a
+                  ><i class="fas fa-angle-double-right"></i> {{ translate('Login') }}</a
                 >
               </li>
               <li>
                 <a href="{{ url_for('doctor_signup_page') }}"
-                  ><i class="fas fa-angle-double-right"></i> Signup</a
+                  ><i class="fas fa-angle-double-right"></i> {{ translate('Signup') }}</a
                 >
               </li>
             </ul>
@@ -156,22 +156,22 @@
         <div class="col-lg-3 mt-4  col-md-6">
           <!-- Footer Widget -->
           <div class="footer-widget footer-menu">
-            <h2 class="footer-title text-white">Our Services</h2>
+            <h2 class="footer-title text-white">{{ translate('Our Services') }}</h2>
             <ul>
               <li>
                 <a href="{{ url_for('search_doctor') }}"
                   ><i class="fas fa-angle-double-right"></i>
-                  Book with doctor</a
+                  {{ translate('Book with doctor') }}</a
                 >
               </li>
               <li>
                 <a href="#aboutus"
-                  ><i class="fas fa-angle-double-right"></i> About us</a
+                  ><i class="fas fa-angle-double-right"></i> {{ translate('About us') }}</a
                 >
               </li>
               <li>
                 <a href="#contactus"
-                  ><i class="fas fa-angle-double-right"></i> contact us</a
+                  ><i class="fas fa-angle-double-right"></i> {{ translate('contact us') }}</a
                 >
               </li>
             </ul>
@@ -181,12 +181,12 @@
         <div class="col-lg-3 mt-4  col-md-6">
           <!-- Footer Widget -->
           <div class="footer-widget footer-contact">
-            <h2 class="footer-title text-white">Contact Us</h2>
+            <h2 class="footer-title text-white">{{ translate('Contact Us') }}</h2>
             <div class="footer-contact-info">
               <div class="footer-address">
                 <span><i class="fas fa-map-marker-alt"></i></span>
                 <p>
-                  El Tayaran Street, Cairo, EGYPT<br />
+                  {{ translate('El Tayaran Street, Cairo, EGYPT') }}<br />
 
                 </p>
               </div>
@@ -202,7 +202,7 @@
           </div>
           <!-- /Footer Widget -->
         </div>
-        <div class="col-md-12 text-center mb-1 mt-4" style="color:#d9d9d9">   &copy; <span><script>document.write(new Date().getFullYear());</script></span> I-DOC. All rights reserved.</div>
+        <div class="col-md-12 text-center mb-1 mt-4" style="color:#d9d9d9">   &copy; <span><script>document.write(new Date().getFullYear());</script></span> {{ translate('I-DOC. All rights reserved.') }}</div>
       </div>
     </div>
   </div>
