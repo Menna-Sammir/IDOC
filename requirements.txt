@@ -15,3 +15,4 @@ flask-bcrypt==0.7.1
 flask_login==0.5.0
 Flask-SocketIO==5.3.6
 Flask-Session
+Flask-Babel
