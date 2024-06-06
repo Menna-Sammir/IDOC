@@ -272,7 +272,7 @@
                     />
                     <span><i class="fa fa-circle" aria-hidden="true"></i></span>
                   </div>
-                  <p class="text-wrap">{{special.specialization_name}}</p>
+                  <p class="text-wrap">{{ translate(special.specialization_name) }}</p>
                 </div>
                 <!-- /Slider Item -->
                 {% endfor %}
@@ -512,7 +512,7 @@
                           <form class="row"  action="{{ url_for('sendEmail') }}" method="POST">
                             {{ E_form.hidden_tag() }}
                             <div class="col-md-6"><div class="form-group form-focus">
-                              {{ E_form.name.label(class="focus-label") }}
+                              {{ translate(E_form.name.label(class="focus-label")) }}
                               {{
                                 E_form.name(class="form-control floating e-form" )}}
                             </div></div>
