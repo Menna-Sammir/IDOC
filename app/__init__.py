@@ -10,7 +10,7 @@ import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO, disconnect
 from flask_cors import CORS
-from flask_babel import Babel
+from flask_babel import Babel, _, lazy_gettext as _l, gettext
 import json
 
 
@@ -31,6 +31,7 @@ app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
 app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'ar']
 
+
 def load_translations(translations):
     try:
         with open(translations, 'r', encoding='utf-8') as f:
@@ -44,12 +45,25 @@ def load_translations(translations):
 
 translations = load_translations('translations.json')
 
+
 def get_locale():
     return session.get('lang', request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']))
 
+
 def translate(key):
-    lang = get_locale()
-    return translations.get(lang, {}).get(key, key)
+    lang = None
+    parts = key.split('.')
+    if len(parts) == 2 and parts[0] in ['specializations', 'governorates']:
+        lang = get_locale()
+        category, item_id = parts
+        return translations.get(lang, {}).get(category, {}).get(item_id, key)
+    else:
+        lang = get_locale()
+        return translations.get(lang, {}).get(key, key)
+
+
+def lazy_translate(key):
+    return lambda: translate(key)
 
 @app.route('/set_language')
 def set_language():
@@ -61,6 +75,7 @@ def set_language():
 @app.context_processor
 def inject_translations():
     return dict(get_locale=get_locale, translate=translate)
+
 
 
 db = SQLAlchemy(app)

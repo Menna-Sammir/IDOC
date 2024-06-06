@@ -585,26 +585,9 @@ timeslots.forEach((slot) => {
     slot.querySelector("input[type='radio']").checked = true;
   });
 });
-<<<<<<< HEAD
 
 
-$(document).ready(function() {
 
-  function changeFont(language) {
-      if (language === 'en') {
-          $('body').css('font-family', 'Roboto, sans-serif');
-      } else if (language === 'ar') {
-          $('body').css('font-family', 'Cairo, sans-serif');
-      }
-  }
-  changeFont($('#languageSelect').val());
-
-  $('#languageSelect').change(function() {
-      var selectedLanguage = $(this).val();
-      changeFont(selectedLanguage);
-  });
-});
-=======
 document
   .getElementById("continue-button")
   .addEventListener("click", function (event) {
@@ -618,4 +601,25 @@ document
       document.getElementById("appointment-form").submit();
     }
   });
->>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132
+
+
+  $(document).ready(function() {
+    function changeFont(language) {
+        console.log('Changing font for language:', language);
+        if (language === 'en') {
+            $('body').css('font-family', "Poppins, sans-serif");
+        } else if (language === 'ar') {
+            $('body').css('font-family', 'Cairo, sans-serif');
+        }
+    }
+    changeFont($('#languageSelect').val());
+
+    $('#languageSelect').change(function() {
+        var selectedLanguage = $(this).val();
+        console.log('Selected language:', selectedLanguage);
+        changeFont(selectedLanguage);
+    });
+});
+
+
+

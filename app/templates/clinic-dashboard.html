@@ -121,7 +121,7 @@ block body %}
                             </div>
                           </div>
                           <div class="d-block mt-3 doctor-title">
-                            <span>Today Appt</span>
+                            <span>{{ translate('Today Appt') }}</span>
                           </div>
                           <div class="d-block text-muted">{{today_appointments}}</div>
                         </div>
@@ -136,7 +136,7 @@ block body %}
                             </div>
                           </div>
                           <div class="d-block mt-3 doctor-title">
-                            <span>Total Appt<span>
+                            <span>{{ translate('Total Appt') }}<span>
                           </div>
                           <div class="d-block text-muted">{{total_appointments}} </div>
                         </div>
@@ -190,8 +190,7 @@ block body %}
                       class="nav-link active"
                       href="#today-appointments"
                       data-toggle="tab"
-                      >{{ translate('appointment') }}</a
-                    >
+                      >appointments</a>
                   </li>
                 </ul>
                 <!-- /Appointment Tab -->
