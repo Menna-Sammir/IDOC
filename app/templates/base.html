@@ -97,37 +97,42 @@
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item">
               <a
-                href="#"
-                class="dropdown-toggle nav-link"
-                data-toggle="dropdown"
-              >
-                <span class="user-img">
-                  <img
-                    class="rounded-circle"
-                    src="{{current_user.photo}}"
-                    width="31"
-                    alt="Darren Elder"
-                  />
-                </span>
-              </a>
-              <div class="dropdown-menu user-menu dropdown-menu-right">
+                      class="dropdown-toggle"
+                      href="#"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    >
+                      <span class="user-img">
+                        <img
+                          class="rounded-circle"
+                          src="{{current_user.photo}}"
+                          width="31"
+                          alt="user image"
+                        />
+                      </span>
+                    </a>
+              <div class="dropdown-menu user-dropmenu dropdown-menu-right">
                 <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
                     <img
-                      src="{{base_path ~ current_user.photo}}"
+                      src="{{current_user.photo}}"
                       alt="User Image"
                       class="avatar-img rounded-circle"
                     />
                   </div>
                   <div class="user-text">
                     <h6>{{ current_user.name }}</h6>
+                    <p class="text-muted mb-0">
+                      {{ current_user.roles.role_name }}
+                    </p>
                   </div>
                 </div>
 
                 {% if current_user.roles.role_name == 'Admin' %}
                 <a
                   class="dropdown-item"
-                  href="{{ url_for('admin_dash') }}"
+                  href="{{ url_for('dashboard') }}"
                   >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
