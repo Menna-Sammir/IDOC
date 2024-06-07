@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %} Doctor Dashboard {% endblock %} {%
+{% extends 'base.html' %} {% block title %} {{ translate('Doctor Dashboard') }} {% endblock %} {%
 block body %}
 
 <!-- Breadcrumb -->
@@ -8,13 +8,13 @@ block body %}
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">{{ translate('Home') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">
-              Dashboard
+              {{ translate('Dashboard') }}
             </li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Dashboard</h2>
+        <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
       </div>
     </div>
   </div>
@@ -38,27 +38,27 @@ block body %}
               <div class="card-body">
                 <div class="row justify-content-between">
                   <div class="col-md-6 col-lg-4">
-                    <h2>Good Morning ,</h2>
+                    <h2>{{ translate('Good Morning ,') }}</h2>
                     <div>
                       {% if is_open_today %}
                       <span class="text-info"
-                        >The clinic in this time open</span
+                        >{{ translate('The clinic in this time open') }}</span
                       >
                       {% else %}
                       <span class="text-danger">
-                        The clinic in this time closed <br />
+                        {{ translate('The clinic in this time closed') }} <br />
                         <i class="far fa-clock text-info"></i>
                         <span class="text-info"
-                          >Working hours: {{ clinic.working_hours }}.</span
+                          >{{ translate('Working hours:') }} {{ clinic.working_hours }}.</span
                         >
                       </span>
                       {% endif %}
                     </div>
-                    <div><span class="text-muted">have a nice day</span></div>
+                    <div><span class="text-muted">{{ translate('have a nice day') }}</span></div>
                   </div>
                   <div class="col-md-6 col-lg-4" style="position: relative">
                     <img
-                      style="position: absolute; top: -50px; right: 0"
+                     class="clinic-dash"
                       width="290"
                       src="../static/img/clinic-dash.png"
                     />
@@ -70,7 +70,7 @@ block body %}
               <div class="card-body">
                 <div class="row justify-content-between align-items-center">
                   <div class="col-md-12 col-lg-1 offset-lg-1">
-                    <div class="signboard outer">
+                    <div class="signboard outer d-md-flex d-sm-none">
                       <div class="signboard front inner anim04c">
                         <li class="year anim04c">
                           <span></span>
@@ -121,7 +121,7 @@ block body %}
                             </div>
                           </div>
                           <div class="d-block mt-3 doctor-title">
-                            <span>Today Appt</span>
+                            <span>{{ translate('Today Appt') }}</span>
                           </div>
                           <div class="d-block text-muted">{{today_appointments}}</div>
                         </div>
@@ -136,7 +136,7 @@ block body %}
                             </div>
                           </div>
                           <div class="d-block mt-3 doctor-title">
-                            <span>Total Appt<span>
+                            <span>{{ translate('Total Appt') }}<span>
                           </div>
                           <div class="d-block text-muted">{{total_appointments}} </div>
                         </div>
@@ -151,7 +151,7 @@ block body %}
                             </div>
                           </div>
                           <div class="d-block mt-3 doctor-title">
-                            <span>Total Doctor</span>
+                            <span>{{ translate('Total Doctor') }}</span>
                           </div>
                           <div class="d-block text-muted">{{clinic.doctor_count()}}</div>
                         </div>
@@ -166,7 +166,7 @@ block body %}
                             </div>
                           </div>
                           <div class="d-block mt-3 doctor-title">
-                            <span>Earning</span>
+                            <span>{{ translate('Earning') }}</span>
                           </div>
                           <div class="d-block text-muted">{{clinic.total_earnings()}} $</div>
                         </div>
@@ -181,7 +181,7 @@ block body %}
 
           <div class="row">
             <div class="col-md-12">
-              <h4 class="mb-4">Patient Appoinment</h4>
+              <h4 class="mb-4">{{ translate('Patient Appoinment') }}</h4>
               <div class="appointment-tab">
                 <!-- Appointment Tab -->
                 <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
@@ -190,8 +190,7 @@ block body %}
                       class="nav-link active"
                       href="#today-appointments"
                       data-toggle="tab"
-                      >appointment</a
-                    >
+                      >appointments</a>
                   </li>
                 </ul>
                 <!-- /Appointment Tab -->
@@ -205,9 +204,9 @@ block body %}
                           <table class="table table-hover table-center mb-0">
                             <thead>
                               <tr>
-                                <th>Patient Name</th>
+                                <th>{{ translate('Patient Name') }}</th>
                                 <th>Appt Date</th>
-                                <th class="text-center">Paid Amount</th>
+                                <th class="text-center">{{ translate('Paid Amount') }}</th>
                                 <th></th>
 
                               </tr>

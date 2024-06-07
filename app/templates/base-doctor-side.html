@@ -25,13 +25,13 @@
         <li class="active">
           <a href="doctor-dashboard.html">
             <i class="fas fa-columns"></i>
-            <span>Dashboard</span>
+            <span>{{ translate('Dashboard') }}</span>
           </a>
         </li>
         <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
           <a href="{{ url_for('logout_page') }}">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
+            <span>{{ translate('Logout') }}</span>
           </a>
         </li>
       </ul>

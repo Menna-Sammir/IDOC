@@ -72,4 +72,3 @@ class AppointmentForm(FlaskForm):
     timeslots = RadioField('Available Timeslots', choices=[], validators=[DataRequired()])
     submit = SubmitField('Book Appointment')
 
-

@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %} Doctor Dashboard {% endblock %} {%
+{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }} {% endblock %} {%
   block body %}
 
   <!-- Breadcrumb -->
@@ -8,13 +8,13 @@
         <div class="col-md-12 col-12">
           <nav aria-label="breadcrumb" class="page-breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+              <li class="breadcrumb-item"><a href="index-2.html">{{ translate('Home') }}</a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Dashboard
+                {{ translate('Dashboard') }}
               </li>
             </ol>
           </nav>
-          <h2 class="breadcrumb-title">Dashboard</h2>
+          <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@
                           </div>
                           <div
                             class="d-block mt-3 mb-1 doctor-title">
-                            <span>patient</span>
+                            <span>{{ translate('patient') }}</span>
                           </div>
                           <div class="d-block text-muted">
                             {{ patient_count }}
@@ -70,7 +70,7 @@
                           </div>
                           <div
                             class="d-block mt-3 doctor-title">
-                            <span>Earning</span>
+                            <span>{{ translate('Earning') }}</span>
                           </div>
                           <div class="d-block text-muted">
                             {{ doctor.total_earnings() }}$
@@ -89,7 +89,7 @@
                           </div>
                           <div
                             class="d-block mt-3 mb-1 doctor-title">
-                            <span>Appointments</span>
+                            <span>{{ translate('Appointments') }}</span>
                           </div>
                           <div class="d-block text-muted">
                             {{ monthAppointments }}
@@ -119,7 +119,7 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <h4 class="mb-4">Patient Appoinment</h4>
+              <h4 class="mb-4">{{ translate('Patient Appoinment') }}</h4>
               <div class="appointment-tab">
                 <!-- Appointment Tab -->
                 <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
@@ -145,10 +145,10 @@
                             <table class="table table-hover table-center mb-0">
                               <thead>
                                 <tr>
-                                  <th>Patient Name</th>
-                                  <th>Appt Date</th>
-                                  <th>Phone</th>
-                                  <th>Status</th>
+                                  <th>{{ translate('Patient Name') }}</th>
+                                  <th>{{ translate('Appt Date') }}</th>
+                                  <th>{{ translate('Phone') }}</th>
+                                  <th>{{ translate('Status') }}</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -194,7 +194,7 @@
                                           name="seen"
                                           class="btn btn-sm bg-success-light"
                                         >
-                                        <i class="far fa-eye"></i>  Seen
+                                        <i class="far fa-eye"></i>  {{ translate('Seen') }}
                                         </button>
                                       </form>
                                       {% endif %}
