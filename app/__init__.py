@@ -10,9 +10,10 @@ import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO
 from flask_cors import CORS
-from flask_babel import Babel
+from flask_babel import Babel, format_number, format_decimal, format_currency, format_percent, format_scientific, format_timedelta
 import json
-from babel import dates
+from datetime import timedelta
+
 
 
 load_dotenv()
@@ -50,11 +51,27 @@ translations = load_translations('translations.json')
 def get_locale():
     return session.get('lang', request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']))
 
-def translate(key):
+# def translate(key):
+#     lang = get_locale()
+#     translation = translations.get(lang, {}).get(key, key)
+#     return translation
+def translate(key, value=None, format_type=None):
     lang = get_locale()
-    translation = translations.get(lang, {}).get(key, key)
-    return translation
-
+    if value is not None:
+        if isinstance(value, (int, float)):
+            if key == 'decimal':
+                return format_decimal(value)
+            elif key == 'currency':
+                return format_currency(value, 'LE')
+            elif key == 'percent':
+                return format_percent(value)
+            elif key == 'scientific':
+                return format_scientific(value)
+        elif isinstance(value, timedelta):
+            if key == 'timedelta':
+                return format_timedelta(value)
+            
+    return translations.get(lang, {}).get(key, key)
 
 def lazy_translate(key):
     return lambda: translate(key)
@@ -70,7 +87,16 @@ def set_language():
 def inject_translations():
     return dict(get_locale=get_locale, translate=translate)
 
-
+@app.context_processor
+def inject_babel():
+    return {
+        'format_decimal': format_decimal,
+        'format_currency': format_currency,
+        'format_percent': format_percent,
+        'format_scientific': format_scientific,
+        'format_timedelta': format_timedelta,
+        'translate': translate,
+    }
 
 db = SQLAlchemy(app)
 app.config['CACHE_ID'] = str(uuid.uuid4())
