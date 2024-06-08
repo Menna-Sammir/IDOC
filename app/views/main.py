@@ -6,7 +6,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed
 from app import socketio
-
+from flask import session
+from flask_socketio import disconnect
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -136,6 +137,12 @@ def login_page():
                 )
     return render_template('login.html', form=form)
 
+
+
+@socketio.on('disconnect request')
+def handle_disconnect_request():
+    session_id = request.sid
+    disconnect(sid=session_id)
 
 
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)

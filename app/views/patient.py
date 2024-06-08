@@ -425,6 +425,7 @@ def patient_checkout():
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
+                print(f"hooooooooooooooooooooooooooof{clinic_data.id}")
 
                 socketio.emit(
                     'appointment_notification',
@@ -432,7 +433,7 @@ def patient_checkout():
                         'doctor': doctor_data.name,
                         'date': date.strftime('%d %b %Y'),
                         'time': start_time.strftime('%H:%M:%S'),
-                        'patient': patient_create.id,
+                        'patient': patient_create.name,
                         'photo': doctor_data.photo
                     },
                     room=clinic_data.id,
@@ -441,6 +442,7 @@ def patient_checkout():
                 session['doctor'] = doctor_data.name
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
+                session['clinic_id'] = clinic_data.id
 
                 return redirect(url_for('checkout_success'))
             if checkout_form.errors != {}:
@@ -466,6 +468,19 @@ def patient_checkout():
         form=checkout_form
     )
 
+@socketio.on('connect')
+def handle_connect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        join_room(clinic_id)
+        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        leave_room(clinic_id)
+
 
 @app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():
@@ -480,18 +495,7 @@ def checkout_success():
     )
 
 
-@socketio.on('connect')
-def handle_connect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        join_room(clinic_id)
-        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        leave_room(clinic_id)
 
 @app.route('/email', methods=['POST'], strict_slashes=False)
 def sendEmail():
