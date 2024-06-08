@@ -487,6 +487,11 @@ def handle_connect():
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
+@socketio.on('disconnect')
+def handle_disconnect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        leave_room(clinic_id)
 
 @app.route('/email', methods=['POST'], strict_slashes=False)
 def sendEmail():
