@@ -59,20 +59,20 @@ def translate(key, value=None, format_type=None):
     lang = get_locale()
     if value is not None:
         if isinstance(value, (int, float)):
-            if key == 'decimal':
+            if format_type == 'decimal':
                 return format_decimal(value)
-            elif key == 'currency':
+            elif format_type == 'currency':
                 return format_currency(value, 'LE')
-            elif key == 'percent':
+            elif format_type == 'percent':
                 return format_percent(value)
-            elif key == 'scientific':
+            elif format_type == 'scientific':
                 return format_scientific(value)
         elif isinstance(value, timedelta):
-            if key == 'timedelta':
+            if format_type == 'timedelta':
                 return format_timedelta(value)
             
     return translations.get(lang, {}).get(key, key)
-
+    
 def lazy_translate(key):
     return lambda: translate(key)
 
@@ -85,18 +85,16 @@ def set_language():
 
 @app.context_processor
 def inject_translations():
-    return dict(get_locale=get_locale, translate=translate)
-
-@app.context_processor
-def inject_babel():
     return {
+        'get_locale': get_locale,
+        'translate': translate,
         'format_decimal': format_decimal,
         'format_currency': format_currency,
         'format_percent': format_percent,
         'format_scientific': format_scientific,
-        'format_timedelta': format_timedelta,
-        'translate': translate,
+        'format_timedelta': format_timedelta
     }
+
 
 db = SQLAlchemy(app)
 app.config['CACHE_ID'] = str(uuid.uuid4())

@@ -1,4 +1,4 @@
-from app import db, login_manager,app, bcrypt
+from app import db, login_manager,app, bcrypt, translate
 from app.models.base import BaseModel
 from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT
 from sqlalchemy import ForeignKey, func
@@ -74,7 +74,7 @@ class Doctor(BaseModel):
 
     def total_earnings(self):
         appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
-        return appointment_count * (self.price or 0)
+        return translate(appointment_count * (self.price or 0))
 
 class Clinic(BaseModel):
     __tablename__ = 'clinic'
