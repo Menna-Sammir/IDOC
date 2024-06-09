@@ -16,12 +16,12 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, and_
 from app import translate, get_locale
 import json
-from flask_babel import lazy_gettext as _
+from flask_babel import lazy_gettext as _, format_decimal
 from app import load_translations, translations
 
 
 def convert_to_24_hour(time_str):
-    return datetime.strptime(time_str, '%I%p').time()
+    return datetime.strptime(time_str, '%I:%M %p').time()
 
 
 @app.route('/')
@@ -112,7 +112,6 @@ def search_doctor():
         governorates = Governorate.query.all()
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
-
     return render_template(
         'search.html',
         doctors=doctors,
@@ -427,6 +426,7 @@ def patient_checkout():
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
+                print(f"hooooooooooooooooooooooooooof{clinic_data.id}")
 
                 socketio.emit(
                     'appointment_notification',
@@ -434,7 +434,7 @@ def patient_checkout():
                         'doctor': doctor_data.name,
                         'date': date.strftime('%d %b %Y'),
                         'time': start_time.strftime('%H:%M:%S'),
-                        'patient': patient_create.id,
+                        'patient': patient_create.name,
                         'photo': doctor_data.photo
                     },
                     room=clinic_data.id,
@@ -443,6 +443,7 @@ def patient_checkout():
                 session['doctor'] = doctor_data.name
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
+                session['clinic_id'] = clinic_data.id
 
                 return redirect(url_for('checkout_success'))
             if checkout_form.errors != {}:
@@ -468,6 +469,19 @@ def patient_checkout():
         form=checkout_form
     )
 
+@socketio.on('connect')
+def handle_connect():
+    clinic_id = session.get('clinic_id')
+    if clinic_id:
+        join_room(clinic_id)
+        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    clinic_id = session.get('clinic_id')
+    if clinic_id:
+        leave_room(clinic_id)
+
 
 @app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():
@@ -482,12 +496,6 @@ def checkout_success():
     )
 
 
-@socketio.on('connect')
-def handle_connect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        join_room(clinic_id)
-        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
 
 @app.route('/email', methods=['POST'], strict_slashes=False)

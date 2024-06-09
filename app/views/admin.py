@@ -69,8 +69,8 @@ def add_clinic():
                 flash(translate('clinic already exists!'))
             else:
                 if add_clinic_form.validate_on_submit():
-                    from_hour = add_clinic_form.fromHour.data.strftime('%H:%M %p')
-                    to_hour = add_clinic_form.toHour.data.strftime('%H:%M %p')
+                    from_hour = add_clinic_form.fromHour.data.strftime('%I:%M %p')
+                    to_hour = add_clinic_form.toHour.data.strftime('%I:%M %p')
                     Clinic_create = Clinic(
                         name=add_clinic_form.clinicName.data,
                         phone=add_clinic_form.phone.data,
