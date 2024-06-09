@@ -21,6 +21,12 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
 
+# @socketio.on("logout")
+# def handle_logout():
+#     disconnect()
+    
+
+
 
 babel = Babel(app)
 
