@@ -16,7 +16,7 @@
     setTimeout(function () {
       $(".loader").fadeOut("slow");
       $(".main-wrapper").css("opacity", "1");
-    }, 1000);
+    }, 2500);
 
     // preview image after upload
     $(".upload").on("change", function (event) {
@@ -530,19 +530,35 @@ if (timeslots) {
     });
   });
   var continueButton = document.getElementById("continue-button");
-  if (continueButton) {
-    document
-      .getElementById("continue-button")
-      .addEventListener("click", function (event) {
-        var selectedTimeslot = document.querySelector(
-          'input[name="timeslot"]:checked'
-        );
-        if (!selectedTimeslot) {
-          document.getElementById("warning-message").style.display = "block";
-        } else {
-          document.getElementById("warning-message").style.display = "none";
-          document.getElementById("appointment-form").submit();
-        }
-      });
+if (continueButton) {
+  document
+    .getElementById("continue-button")
+    .addEventListener("click", function (event) {
+      var selectedTimeslot = document.querySelector(
+        'input[name="timeslot"]:checked'
+      );
+      if (!selectedTimeslot) {
+        document.getElementById("warning-message").style.display = "block";
+      } else {
+        document.getElementById("warning-message").style.display = "none";
+        document.getElementById("appointment-form").submit();
+      }
+    });
+}
+AOS.init();
+
+
+$(window).scroll(function() {
+  if ($(this).scrollTop() > 20) {
+      $('#backToTop').fadeIn();
+  } else {
+      $('#backToTop').fadeOut();
   }
+});
+
+// Click event to scroll to top
+$('#backToTop').click(function() {
+  $('html, body').animate({ scrollTop: 0 }, 'fast');
+  return false;
+});
 }

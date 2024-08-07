@@ -12,6 +12,7 @@
     <div class="loader">
       {% block loading %} {% include 'base-loading.html' %} {% endblock %}
     </div>
+
     <div class="main-wrapper">
       <!-- Header -->
       <header class="header">
@@ -140,12 +141,8 @@
                 <div class="noti-content">
                   <ul class="notification-list" id="notification-list">
                     {% if notifications %} {% for notification in notifications
-                    %}
-                    {% if notification.isRead %}
+                    %} {% if notification.isRead %}
                     <li class="notification-message">
-                      {% else %}
-                    <li class="notification-message alert-info">
-
                       {% endif %}
                       <a href="{{ url_for('clear_noti') }}">
                         <div class="media">
@@ -266,47 +263,47 @@
     {% block js %} {% include 'base-js.html' %}
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", (event) => {
-        var clinic_id = "{{ current_user.clinic_id }}";
+      document.addEventListener('DOMContentLoaded', (event) => {
+        var clinic_id = '{{ current_user.clinic_id }}';
 
         if (!clinic_id) {
           console.error(
-            "Clinic ID is missing. Cannot establish WebSocket connection."
+            'Clinic ID is missing. Cannot establish WebSocket connection.'
           );
           return;
         }
 
-        console.log("Connecting with clinic_id:", clinic_id);
+        console.log('Connecting with clinic_id:', clinic_id);
 
-        var socket = io.connect("http://localhost:5000", {
-          query: "clinic_id=" + clinic_id,
-          transports: ["websocket", "polling"],
+        var socket = io.connect('http://localhost:5000', {
+          query: 'clinic_id=' + clinic_id,
+          transports: ['websocket', 'polling'],
         });
 
-        socket.on("connected", function (msg) {
+        socket.on('connected', function (msg) {
           console.log(msg.message);
         });
 
-        socket.on("appointment_notification", function (data) {
-          console.log("Appointment notification:", data);
+        socket.on('appointment_notification', function (data) {
+          console.log('Appointment notification:', data);
           addNotification(data, true);
         });
 
-        socket.on("disconnected", function (msg) {
+        socket.on('disconnected', function (msg) {
           console.log(msg.message);
         });
 
         function addNotification(data, store = false) {
-          var notificationList = document.getElementById("notification-list");
-          var notificationCount = document.getElementById("notification-count");
+          var notificationList = document.getElementById('notification-list');
+          var notificationCount = document.getElementById('notification-count');
 
-          var newNotification = document.createElement("li");
-          newNotification.classList.add("notification-message");
+          var newNotification = document.createElement('li');
+          newNotification.classList.add('notification-message');
 
           var currentTime = new Date();
           var formattedTime = currentTime.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
           });
           var notificationContent = `
               <div class="media">
@@ -340,32 +337,32 @@
 
         function storeNotification(data) {
           var notifications =
-            JSON.parse(localStorage.getItem("notifications")) || [];
+            JSON.parse(localStorage.getItem('notifications')) || [];
           notifications.unshift(data);
-          localStorage.setItem("notifications", JSON.stringify(notifications));
+          localStorage.setItem('notifications', JSON.stringify(notifications));
         }
 
         function loadNotifications() {
           var notifications =
-            JSON.parse(localStorage.getItem("notifications")) || [];
+            JSON.parse(localStorage.getItem('notifications')) || [];
           notifications.forEach((notification) => {
             addNotification(notification, false);
           });
         }
 
         document
-          .getElementById("clear-all-notifications")
-          .addEventListener("click", function () {
+          .getElementById('clear-all-notifications')
+          .addEventListener('click', function () {
             clearAllNotifications();
           });
 
         function clearAllNotifications() {
-          var notificationList = document.getElementById("notification-list");
-          var notificationCount = document.getElementById("notification-count");
+          var notificationList = document.getElementById('notification-list');
+          var notificationCount = document.getElementById('notification-count');
           if (notificationList && notificationCount) {
-            notificationList.innerHTML = "";
-            notificationCount.textContent = "0";
-            localStorage.removeItem("notifications");
+            notificationList.innerHTML = '';
+            notificationCount.textContent = '0';
+            localStorage.removeItem('notifications');
           }
         }
 
