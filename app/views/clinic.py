@@ -126,3 +126,8 @@ def clear_noti():
     db.session.commit()
     return redirect(url_for('clinic_calender'))
 
+
+@app.route('/view_all', methods=['GET'], strict_slashes=False)
+def view_notifi():
+
+    return render_template('view_notification.html')
