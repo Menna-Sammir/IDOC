@@ -5,7 +5,8 @@ from flask_principal import Permission, RoleNeed
 from flask_login import login_required, current_user
 from app import translate
 from datetime import datetime
-from flask import jsonify
+from flask import jsonify, request
+from sqlalchemy.orm import joinedload
 
 
 
@@ -37,10 +38,10 @@ def clinic_dash():
     )
     today = datetime.today().strftime('%Y-%m-%d')
 
-    working_hours = clinic.working_hours.split('-')
-    opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
-    closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
-    is_open_today = opening_time <= current_time <= closing_time
+    # working_hours = clinic.working_hours.split('-')
+    # opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
+    # closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
+    # is_open_today = opening_time <= current_time <= closing_time
 
     appointments = (
         db.session.query(Appointment, Patient, Doctor)
@@ -54,7 +55,6 @@ def clinic_dash():
         clinic=clinic,
         today_appointments=today_appointments,
         total_appointments=total_appointments,
-        is_open_today=is_open_today,
         appointments=appointments
     )
 
@@ -72,15 +72,13 @@ def clinic_calender():
     clinic = Clinic.query.get_or_404(user.clinic_id)
     current_time = datetime.now().time()
 
-    working_hours = clinic.working_hours.split('-')
-    opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
-    closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
-    is_open_today = opening_time <= current_time <= closing_time
+    # working_hours = clinic.working_hours.split('-')
+    # opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
+    # closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
+    # is_open_today = opening_time <= current_time <= closing_time
 
     return render_template(
-        'clinicCalender.html',
-        working_hours=clinic.working_hours,
-        is_open_today=is_open_today
+        'clinicCalender.html'
     )
 
 
@@ -129,5 +127,59 @@ def clear_noti():
 
 @app.route('/view_all', methods=['GET'], strict_slashes=False)
 def view_notifi():
+    current_time = datetime.now()
+    if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
+        notifications = (
+            db.session.query(Notification)
+            .join(Appointment)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .join(Patient, Appointment.patient_id == Patient.id)
+            .filter(Notification.clinic_id == current_user.clinic_id)
+            .options(
+                joinedload(Notification.appointment).joinedload(Appointment.doctor),
+                joinedload(Notification.appointment).joinedload(Appointment.patient)
+            )
+            .all()
+        )
 
-    return render_template('view_notification.html')
+        processed_notifications = [
+            {
+                'doctor': n.appointment.doctor.name if n.appointment and n.appointment.doctor else 'Unknown',
+                'patient': n.appointment.patient.name if n.appointment and n.appointment.patient else 'Unknown',
+                'body': n.noteBody,
+                'isRead': n.isRead,
+                'time': n.time.strftime('%H:%M %p'),
+                'date': n.date.strftime('%d %B'),
+                'photo': n.appointment.doctor.photo if n.appointment and n.appointment.doctor else None,
+                'formatted_time': calculate_time_ago(current_time, n.notDate)
+            }
+            for n in notifications[:10]
+        ]
+        g.notifications = processed_notifications
+        g.notification_count = len(
+            db.session.query(Notification).filter(
+                Notification.clinic_id == current_user.clinic_id,
+                Notification.isRead == False
+            ).all()
+        ) or 0
+
+    return render_template('view_notification.html', notifications=g.get('notifications', []))
+
+@app.route('/delete_notification', methods=['POST'])
+@login_required
+def delete_notification():
+    data = request.get_json()
+    notification_id = data.get('id')
+    if not notification_id:
+        return jsonify({'message': 'No notification ID provided'}), 400
+
+    notification = Notification.query.get(notification_id)
+    if not notification:
+        return jsonify({'message': 'Notification not found'}), 404
+
+    if notification.clinic_id != current_user.clinic_id:
+        return jsonify({'message': 'You are not authorized to delete this notification'}), 403
+
+    db.session.delete(notification)
+    db.session.commit()
+    return jsonify({'message': 'Notification deleted successfully'}), 200
