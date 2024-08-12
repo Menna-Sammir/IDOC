@@ -118,6 +118,7 @@ def clear_noti():
     return redirect(url_for('clinic_calender'))
 
 
+### view all notifications page ###
 @app.route('/view_all', methods=['GET'], strict_slashes=False)
 def view_notifi():
     current_time = datetime.now()
