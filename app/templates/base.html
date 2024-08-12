@@ -112,6 +112,7 @@
             {% if current_user.is_authenticated and
             current_user.user_roles.role.role_name == 'clinic'%}
             <!-- Notifications -->
+
             <li class="nav-item dropdown noti-dropdown mr-3">
               <a
                 href="#"
@@ -264,8 +265,18 @@
 
       <!-- /Footer -->
     </div>
-    <!-- /Main Wrapper -->
     {% block js %} {% include 'base-js.html' %}
+    <audio id="notification-sound">
+      <source
+        src="/static/sounds/bell-congratulations-epic-stock-media-1-00-01.mp3"
+        type="audio/mp3"
+      />
+      <source
+        src="/static/sounds/bell-congratulations-epic-stock-media-1-00-01.ogg"
+        type="audio/ogg"
+      />
+    </audio>
+
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', (event) => {
@@ -298,35 +309,50 @@
           console.log(msg.message);
         });
 
+        function playNotificationSound() {
+          var audio = document.getElementById('notification-sound');
+          if (audio) {
+            audio.play().catch((error) => {
+              console.error('Error playing audio:', error);
+            });
+          } else {
+            console.error('Audio element not found');
+          }
+        }
+
         function addNotification(data, store = false) {
           var notificationList = document.getElementById('notification-list');
           var notificationCount = document.getElementById('notification-count');
 
           var newNotification = document.createElement('li');
-          newNotification.classList.add('notification-message');
+          newNotification.classList.add(
+            'notification-message',
+            'unread-notification'
+          );
 
           var currentTime = new Date();
           var formattedTime = currentTime.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           });
+
           var notificationContent = `
-              <div class="media">
-                <span class="avatar avatar-sm">
-                  <img class="avatar-img rounded-circle" alt="User Image" src="static/images/doctors/${data.photo}">
-                </span>
-                <div class="media-body">
-                  <p class="noti-details">
-                    <span class="noti-title">${data.patient}</span>
-                    has booked appointment to
-                    <span class="noti-title">Dr. ${data.doctor}</span> on
-                    <span class="noti-title">${data.date} at ${data.time}</span>
-                  </p>
-                  <p class="noti-time">
-                    <span class="notification-time">${formattedTime}</span>
-                  </p>
-                </div>
+            <div class="media">
+              <span class="avatar avatar-sm">
+                <img class="avatar-img rounded-circle" alt="User Image" src="static/images/doctors/${data.photo}">
+              </span>
+              <div class="media-body">
+                <p class="noti-details">
+                  <span class="noti-title">${data.patient}</span>
+                  has booked appointment to
+                  <span class="noti-title">Dr. ${data.doctor}</span> on
+                  <span class="noti-title">${data.date} at ${data.time}</span>
+                </p>
+                <p class="noti-time">
+                  <span class="notification-time">${formattedTime}</span>
+                </p>
               </div>
+            </div>
           `;
 
           newNotification.innerHTML = notificationContent;
@@ -334,6 +360,7 @@
 
           var currentCount = parseInt(notificationCount.textContent);
           notificationCount.textContent = currentCount + 1;
+          playNotificationSound();
 
           if (store) {
             storeNotification(data);
@@ -355,24 +382,40 @@
           });
         }
 
+        function playNotificationSound() {
+          var audio = document.getElementById('notification-sound');
+          if (audio) {
+            audio.play().catch((error) => {
+              console.error('Error playing audio:', error);
+            });
+          } else {
+            console.error('Audio element not found');
+          }
+        }
+
         document
           .getElementById('clear-all-notifications')
           .addEventListener('click', function () {
             clearAllNotifications();
           });
 
-          function fetchNotifications() {
-            fetch(`/notifications?clinic_id=${clinic_id}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    data.forEach(notification => addNotification(notification, false));
-                })
-                .catch(error => console.error('Error fetching notifications:', error));
+        function fetchNotifications() {
+          fetch(`/notifications?clinic_id=${clinic_id}`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then((data) => {
+              data.forEach((notification) =>
+                addNotification(notification, false)
+              );
+            })
+            .catch((error) =>
+              console.error('Error fetching notifications:', error)
+            );
+        }
 
         function clearAllNotifications() {
           var notificationList = document.getElementById('notification-list');
@@ -388,7 +431,6 @@
         fetchNotifications();
       });
     </script>
-
     {% endblock %}
   </body>
 </html>
