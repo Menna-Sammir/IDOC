@@ -477,13 +477,17 @@ def patient_checkout():
         end_time=end_time.strftime('%H:%M'),
         form=checkout_form
     )
-
+def send_appointment_notification(clinic_id, data):
+    socketio.emit('appointment_notification', data, room=clinic_id)
+    
+    
 @socketio.on('connect')
 def handle_connect():
     clinic_id = session.get('clinic_id')
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -503,8 +507,6 @@ def checkout_success():
     return render_template(
         'booking-success.html', doctor=doctor, date=date, time=start_time
     )
-
-
 
 
 @app.route('/email', methods=['POST'], strict_slashes=False)
@@ -628,5 +630,4 @@ def sendEmail():
     return redirect(url_for('home'))
 
 
-def send_appointment_notification(clinic_id, data):
-    socketio.emit('appointment_notification', data, room=clinic_id)
+
