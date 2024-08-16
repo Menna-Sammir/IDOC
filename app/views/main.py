@@ -1,12 +1,18 @@
-from app import app, db
-from flask import render_template, redirect, url_for, flash, request, current_app
+from app import app, db, socketio
+from flask import (
+    render_template,
+    redirect,
+    url_for,
+    flash,
+    request,
+    current_app,
+    session
+)
 from app.models.models import *
-from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, ChangePasswordForm
+from app.views.forms.auth_form import LoginForm, RegisterForm, ChangePasswordForm,  ResetPasswordForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
-from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed
-from app import socketio
-from flask import session
+from flask_principal import Permission, RoleNeed,  Identity, AnonymousIdentity,  identity_changed
 from flask_socketio import disconnect
 
 
@@ -16,39 +22,33 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 @app.route('/register', methods=['GET', 'POST'], strict_slashes=False)
-def doctor_signup_page():
-    form = RegisterDocForm()
-    users = (
-        User.query.filter(User.doctor_id.isnot(None))
-        .with_entities(User.doctor_id)
-        .all()
-    )
-    users = [u[0] for u in users]
-    doctors = Doctor.query.filter(not_(Doctor.id.in_(users))).all()
-    form.doctor_id.choices = [(doc.id, doc.name) for doc in doctors]
+def signup_page():
+    form = RegisterForm()
     if request.method == 'POST':
         if form.validate_on_submit():
             user = User.query.filter_by(name=form.username.data).first()
             if not user:
-                photo = Doctor.query.filter_by(id=form.doctor_id.data).first().photo
                 user_to_create = User(
                     name=form.username.data,
                     email=form.email_address.data,
                     password_hash=form.password1.data,
-                    doctor_id=form.doctor_id.data,
-                    photo= f"static/images/doctors/{photo}"
+                    activated = True
                 )
-                clinic_role = Role.query.filter_by(role_name='doctor').first_or_404()
-                role_to_create = UserRole(role_id =clinic_role.id, user=user_to_create)
+                patient_create = Patient(
+                    phone = form.phone.data,
+                )
+                patient_role = Role.query.filter_by(role_name='patient').first_or_404()
+                role_to_create = UserRole(role_id=patient_role.id, user=user_to_create)
                 db.session.add(user_to_create)
                 db.session.add(role_to_create)
+                db.session.add(patient_create)
                 db.session.commit()
                 login_user(user_to_create)
                 flash(
                     f'account created Success! You are logged in as: {user_to_create.name}',
                     category='success'
                 )
-                return redirect(url_for('doctor_dash'))
+                return redirect(url_for('patient_dash'))
             flash(f'this account already exists', category='danger')
         if form.errors != {}:
             for err_msg in form.errors.values():
@@ -56,50 +56,8 @@ def doctor_signup_page():
                     f'there was an error with creating a user: {err_msg}',
                     category='danger'
                 )
-    return render_template('doctor-signup.html', form=form)
+    return render_template('signup.html', form=form)
 
-
-@app.route('/register-clinic', methods=['GET', 'POST'], strict_slashes=False)
-def clinic_signup_page():
-    form = RegisterClinicForm()
-    users = (
-        User.query.filter(User.clinic_id.isnot(None))
-        .with_entities(User.clinic_id)
-        .all()
-    )
-    users = [u[0] for u in users]
-    clinics = Clinic.query.filter(not_(Clinic.id.in_(users))).all()
-    form.clinic_id.choices = [(clinic.id, clinic.name) for clinic in clinics]
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            user = User.query.filter_by(name=form.username.data).first()
-            if not user:
-                photo = Clinic.query.filter_by(id=form.clinic_id.data).first().photo
-                user_to_create = User(
-                    name=form.username.data,
-                    email=form.email_address.data,
-                    password_hash=form.password1.data,
-                    clinic_id=form.clinic_id.data,
-                    photo= f"static/images/clinic/{photo}"
-                )
-                clinic_role = Role.query.filter_by(role_name='clinic').first_or_404()
-                role_to_create = UserRole(role_id =clinic_role.id, user=user_to_create)
-                db.session.add(user_to_create)
-                db.session.add(role_to_create)
-                db.session.commit()
-                login_user(user_to_create)
-                flash(
-                    f'account created Success! You are logged in as: {user_to_create.name}',
-                    category='success'
-                )
-                return redirect(url_for('clinic_dash'))
-        if form.errors != {}:
-            for err_msg in form.errors.values():
-                flash(
-                    f'there was an error with creating a user: {err_msg}',
-                    category='danger'
-                )
-    return render_template('clinic-signup.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
@@ -108,29 +66,35 @@ def login_page():
     if request.method == 'POST':
         if form.validate_on_submit():
             attempted_user = User.query.filter_by(email=form.email_address.data).first()
-
             if attempted_user and attempted_user.check_password_correction(
                 attempted_password=form.password.data
             ):
-                login_user(attempted_user)
-                identity_changed.send(
-                    current_app._get_current_object(),
-                    identity=Identity(attempted_user.id)
+                if attempted_user.activated or not attempted_user.temp_password:
+                    login_user(attempted_user)
+                    identity_changed.send(
+                        current_app._get_current_object(),
+                        identity=Identity(attempted_user.id)
+                    )
+                    flash(
+                        f'Success! You are logged in as: {attempted_user.name}',
+                        category='success'
+                    )
+                    if attempted_user.user_roles.role.role_name == 'Admin':
+                        return redirect(url_for('dashboard'))
+                    elif attempted_user.user_roles.role.role_name == 'doctor':
+                        return redirect(url_for('doctor_dash'))
+                    elif attempted_user.user_roles.role.role_name == 'clinic':
+                        return redirect(url_for('clinic_dash'))
+                    elif attempted_user.user_roles.role.role_name == 'patient':
+                        return redirect(url_for('patient_dash'))
+                    return redirect(url_for('home_page'))
+                else:
+                    flash(
+                    f'please check your mail to get password',
+                    category='warning'
                 )
+                    return render_template('login.html', form=form)
 
-                flash(
-                    f'Success! You are logged in as: {attempted_user.name}',
-                    category='success'
-                )
-                if attempted_user.user_roles.role.role_name == 'Admin':
-                    return redirect(url_for('dashboard'))
-                elif attempted_user.user_roles.role.role_name == 'doctor':
-                    return redirect(url_for('doctor_dash'))
-                elif attempted_user.user_roles.role.role_name == 'clinic':
-                    return redirect(url_for('clinic_dash'))
-                elif attempted_user.user_roles.role.role_name == 'patient':
-                    return redirect(url_for('clinic_dash'))
-                return redirect(url_for('home_page'))
             else:
                 flash('user name and password are not match', category='danger')
         if form.errors != {}:
@@ -140,7 +104,6 @@ def login_page():
                     category='danger'
                 )
     return render_template('login.html', form=form)
-
 
 
 @socketio.on('disconnect request')
@@ -196,7 +159,44 @@ def change_password():
     return render_template('change-password.html', form=form)
 
 
+
+@app.route('/reset_password/<email>', methods=['GET', 'POST'])
+def reset_password(email):
+    user = User.query.filter_by(email=email).first_or_404()
+    form = ResetPasswordForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            temp_password = form.Temp_password.data
+            if user.temp_password_correction(
+                    attempted_password=temp_password):
+                user.password_hash = form.new_password.data
+                user.temp_password = None
+                user.activated = True
+                db.session.commit()
+                flash('Your password has been updated!', 'success')
+                return redirect(url_for('login_page'))
+            else:
+                flash('Invalid temporary password.', 'danger')
+        if form.errors != {}:
+            for err_msg in form.errors.values():
+                flash(
+                    f'there was an error with creating a user: {err_msg}',
+                    category='danger'
+                )
+    return render_template('reset_password.html', email=email, form = form)
+
+
 @app.errorhandler(403)
 def permission_denied(e):
     return 'Permission Denied', 403
 
+
+
+# doctor dashboard page >>> view appointments today
+@app.route('/patient_dashboard', methods=['GET', 'POST'])
+@login_required
+def patient_dash():
+
+    return render_template(
+        'patient-dashboard.html'
+    )
