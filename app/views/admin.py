@@ -102,13 +102,14 @@ def add_clinic():
                     return redirect(url_for('dashboard'))
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
+                        print("errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror", err_msg)
                         flash(
                             f'there was an error with creating a user: {err_msg}',
                             category='danger'
                         )
         except Exception as e:
             flash(f'something wrong', category='danger')
-            print(str(e))
+            print("exxxxxxxxxxxxxxxxxxxxx", str(e))
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
