@@ -10,7 +10,8 @@ from sqlalchemy.dialects.mysql import (
     DATETIME
 
 )
-from sqlalchemy import ForeignKey, func, Enum
+
+from sqlalchemy import ForeignKey, func, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, current_user
 from flask_principal import RoleNeed, identity_loaded, UserNeed
@@ -18,7 +19,7 @@ from sqlalchemy import func
 from datetime import date, datetime
 from app.models.notiTime import calculate_time_ago
 from flask import g
-import enum
+from enum import Enum
 
 
 
@@ -70,12 +71,12 @@ def inject_notification():
         notification_count=g.get('notification_count', 0)
     )
 
-class appStatus(enum.Enum):
+class AppStatus(Enum):
     Pending = 0
     Confirmed = 1,
     Cancelled = 2,
 
-class PatientHisType(enum.Enum):
+class PatientHisType(Enum):
     Lab = 1,
     medicine = 2,
     radiology = 3,
@@ -239,7 +240,7 @@ class Patient(BaseModel):
 class PatientHistory(BaseModel):
     __tablename__ = 'PatientHistory'
     details = db.Column(VARCHAR(255), nullable=False)
-    type =  db.Column(Enum(PatientHisType), nullable=True)
+    type =  db.Column(SQLAlchemyEnum(PatientHisType), nullable=True)
     addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), unique=True)
 
@@ -258,7 +259,7 @@ class Appointment(BaseModel):
     comment = db.Column(VARCHAR(50), nullable=True)
     Report = db.Column(VARCHAR(255), nullable=True)
     Diagnosis = db.Column(VARCHAR(255), nullable=True)
-    status = db.Column(Enum(appStatus), nullable=False)
+    status = db.Column(SQLAlchemyEnum(AppStatus), nullable=False)
 
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
@@ -275,7 +276,7 @@ class Appointment(BaseModel):
 class Message(BaseModel):
     __tablename__ = 'message'
 
-    message_body = db.Column(TEXT, nullable=False)
+    message_body = db.Column(TEXT, nullable=True)
     status = db.Column(BOOLEAN, nullable=False)
 
     appointment_id = db.Column(
