@@ -657,3 +657,35 @@ $(document).ready(function () {
     }
   }
 });
+
+// update patient profile
+$('#patientForm').on('submit', function (event) {
+  event.preventDefault();
+
+  let formData = new FormData(this);
+
+  $.ajax({
+    url: '/patient_setting',
+    type: 'PUT',
+    data: formData,
+    processData: false,
+    contentType: false,
+    headers: {
+      'X-CSRFToken': '{{ form.csrf_token._value() }}',
+    },
+    success: function (data) {
+      if (data.status === 'success') {
+        location.reload();
+      } else if (data.errors) {
+        $.each(data.errors, function (field, error) {
+          console.log(`Error in ${field}: ${error}`);
+        });
+      } else {
+        console.log(data.message);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error('Error:', error);
+    },
+  });
+});
