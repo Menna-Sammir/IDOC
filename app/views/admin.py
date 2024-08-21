@@ -167,7 +167,7 @@ def add_clinic():
 
 
 @login_required
-# @clinic_permission.require(http_exception=403)
+@clinic_permission.require(http_exception=403)
 @app.route(
     '/add_doctor', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_doctor'
 )
