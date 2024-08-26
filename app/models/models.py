@@ -8,7 +8,6 @@ from sqlalchemy.dialects.mysql import (
     TIME,
     TEXT,
     DATETIME
-
 )
 import logging
 from sqlalchemy import ForeignKey, func, Enum as SQLAlchemyEnum
@@ -20,7 +19,6 @@ from datetime import date, datetime
 from app.models.notiTime import calculate_time_ago
 from flask import g
 from enum import Enum
-
 
 
 @login_manager.user_loader
@@ -35,7 +33,6 @@ def on_identity_loaded(sender, identity):
         identity.provides.add(UserNeed(current_user.id))
     if hasattr(current_user, 'user_roles'):
         identity.provides.add(RoleNeed(current_user.user_roles.role.role_name))
-
 
 
 @app.context_processor
@@ -72,15 +69,23 @@ def inject_notification():
         notification_count=g.get('notification_count', 0)
     )
 
+
 class AppStatus(Enum):
     Pending = 0
-    Confirmed = 1,
-    Cancelled = 2,
+    Confirmed = 1
+    Cancelled = 2
+
 
 class PatientHisType(Enum):
-    Lab = 1,
-    medicine = 2,
-    radiology = 3,
+    Lab = 1
+    medicine = 3
+
+class MedicineTime(Enum):
+    MORNING = "Morning"
+    AFTERNOON = "Afternoon"
+    EVENING = "Evening"
+    NIGHT = "Night"
+
 
 class BloodGroup(Enum):
     A_positive = 'A+'
@@ -91,7 +96,8 @@ class BloodGroup(Enum):
     AB_negative = 'AB-'
     O_positive = 'O+'
     O_negative = 'O-'
-    
+
+
 class Allergy(Enum):
     No_Allergy = 'No Allergy'
     Peanuts = 'Peanuts'
@@ -131,9 +137,9 @@ class Doctor(BaseModel):
 
     phone = db.Column(VARCHAR(50), nullable=False)
     price = db.Column(INTEGER)
-    duration  = db.Column(TIME)
+    duration = db.Column(TIME)
     isAdv = db.Column(BOOLEAN, nullable=False)
-    iDNum = db.Column(VARCHAR(50), nullable=False, unique = True)
+    iDNum = db.Column(VARCHAR(50), nullable=False, unique=True)
 
     specialization_id = db.Column(
         VARCHAR(60), ForeignKey('specialization.id'), nullable=False
@@ -142,7 +148,9 @@ class Doctor(BaseModel):
     From_working_hours = db.Column(TIME(), nullable=False)
     To_working_hours = db.Column(TIME(), nullable=False)
 
-    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    user_id = db.Column(
+        VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True
+    )
     users = relationship('User', back_populates='doctor')
 
     specialization = relationship('Specialization', back_populates='doctors')
@@ -168,9 +176,10 @@ class Clinic(BaseModel):
         VARCHAR(60), ForeignKey('governorate.id'), nullable=False
     )
 
-    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    user_id = db.Column(
+        VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True
+    )
     users = relationship('User', back_populates='clinic')
-
 
     governorate = relationship('Governorate', back_populates='clinics')
     doctors = relationship('Doctor', back_populates='clinic')
@@ -204,7 +213,6 @@ class Governorate(BaseModel):
     governorate_name = db.Column(VARCHAR(100), nullable=False)
     clinics = relationship('Clinic', back_populates='governorate')
     patients = relationship('Patient', back_populates='governorate')
-
 
 
 class User(BaseModel, UserMixin):
@@ -259,6 +267,7 @@ class UserRole(BaseModel):
     user = relationship('User', back_populates='user_roles')
     role = relationship('Role', back_populates='user_roles')
 
+
 class Role(BaseModel):
     __tablename__ = 'roles'
     role_name = db.Column(VARCHAR(100), unique=True, nullable=False)
@@ -267,11 +276,14 @@ class Role(BaseModel):
 
 class Patient(BaseModel):
     __tablename__ = 'patient'
+
     phone = db.Column(VARCHAR(50), nullable=False)
 
-    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    user_id = db.Column(
+        VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True
+    )
     users = relationship('User', back_populates='patient')
-    
+
     governorate_id = db.Column(VARCHAR(60), ForeignKey('governorate.id'), nullable=True)
     governorate = relationship('Governorate', back_populates='patients')
 
@@ -280,9 +292,30 @@ class Patient(BaseModel):
 
     allergy = db.Column(SQLAlchemyEnum(Allergy), nullable=True)
     blood_group = db.Column(SQLAlchemyEnum(BloodGroup), nullable=True)
-    
+
     histories = db.relationship('PatientHistory', backref='patient', uselist=False)
+    medicine = db.relationship('PatientMedicine', backref='patient', uselist=False)
     appointments = db.relationship('Appointment', back_populates='patient')
+
+class MedicineTimes(BaseModel):
+    __tablename__ = 'MedicineTimes'
+
+    medicine_id = db.Column(VARCHAR(60), ForeignKey('PatientMedicine.id'), nullable=False)
+    time_of_day = db.Column(SQLAlchemyEnum(MedicineTime), nullable=False)
+
+    patient_medicine = relationship("PatientMedicine", back_populates='medicine_times')
+
+
+class PatientMedicine(BaseModel):
+    __tablename__ = 'PatientMedicine'
+
+    medName = db.Column(VARCHAR(255), nullable=False)
+    Quantity = db.Column(VARCHAR(255), nullable=False)
+    Days = db.Column(VARCHAR(100), nullable=False)
+    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
+
+    medicine_times = relationship("MedicineTimes", back_populates='patient_medicine', uselist=True)
+
 
 
 class PatientHistory(BaseModel):
@@ -293,7 +326,6 @@ class PatientHistory(BaseModel):
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), unique=True)
 
     user = db.relationship('User', back_populates='patient_history')
-
 
 
 

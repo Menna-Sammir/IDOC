@@ -1,0 +1,160 @@
+{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
+{% endblock %} {% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Dashboard') }}
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">{{ translate('profile setting') }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
+
+        {% block sidebar %} {% include 'base-doctor-side.html' %} {% endblock %}
+        <!-- /Profile Sidebar -->
+      </div>
+
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <!-- Basic Information -->
+        <form method="POST" enctype="multipart/form-data">
+          {{ user_form.hidden_tag() }} {{ user_form.csrf_token }} {{
+          doctor_form.hidden_tag() }} {{ doctor_form.csrf_token }}
+          <div class="card">
+            <div class="card-body">
+              <div class="row form-row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="change-avatar">
+                      <div class="profile-img">
+                        {% if current_user.photo %}
+                        {% set base_path = 'static/images/doctors/' %}
+                        <img
+                          class="avatar-img rounded-circle"
+                          src="{{base_path ~ current_user.photo}}"
+                          id="imagePreview"
+                          alt="User Image"
+                        />
+                        {% else %}
+                        <img
+                          src="static/img/user.svg"
+                          id="imagePreview"
+                          alt="User Image"
+                        />
+                        {% endif %}
+                      </div>
+                      <div class="upload-img">
+                        <div class="change-photo-btn">
+                          <span
+                            ><i class="fa fa-upload"></i> {{ translate('Upload
+                            Photo') }}</span
+                          >
+                          {{ user_form.photo(class="upload" )}}
+                        </div>
+                        <small class="form-text text-muted"
+                          >{{ translate('Allowed JPG, GIF or PNG. Max size of
+                          2MB') }}</small
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ user_form.firstname.label() }} {{
+                    user_form.firstname(class="form-control" )}}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ user_form.lastname.label() }} {{
+                    user_form.lastname(class="form-control" )}}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ user_form.email.label() }} {{
+                    user_form.email(class="form-control", readonly="readonly")}}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ doctor_form.phone.label() }} {{
+                    doctor_form.phone(class="form-control" )}}
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    {{ doctor_form.iDNum.label() }} {{
+                    doctor_form.iDNum(class="form-control", readonly="readonly" )}}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    {{ doctor_form.duration.label() }} {{
+                    doctor_form.duration(class="form-control") }}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    {{ doctor_form.From_working_hours.label() }} {{
+                    doctor_form.From_working_hours(class="form-control" )}}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    {{ doctor_form.To_working_hours.label() }} {{
+                    doctor_form.To_working_hours(class="form-control" )}}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ doctor_form.price.label() }} {{
+                    doctor_form.price(class="form-control" )}}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ doctor_form.specialization_id.label() }} {{
+                    doctor_form.specialization_id(class="form-control" )}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /Basic Information -->
+
+          <div class="submit-section submit-btn-bottom">
+            <div class="submit-section submit-btn-bottom">
+              {{ doctor_form.submit(class="btn btn-primary submit-btn") }}
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+
+{% endblock %}
