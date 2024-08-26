@@ -61,3 +61,32 @@ class DoctorForm(FlaskForm):
         # self.clinic_id.label.text = translate('clinic')
         self.specialization_id.label.text = translate('Specialization')
         self.submit.label.text = translate('Add Doctor')
+
+
+
+class EditDoctorForm(FlaskForm):
+    price = StringField(validators=[Length(min=2, max=90), DataRequired()])
+    phone = StringField(validators=[Length(min=0, max=11)])
+    specialization_id = SelectField(validators=[DataRequired()])
+    From_working_hours = TimeField(validators=[DataRequired()])
+    To_working_hours = TimeField(validators=[DataRequired()])
+    iDNum = StringField(validators=[Length(min=6, max=10), DataRequired()])
+    time_options = [('', 'Select Time')] + [(15, '15 min'), (30, '30 min'), (45, '45 min'), (60, '60 min')]
+    duration = SelectField('Select Time', choices=time_options)
+    submit = SubmitField()
+
+    def __init__(self, *args, **kwargs):
+        super(EditDoctorForm, self).__init__(*args, **kwargs)
+        self.translate()
+
+    def translate(self):
+        self.price.label.text = translate('pricing')
+        self.phone.label.text = translate('Phone')
+        self.From_working_hours.label.text = translate('From')
+        self.duration.label.text = translate('Dia Duration')
+        self.To_working_hours.label.text = translate('To')
+        self.iDNum.label.text = translate('ID Num')
+        self.specialization_id.label.text = translate('Specialization')
+        self.submit.label.text = translate('Add Doctor')
+
+

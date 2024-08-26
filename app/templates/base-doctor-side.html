@@ -1,11 +1,11 @@
 <div class="profile-sidebar">
   <div class="widget-profile pro-widget-content">
     <div class="profile-info-widget">
-      <a href="profile.html" class="booking-doc-img">
+      <a href="#" class="booking-doc-img">
         {% set base_path = 'static/images/doctors/' %}
         <img
           class="avatar-img rounded-circle"
-          src="{{base_path ~ current_user.doctor.photo}}"
+          src="{{base_path ~ current_user.photo}}"
           alt="User Image"
       /></a>
       <div class="profile-det-info">
@@ -52,7 +52,7 @@
           </a>
         </li>
         <li>
-          <a href="doctor-profile-settings.html">
+          <a href="{{ url_for('doctor_profile') }}">
             <i class="fas fa-user-cog"></i>
             <span>Profile Settings</span>
           </a>
