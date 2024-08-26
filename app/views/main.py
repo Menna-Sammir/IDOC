@@ -13,7 +13,8 @@ from app.views.forms.auth_form import (
     LoginForm,
     RegisterForm,
     ChangePasswordForm,
-    ResetPasswordForm
+    ResetPasswordForm,
+    AppointmentForm
 )
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
@@ -26,6 +27,8 @@ from flask_principal import (
 )
 from flask_socketio import disconnect
 from datetime import datetime, timedelta
+from sqlalchemy import asc
+
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -200,7 +203,3 @@ def permission_denied(e):
 
 
 # doctor dashboard page >>> view appointments today
-@app.route('/patient_dashboard', methods=['GET', 'POST'])
-@login_required
-def patient_dash():
-    return render_template('patient-dashboard.html')
