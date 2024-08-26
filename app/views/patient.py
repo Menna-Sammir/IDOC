@@ -78,8 +78,8 @@ def patient_dashboard():
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
         .filter(Appointment.date >= db.func.current_date())
-        .filter(Appointment.seen == False)  # Exclude appointments marked as seen
-        .filter(Appointment.status != AppStatus.Confirmed.value)  # Exclude cancelled appointments
+        .filter(Appointment.seen == False)
+        .filter(Appointment.status != AppStatus.Confirmed.value)
         .order_by(Appointment.date.asc(), Appointment.time.asc())
     )
     next_appointment = next_appointment_query.first()
@@ -112,7 +112,7 @@ def patient_dashboard():
         db.session.query(Appointment, Doctor)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
         .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == True)  # Corrected: use True instead of 1
+        .filter(Appointment.seen == True)
         .order_by(Appointment.date.desc())
     )
 
@@ -122,7 +122,7 @@ def patient_dashboard():
             'doctor_photo': doctor.users.photo,
             'appointment_date': appointment.date.strftime('%A, %d %B'),
             'price': doctor.price,
-            'status': appointment.status  # Add status to the dictionary
+            'status': appointment.status
         }
         for appointment, doctor in seen_appointments_query.all()
     ]
@@ -147,7 +147,7 @@ def patient_dashboard():
         db.session.query(PatientMedicine)
         .filter(PatientMedicine.patient_id == patient.id)
     )
-    prescriptions = [
+    all_prescriptions = [
         {
             'name': medicine.medName,
             'quantity': medicine.Quantity,
@@ -156,6 +156,10 @@ def patient_dashboard():
         }
         for medicine in prescriptions_query.all()
     ]
+
+    # Limit to 4 prescriptions for display
+    limited_prescriptions = all_prescriptions[:4]
+    show_more_button = len(all_prescriptions) > 4
 
     if request.method == 'POST':
         # Handle form submission if necessary
@@ -173,9 +177,11 @@ def patient_dashboard():
         blood_group=blood_group,
         allergy=allergy,
         specialties=specialties,
-        prescriptions=prescriptions,
-        AppStatus=AppStatus 
+        prescriptions=limited_prescriptions,
+        show_more_button=show_more_button,
+        AppStatus=AppStatus
     )
+
 
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
@@ -274,13 +280,13 @@ def appointment_History():
     # Process records data
     medical_records_data = []
     for appointment, doctor, specialization in records:
-        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
-        diagnosis = appointment.Diagnosis  # Assuming 'diagnosis' is a field in the Appointment table
+        formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
+        diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
         report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
 
         medical_records_data.append({
             'doctor_idnum': doctor.iDNum,
-            'date': formatted_date,
+            'booking_time': formatted_booking_time,  # Use the formatted time instead of date
             'diagnosis': diagnosis,
             'appointment_date': appointment.date,
             'doctor_name': doctor.users.name,
