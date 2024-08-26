@@ -24,6 +24,7 @@ from werkzeug.utils import secure_filename
 from flask_login import login_required
 from flask import Flask, render_template
 from app.models.models import db, Patient, User
+from enum import Enum
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
@@ -57,82 +58,172 @@ def home():
     )
 
 
-@app.route('/patient_dashboard')
+@app.route('/patient_dashboard', methods=['GET', 'POST'])
+@login_required
 def patient_dashboard():
-    user_id = "7f1fb767-5765-4678-90cc-07cb1c437885"    
-    user = User.query.filter_by(id=user_id).first()
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    patient = db.session.query(Patient).join(User).filter(Patient.user_id == current_user.id).first()
+    if patient is None:
+        return translate('User is not a patient'), 403
 
-    if user:
-        user_name = user.name  
-        patient_data = {
-            'email': user.email,
-            'photo': user.photo,
-            'activated': user.activated
+    # Get next appointment
+    next_appointment_query = (
+        db.session.query(Appointment, Doctor, Clinic, Specialization)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .join(Clinic, Doctor.clinic_id == Clinic.id)
+        .join(Specialization, Doctor.specialization_id == Specialization.id)
+        .filter(Appointment.patient_id == patient.id)
+        .filter(Appointment.date >= db.func.current_date())
+        .filter(Appointment.seen == False)  # Exclude appointments marked as seen
+        .order_by(Appointment.date.asc(), Appointment.time.asc())
+    )
+
+    
+    next_appointment = next_appointment_query.first()
+
+    if next_appointment:
+        appointment, doctor, clinic, specialization = next_appointment
+
+        appointment_start_time = datetime.combine(appointment.date, appointment.time)
+        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+        appointment_end_time = (appointment_start_time + duration_delta).time()
+
+        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+        duration_str = f"{doctor.duration.minute} min"
+        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
+
+        appointment_data = {
+            'date': formatted_date,
+            'time_range': time_range,
+            'duration': duration_str,
+            'clinic_address': clinic.address,
+            'doctor_name': doctor.users.name,
+            'doctor_photo': doctor.users.photo,
+            'doctor_specialization': specialization.specialization_name
         }
-        
-        patient = Patient.query.filter_by(user_id=user.id).first()
-
-        if patient:
-            # Get next appointment
-            next_appointment = (
-                db.session.query(Appointment, Doctor, Clinic, Specialization)
-                .join(Doctor, Appointment.doctor_id == Doctor.id)
-                .join(Clinic, Doctor.clinic_id == Clinic.id)
-                .join(Specialization, Doctor.specialization_id == Specialization.id)
-                .filter(Appointment.patient_id == patient.id)
-                .filter(Appointment.date >= db.func.current_date())
-                .order_by(Appointment.date.asc(), Appointment.time.asc())
-                .first()
-            )
-
-            if next_appointment:
-                appointment, doctor, clinic, specialization = next_appointment
-
-                # Convert appointment time to a datetime object
-                appointment_start_time = datetime.combine(appointment.date, appointment.time)
-
-                # Convert doctor.duration (assumed to be a time object) into a timedelta
-                duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
-
-                # Calculate the end time by adding the duration to the start time
-                appointment_end_time = (appointment_start_time + duration_delta).time()
-
-                # Format the appointment time as "10:30 - 11:00"
-                time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
-
-                # Format the duration as "30 min"
-                duration_str = f"{doctor.duration.minute} min"
-
-                # Format the appointment date to include the day of the week and date
-                appointment_day = appointment.date.strftime('%A')  # Full name of the day of the week
-                appointment_date_formatted = appointment.date.strftime('%d %B')  # Day and month
-
-                # Combine day and date into the desired format
-                formatted_date = f"{appointment_day.capitalize()}, {appointment_date_formatted.capitalize()}"
-
-                # Access the doctor's User object via the `users` relationship
-                doctor_user = doctor.users
-
-                appointment_data = {
-                    'date': formatted_date,
-                    'time_range': time_range,
-                    'duration': duration_str,
-                    'clinic_address': clinic.address,
-                    'doctor_name': doctor_user.name,  # Access the doctor's name via the related User object
-                    'doctor_photo': doctor_user.photo,  # Access the doctor's photo via the related User object
-                    'doctor_specialization': specialization.specialization_name
-                }
-            else:
-                appointment_data = None
-
     else:
-        user_name = "User not found"
-        patient_data = None
         appointment_data = None
-        past_appointments_data = []
-    specialties = Specialization.query.all()
-    return render_template('patient-dashboard.html', user_name=user_name, patient=patient_data, appointment=appointment_data)
 
+    # Get seen appointments
+    seen_appointments_query = (
+        db.session.query(Appointment, Doctor)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .filter(Appointment.patient_id == patient.id)
+        .filter(Appointment.seen == 1)
+        .order_by(Appointment.date.desc())
+    )
+
+    seen_appointments = [
+        {
+            'doctor_name': doctor.users.name,
+            'doctor_photo': doctor.users.photo,
+            'appointment_date': appointment.date.strftime('%A, %d %B'),
+            'price': doctor.price,
+            'icon': 'fa-solid fa-calendar-check'
+        }
+        for appointment, doctor in seen_appointments_query.all()
+    ]
+
+    # Get monthly appointment count
+    month_appointments_count = (
+        Appointment.query.filter(
+            func.extract('month', Appointment.date) == datetime.now().month,
+            Appointment.patient_id == patient.id
+        ).count()
+    )
+
+    # Get the number of upcoming appointments
+    upcoming_appointments_count = next_appointment_query.count()
+
+    # Blood group and allergy info
+    blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
+    allergy = patient.allergy.name if patient.allergy else "Not Provided"
+
+    if request.method == 'POST':
+        # Handle form submission if necessary
+        pass
+
+    specialties = Specialization.query.all()
+    return render_template(
+        'patient-dashboard.html',
+        user_name=current_user.name,
+        patient=patient,
+        appointment=appointment_data,
+        seen_appointments=seen_appointments,
+        upcoming_appointments_count=upcoming_appointments_count,
+        month_appointments_count=month_appointments_count,
+        blood_group=blood_group,
+        allergy=allergy,
+        specialties=specialties
+    )
+
+@app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
+@login_required
+def appointment_History():
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    if patient is None:
+        return translate('User is not a patient'), 403
+
+    # Fetch all past appointments
+    appointments = (
+        db.session.query(Appointment, Doctor, Clinic, Specialization)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .join(Clinic, Doctor.clinic_id == Clinic.id)
+        .join(Specialization, Doctor.specialization_id == Specialization.id)
+        .filter(Appointment.patient_id == patient.id)
+        .filter(Appointment.date < db.func.current_date())
+        .order_by(Appointment.date.desc(), Appointment.time.desc())
+        .all()
+    )
+
+    # Fetch patient history
+    patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
+
+    # Process appointment and patient history data
+    appointment_data = []
+    for appointment, doctor, clinic, specialization in appointments:
+        appointment_start_time = datetime.combine(appointment.date, appointment.time)
+        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+        appointment_end_time = (appointment_start_time + duration_delta).time()
+        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+        duration_str = f"{doctor.duration.minute} min"
+        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
+        
+        status_str = AppStatus(appointment.status).name
+        report_url = getattr(appointment, 'Report', None)  # Assuming 'Report' is the field name for report URL
+        
+        appointment_data.append({
+            'date': formatted_date,
+            'time_range': time_range,
+            'duration': duration_str,
+            'clinic_address': clinic.address,
+            'doctor_name': doctor.users.name,
+            'doctor_photo': doctor.users.photo,
+            'doctor_specialization': specialization.specialization_name,
+            'status': status_str,
+            'report_url': report_url
+        })
+
+    # Process patient history data
+    history_data = []
+    for history in patient_histories:
+        added_by_user = User.query.get(history.addedBy)
+        history_data.append({
+            'details': history.details,
+            'type': PatientHisType(history.type).name,
+            'added_by': added_by_user.name if added_by_user else 'Unknown'
+        })
+
+    specialties = Specialization.query.all()
+
+    return render_template(
+        'appointment-History.html',
+        user_name=current_user.name,
+        patient=patient,
+        appointments=appointment_data,
+        patient_history=history_data,
+        specialties=specialties
+    )
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():

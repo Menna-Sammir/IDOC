@@ -57,7 +57,7 @@ def signup_page():
                     f'account created Success! You are logged in as: {user_to_create.name}',
                     category='success'
                 )
-                return redirect(url_for('patient_dash'))
+                return redirect(url_for('patient_dashboard'))
             flash(f'this account already exists', category='danger')
         if form.errors != {}:
             for err_msg in form.errors.values():
@@ -101,7 +101,7 @@ def login_page():
                     elif attempted_user.user_roles.role.role_name == 'clinic':
                         return redirect(url_for('clinic_dash'))
                     elif attempted_user.user_roles.role.role_name == 'patient':
-                        return redirect(url_for('patient_dash'))
+                        return redirect(url_for('patient_dashboard'))
                     return redirect(url_for('home_page'))
                 else:
                     flash('user name and password are not match', category='danger')
@@ -157,6 +157,8 @@ def change_password():
                     return redirect(url_for('doctor_dash'))
                 elif current_user.user_roles.role.role_name == 'clinic':
                     return redirect(url_for('clinic_dash'))
+                elif current_user.user_roles.role.role_name == 'patient':
+                    return redirect(url_for('patient_dashboard'))
                 return redirect(url_for('home_page'))
             else:
                 flash('Current password is incorrect.', 'danger')
