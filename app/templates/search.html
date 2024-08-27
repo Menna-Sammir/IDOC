@@ -116,10 +116,12 @@
                 <div class="doc-info-cont">
                   <h4 class="doc-name">
                     <a href="#"
-                      >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
+                      >{{ translate('Dr.') }} {{ translate(user.name) }}</a
                     >
                   </h4>
-                  <h5 class="text-muted ">{{ translate(doctor.clinic.name) }}</h5>
+                  <h5 class="text-muted">
+                    {{ translate(doctor.clinic_name) }}
+                  </h5>
                   <p class="doc-department mt-2">
                     <img
                       src="{{ specialization.photo }}"
@@ -141,15 +143,15 @@
                   <ul>
                     <li>
                       <i class="fas fa-map-marker-alt"></i>
-                      {{
-                      translate(governorate.governorate_name) }}{{
+                      {{ translate(governorate.governorate_name) }}{{
                       translate(',Egypt') }}
                     </li>
                     <li>
                       <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $
                     </li>
                     <li>
-                      <i class="far fa-clock"></i> {{ doctor.clinic.working_hours }}
+                      <i class="far fa-clock"></i> {{
+                      doctor.clinic.working_hours }}
                     </li>
                   </ul>
                 </div>
@@ -157,7 +159,8 @@
                   <a
                     href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                     class="apt-btn"
-                    ><i class="far fa-calendar-alt"></i> {{ translate('Book Appointment') }}</a
+                    ><i class="far fa-calendar-alt"></i> {{ translate('Book
+                    Appointment') }}</a
                   >
                 </div>
               </div>
