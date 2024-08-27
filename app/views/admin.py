@@ -327,4 +327,47 @@ def all_patients():
             'canceled_count': canceled_count
         })
 
-    return render_template('all-patients.html', patient_data=patient_data)
+    return render_template('all-appointments.html', patient_data=patient_data)
+
+
+from sqlalchemy.orm import aliased
+
+@app.route('/all_appointments', methods=['GET'])
+@login_required
+def all_appointments():
+    # Create aliases for the User table
+    clinic_user = aliased(User)
+    doctor_user = aliased(User)
+    patient_user = aliased(User)
+
+    # Fetch all appointments with the required joins
+    appointments_query = (
+        db.session.query(Appointment, Doctor, Clinic, Specialization, Patient, clinic_user, doctor_user, patient_user)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .join(Clinic, Doctor.clinic_id == Clinic.id)
+        .join(Specialization, Doctor.specialization_id == Specialization.id)
+        .join(Patient, Appointment.patient_id == Patient.id)
+        .join(clinic_user, Clinic.user_id == clinic_user.id)  # Join with alias for clinic
+        .join(doctor_user, Doctor.user_id == doctor_user.id)  # Join with alias for doctor
+        .join(patient_user, Patient.user_id == patient_user.id)  # Join with alias for patient
+        .order_by(Appointment.date.desc(), Appointment.time.desc())
+    )
+    
+    appointments = appointments_query.all()
+
+    # Process appointment data
+    appointment_data = []
+    for appointment, doctor, clinic, specialization, patient, clinic_user, doctor_user, patient_user in appointments:
+        status_enum = AppStatus(appointment.status)  # Convert status to enum
+        status_str = status_enum.name  # Convert enum to string
+
+        appointment_data.append({
+            'clinic_name': clinic_user.name,  # Access clinic name from aliased User
+            'doctor_name': doctor_user.name,  # Access doctor name from aliased User
+            'patient_name': patient_user.name,  # Access patient name from aliased User
+            'price': doctor.price,
+            'specialization': specialization.specialization_name,  # Access specialization name
+            'status': status_str
+        })
+
+    return render_template('all-appointments.html', appointments=appointment_data)
