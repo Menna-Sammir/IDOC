@@ -8,7 +8,7 @@ block body %}
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">
               {{ translate('Dashboard') }}
             </li>
@@ -57,8 +57,7 @@ block body %}
                     <div><span class="text-muted">{{ translate('have a nice day') }}</span></div>
                   </div>
                   <div class="col-md-6 col-lg-4" style="position: relative">
-                    <img
-                     class="clinic-dash"
+                    <img class="clinic-dash"
                       width="290"
                       src="../static/img/clinic-dash.png"
                     />
@@ -261,4 +260,3 @@ block body %}
   <!-- /Page Content -->
 
   {% endblock %}
-</div>
