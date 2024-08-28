@@ -10,12 +10,10 @@ import os
 from datetime import datetime
 from flask import session
 
-clinic_rooms = {}
 
 
 
-
-@app.route('/checkout-success', methods=['GET'])
+@app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():
     doctor = session.get('doctor', None)
     date = session.get('date', None)
@@ -25,7 +23,6 @@ def checkout_success():
     session.pop('date', None)
     session.pop('time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
-
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
@@ -642,17 +639,7 @@ def patient_checkout():
         session['doctor'] = doctor_data.name
         session['date'] = date.strftime('%d %b %Y')
         session['time'] = time.strftime('%H:%M:%S')
-        
-        clinic_id = clinic_data.id
-        if clinic_id in clinic_rooms:
-            socketio.emit('appointment_notification', {
-                'doctor': doctor_data.name,
-                'date': date.strftime('%d %b %Y'),
-                'time': time.strftime('%H:%M:%S')
-            }, room=clinic_rooms[clinic_id])
-
         return redirect(url_for('checkout_success'))
-
     return render_template(
         'checkout.html',
         doctor=doctor_data,

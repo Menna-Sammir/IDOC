@@ -8,7 +8,8 @@ SQLAlchemy==1.4.31
 flask_principal
 flask_mail
 wtforms-components
-Flask-WTF Flask-Uploads
+Flask-WTF
+Flask-Uploads
 
 #***** push database migration **********
 # from app import app, db
