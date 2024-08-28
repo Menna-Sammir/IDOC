@@ -50,21 +50,23 @@ def handle_connect():
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
     
-@app.route('/clinic_dash', methods=['GET', 'POST'], strict_slashes=False)
-@login_required
-def clinic_dash():
-    clinic_id = 'd6ed1f04-9b92-46ec-969c-7441690c348e'
-    session['clinic_id'] = clinic_id
-    return render_template('clinic.html', clinic_id=clinic_id)
+# @app.route('/clinic_dash', methods=['GET', 'POST'], strict_slashes=False)
+# @login_required
+# def clinic_dash():
+#     clinic_id = 'd6ed1f04-9b92-46ec-969c-7441690c348e'
+#     session['clinic_id'] = clinic_id
+#     return render_template('clinic.html', clinic_id=clinic_id)
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
-    doctor_id = 'd9f2f180-fa4e-4d20-8898-6c40ed7c75a7'
+    doctor_id = request.args.get('doctor_id')
+    print(doctor_id)
     date = datetime.now()
     time = datetime.now()
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()
+ 
     clinic_data = doctor_data.clinic
     gov = clinic_data.governorate
     if request.method == 'POST':

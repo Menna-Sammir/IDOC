@@ -104,7 +104,7 @@
 												</ul>
 											</div>
 											<div class="clinic-booking">
-												<form action="{{ url_for('doctor_appointments') }}" method="POST">
+												<form action="{{ url_for('book') }}" method="POST">
 													{{ form.hidden_tag() }}
 													{{ form.csrf_token }}
 													<input type="hidden" name="doctor_id" value="{{ doctor.id }}">

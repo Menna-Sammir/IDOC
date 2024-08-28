@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for, session
 from flask_principal import Permission, RoleNeed
 from app.models.models import *
 from datetime import datetime, timedelta
@@ -15,7 +15,7 @@ def convert_to_24_hour(time_str):
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
-    doctor_id = 'd9f2f180-fa4e-4d20-8898-6c40ed7c75a7'
+    doctor_id = session.get('doctor_id', None)
     doctor = Doctor.query.get_or_404(doctor_id)
     clinic = doctor.clinic
     specialization_name = doctor.specialization.specialization_name
@@ -50,15 +50,12 @@ def doctor_appointments():
         selected_timeslot = request.form['timeslot']
         print(f"TimeSolt...........................................{selected_timeslot}")
         return redirect(url_for('checkout', doctor_id=doctor.id, timeslot=selected_timeslot))
-
-
         new_appointment = Appointment(
             doctor_id=doctor.id,
             date=date,
             time=start_time
-        )
+            )
         db.session.add(new_appointment)
         db.session.commit()
         return "Appointment booked successfully!"
-
     return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name)

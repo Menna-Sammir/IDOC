@@ -1,5 +1,5 @@
 from app import app, db, principal
-from flask import render_template
+from flask import render_template, session, redirect, url_for
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
 
@@ -10,7 +10,10 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 @app.route('/clinic')
 def clinic_details():
-    clinic_id = '672c2380-9a95-46aa-bbd5-b22108a6e8e2'
+    clinic_id = session.get('clinic_id')
+    if not clinic_id:
+        return redirect(url_for('home'))
+    
     clinic = Clinic.query.get_or_404(clinic_id)
     clinic_image_path = "../static/img/clinic/" + clinic.photo
     today = datetime.today().date()
