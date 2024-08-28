@@ -52,38 +52,10 @@ Version      : 1.0
 	1. General
 -----------------------*/
 
-@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900');
+/* @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900'); */
 
-@font-face {
-	font-family: 'Material Icons';
-	font-style: normal;
-	font-weight: 400;
-	src: url(../fonts/MaterialIcons-Regular.eot);
-	/* For IE6-8 */
-	src: local('Material Icons'),
-		local('MaterialIcons-Regular'),
-		url(../fonts/MaterialIcons-Regular.html) format('woff2'),
-		url(../fonts/MaterialIcons-Regular.woff) format('woff'),
-		url(../fonts/MaterialIcons-Regular.ttf) format('truetype');
-}
 
-.material-icons {
-	font-family: 'Material Icons';
-	font-weight: normal;
-	font-style: normal;
-	font-size: 24px;
-	display: inline-block;
-	line-height: 1;
-	text-transform: none;
-	letter-spacing: normal;
-	word-wrap: normal;
-	white-space: nowrap;
-	direction: ltr;
-	-webkit-font-smoothing: antialiased;
-	text-rendering: optimizeLegibility;
-	-moz-osx-font-smoothing: grayscale;
-	font-feature-settings: 'liga';
-}
+
 
 /* logo */
 
@@ -111,6 +83,7 @@ body {
 	background-color: #f8f9fa;
 	color: #272b41;
 	font-family: "Poppins", sans-serif;
+	/* font-family: "Poppins", sans-serif; */
 	font-size: 0.9375rem;
 	height: 100%;
 	overflow-x: hidden;
@@ -481,7 +454,7 @@ a.bg-info:focus,
 a.bg-info:hover,
 button.bg-info:focus,
 button.bg-info:hover {
-	background-color: #028ee1 !important;
+	background-color: #00B4D8 !important;
 }
 
 .bg-warning,
@@ -520,6 +493,10 @@ button.bg-danger:hover {
 .text-primary,
 .dropdown-menu>li>a.text-primary {
 	color: #09e5ab !important;
+}
+.text-secondary,
+.dropdown-menu>li>a.text-primary {
+	color: #48CAE4 !important;
 }
 
 .text-success,
@@ -655,8 +632,8 @@ button.bg-danger:hover {
 }
 
 .btn-info {
-	background-color: #009efb;
-	border: 1px solid #009efb
+	background-color: #48CAE4;
+	border: 1px solid #48CAE4
 }
 
 .btn-info:hover,
@@ -664,8 +641,8 @@ button.bg-danger:hover {
 .btn-info.active,
 .btn-info:active,
 .open>.dropdown-toggle.btn-info {
-	background-color: #028ee1;
-	border: 1px solid #028ee1
+	background-color: #00B4D8;
+	border: 1px solid #00B4D8
 }
 
 .btn-info.active.focus,
@@ -677,15 +654,15 @@ button.bg-danger:hover {
 .open>.dropdown-toggle.btn-info.focus,
 .open>.dropdown-toggle.btn-info:focus,
 .open>.dropdown-toggle.btn-info:hover {
-	background-color: #028ee1;
-	border: 1px solid #028ee1
+	background-color: #00B4D8;
+	border: 1px solid #00B4D8
 }
 
 .btn-info.active:not(:disabled):not(.disabled),
 .btn-info:active:not(:disabled):not(.disabled),
 .show>.btn-info.dropdown-toggle {
-	background-color: #028ee1;
-	border-color: #028ee1;
+	background-color: #00B4D8;
+	border-color: #00B4D8;
 	color: #fff;
 }
 
@@ -697,8 +674,8 @@ button.bg-danger:hover {
 
 .btn-info.disabled,
 .btn-info:disabled {
-	background-color: #009efb;
-	border-color: #009efb;
+	background-color: #48CAE4;
+	border-color: #48CAE4;
 	color: #fff;
 }
 
@@ -1033,7 +1010,7 @@ button.bg-danger:hover {
 
 .dropdown-item.active,
 .dropdown-item:active {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 }
 
 .navbar-nav .open .dropdown-menu {
@@ -1890,7 +1867,7 @@ button.bg-danger:hover {
 .slick-prev:focus,
 .slick-next:hover,
 .slick-next:focus {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 	color: #fff;
 	opacity: 1;
 }
@@ -1956,8 +1933,9 @@ button.bg-danger:hover {
 
 
 .slick-dots li:nth-child(n+5) {
-    display: none!important;
+	display: none !important;
 }
+
 /*-----------------
 	10. Focus Label
 -----------------------*/
@@ -2225,7 +2203,7 @@ button.bg-danger:hover {
 	position: absolute;
 	top: 2px;
 	right: 0;
-	left:auto;
+	left: auto;
 	border: 7px solid #fff;
 	border-color: transparent transparent #ffffff #ffffff;
 	-webkit-transform-origin: 0 0;
@@ -2444,7 +2422,7 @@ button.bg-danger:hover {
 }
 
 .bar-icon span {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 	display: block;
 	float: left;
 	height: 3px;
@@ -2475,7 +2453,8 @@ html.menu-opened body {
 -----------------------*/
 
 .footer {
-	background-color: #15558d;
+	background-color: #0077B6;
+	/* background-color: #15558d; */
 
 }
 
@@ -2684,7 +2663,7 @@ html.menu-opened body {
 }
 
 .login-header h3 a {
-	color: #0de0fe;
+	color: #90E0EF;
 	float: right;
 	font-size: 15px;
 	margin-top: 2px;
@@ -2953,12 +2932,12 @@ html.menu-opened body {
 }
 
 .slick-dots li.slick-active button {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 }
 
 .slick-dots li.slick-active button:before {
 	opacity: 1;
-	color: #0de0fe;
+	color: #90E0EF;
 }
 
 .slick-slide {
@@ -3018,7 +2997,7 @@ html.menu-opened body {
 
 .speicality-img span i {
 	font-size: 15px;
-	color: #0de0fe;
+	color: #90E0EF;
 }
 
 .speicality-item p {
@@ -3073,6 +3052,7 @@ html.menu-opened body {
 	transform: translateZ(0);
 	transition: all 2000ms cubic-bezier(.19, 1, .22, 1) 0ms;
 	width: 100%;
+	height: 200px;
 }
 
 .doc-img:hover img {
@@ -3199,9 +3179,9 @@ html.menu-opened body {
 }
 
 .view-btn {
-	color: #0de0fe;
+	color: #90E0EF;
 	font-size: 13px;
-	border: 2px solid #0de0fe;
+	border: 2px solid #90E0EF;
 	text-align: center;
 	display: block;
 	font-weight: 500;
@@ -3210,13 +3190,13 @@ html.menu-opened body {
 
 .view-btn:hover,
 .view-btn:focus {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 	color: #fff;
 }
 
 .book-btn {
-	border: 2px solid #0de0fe;
-	color: #0de0fe;
+	border: 2px solid #48CAE4;
+	color: #48CAE4;
 	font-size: 13px;
 	text-align: center;
 	display: block;
@@ -3227,8 +3207,8 @@ html.menu-opened body {
 
 .book-btn:hover,
 .book-btn:focus {
-	background-color: #01cae4;
-	border-color: #01cae4;
+	background-color: #44b8cf;
+	border-color: #44b8cf;
 	color: #fff;
 }
 
@@ -3250,7 +3230,7 @@ html.menu-opened body {
 }
 
 .about-content a {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 	border-radius: 4px;
 	color: #fff;
 	display: inline-block;
@@ -3423,7 +3403,7 @@ html.menu-opened body {
 	display: none;
 	left: 4px;
 	top: 0;
-	color: #0de0fe;
+	color: #90E0EF;
 	font-size: 11px;
 }
 
@@ -3502,8 +3482,8 @@ html.menu-opened body {
 }
 
 .btn-search .btn {
-	background-color: #0de0fe;
-	border: 1px solid #0de0fe;
+	background-color: #90E0EF;
+	border: 1px solid #90E0EF;
 	color: #fff;
 	height: 46px;
 	font-weight: 500;
@@ -4166,15 +4146,10 @@ html.menu-opened body {
 /*-----------------
 	18. Booking
 -----------------------*/
-
 .date-container {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 20px;
-  }
-  .date-item {
-	border: 2px solid #ddd;
-	border-radius: 5px;
 }
 
 .date-item {
@@ -4187,8 +4162,9 @@ html.menu-opened body {
 	margin: 0px;
 	cursor: pointer;
 	width: 100%;
-  }
-  div.date-item > h6{
+}
+
+div.date-item>h6 {
 	height: 70px;
 	width: 65px;
 	text-align: center;
@@ -4196,37 +4172,33 @@ html.menu-opened body {
 	justify-content: center;
 	align-items: center;
 	border-radius: 20px !important;
-  }
-  .active-card {
+}
+
+.active-card {
 	background-color: rgba(90, 201, 208, 50%) !important;
 	border: 2px solid #8CC2C6;
 	height: 115px;
-    color: #fff;
+	color: #fff;
 	box-shadow: rgba(90, 201, 208, 0.3) -10px 10px, rgba(90, 201, 208, 0.2) -15px 15px, rgba(90, 201, 208, 0.1) -20px 20px, rgba(90, 201, 208, 0.05) -25px 25px;
 }
+
 .card.suggestion-card {
-    opacity: 0.5;
-    transition: opacity 0.3s;
+	/* opacity: 0.5; */
+	transition: opacity 0.3s;
 }
+
 .card.suggestion-card:hover {
-    opacity: 0.8;
+	opacity: 0.8;
 	border: 2px solid #8CC2C6;
 	background-color: rgba(90, 201, 208, 50%) !important;
 }
-  div.date-item > h6.active{
-	background-color: rgba(90, 201, 208, 50%) !important;
-	border: 2px solid #8CC2C6;
-	color: #fff;
-  }
 
-
-  .timeslots {
+div.date-item>h6.active {
+	background-color: rgb(90 201 208 / 33%) !important;
+    border: 2px solid #8CC2C6;
+    color: #787878;
 }
 
-.date-item.active {
-	background-color: #5ac9d0;
-	color: #fff;
-}
 
 .timeslots {
 	display: none;
@@ -4249,14 +4221,11 @@ html.menu-opened body {
 
 .timeslot input[type="radio"] {
 	display: none;
-  }
-  .timeslot.active {
-	background-color:rgba(90, 201, 208, 50%) !important;
-	border: 2px solid #8CC2C6;
 }
 
 .timeslot.active {
-	background-color: #5ac9d0;
+	background-color: rgba(90, 201, 208, 50%) !important;
+	border: 2px solid #8CC2C6;
 	color: #fff;
 	margin: auto;
 	border-radius: 20px;
@@ -4264,12 +4233,9 @@ html.menu-opened body {
 
 .timeslots label {
 	margin: auto;
-	}
-  .timeslot input[type="radio"]:checked + label {
 }
 
 .timeslot input[type="radio"]:checked+label {
-	background-color: #5ac9d0;
 	color: #fff;
 	margin: auto;
 }
@@ -4287,11 +4253,10 @@ html.menu-opened body {
 }
 
 .booking-doc-info .booking-doc-img img {
-	border-radius: 50px;
-	height: 50px;
-	width: 50px;
-	object-fit: cover;
-  }
+	width: 60px;
+    border-radius: 50%;
+    height: 60px;
+}
 
 .schedule-widget {
 	border-radius: 4px;
@@ -5001,7 +4966,7 @@ html.menu-opened body {
 -----------------------*/
 
 .add-new-btn {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 	border-radius: 30px;
 	color: #fff;
 	display: inline-block;
@@ -5013,7 +4978,7 @@ html.menu-opened body {
 .add-new-btn:focus,
 .add-new-btn:hover,
 .add-new-btn:active {
-	background-color: #0de0fe;
+	background-color: #90E0EF;
 	color: #fff;
 }
 
@@ -5064,7 +5029,7 @@ html.menu-opened body {
 }
 
 .add-more-item a {
-	color: #0de0fe;
+	color: #90E0EF;
 	font-weight: 500;
 }
 
@@ -5536,8 +5501,8 @@ html.menu-opened body {
 }
 
 .chat-cont-right .chat-footer .input-group .input-group-append .btn.msg-send-btn {
-	background-color: #0de0fe;
-	border-color: #0de0fe;
+	background-color: #90E0EF;
+	border-color: #90E0EF;
 	border-radius: 50%;
 	color: #fff;
 	margin-left: 10px;
@@ -6252,7 +6217,7 @@ html.menu-opened body {
 
 .dashboard-menu>ul>li:hover>a,
 .dashboard-menu>ul>li.active>a {
-	color: #0de0fe;
+	color: #90E0EF;
 }
 
 .dashboard-menu ul li a i {
@@ -8216,7 +8181,7 @@ html.menu-opened body {
 	}
 
 	.login-header h3 a {
-		color: #0de0fe;
+		color: #90E0EF;
 		float: none;
 		font-size: 15px;
 		margin-top: 10px;
@@ -8810,9 +8775,10 @@ textarea {
 	transform: scale(1.1);
 }
 
-.clinic-card{
+.clinic-card {
 	border: 3px solid #e7fdff;
 }
+
 .doctordash-back {
 	background-color: #e2f9f8;
 	display: inline-block;
@@ -9216,12 +9182,12 @@ textarea {
 	padding: 10px;
 }
 
-.search-btn{
+.search-btn {
 	border-radius: 50%;
 
 }
 
-.bg-none{
+.bg-none {
 	background-color: transparent;
 }
 
@@ -9246,137 +9212,152 @@ textarea {
 
 
 .circle {
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 50%;
+	overflow: hidden;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .large {
-    width: 220px;
-    height: 220px;
-    border: 7px solid #58C9D0;
-    position: relative;
-    z-index: 2;
+	width: 220px;
+	height: 220px;
+	border: 7px solid #58C9D0;
+	position: relative;
+	z-index: 2;
 }
 
 .large img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .small {
-    width: 120px;
-    height: 120px;
-    border: 7px solid #48acb1;
-    position: absolute;
-    right: -22px;
-    top: 120px;
-    transform: translate(25%, 25%);
-    z-index: 3;
+	width: 120px;
+	height: 120px;
+	border: 7px solid #48acb1;
+	position: absolute;
+	right: -22px;
+	top: 120px;
+	transform: translate(25%, 25%);
+	z-index: 3;
 }
 
 .small img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .background {
-    position: absolute;
-    background-color: #48acb1;
-    z-index: 1;
+	position: absolute;
+	background-color: #48acb1;
+	z-index: 1;
 }
 
 .background-large {
 	position: absolute;
-    width: 80px;
-    height: 80px;
-    bottom: 195px;
-    right: -74px;
+	width: 80px;
+	height: 80px;
+	bottom: 195px;
+	right: -74px;
 	background-color: #58C9D0;
 }
 
 .background-small {
-    width: 90px;
-    height: 90px;
-    left: -20px;
+	width: 90px;
+	height: 90px;
+	left: -20px;
 }
 
 /* Media queries for responsiveness */
 @media (max-width: 992px) {
-    .large {
-        width: 180px;
-        height: 180px;
-    }
-    .small {
-        width: 100px;
-        height: 100px;
-        right: -18px;
-        top: 100px;
-    }
-    .background-large {
-        width: 60px;
-        height: 60px;
-        right: -20px;
-    }
-    .background-small {
-        width: 70px;
-        height: 70px;
-        left: -15px;
-    }
+	.large {
+		width: 180px;
+		height: 180px;
+	}
+
+	.small {
+		width: 100px;
+		height: 100px;
+		right: -18px;
+		top: 100px;
+	}
+
+	.background-large {
+		width: 60px;
+		height: 60px;
+		right: -20px;
+	}
+
+	.background-small {
+		width: 70px;
+		height: 70px;
+		left: -15px;
+	}
 }
 
 @media (max-width: 768px) {
-    .large {
-        width: 150px;
-        height: 150px;
-    }
-    .small {
-        width: 80px;
-        height: 80px;
-        right: -15px;
-        top: 80px;
-    }
-    .background-large {
-        width: 50px;
-        height: 50px;
-        right: -15px;
-    }
-    .background-small {
-        width: 60px;
-        height: 60px;
-        left: -10px;
-    }
+	.large {
+		width: 150px;
+		height: 150px;
+	}
+
+	.small {
+		width: 80px;
+		height: 80px;
+		right: -15px;
+		top: 80px;
+	}
+
+	.background-large {
+		width: 50px;
+		height: 50px;
+		right: -15px;
+	}
+
+	.background-small {
+		width: 60px;
+		height: 60px;
+		left: -10px;
+	}
 }
 
 @media (max-width: 576px) {
-    .large {
-        width: 120px;
-        height: 120px;
-    }
-    .small {
-        width: 60px;
-        height: 60px;
-        right: -10px;
-        top: 60px;
-    }
-    .background-large {
-        width: 40px;
-        height: 40px;
-        right: -10px;
-    }
-    .background-small {
-        width: 50px;
-        height: 50px;
-        left: -5px;
-    }
-}
-.img-fluid {
-    max-width: 100%;
-    height: auto;
+	.large {
+		width: 120px;
+		height: 120px;
+	}
+
+	.small {
+		width: 60px;
+		height: 60px;
+		right: -10px;
+		top: 60px;
+	}
+
+	.background-large {
+		width: 40px;
+		height: 40px;
+		right: -10px;
+	}
+
+	.background-small {
+		width: 50px;
+		height: 50px;
+		left: -5px;
+	}
 }
 
-.text-main h1,.text-main h2, .text-main h3 {
-	color: #2c4964;
+.img-fluid {
+	max-width: 100%;
+	height: auto;
+}
+
+.text-main h1,
+.text-main h2,
+.text-main h3 {
+	color: #03045E;
+}
+.text-home{
+	color:#0077B6
 }

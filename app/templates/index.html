@@ -29,7 +29,7 @@
             class="d-flex flex-wrap align-items-center justify-content-between py-3"
           >
             <div class="flex-grow-1 flex-shrink-1 flex-basis-auto">
-              <a class="w-15 d-block" href="/index.html">
+              <a class="w-15 d-block" href="#">
                 <svg
                   version="1.0"
                   id="svg4171"
@@ -154,15 +154,11 @@
           >
             <div class="card w-75 bg-none border-0">
               <div class="card-header d-flex align-items-center">
-                <i
-                  class="far fa-calendar-alt fa-2x"
-                  style="color: rgb(0, 112, 205)"
-                ></i>
+                <i class="far fa-calendar-alt fa-2x text-home"></i>
                 <div class="ml-2">
                   <p
-                    class="mb-0"
+                    class="mb-0 text-home"
                     style="
-                      color: rgb(0, 112, 205);
                       font-size: 16px;
                       font-weight: bold;
                       padding-bottom: 1px;
@@ -171,9 +167,8 @@
                     Search for a doctor
                   </p>
                   <p
-                    class="mb-0"
+                    class="mb-0 text-home"
                     style="
-                      color: rgb(0, 112, 205);
                       font-size: 12px;
                       padding-bottom: 1px;
                     "
@@ -286,21 +281,21 @@
               </p>
               <ul class="p-0">
                 <li class="d-flex align-items-top my-3">
-                  <i class="far fa-check-circle fa-2x mr-2 text-cyan"></i
+                  <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
                     >Increase the proportion of females who get screened for
                     breast cancer-C-05</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
-                  <i class="far fa-check-circle fa-2x mr-2 text-cyan"></i
+                  <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
                     >Increase the proportion of adults with arthritis who get
                     counseling for physical activity - A-04</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
-                  <i class="far fa-check-circle fa-2x mr-2 text-cyan"></i
+                  <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
                     >Increase the proportion of people with sickle cell disease
                     on Medicare who received disease-modifying therapies -
@@ -339,7 +334,7 @@
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
-                        <a href="#">{{doctor.name}}</a>
+                        <a href="#">Dr. {{doctor.name}}</a>
                         <i class="fas fa-check-circle verified"></i>
                       </h3>
                       <p class="speciality">
@@ -374,10 +369,7 @@
                   <!-- /Doctor Widget -->
                 </div>
                 {% endfor %}
-
               </div>
-
-
             </div>
           </div>
         </div>
