@@ -46,191 +46,34 @@
 									</div>
 								</div>
 							</div>
-							<form method="POST">
-								{{ form.hidden_tag() }}
-								<table>
-									<thead>
-										<tr>
-											<th>Date</th>
-											<th>Day</th>
-											<th>Available Times</th>
+							<form action="" method="get">
+								<table class="w-100">
+									{% for date, day in dates %}
+									<thead class="d-flex w-100 bg-secondary text-white">
+										<tr class="w-100">
+											<th class="d-flex justify-content-center w-100 text-center">{{ date }} <br> {{ day }}</th>
 										</tr>
 									</thead>
-									<tbody>
-										{% for date, day in dates %}
-										<tr>
-											<td>{{ date }}</td>
-											<td>{{ day }}</td>
-											<td>
-												{{ form.timeslots }}
+									<tbody class="d-flex">
+										
+										<tr class="w-100">
+											<td class="d-flex justify-content-center w-100"> 
+												{% for timeslot, display in timeslots_by_date[date] %}
+													<div class="m-5 p-3 mb-2 bg-info text-white rounded font-weight-bold text-center d-flex align-items-center">
+														<input type="radio" id="timeslot_{{ loop.index }}" name="timeslot_{{ date }}" value="{{ timeslot }}">
+														<label for="timeslot_{{ loop.index }}" class="m-auto">{{ display }}</label>
+													</div>
+												{% endfor %}
 											</td>
 										</tr>
-										{% endfor %}
+										
 									</tbody>
+									{% endfor %}
 								</table>
-								<button type="submit">Book Appointment</button>
+
+								<input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+								<button type="submit" class="btn btn-primary submit-btn">Proceed to Pay</button>
 							</form>
-							<!-- Schedule Widget -->
-							<div class="card booking-schedule schedule-widget">
-
-								<!-- Schedule Header -->
-								<div class="schedule-header">
-									<div class="row">
-										<div class="col-md-12">
-
-											<!-- Day Slot -->
-											<div class="day-slot">
-												<ul>
-													<li class="left-arrow">
-														<a href="#">
-															<i class="fa fa-chevron-left"></i>
-														</a>
-													</li>
-													<li>
-														<span>Mon</span>
-														<span class="slot-date">11 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Tue</span>
-														<span class="slot-date">12 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Wed</span>
-														<span class="slot-date">13 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Thu</span>
-														<span class="slot-date">14 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Fri</span>
-														<span class="slot-date">15 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Sat</span>
-														<span class="slot-date">16 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li>
-														<span>Sun</span>
-														<span class="slot-date">17 Nov <small class="slot-year">2019</small></span>
-													</li>
-													<li class="right-arrow">
-														<a href="#">
-															<i class="fa fa-chevron-right"></i>
-														</a>
-													</li>
-												</ul>
-											</div>
-											<!-- /Day Slot -->
-
-										</div>
-									</div>
-								</div>
-								<!-- /Schedule Header -->
-
-								<!-- Schedule Content -->
-								<div class="schedule-cont">
-									<div class="row">
-										<div class="col-md-12">
-
-											<!-- Time Slot -->
-											<div class="time-slot">
-												<ul class="clearfix">
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing selected" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-													<li>
-														<a class="timing" href="#">
-															<span>9:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>10:00</span> <span>AM</span>
-														</a>
-														<a class="timing" href="#">
-															<span>11:00</span> <span>AM</span>
-														</a>
-													</li>
-												</ul>
-											</div>
-											<!-- /Time Slot -->
-
-										</div>
-									</div>
-								</div>
-								<!-- /Schedule Content -->
-
-							</div>
-							<!-- /Schedule Widget -->
-
-							<!-- Submit Section -->
-							<div class="submit-section proceed-btn text-right">
-								<a href="checkout.html" class="btn btn-primary submit-btn">Proceed to Pay</a>
-							</div>
-							<!-- /Submit Section -->
-
 						</div>
 					</div>
 				</div>
