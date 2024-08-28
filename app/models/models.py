@@ -35,6 +35,7 @@ class Specialization(BaseModel):
     __tablename__ = 'specialization'
 
     specialization_name = db.Column(VARCHAR(100), nullable=False)
+    photo = db.Column(VARCHAR(255))
     doctors = relationship("Doctor", back_populates="specialization")
 
 class Doctor(BaseModel):
@@ -137,5 +138,3 @@ class Message(BaseModel):
 
     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
     appointment = relationship("Appointment", back_populates="messages")
-
-
