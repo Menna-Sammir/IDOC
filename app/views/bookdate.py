@@ -57,17 +57,10 @@ def doctor_appointments():
         timeslots_by_date[date[0]] = daily_timeslots
 
     if request.method == 'POST':
+        print(request.form)
         selected_timeslot = request.form['timeslot']
-        return redirect(url_for('checkout', doctor_id=doctor.id, timeslot=selected_timeslot))
-
-
-        new_appointment = Appointment(
-            doctor_id=doctor.id,
-            date=date,
-            time=start_time
-        )
-        db.session.add(new_appointment)
-        db.session.commit()
-        return "Appointment booked successfully!"
+        doctor_id = request.form['doctor_id']
+        print(f"Doctor ID: {doctor_id}, Timeslot: {selected_timeslot}")
+        # return redirect(url_for('next_step', doctor_id=doctor_id, timeslot=selected_timeslot))
 
     return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name)
