@@ -52,7 +52,7 @@
 									{% for specialization in specializations %}
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialization" value="{{ specialization.name}}" class="Specialization" {% if specialization.checked %} checked {% endif %}>
+											<input type="checkbox" name="select_specialization" value="{{ specialization.id}}" class="Specialization" {% if specialization.checked %} checked {% endif %}>
 											<span class="checkmark"></span> {{ specialization.specialization_name}}
 										</label>
 									</div>
