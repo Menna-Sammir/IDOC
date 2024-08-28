@@ -54,13 +54,26 @@ def doctor_appointments():
                 timeslot = f"{date[0]} {start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
                 daily_timeslots.append((timeslot, f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"))
 
-        timeslots_by_date[date[0]] = daily_timeslots
+        existing_appointments = Appointment.query.filter_by(doctor_id=doctor.id, date=date[0]).all()
+        booked_timeslots = [f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(a.time + timedelta(hours=1)).strftime('%H:%M')}" for a in existing_appointments]
+
+        available_timeslots = []
+        for timeslot in daily_timeslots:
+            if timeslot[0] in booked_timeslots:
+                available_timeslots.append((timeslot[0], timeslot[1], False)) 
+            else:
+                available_timeslots.append((timeslot[0], timeslot[1], True))  
+
+        timeslots_by_date[date[0]] = available_timeslots
 
     if request.method == 'POST':
         print(request.form)
         selected_timeslot = request.form['timeslot']
         doctor_id = request.form['doctor_id']
-        print(f"Doctor ID: {doctor_id}, Timeslot: {selected_timeslot}")
-        # return redirect(url_for('next_step', doctor_id=doctor_id, timeslot=selected_timeslot))
+
+        date_str, time_range = selected_timeslot.split()
+        start_time_str, end_time_str = time_range.split('-')
+        print(f"Doctor ID: {doctor_id}, Date: {date_str}, Start Time: {start_time_str}, End Time: {end_time_str}")
+        # return redirect(url_for('next_step', doctor_id=doctor_id, timeslot=selected_timeslot, start_time=start_time_str, end_time=end_time_str))
 
     return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name)
