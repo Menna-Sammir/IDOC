@@ -5,7 +5,7 @@ import os
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal
-
+import uuid
 
 load_dotenv()
 app = Flask(__name__)
@@ -18,6 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqldb://{IDOC_USER}:{IDOC_PWD}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
 db = SQLAlchemy(app)
+app.config['CACHE_ID'] = str(uuid.uuid4())
 
 bcrypt= Bcrypt(app)
 login_manager = LoginManager(app)

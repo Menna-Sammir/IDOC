@@ -14,16 +14,16 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 @app.route('/')
-@app.route('/home')
+@app.route('/home', strict_slashes=False)
 def home_page():
     return render_template('index.html')
 
 
-# @app.route('/test')
-# def test_page():
-#     return render_template('search.html')
+@app.route('/test')
+def test_page():
+    return render_template('search.html')
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 @admin_permission.require(http_exception=403)
 def doctor_signup_page():
@@ -63,7 +63,7 @@ def doctor_signup_page():
     return render_template('doctor-signup.html', form=form)
 
 
-@app.route('/register-clinic', methods=['GET', 'POST'])
+@app.route('/register-clinic', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 @admin_permission.require(http_exception=403)
 def clinic_signup_page():
@@ -104,7 +104,7 @@ def clinic_signup_page():
         return render_template('clinic-signup.html', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login_page():
     form = LoginForm()
     if request.method == 'POST':
@@ -139,7 +139,7 @@ def login_page():
     return render_template('login.html', form=form)
 
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
     logout_user()
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
@@ -153,7 +153,7 @@ def permission_denied(e):
     return redirect(url_for('login_page'))
 
 
-@app.route('/doctor-dashboard', methods=['GET', 'POST'])
+@app.route('/doctor-dashboard', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def doctor_dashboard():
     current_user = request.args.get('current_user',None)
@@ -162,11 +162,11 @@ def doctor_dashboard():
     return render_template('doctor-dashboard.html')
 
 
-@app.route('/clinic_dashboard', methods=['GET', 'POST'])
+@app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
 def clinic_dashboard():
     return render_template('doctor-dashboard.html')
 
-@app.route('/booking', methods=['GET', 'POST'])
+@app.route('/booking', methods=['GET', 'POST'], strict_slashes=False)
 def doctor_appointments():
     form = AppointmentForm()
 
