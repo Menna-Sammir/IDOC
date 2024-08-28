@@ -68,7 +68,7 @@ def add_clinic():
                         phone=add_clinic_form.phone.data,
                         email=add_clinic_form.email_address.data,
                         address=add_clinic_form.clinicAddress.data,
-                        working_hours=f'from {from_hour} to {to_hour}',
+                        working_hours=f' {from_hour} - {to_hour}',
                         governorate_id=add_clinic_form.gov_id.data
                     )
 

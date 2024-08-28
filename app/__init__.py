@@ -58,5 +58,5 @@ from app.views import doctor
 from app.views import admin
 from app.views import patient
 from app.views import clinic_dash
-# from app.views import bookdate
+from app.views import bookdate
 
