@@ -85,6 +85,7 @@ class Doctor(BaseModel):
     email = db.Column(VARCHAR(100), nullable=False)
     photo = db.Column(VARCHAR(255))
     price = db.Column(INTEGER)
+    duration  = db.Column(TIME)
     iDNum = db.Column(VARCHAR(50), nullable=False)
 
     specialization_id = db.Column(
@@ -93,6 +94,7 @@ class Doctor(BaseModel):
     clinic_id = db.Column(VARCHAR(36), ForeignKey('clinic.id'), nullable=True)
     From_working_hours = db.Column(TIME(), nullable=False)
     To_working_hours = db.Column(TIME(), nullable=False)
+
 
     users = db.relationship('User', backref='doctor', uselist=False)
     specialization = relationship('Specialization', back_populates='doctors')

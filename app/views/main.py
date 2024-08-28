@@ -39,7 +39,7 @@ def doctor_signup_page():
                     photo= f"static/images/doctors/{photo}"
                 )
                 clinic_role = Role.query.filter_by(role_name='doctor').first_or_404()
-                role_to_create = UserRole(role_id =clinic_role.id, user_id=user_to_create)
+                role_to_create = UserRole(role_id =clinic_role.id, user=user_to_create)
                 db.session.add(user_to_create)
                 db.session.add(role_to_create)
                 db.session.commit()
@@ -83,7 +83,7 @@ def clinic_signup_page():
                     photo= f"static/images/clinic/{photo}"
                 )
                 clinic_role = Role.query.filter_by(role_name='clinic').first_or_404()
-                role_to_create = UserRole(role_id =clinic_role.id, user_id=user_to_create)
+                role_to_create = UserRole(role_id =clinic_role.id, user=user_to_create)
                 db.session.add(user_to_create)
                 db.session.add(role_to_create)
                 db.session.commit()
