@@ -24,6 +24,13 @@ def on_identity_loaded(sender, identity):
 def inject_cache_id():
     return {'cache_id': app.config['CACHE_ID']}
 
+
+@app.context_processor
+def inject_current_user():
+    return {'current_user': app.config['Current_user']}
+
+
+
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
 

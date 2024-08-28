@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_principal import Principal
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 import uuid
@@ -27,7 +27,10 @@ app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
 
 
 db = SQLAlchemy(app)
+
 app.config['CACHE_ID'] = str(uuid.uuid4())
+
+app.config['Current_user'] = current_user
 
 #Configure flask_bcrypt
 bcrypt= Bcrypt(app)
