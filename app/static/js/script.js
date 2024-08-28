@@ -394,16 +394,16 @@ Version      : 1.0
 })(jQuery);
 
 // select2
-$(document).ready(function () {
-  $(".doctor-select2").select2({
-    containerCssClass: "doctor-select",
-    width: "100%",
-  });
-  $(".location-select2").select2({
-    containerCssClass: "location-select",
-    width: "100%",
-  });
-});
+// $(document).ready(function () {
+//   $(".doctor-select2").select2({
+//     containerCssClass: "doctor-select",
+//     width: "100%",
+//   });
+//   $(".location-select2").select2({
+//     containerCssClass: "location-select",
+//     width: "100%",
+//   });
+// });
 document.addEventListener("DOMContentLoaded", function() {
   const dateItems = document.querySelectorAll(".date-item");
   const timeslotsContainers = document.querySelectorAll(".timeslots");
