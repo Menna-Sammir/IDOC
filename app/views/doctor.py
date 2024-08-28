@@ -75,7 +75,6 @@ def search_doctor():
 
     print(f"Doctors: {doctors}")
     print(f"Generated SQL Query: {query}")
-    return render_template('search.html', doctors=doctors,
 
     return render_template('search.html', doctors=doctors,
                            specializations=specializations, governorates=governorates,

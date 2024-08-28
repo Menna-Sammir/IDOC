@@ -10,7 +10,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 @app.route('/clinic')
 def clinic_details():
-    clinic_id = 'cl1'
+    clinic_id = '672c2380-9a95-46aa-bbd5-b22108a6e8e2'
     clinic = Clinic.query.get_or_404(clinic_id)
     clinic_image_path = "../static/img/clinic/" + clinic.photo
     today = datetime.today().date()
