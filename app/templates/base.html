@@ -106,6 +106,60 @@
             </ul>
           </div>
           <ul class="nav header-navbar-rht">
+                        					<!-- Notifications -->
+					<li class="nav-item dropdown noti-dropdown">
+						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+							<i class="fas fa-bell"></i> <span class="badge badge-pill">3</span>
+						</a>
+						<div class="dropdown-menu notifications">
+							<div class="topnav-dropdown-header">
+								<span class="notification-title">Notifications</span>
+								<a href="javascript:void(0)" class="clear-noti"> Clear All </a>
+							</div>
+							<div class="noti-content">
+								<ul class="notification-list">
+									<li class="notification-message">
+										<a href="#">
+											<div class="media">
+												<span class="avatar avatar-sm">
+													<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
+												</span>
+												<div class="media-body">
+													<p class="noti-details"><span class="noti-title">Dr. Ruby Perrin</span> Schedule <span class="noti-title">her appointment</span></p>
+													<p class="noti-time"><span class="notification-time">4 mins ago</span></p>
+												</div>
+											</div>
+										</a>
+									</li>
+									<li class="notification-message">
+										<a href="#">
+											<div class="media">
+											
+											</div>
+										</a>
+									</li>
+									<li class="notification-message">
+										<a href="#">
+											<div class="media">
+										
+											</div>
+										</a>
+									</li>
+									<li class="notification-message">
+										<a href="#">
+											<div class="media">
+
+											</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="topnav-dropdown-footer">
+								<a href="#">View all Notifications</a>
+							</div>
+						</div>
+					</li>
+					<!-- /Notifications -->
             <!-- User Menu -->
             <li class="nav-item dropdown has-arrow logged-item">
               <a
@@ -136,7 +190,7 @@
                     <p class="text-muted mb-0">Doctor</p>
                   </div>
                 </div>
-                {% if current_user.is_authenticated and hasattr(current_user, 'roles') and current_user.roles.role_name == 'Admin' %}
+                {% if current_user.roles.role_name == 'Admin' %}
                 <a
                   class="dropdown-item"
                   href="{{ url_for('doctor_dash') }}"
@@ -155,6 +209,7 @@
               </div>
             </li>
             <!-- /User Menu -->
+
           </ul>
         </nav>
         {% block alert %} {% include 'base-alert.html' %} {% endblock %}
@@ -170,6 +225,61 @@
       <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
-    {% block js %} {% include 'base-js.html' %} {% endblock %}
+    {% block js %} {% include 'base-js.html' %}
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var socket = io.connect('http://' + document.domain + ':' + location.port, {
+                query: 'clinic_id=' + 'your_clinic_id' // Replace with actual clinic ID
+            });
+
+            socket.on('connected', function(msg) {
+                console.log(msg.message);
+            });
+
+            socket.on('appointment_notification', function(data) {
+                console.log('Appointment notification:', data);
+                addNotification(data);
+            });
+
+            socket.on('disconnected', function(msg) {
+                console.log(msg.message);
+            });
+
+            function addNotification(data) {
+                var notificationList = document.getElementById('notification-list');
+                var notificationCount = document.getElementById('notification-count');
+                
+                var newNotification = document.createElement('li');
+                newNotification.classList.add('notification-message');
+
+                var notificationContent = `
+                    <a href="#">
+                        <div class="media">
+                            <span class="avatar avatar-sm">
+                                <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
+                            </span>
+                            <div class="media-body">
+                                <p class="noti-details">
+                                    <span class="noti-title">Dr. ${data.doctor}</span> has a new appointment on 
+                                    <span class="noti-title">${data.date} at ${data.time}</span>
+                                </p>
+                                <p class="noti-time">
+                                    <span class="notification-time">Just now</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                `;
+
+                newNotification.innerHTML = notificationContent;
+                notificationList.prepend(newNotification);
+
+                var currentCount = parseInt(notificationCount.textContent);
+                notificationCount.textContent = currentCount + 1;
+            }
+        });
+    </script>
+     {% endblock %}
   </body>
 </html>
