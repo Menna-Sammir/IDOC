@@ -9,11 +9,12 @@ from flask_socketio import SocketIO
 import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO
+from flask_cors import CORS
 
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
-
+CORS(app)
     
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
