@@ -325,19 +325,22 @@
                     <p class="text-muted mb-0">Doctor</p>
                   </div>
                 </div>
-                <!-- {% if 'admin' in current_user.roles %}
-                <p>You are an admin.</p>
-                <a href="{{ url_for('admin') }}">Go to Admin Dashboard</a>
-                {% else %}
-                <p>You are not an admin.</p>
-                {% endif %} -->
-                <a class="dropdown-item" href="doctor-dashboard.html"
+                {% if current_user.roles.role_name == 'Admin' %}
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('doctor_dashboard') }}"
                   >Dashboard</a
                 >
+                {% else %}
+                <p>You are not an admin.</p>
+                {% endif %}
+
                 <a class="dropdown-item" href="doctor-profile-settings.html"
                   >Profile Settings</a
                 >
-                <a class="nav-link" href="{{ url_for('logout_page') }}">Logout</a>
+                <a class="nav-link" href="{{ url_for('logout_page') }}"
+                  >Logout</a
+                >
               </div>
             </li>
             <!-- /User Menu -->

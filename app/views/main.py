@@ -1,10 +1,12 @@
 from app import app, db, principal
 from flask import render_template, redirect, url_for, flash, request, current_app
-from app.models.models import User, Clinic, Doctor, Role
-from app.views.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm
+from app.models.models import User, Clinic, Doctor, Role,Appointment
+from app.views.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
+from datetime import datetime, timedelta
+
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
@@ -23,7 +25,7 @@ def test_page():
 
 @app.route('/register', methods=['GET', 'POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def doctor_signup_page():
     form = RegisterDocForm()
     users = (
@@ -61,10 +63,9 @@ def doctor_signup_page():
     return render_template('doctor-signup.html', form=form)
 
 
-
 @app.route('/register-clinic', methods=['GET', 'POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def clinic_signup_page():
     form = RegisterClinicForm()
     users = (
@@ -120,6 +121,9 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
+                if(attempted_user.roles.role_name == 'Admin'):
+                    return redirect(url_for('home_page'), current_user = attempted_user.id)
+
                 return redirect(url_for('home_page'))
             else:
                 flash('user name and password are not match', category='danger')
@@ -139,12 +143,15 @@ def logout_page():
     flash('You have been logged out!', category='info')
     return redirect(url_for('home_page'))
 
+
 @app.errorhandler(403)
 def permission_denied(e):
-    return 'Permission Denied', 403
-
+    flash('You not authorized to open this page, please login', category='warning')
+    return redirect(url_for('login_page'))
 
 @app.route('/doctor-dashboard', methods=['GET', 'POST'])
+@login_required
+@admin_permission.require(http_exception=403)
 def doctor_dashboard():
     return render_template('doctor-dashboard.html')
 
@@ -153,3 +160,40 @@ def doctor_dashboard():
 def clinic_dashboard():
     return render_template('doctor-dashboard.html')
 
+
+
+
+@app.route('/booking', methods=['GET', 'POST'])
+def doctor_appointments():
+    form = AppointmentForm()
+
+    doctor_id = 'doc1'
+    doctor = Doctor.query.get_or_404(doctor_id)
+    clinic = doctor.clinic
+    dates = []
+    for i in range(6):
+        date = datetime.now() + timedelta(days=i)
+        dates.append((date.strftime('%Y-%m-%d'), date.strftime('%A')))
+    working_hours = clinic.working_hours.split(',')
+    timeslots = []
+    for date in dates:
+        for hour in working_hours:
+            timeslot = f"{date[0]} {hour.strip()}"
+            timeslots.append((timeslot, f"{date[1]} - {hour.strip()}"))
+    form.timeslots.choices = timeslots
+    if form.validate_on_submit():
+        selected_timeslot = form.timeslots.data
+        appointment = Appointment(
+            date=selected_timeslot.split()[0],
+            time=selected_timeslot.split()[1],
+            status=False,
+            seen=False,
+            clinic_id=clinic.id,
+            doctor_id=doctor.id
+        )
+        db.session.add(appointment)
+        db.session.commit()
+        flash('Appointment booked successfully!', 'success')
+        return redirect(url_for('doctor_appointments', doctor_id=doctor.id))
+
+    return render_template('booking.html', form=form, doctor=doctor, dates=dates, clinic=clinic)
