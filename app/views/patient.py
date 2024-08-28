@@ -27,12 +27,14 @@ def convert_to_24_hour(time_str):
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
     form = SearchForm()
-    form.specialization.choices = [
+    form.specialization.choices =  [('', 'Select a specialization')] + [
         (s.id, s.specialization_name) for s in Specialization.query.all()
     ]
-    form.governorate.choices = [
+    form.governorate.choices = [('', 'Select a governorate')] + [
         (g.id, g.governorate_name) for g in Governorate.query.all()
     ]
+    specialties = Specialization.query.filter().all()
+    doctor = Doctor.query.filter().all()
     if request.method == 'POST':
         if form.validate_on_submit():
             session['specialization_id'] = form.specialization.data
@@ -45,7 +47,7 @@ def home():
                     f'there was an error with creating a user: {err_msg}',
                     category='danger'
                 )
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form, specialties= specialties, doctors=doctor)
 
 
 
@@ -79,7 +81,6 @@ def search_doctor():
         query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
         
     specializations = Specialization.query.all()
-    governorates = Governorate.query.all()
 
     selected_specializations = []
     selected_date = None
@@ -112,7 +113,6 @@ def search_doctor():
         'search.html',
         doctors=doctors,
         specializations=specializations,
-        governorates=governorates,
         selected_specializations=selected_specializations,
         selected_date=selected_date,
         pagination=pagination,

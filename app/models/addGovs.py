@@ -35,4 +35,4 @@ def seed_governorates():
         if not Governorate.query.filter_by(governorate_name=name).first():
             new_governorate = Governorate(governorate_name=name)
             db.session.add(new_governorate)
-    db.session.commit()
+        db.session.commit()
