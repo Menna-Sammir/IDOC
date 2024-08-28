@@ -16,3 +16,7 @@ class checkoutForm(FlaskForm):
     email_address = StringField(label='Email Address', validators=[Email(), DataRequired()])
     phone = StringField(label='Phone', validators=[Length(min=0, max=11)])
     submit = SubmitField(label='Confirm Book')
+    
+    # def translate(self):
+
+    #     }

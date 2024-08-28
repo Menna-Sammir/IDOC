@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
-    <title>Login Page</title>
+    <title>{{ translate('Login Page') }}</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
@@ -36,7 +36,7 @@
                   </div>
                   <div class="col-md-12 col-lg-6 login-right">
                     <div class="login-header">
-                      <h3>Login <span>IDOC</span></h3>
+                      <h3>{{ translate('Login') }} <span>IDOC</span></h3>
                     </div>
                     <form method="POST">
 						          {{ form.hidden_tag() }}
@@ -52,6 +52,13 @@
                       <!-- <div class="text-right">
 												<a class="forgot-link" href="forgot-password.html">Forgot Password ?</a>
 											</div> -->
+                      <div class="text-right">
+                        <a
+                          class="forgot-link"
+                          href="{{ url_for('doctor_signup_page') }}"
+                          >{{ translate('Don’t have an account?') }}</a
+                        >
+                      </div>
                       {{ form.submit(class="btn btn-primary btn-block btn-lg
                       login-btn") }}
                     </form>

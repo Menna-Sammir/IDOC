@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -22,20 +22,15 @@
         <!-- <section class="section section-search"> -->
         <!-- start header -->
         <header
-          class="position-absolute top-0 left-0 w-100 px-4 px-sm-5 px-lg-5 px-xl-5 px-xxl-5"
+          class="position-absolute top-0 left-0 w-100 header"
           style="z-index: 50"
         >
-
-
-
-
-        <nav class="navbar navbar-expand-lg ">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarTogglerDemo01">
-            <a class="col-md-2 d-block" href="#">
+          <nav
+            class="navbar navbar-expand-lg navbar-light topnavbar justify-content-between"
+          >
+            <a class="navbar-brand col-sm-2 col-md-2 d-block" href="#">
               <svg
+                style="width: 8rem"
                 version="1.0"
                 id="svg4171"
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -143,121 +138,252 @@
                 <g></g>
               </svg>
             </a>
+            <div class="col-md-9 mr-5 form-inline my-2 my-lg-0">
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div
+                class="collapse navbar-collapse justify-content-end"
+                id="navbarNavDropdown"
+              >
+                <ul class="navbar-nav align-items-center list-unstyled">
+                  <li class="nav-item mr-3">
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#home"
+                      >{{ translate('Home') }}</a
+                    >
+                  </li>
+                  <li class="nav-item mr-3">
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#aboutus"
+                      >{{ translate('About Us') }}
+                    </a>
+                  </li>
+                  <li class="nav-item mr-3">
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#service"
+                      >{{ translate('service') }}</a
+                    >
+                  </li>
 
-            <div class="col-md-5 form-inline my-2 my-lg-0">
-              <ul class="d-flex align-items-center list-unstyled">
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none d-lg-block" href="#home">Home</a>
-                </li>
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#aboutus">About Us</a>
-                </li>
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#service">service</a>
-                </li>
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#">Contact Us</a>
-                </li>
-            </ul>
+                  <li class="nav-item mr-3">
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#contactus"
+                      >{{ translate('Contact Us') }}</a
+                    >
+                  </li>
+                  {% if current_user.is_authenticated %}
+                  <li class="nav-item mr-3 dropdown has-arrow logged-item">
+                    <a
+                      class="dropdown-toggle"
+                      href="#"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    >
+                      <span class="user-img">
+                        <img
+                          class="rounded-circle"
+                          src="{{current_user.photo}}"
+                          width="31"
+                          alt="user image"
+                        />
+                      </span>
+                    </a>
+                    <div class="dropdown-menu user-dropmenu dropdown-menu-right">
+                      <div class="user-header align-items-center">
+                        <div class="avatar avatar-sm">
+                          <img
+                            src="{{base_path ~ current_user.photo}}"
+                            alt="User Image"
+                            class="avatar-img rounded-circle"
+                          />
+                        </div>
+                        <div class="user-text">
+                          <h6>{{ current_user.name }}</h6>
+                          <p class="text-muted mb-0">
+                            {{ current_user.roles.role_name }}
+                          </p>
+                        </div>
+                      </div>
+                      {% if current_user.roles.role_name == 'Admin' %}
+                      <a class="dropdown-item" href="{{ url_for('dashboard') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% elif current_user.roles.role_name == 'doctor' %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('doctor_dash') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% elif current_user.roles.role_name == 'clinic' %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('clinic_dash') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% endif %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('logout_page') }}"
+                        >{{ translate('Logout') }}</a
+                      >
+                    </div>
+                  </li>
+                  {% else %}
+                  <li class="nav-item mx-4">
+                    <a
+                      class="d-inline-block font-weight-semibold text-white px-4 home-login nav-link"
+                      href="{{ url_for('login_page') }}"
+                      >{{ translate('Login') }}</a
+                    >
+                  </li>
+                  {% endif %}
 
+                  <li class="nav-item">
+                    <div class="language-select dropdown" id="language-select">
+                      <a
+                        class="dropdown-toggle"
+                        href="#"
+                        data-toggle="dropdown"
+                        id="language"
+                        aria-haspopup="true"
+                        aria-expanded="true"
+                      >
+                        {% if get_locale() == 'en' %}
+                        <img
+                          class="img-fluid"
+                          src="../static/img/en.png"
+                          alt="English"
+                        />
+                        {% elif get_locale() == 'ar' %}
+                        <img
+                          class="img-fluid"
+                          src="../static/img/ar.png"
+                          alt="Arabic"
+                        />
+                        {% endif %}
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="language">
+                        <div class="dropdown-item" data-lang="en">
+                          <img
+                            class="img-fluid"
+                            src="../static/img/en.png"
+                            alt="English"
+                          />
+                        </div>
+                        <div class="dropdown-item" data-lang="ar">
+                          <img
+                            class="img-fluid"
+                            src="../static/img/ar.png"
+                            alt="Arabic"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </nav>
-
-
-
-
-          </div>
-
+          </nav>
         </header>
         <!-- end header -->
+      </section>
+      <!-- /Home Banner -->
+      <section class="cover head-cover position-relative" id="home">
+        <div
+          class="position-absolute top-0 left-0 w-100 h-100 bg-blue-teal-gradient cover"
+          style="opacity: 0.7"
+        ></div>
 
-        <section class="cover head-cover position-relative" id="home">
-          <div
-            class="position-absolute top-0 left-0 w-100 h-100 bg-blue-teal-gradient cover"
-            style="opacity: 0.7"
-          ></div>
-
-          <div
-            class="w-100 h-100 position-absolute z-index-1 d-flex justify-content-center align-items-center"
-          >
-            <div class="card w-75 bg-none border-0">
-              <div class="card-header d-flex align-items-center">
-                <i class="far fa-calendar-alt fa-2x text-home"></i>
-                <div class="ml-2">
-                  <p
-                    class="mb-0 text-home"
-                    style="
-                      font-size: 16px;
-                      font-weight: bold;
-                      padding-bottom: 1px;
-                    "
-                  >
-                    Search for a doctor
-                  </p>
-                  <p
-                    class="mb-0 text-home"
-                    style="
-                      font-size: 12px;
-                      padding-bottom: 1px;
-                    "
-                  >
-                    Examination or procedure
-                  </p>
-                </div>
+        <div
+          class="w-100 h-100 position-absolute z-index-1 d-flex justify-content-center align-items-center"
+        >
+          <div class="card w-75 bg-none border-0 mt-md-0 mt-sm-5">
+            <div class="card-header d-flex align-items-center">
+              <i class="far fa-calendar-alt fa-2x text-home"></i>
+              <div class="ml-2">
+                <p
+                  class="mb-0 text-home"
+                  style="
+                    font-size: 16px;
+                    font-weight: bold;
+                    padding-bottom: 1px;
+                  "
+                >
+                  {{ translate('Search for a doctor') }}
+                </p>
+                <p
+                  class="mb-0 text-home"
+                  style="font-size: 12px; padding-bottom: 1px"
+                >
+                  {{ translate('Examination or procedure') }}
+                </p>
               </div>
-              <div class="card mt-4 bg-none border-0">
-                <div class="card-header p-0 border-0">
-                  <form
-                    method="POST"
-                    action="{{ url_for('home') }}"
-                    class="row m-0 justify-content-between overflow-hidden align-items-center rounded-sm"
+            </div>
+            <div class="card mt-4 bg-none border-0">
+              <div class="card-header p-0 border-0">
+                <form
+                  method="POST"
+                  action="{{ url_for('home') }}"
+                  class="row m-0 justify-content-md-between justify-content-sm-center overflow-hidden align-items-center rounded-sm"
+                >
+                  {{ form.hidden_tag() }} {{ form.csrf_token }}
+                  <p
+                    class="col-md-3 col-sm-8 p-0 pl-1 my-4 d-flex border-right"
                   >
-                    {{ form.hidden_tag() }} {{ form.csrf_token }}
-                    <p class="col-md-3 p-0 pl-1 my-4 d-flex border-right">
-                      {{ form.specialization(class="doctor-select2 floating w-75
-                      border-0 bg-transparent") }}
-                    </p>
-                    <p class="col-md-3 p-0 my-4 d-flex border-right">
-                      {{ form.governorate (class="location-select2 floating w-75
-                      border-0 bg-transparent") }}
-                    </p>
-                    <p
-                      class="col-md-4 p-0 my-4 form-focus form-group"
-                      placeholder="Doctor Name "
-                    >
-                      {{ form.doctor_name.label(class="focus-label") }} {{
-                      form.doctor_name( class="form-control border-0 p-1
-                      floating")}}
-                    </p>
-                    <div class="col-md-1"></div>
-                    <p class="col-md-1 mt-1 mb-1 p-0 pr-4 text-right">
-                      <button type="submit" class="btn btn-info search-btn">
-                        <i class="fas fa-search"></i> {{
-                        form.submit.label.text}}
-                      </button>
-                    </p>
-                  </form>
-                </div>
+                    {{ form.specialization(class="doctor-select2 floating w-75
+                    border-0 bg-transparent") }}
+                  </p>
+                  <p class="col-md-3 col-sm-8 p-0 my-4 d-flex border-right">
+                    {{ form.governorate (class="location-select2 floating w-75
+                    border-0 bg-transparent") }}
+                  </p>
+                  <p
+                    class="col-md-4 col-sm-8 p-0 my-4 form-focus form-group"
+                    placeholder="Doctor Name "
+                  >
+                    {{ form.doctor_name.label(class="focus-label") }} {{
+                    form.doctor_name( class="form-control border-0 p-1
+                    floating")}} {{ form.doctor_name(class="form-control
+                    border-0 p-1 floating",
+                    placeholder=form.doctor_name.label.text) }}
+                  </p>
+                  <div class="col-md-1"></div>
+                  <p class="col-md-1 col-sm-4 mt-1 mb-1 p-0 pr-4 text-right">
+                    <button type="submit" class="btn btn-info search-btn">
+                      <i class="fas fa-search"></i> {{ form.submit.label.text}}
+                    </button>
+                  </p>
+                </form>
               </div>
             </div>
           </div>
-        </section>
-
-        <!-- end hero -->
+        </div>
       </section>
-      <!-- /Home Banner -->
-
+      <!-- end hero -->
       <!-- Clinic and Specialities -->
       <section class="section section-specialities" id="service">
         <div class="container-fluid">
           <div class="section-header text-center">
-            <h2>Clinic and Specialities</h2>
+            <h2>{{ translate('Clinic and Specialities') }}</h2>
             <p class="sub-title">
-              We offer a wide range of specialties to meet the diverse
-              healthcare needs of our patients. Our dedicated team of
-              professionals provides expert care in areas such as cardiology,
-              orthopedics, neurology, and pediatrics.
+              {{ translate('We offer a wide range of specialties to meet the
+              diverse healthcare needs of our patients. Our dedicated team of
+              professionals provides expert care in areas such as
+              cardiology,orthopedics, neurology, and pediatrics.') }}
             </p>
           </div>
           <div class="row justify-content-center">
@@ -275,7 +401,9 @@
                     />
                     <span><i class="fa fa-circle" aria-hidden="true"></i></span>
                   </div>
-                  <p class="text-wrap">{{special.specialization_name}}</p>
+                  <p class="text-wrap">
+                    {{ translate(special.specialization_name) }}
+                  </p>
                 </div>
                 <!-- /Slider Item -->
                 {% endfor %}
@@ -290,7 +418,7 @@
       <section class="section section-about mt-5" id="aboutus">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-lg-2 col-md-12 container">
+            <div class="col-lg-2 col-sm-2 col-md-12 container">
               <div class="circle large">
                 <img src="../static/img/doctors/doctor-02.jpg" alt="Doctor" />
               </div>
@@ -301,34 +429,35 @@
               <div class="circle background background-small"></div>
             </div>
             <div class="col-lg-5 col-md-12">
-              <h3 class="text-muted">ABOUT US</h3>
-              <h2 class="mr-5 pr-5">Health Clinic With Quality For You</h2>
+              <h3 class="text-muted">{{ translate('ABOUT US') }}</h3>
+              <h2 class="mr-5 pr-5">
+                {{ translate('Health Clinic With Quality For You') }}
+              </h2>
               <p class="text-muted">
-                Doctime Group is a health insurance company that also provides
-                data analytics and consulting services to healthcare providers,
-                as well as pharmacy care services.
+                {{ translate('IDOC Group facilitates seamless appointment
+                booking services for patients, connecting them with healthcare
+                professionals across various clinics. We streamline the process,
+                ensuring convenient access to quality medical care.') }}
               </p>
               <ul class="p-0">
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of females who get screened for
-                    breast cancer-C-05</span
+                    >{{ translate('Enhance Preventive Healthcare Access')
+                    }}</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of adults with arthritis who get
-                    counseling for physical activity - A-04</span
+                    >{{ translate('Optimize Wellness Consultations') }}</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of people with sickle cell disease
-                    on Medicare who received disease-modifying therapies -
-                    BDBS-02</span
+                    >{{ translate('Improve Disease Management Services')
+                    }}</span
                   >
                 </li>
               </ul>
@@ -342,7 +471,7 @@
       <section class="section section-doctor">
         <div class="container-fluid">
           <div class="section-header text-center">
-            <h2>Our Specialist Doctor</h2>
+            <h2>{{ translate('Our Specialist Doctor') }}</h2>
           </div>
           <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -389,7 +518,7 @@
                           <a
                             href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                             class="btn book-btn"
-                            >Book Now</a
+                            >{{ translate('Book Now') }}</a
                           >
                         </div>
                       </div>
@@ -409,7 +538,7 @@
       <section class="section section-features">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-5 features-img">
+            <div class="col-md-5 features-img d-sm-none d-md-flex">
               <img
                 src="static/img/features/feature.png"
                 class="img-fluid"
@@ -418,78 +547,84 @@
             </div>
             <div class="col-md-7">
               <div class="section-header">
-                <h2 class="mt-2">Availabe Features in Our Clinic</h2>
-                <p>
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
-                </p>
-              </div>
-              <div class="features-slider slider">
-                <!-- Slider Item -->
-                <div class="feature-item text-center">
-                  <img
-                    src="static/img/features/feature-01.jpg"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>Patient Ward</p>
+                <h2 class="mt-2">
+                  {{ translate('Availabe Features in Our Clinic') }}
+                </h2>
+                <div class="section-header text-md-left text-sm-center">
+                  <h2 class="mt-2">Availabe Features in Our Clinic</h2>
+                  <p>
+                    {{ translate('Discover a wealth of services and amenities at
+                    our clinic, tailored to meet your needs and ensure your
+                    well-being') }}
+                  </p>
                 </div>
-                <!-- /Slider Item -->
+                <div class="features-slider slider">
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-01.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Patient Ward') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
 
-                <!-- Slider Item -->
-                <div class="feature-item text-center">
-                  <img
-                    src="static/img/features/feature-02.jpg"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>Test Room</p>
-                </div>
-                <!-- /Slider Item -->
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-02.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Test Room') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
 
-                <!-- Slider Item -->
-                <div class="feature-item text-center">
-                  <img
-                    src="static/img/features/feature-03.jpg"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>ICU</p>
-                </div>
-                <!-- /Slider Item -->
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-03.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('ICU') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
 
-                <!-- Slider Item -->
-                <div class="feature-item text-center">
-                  <img
-                    src="static/img/features/feature-04.jpg"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>Laboratory</p>
-                </div>
-                <!-- /Slider Item -->
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-04.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Laboratory') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
 
-                <!-- Slider Item -->
-                <div class="feature-item text-center">
-                  <img
-                    src="static/img/features/feature-05.jpg"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>Operation</p>
-                </div>
-                <!-- /Slider Item -->
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-05.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Operation') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
 
-                <!-- Slider Item -->
-                <div class="feature-item text-center">
-                  <img
-                    src="static/img/features/feature-06.jpg"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>Medical</p>
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-06.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Medical') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
                 </div>
-                <!-- /Slider Item -->
               </div>
             </div>
           </div>
@@ -497,9 +632,90 @@
       </section>
       <!-- Availabe Features -->
 
+      <section class="section section-contact bg-white" id="contactus">
+        <div class="container-fluid">
+          <div class="section-header text-center">
+            <h2>{{ translate('CONTACT US') }}</h2>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-9 row justify-content-between">
+              <div class="contact-card col-md-4 d-md-block d-sm-none">
+                <span class="head-contact"
+                  >{{ translate('Contact Information') }}</span
+                >
+                <p class="mb-4">
+                  {{ translate('We will create high quality link able content')
+                  }}
+                </p>
+                <div class="contact-info">
+                  <p class="mb-4">
+                    <i class="fas fa-phone-alt mr-2"></i> +20 012 10 10 100
+                  </p>
+                  <p class="mb-4">
+                    <i class="far fa-envelope mr-2"></i>info@IDOC.com
+                  </p>
+                  <p class="mb-4">
+                    <i class="fas fa-map-marker-alt mr-2"></i> {{ translate('El
+                    Tayaran Street, Cairo, EGYPT') }}
+                  </p>
+                </div>
+                <div class="circle-contact"></div>
+              </div>
+              <div class="col-md-8 p-5">
+                <form
+                  class="row"
+                  action="{{ url_for('sendEmail') }}"
+                  method="POST"
+                >
+                  {{ E_form.hidden_tag() }}
+                  <div class="col-md-6">
+                    <div class="form-group form-focus">
+                      {{ translate(E_form.name.label(class="focus-label")) }} {{
+                      E_form.name(class="form-control floating e-form" )}}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group form-focus">
+                      {{ E_form.email_address.label(class="focus-label") }} {{
+                      E_form.email_address(class="form-control floating e-form"
+                      )}}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group form-focus">
+                      {{ E_form.subject.label(class="focus-label") }} {{
+                      E_form.subject(class="form-control floating e-form" )}}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group form-focus">
+                      {{ E_form.message.label(class="focus-label") }} {{
+                      E_form.message(class="form-control floating e-form" )}}
+                    </div>
+                  </div>
+                  {{ E_form.submit(class="btn btn-secondary ml-3") }}
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section row">
+        <div class="col-md-12">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.6118501812!2d31.176061991860156!305961134357755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!41!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2sCairo%2C%20Cairo%20Governorate!5e0!3m2!1sen!2seg!4v171741894!5m2!1sen!2seg"
+            height="400"
+            style="border: 0; width: 100%"
+            allowfullscreen=""
+            loading=""
+            lareferrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </section>
       {% block footer %} {% include 'base-footer.html' %} {% endblock %}
     </div>
     <!-- /Main Wrapper -->
     {% block js %} {% include 'base-js.html' %} {% endblock %}
+    <script src="{{ url_for('static', filename='../static/js/index.js') + '?' + cache_id }}"></script>
   </body>
 </html>

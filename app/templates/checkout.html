@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Checkout {% endblock %}
+{% block title %} {{ translate('Checkout') }} {% endblock %}
 {% block body %}
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -8,11 +8,11 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ translate('Checkout') }}</li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Checkout</h2>
+        <h2 class="breadcrumb-title">{{ translate('Checkout') }}</h2>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
               {{ form.hidden_tag() }}
               <!-- Personal Information -->
               <div class="info-widget">
-                <h4 class="card-title">Personal Information</h4>
+                <h4 class="card-title">{{ translate('Personal Information') }}</h4>
                 <div class="row">
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
@@ -81,7 +81,7 @@
         <!-- Booking Summary -->
         <div class="card booking-card">
           <div class="card-header">
-            <h4 class="card-title">Booking Summary</h4>
+            <h4 class="card-title">{{ translate('Booking Summary') }}</h4>
           </div>
           <div class="card-body">
             <!-- Booking Doctor Info -->
@@ -107,16 +107,16 @@
             <div class="booking-summary">
               <div class="booking-item-wrap">
                 <ul class="booking-date mt-3">
-                  <li>Date <span>{{date}}</span></li>
-                  <li>Time <span>from {{start_time}} to {{end_time}}</span></li>
+                  <li>{{ translate('Date') }} <span>{{date}}</span></li>
+                  <li>{{ translate('Time') }} <span>{{ translate('from') }} {{start_time}} {{ translate('to') }} {{end_time}}</span></li>
                 </ul>
                 <ul class="booking-fee">
-                  <li>Consulting Fee <span>${{doctor.price}}</span></li>
+                  <li>{{ translate('Consulting Fee') }} <span>${{doctor.price}}</span></li>
                 </ul>
                 <div class="booking-total">
                   <ul class="booking-total-list">
                     <li>
-                      <span>Total</span>
+                      <span>{{ translate('Total') }}</span>
                       <span class="total-cost">${{doctor.price}}</span>
                     </li>
                   </ul>
