@@ -74,8 +74,8 @@ def inject_notification():
 
 class AppStatus(Enum):
     Pending = 0
-    Confirmed = 1,
-    Cancelled = 2,
+    Confirmed = 1
+    Cancelled = 2
 
 class PatientHisType(Enum):
     Lab = 1,
@@ -308,6 +308,7 @@ class Appointment(BaseModel):
     Report = db.Column(VARCHAR(255), nullable=True)
     Diagnosis = db.Column(VARCHAR(255), nullable=True)
     status = db.Column(SQLAlchemyEnum(AppStatus), nullable=False)
+    follow_up = db.Column(DATETIME, nullable=True)
 
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
