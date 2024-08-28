@@ -4184,6 +4184,9 @@ html.menu-opened body {
 /*-----------------
 	18. Booking
 -----------------------*/
+.alert-primary-formbook{
+	border-radius: 20px !important;
+}
 .date-container {
 	display: flex;
 	justify-content: space-between;
@@ -9066,10 +9069,6 @@ textarea {
 	transform: rotate(0) translate(0) scale(0.9);
 }
 
-.outer:active .front .date {
-	-webkit-transform: scale(2);
-}
-
 .outer:active .front .day,
 .outer:active .front .month {
 	visibility: hidden;
@@ -9100,13 +9099,11 @@ textarea {
 /*-----*/
 
 .outer:active .calendarMain {
-	-webkit-transform: scale(1.8);
 	opacity: 0;
 	visibility: hidden;
 }
 
 .outer:active .clock {
-	-webkit-transform: scale(1.4);
 	opacity: 1;
 	visibility: visible;
 }
