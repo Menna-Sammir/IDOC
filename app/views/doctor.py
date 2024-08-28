@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from datetime import datetime
 from sqlalchemy import func, select, and_
 from sqlalchemy.orm import joinedload
+from flask_paginate import Pagination, get_page_args
 from flask_login import login_required, current_user
 from flask import session
 from datetime import date
@@ -16,6 +17,10 @@ clinic_permission = Permission(RoleNeed('clinic'))
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'])
 def search_doctor():
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+        
+    
     query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
         .join(Specialization, Doctor.specialization_id == Specialization.id) \
         .join(Clinic, Doctor.clinic_id == Clinic.id) \
@@ -42,24 +47,27 @@ def search_doctor():
             )).filter(Appointment.id == None)
 
             query = query.filter(Doctor.id.in_(subquery))
-            
-    doctors = query.all()
+            print(f"Query: {query}")
+    pagination = query.paginate(page, per_page, False)
+    doctors = pagination.items
+    print(f"Doctors: {doctors}")
+    print(f"Generated SQL Query: {query}")
     return render_template('search.html', doctors=doctors, 
                            specializations=specializations, governorates=governorates,
                            selected_specializations=selected_specializations,
-                           selected_date=selected_date)
+                           selected_date=selected_date,
+                           pagination=pagination)
 
 
 
 # doctor search page >>> book appointment
-@app.route('/book_appointment', methods=['POST'])
+@app.route('/booking', methods=['POST'])
 def book_appointment():
     if request.method == 'POST':
         doctor_id = request.form.get('doctor_id')
-        print(f"Posted data: doctor_id={doctor_id}")
 
         session['doctor_id'] = doctor_id
-        return redirect(url_for('book_appointment_form'))
+        return redirect(url_for('doctor_appointments'))
 
 
 @app.route('/book_appointment_form')
