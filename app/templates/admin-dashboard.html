@@ -1,0 +1,234 @@
+{% extends 'base.html' %} {% block title %} Admin Dashboard {% endblock %} {%
+  block body %}
+  
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Dashboard
+              </li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">Dashboard</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Breadcrumb -->
+  
+  <!-- Page Content -->
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+          <!-- Profile Sidebar -->
+          <div class="profile-sidebar">
+            <div class="widget-profile pro-widget-content">
+              <div class="profile-info-widget">
+                <a href="#" class="booking-doc-img">
+                  <img
+                    src="static/img/doctors/doctor-thumb-02.jpg"
+                    alt="User Image"
+                  />
+                </a>
+                <div class="profile-det-info">
+                  <h3>Admin name</h3>
+  
+                  <div class="specialization">
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-widget">
+              <nav class="dashboard-menu">
+                <ul>
+                  <li class="active">
+                    <a href="doctor-dashboard.html">
+                      <i class="fas fa-columns"></i>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+                  <li>
+                  </li>
+                  <li>
+                  </li>
+                  <li>
+                    <a href="index.html">
+                      <form action="/logout" method="post">
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <!-- /Profile Sidebar -->
+        </div>
+  
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card dash-card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget">
+                        <div class="circle-bar circle-bar1">
+                          <div class="circle-graph1" data-percent="100">
+                            <img
+                              src="static/img/medical-team.png"
+                              class="img-fluid"
+                              alt="patient"
+                            />
+                          </div>
+                        </div>
+                        <div class="dash-widget-info">
+                          <h6>Registered Doctors</h6>
+                          <h3>{{ doctor_count }}</h3>
+                          <p class="text-muted">Till Today</p>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget">
+                        <div class="circle-bar circle-bar2">
+                          <div class="circle-graph2">
+                          
+                          </div>
+                        </div>
+                        <div class="dash-widget-info">
+                         
+                        </div>
+                      </div>
+                    </div>
+  
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget">
+                        <div class="circle-bar circle-bar3">
+                          <div class="circle-graph3" data-percent="100">
+                            <img
+                              src="static/img/clinic.png"
+                              class="img-fluid"
+                              alt="Patient"
+                            />
+                          </div>
+                        </div>
+                        <div class="dash-widget-info">
+                          <h6>Registered Clinics</h6>
+                          <h3>{{ clinic_count }}</h3>
+                          <p class="text-muted">Till Today</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-12">
+              <div class="appointment-tab">
+                <!-- Appointment Tab -->
+                <div class="card card-table flex-fill">
+                  <div class="card-header">
+                      <h4 class="card-title">Doctors List</h4>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                              <thead>
+                                  <tr>
+                                      <th>Doctor Name</th>
+                                      <th>Speciality</th>
+                                      <th>Earned</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {% for doctor in doctor_details %}
+                                  <tr>
+                                      <td>
+                                          <h2 class="table-avatar">
+                                            <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ doctor.photo }}" alt="User Image"></a>
+
+                                              <a href="profile.html">{{ doctor.doctor_name }}</a>
+                                          </h2>
+                                      </td>
+                                      <td>{{ doctor.specialization }}</td>
+                                      <td>{{ doctor.total_earnings }}</td>
+                                     
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+              <!-- /Recent Orders -->
+              
+      
+          
+              <!-- Recent Orders -->
+              <div class="card card-table">
+                  <div class="card-header">
+                    <h4 class="card-title">Clinics List</h4>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                              <thead>
+                                  <tr>
+                                      <th>Clinic Name</th>
+                                      <th>Address</th>
+                                      <th>Phone</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {% for clinic in clinic_details %}
+                                  <tr>
+                                      <td>
+                                          <h2 class="table-avatar">
+                                
+                                              <a href="profile.html">{{ clinic.clinic_name }}</a>
+                                          </h2>
+                                      </td>
+                                      <td>{{ clinic.clinic_address }}</td>
+                                      <td>
+                                          <h2 class="table-avatar">
+                                              
+                                              <a>{{ clinic.clinic_phone }}</a>
+                                          </h2>
+                                      </td>
+                                     
+                                  </tr>
+                                  
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+              <!-- /Recent Orders -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+  
+  {% endblock %}

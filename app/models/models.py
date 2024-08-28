@@ -47,7 +47,7 @@ class Doctor(BaseModel):
     photo = db.Column(VARCHAR(255))
     price = db.Column(INTEGER)
 
-    specialization_id = db.Column(VARCHAR(606), ForeignKey('specialization.id'), nullable=False)
+    specialization_id = db.Column(VARCHAR(60), ForeignKey('specialization.id'), nullable=False)
     clinic_id = db.Column(VARCHAR(36), ForeignKey('clinic.id'), nullable=True)
 
     users = db.relationship('User', backref='doctor', uselist=False)
