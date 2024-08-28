@@ -9,10 +9,21 @@ from flask import (
     session
 )
 from app.models.models import *
-from app.views.forms.auth_form import LoginForm, RegisterForm, ChangePasswordForm,  ResetPasswordForm
+from app.views.forms.auth_form import (
+    LoginForm,
+    RegisterForm,
+    ChangePasswordForm,
+    ResetPasswordForm
+)
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
-from flask_principal import Permission, RoleNeed,  Identity, AnonymousIdentity,  identity_changed
+from flask_principal import (
+    Permission,
+    RoleNeed,
+    Identity,
+    AnonymousIdentity,
+    identity_changed
+)
 from flask_socketio import disconnect
 from datetime import datetime, timedelta
 
@@ -32,12 +43,9 @@ def signup_page():
                     name=form.username.data,
                     email=form.email_address.data,
                     password_hash=form.password1.data,
-                    activated = True
+                    activated=True
                 )
-                patient_create = Patient(
-                    phone = form.phone.data,
-                    users = user_to_create
-                )
+                patient_create = Patient(phone=form.phone.data, users=user_to_create)
                 patient_role = Role.query.filter_by(role_name='patient').first_or_404()
                 role_to_create = UserRole(role_id=patient_role.id, user=user_to_create)
                 db.session.add(user_to_create)
@@ -60,19 +68,23 @@ def signup_page():
     return render_template('signup.html', form=form)
 
 
-
 @app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login_page():
     form = LoginForm()
     if request.method == 'POST':
         if form.validate_on_submit():
             attempted_user = User.query.filter_by(email=form.email_address.data).first()
+            print('dddddddddddddddddddddd')
             if not attempted_user:
-                attempted_user =  Doctor.query.filter_by(iDNum=form.email_address.data).first().users
-            if attempted_user and attempted_user.check_password_correction(
-                attempted_password=form.password.data
-            ):
-                if attempted_user.activated or not attempted_user.temp_password:
+                attempted_user = (
+                    Doctor.query.filter_by(iDNum=form.email_address.data).first().users
+                )
+
+                print('dddddddddddddddrrrrrrrrrrrrrrrrr')
+            if attempted_user.activated or not attempted_user.temp_password:
+                if attempted_user and attempted_user.check_password_correction(
+                    attempted_password=form.password.data
+                ):
                     login_user(attempted_user)
                     identity_changed.send(
                         current_app._get_current_object(),
@@ -92,14 +104,9 @@ def login_page():
                         return redirect(url_for('patient_dash'))
                     return redirect(url_for('home_page'))
                 else:
-                    flash(
-                    f'please check your mail to get password',
-                    category='warning'
-                )
-                    return render_template('login.html', form=form)
-
+                    flash('user name and password are not match', category='danger')
             else:
-                flash('user name and password are not match', category='danger')
+                flash(f'please check your mail to get password', category='warning')
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -162,7 +169,6 @@ def change_password():
     return render_template('change-password.html', form=form)
 
 
-
 @app.route('/reset_password/<email>', methods=['GET', 'POST'])
 def reset_password(email):
     user = User.query.filter_by(email=email).first_or_404()
@@ -170,8 +176,7 @@ def reset_password(email):
     if request.method == 'POST':
         if form.validate_on_submit():
             temp_password = form.Temp_password.data
-            if user.temp_password_correction(
-                    attempted_password=temp_password):
+            if user.temp_password_correction(attempted_password=temp_password):
                 user.password_hash = form.new_password.data
                 user.temp_password = None
                 user.activated = True
@@ -186,7 +191,7 @@ def reset_password(email):
                     f'there was an error with creating a user: {err_msg}',
                     category='danger'
                 )
-    return render_template('reset_password.html', email=email, form = form)
+    return render_template('reset_password.html', email=email, form=form)
 
 
 @app.errorhandler(403)
@@ -194,12 +199,8 @@ def permission_denied(e):
     return 'Permission Denied', 403
 
 
-
 # doctor dashboard page >>> view appointments today
 @app.route('/patient_dashboard', methods=['GET', 'POST'])
 @login_required
 def patient_dash():
-
-    return render_template(
-        'patient-dashboard.html'
-    )
+    return render_template('patient-dashboard.html')
