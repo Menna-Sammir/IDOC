@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %} Checkout {% endblock %}
+{% block body %}
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">Checkout</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7 col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <!-- Checkout Form -->
+            <form method="POST">
+              {{ form.hidden_tag() }}
+              <!-- Personal Information -->
+              <div class="info-widget">
+                <h4 class="card-title">Personal Information</h4>
+                <div class="row">
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.firstname.label() }}
+                        {{
+                        form.firstname(class="form-control" )}}
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.lastname.label() }}
+                      {{
+                      form.lastname(class="form-control")}}
+
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.email_address.label() }}
+                      {{
+                      form.email_address(class="form-control")}}
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.phone.label() }}
+                      {{
+                      form.phone(class="form-control")}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Personal Information -->
+
+              <!-- Submit Section -->
+              <div class="submit-section mt-4">
+                {{ form.submit(class="btn btn-secondary submit-btn")}}
+              </div>
+              <!-- /Submit Section -->
+            </form>
+            <!-- /Checkout Form -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5 col-lg-4 theiaStickySidebar">
+        <!-- Booking Summary -->
+        <div class="card booking-card">
+          <div class="card-header">
+            <h4 class="card-title">Booking Summary</h4>
+          </div>
+          <div class="card-body">
+            <!-- Booking Doctor Info -->
+            <div class="booking-doc-info">
+              <a href="#" class="booking-doc-img">
+                {% set base_path = 'static/images/doctors/' %}
+                <img
+                  src="{{base_path ~ doctor.photo}}"
+                  alt="User Image"
+                />
+              </a>
+              <div class="booking-info">
+                <h4><a href="#">Dr. {{doctor.name}}</a></h4>
+                <div class="clinic-details">
+                  <p class="doc-location">
+                    <i class="fas fa-map-marker-alt"></i> {{clinic.address}}, {{gov.governorate_name}}, Egypt
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Booking Doctor Info -->
+
+            <div class="booking-summary">
+              <div class="booking-item-wrap">
+                <ul class="booking-date mt-3">
+                  <li>Date <span>{{date}}</span></li>
+                  <li>Time <span>from {{start_time}} to {{end_time}}</span></li>
+                </ul>
+                <ul class="booking-fee">
+                  <li>Consulting Fee <span>${{doctor.price}}</span></li>
+                </ul>
+                <div class="booking-total">
+                  <ul class="booking-total-list">
+                    <li>
+                      <span>Total</span>
+                      <span class="total-cost">${{doctor.price}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Booking Summary -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+{% endblock %}
+<!-- Footer -->
