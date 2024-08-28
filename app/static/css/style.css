@@ -2247,6 +2247,7 @@ button.bg-danger:hover {
 	position: absolute;
 	top: 2px;
 	right: 0;
+	left:auto;
 	border: 7px solid #fff;
 	border-color: transparent transparent #ffffff #ffffff;
 	-webkit-transform-origin: 0 0;
