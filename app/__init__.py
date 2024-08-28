@@ -10,7 +10,7 @@ import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO, disconnect
 from flask_cors import CORS
-from flask_babel import Babel, _, lazy_gettext as _l, gettext
+from flask_babel import Babel, lazy_gettext as _l
 import json
 
 
@@ -53,16 +53,6 @@ def translate(key):
     lang = get_locale()
     translation = translations.get(lang, {}).get(key, key)
     return translation
-# def translate(key):
-#     lang = None
-#     parts = key.split('.')
-#     if len(parts) == 2 and parts[0] in ['specializations', 'governorates']:
-#         lang = get_locale()
-#         category, item_id = parts
-#         return translations.get(lang, {}).get(category, {}).get(item_id, key)
-#     else:
-#         lang = get_locale()
-#         return translations.get(lang, {}).get(key, key)
 
 
 def lazy_translate(key):

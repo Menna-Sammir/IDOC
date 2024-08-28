@@ -507,7 +507,7 @@
                           <form class="row"  action="{{ url_for('sendEmail') }}" method="POST">
                             {{ E_form.hidden_tag() }}
                             <div class="col-md-6"><div class="form-group form-focus">
-                              {{ E_form.name.label(class="focus-label") }}
+                              {{ translate(E_form.name.label(class="focus-label")) }}
                               {{
                                 E_form.name(class="form-control floating e-form" )}}
                             </div></div>
