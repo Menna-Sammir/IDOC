@@ -24,24 +24,31 @@ def search_doctor():
     specializations = Specialization.query.all()
     governorates = Governorate.query.all()
 
+    selected_specializations = []
+    selected_date = None
+
     if request.method == 'POST':
-        specialization_ids = request.form.getlist('select_specialization')
-        date = request.form.get('date')
+        selected_specializations = request.form.getlist('select_specialization')
+        selected_date = request.form.get('date')
+
+        if selected_specializations:
+            query = query.filter(Doctor.specialization_id.in_(selected_specializations))
         
-        if specialization_ids:
-            query = query.filter(Doctor.specialization_id.in_(specialization_ids))
-        
-        if date:
-            search_date = datetime.strptime(date, '%d/%m/%Y').date()
+        if selected_date:
+            search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
             subquery = db.session.query(Doctor.id).outerjoin(Appointment, and_(
-            Doctor.id == Appointment.doctor_id,
-            func.date(Appointment.date) == search_date
+                Doctor.id == Appointment.doctor_id,
+                func.date(Appointment.date) == search_date
             )).filter(Appointment.id == None)
 
             query = query.filter(Doctor.id.in_(subquery))
             
     doctors = query.all()
-    return render_template('search.html', doctors=doctors, specializations=specializations, governorates=governorates)
+    return render_template('search.html', doctors=doctors, 
+                           specializations=specializations, governorates=governorates,
+                           selected_specializations=selected_specializations,
+                           selected_date=selected_date)
+
 
 # doctor search page >>> book appointment
 @app.route('/book_appointment', methods=['POST'])
