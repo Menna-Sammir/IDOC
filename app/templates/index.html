@@ -22,14 +22,10 @@
         <!-- <section class="section section-search"> -->
         <!-- start header -->
         <header
-          class="position-absolute top-0 left-0 w-100 px-4 px-sm-5 px-lg-5 px-xl-5 px-xxl-5"
+          class="position-absolute top-0 left-0 w-100"
           style="z-index: 50"
         >
-
-
-
-
-        <nav class="navbar navbar-expand-lg ">
+          <nav class="navbar navbar-expand-lg topnavbar">
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -144,9 +140,10 @@
               </svg>
             </a>
 
-            <div class="col-md-5 form-inline my-2 my-lg-0">
+            <div class="col-md-6 form-inline my-2 my-lg-0">
               <ul class="d-flex align-items-center list-unstyled">
                 <li class="mr-3">
+<<<<<<< HEAD
                     <a class="py-2 d-inline-block font-weight-semibold text-white d-none d-lg-block" href="#home">{{ translate('Home') }}</a>
                 </li>
                 <li class="mr-3">
@@ -157,6 +154,21 @@
                 </li>
                 <li class="mr-3">
                     <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#">{{ translate('Contact Us') }}</a>
+=======
+                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none nav-link d-lg-block" href="#home">Home</a>
+                </li>
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"  href="#aboutus">About us</a>
+                </li>
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#service">Service</a>
+                </li>
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#contactus">Contact Us</a>
+                </li>
+                <li class="mx-4">
+                    <a class="d-inline-block font-weight-semibold text-white px-4 home-login" href="{{ url_for('login_page') }}">Login</a>
+>>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132
                 </li>
               </ul>
               <select id="languageSelect" onchange="location.href = '/set_language?language=' + this.value;" class="rounded border appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full">
@@ -166,13 +178,7 @@
           </div>
             </div>
           </div>
-        </nav>
-
-
-
-
-          </div>
-
+          </nav>
         </header>
         <!-- end header -->
 
@@ -500,6 +506,63 @@
       </section>
       <!-- Availabe Features -->
 
+
+      <section class="section section-contact bg-white" id="contactus">
+                <div class="container-fluid">
+                  <div class="section-header text-center">
+                    <h2>CONTACT US</h2>
+                  </div>
+                  <div class="row justify-content-center">
+                    <div class="col-md-9 row justify-content-between">
+                        <div class="contact-card col-md-4 d-md-block d-sm-none">
+                          <span class="head-contact">Contact Information</span>
+                          <p class="mb-4">We'll create high quality link able content </p>
+                          <div class="contact-info">
+                              <p class="mb-4"><i class="fas fa-phone-alt mr-2"></i> +20 012 10 10 100 </p>
+                              <p class="mb-4"><i class="far fa-envelope mr-2"></i>info@IDOC.com</p>
+                              <p class="mb-4"><i class="fas fa-map-marker-alt mr-2"></i>
+                                El Tayaran Street, Cairo, EGYPT</p>
+                          </div>
+                          <div class="circle-contact "></div>
+                      </div>
+                        <div class="col-md-8 p-5">
+                          <form class="row"  action="{{ url_for('sendEmail') }}" method="POST">
+                            {{ E_form.hidden_tag() }}
+                            <div class="col-md-6"><div class="form-group form-focus">
+                              {{ E_form.name.label(class="focus-label") }}
+                              {{
+                                E_form.name(class="form-control floating e-form" )}}
+                            </div></div>
+                            <div class="col-md-6"><div class="form-group form-focus">
+                             {{ E_form.email_address.label(class="focus-label") }}
+                              {{
+                                E_form.email_address(class="form-control floating e-form" )}}
+                            </div></div>
+                            <div class="col-md-12"><div class="form-group form-focus">
+                              {{ E_form.subject.label(class="focus-label") }}
+                              {{
+                                E_form.subject(class="form-control floating e-form" )}}
+                            </div></div>
+                            <div class="col-md-12"><div class="form-group form-focus">
+                              {{ E_form.message.label(class="focus-label") }}
+                              {{
+                                E_form.message(class="form-control floating e-form" )}}
+                            </div></div>
+                            {{ E_form.submit(class="btn btn-secondary ml-3") }}
+                          </form>
+                      </div>
+
+
+
+                      </div>
+                    </div>
+        </div>
+
+      </section>
+      <section class="section row">
+        <div class="col-md-12">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.6118501812!2d31.176061991860156!305961134357755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!41!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2sCairo%2C%20Cairo%20Governorate!5e0!3m2!1sen!2seg!4v171741894!5m2!1sen!2seg" height="400" style="border:0; width: 100%;" allowfullscreen="" loading="lareferrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      </section>
       {% block footer %} {% include 'base-footer.html' %} {% endblock %}
     </div>
     <!-- /Main Wrapper -->

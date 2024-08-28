@@ -53,6 +53,7 @@ Version      : 1.0
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
 
 .root {
@@ -67,6 +68,9 @@ html {
 	height: 100%;
 	scroll-behavior: smooth;
 }
+=======
+
+>>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132
 
 /* logo */
 
@@ -94,7 +98,12 @@ html {
 body {
 	background-color: #f8f9fa;
 	color: #272b41;
+<<<<<<< HEAD
 	font-family: "Roboto", sans-serif; /* Default when page loaded */
+=======
+	font-family: "Poppins", sans-serif;
+	/* font-family: "Roboto", sans-serif; */
+>>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132
 	font-size: 1.1rem;
 	height: 100%;
 	overflow-x: hidden;
@@ -9535,6 +9544,7 @@ body::-webkit-scrollbar-thumb {
 	color: white;
 	overflow: hidden;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+<<<<<<< HEAD
 }
 
 
@@ -9542,6 +9552,15 @@ body::-webkit-scrollbar-thumb {
 	margin: 5px 0;
 }
 
+=======
+}
+
+
+.contact-card p {
+	margin: 5px 0;
+}
+
+>>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132
 .contact-card .icon {
 	vertical-align: middle;
 	margin-right: 10px;
