@@ -104,7 +104,15 @@
                                 <td>{{ seen.appointment_date }}</td>
                                 <td>${{ seen.price }}</td>
                                 <td>$lfkansf;</td>
-                                <td class="text-center"><i class="fas fa-calendar-check"></i></td>
+                                <td class="text-center">
+                                  {% if appointment.status == AppStatus.Confirmed.value %}
+                                    <i class="fas fa-calendar-check"></i><!-- Icon for confirmed -->
+                                  {% else %}
+                                    <i class="far fa-times-circle"></i> <!-- Icon for cancelled -->
+                                  {% endif %}
+                              </td>
+
+                                
                             </tr>
                             {% endfor %}
                             {% else %}
