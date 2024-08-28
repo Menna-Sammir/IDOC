@@ -10,13 +10,10 @@ from flask_wtf.csrf import CSRFProtect
 csrf = CSRFProtect()
 class ClinicForm(FlaskForm):
 
-    def validate_email_address(self, email_address_to_check, clinicName):
+    def validate_email_address(self, email_address_to_check):
         email_address = Clinic.query.filter_by(email= email_address_to_check.data).first()
         if email_address:
-            raise ValidationError('email address already exists!')
-        clinic = Clinic.query.filter_by(name= clinicName.data).first()
-        if clinic:
-            raise ValidationError('clinic already exists!')
+            raise ValidationError('email address already exists!')       
 
     def file_size_check(self, logo):
         if logo.data:
