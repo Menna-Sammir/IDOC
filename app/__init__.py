@@ -1,6 +1,6 @@
+from flask import Flask, request
 import sqlalchemy
 from flask import Flask
-from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
@@ -11,6 +11,7 @@ import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO
 from flask_cors import CORS
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -53,9 +54,9 @@ principal = Principal(app)
 
 
 from app.views import main
-from app.views import clinic_dash
-from app.views import bookdate
-
 from app.views import doctor
 from app.views import admin
 from app.views import patient
+from app.views import clinic_dash
+# from app.views import bookdate
+
