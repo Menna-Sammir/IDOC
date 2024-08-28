@@ -76,18 +76,12 @@ def book_appointment_form():
 @login_required
 def doctor_dash():
     user_id = request.args.get('current_user', None)
-    
     user = User.query.filter_by(id=user_id).first()
 
     doctor_id = user.doctor_id
-
     doctor = Doctor.query.filter_by(id=doctor_id).first()
 
     today = date.today()
-    print("Today's date:", today)
-    print("User ID:", user_id)
-    print("Doctor ID:", doctor_id)
-    print("Doctor:", doctor)
 
     appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name)\
         .join(Doctor, Doctor.id == Appointment.doctor_id)\
@@ -110,10 +104,21 @@ def doctor_dash():
             'status': appointment.status,
             'seen': appointment.seen
         })
+    patient_count = len(appointments_list)
         
     if request.method == 'POST':
         return redirect(url_for('logout'))
 
-    return render_template('doctor-dashboard.html', current_user=user_id, doctor=doctor, appointments=appointments_list, specialization=specialization)
+    return render_template('doctor-dashboard.html', current_user=user_id, doctor=doctor, appointments=appointments_list, specialization=specialization, patient_count=patient_count, today=today)
 
+
+@app.route('/mark_seen/<appointment_id>', methods=['PUT'])
+def mark_seen(appointment_id):
+    appointment = Appointment.query.get(appointment_id)
+    if appointment:
+        appointment.seen = True
+        db.session.commit()
+        return jsonify({'message': 'Appointment marked as seen'}), 200
+    else:
+        return jsonify({'error': 'Appointment not found'}), 404
 

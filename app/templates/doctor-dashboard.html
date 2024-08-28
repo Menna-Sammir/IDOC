@@ -79,26 +79,18 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-12 col-lg-4">
-                      <div class="dash-widget dct-border-rht">
-                        <div class="circle-bar circle-bar1">
-                          <div class="circle-graph1" data-percent="75">
-                            <img
-                              src="static/img/icon-01.png"
-                              class="img-fluid"
-                              alt="patient"
-                            />
+                      <div class="col-md-12 col-lg-4">
+                        <div class="dash-widget">
+                          <div class="circle-bar circle-bar3">
+                           
                           </div>
                         </div>
-                        <div class="dash-widget-info">
-                          <h6>Total Patient</h6>
-                          <h3>1500</h3>
-                          <p class="text-muted">Till Today</p>
-                        </div>
+                       
                       </div>
                     </div>
   
                     <div class="col-md-12 col-lg-4">
-                      <div class="dash-widget dct-border-rht">
+                      <div class="dash-widget">
                         <div class="circle-bar circle-bar2">
                           <div class="circle-graph2" data-percent="65">
                             <img
@@ -110,8 +102,8 @@
                         </div>
                         <div class="dash-widget-info">
                           <h6>Today Patient</h6>
-                          <h3>160</h3>
-                          <p class="text-muted">06, Nov 2019</p>
+                          <h3>{{ patient_count }}</h3>
+                          <p class="text-muted">{{ today }}</p>
                         </div>
                       </div>
                     </div>
@@ -119,19 +111,9 @@
                     <div class="col-md-12 col-lg-4">
                       <div class="dash-widget">
                         <div class="circle-bar circle-bar3">
-                          <div class="circle-graph3" data-percent="50">
-                            <img
-                              src="static/img/icon-03.png"
-                              class="img-fluid"
-                              alt="Patient"
-                            />
-                          </div>
+                         
                         </div>
-                        <div class="dash-widget-info">
-                          <h6>Appoinments</h6>
-                          <h3>85</h3>
-                          <p class="text-muted">06, Apr 2019</p>
-                        </div>
+                      
                       </div>
                     </div>
                   </div>
@@ -198,37 +180,51 @@
                               
                                 <td class="text-right">
                                   <div class="table-action">
-                                
-                                    <a
-                                      href="javascript:void(0);"
-                                      class="btn btn-sm bg-success-light"
-                                    >
-                                      <i class="fas fa-check"></i> Seen
-                                    </a>
-                                   
+                                      <button class="btn btn-sm bg-success-light" onclick="markAppointmentSeen('{{ appointment.appointment_id }}')">
+                                          <i class="fas fa-check"></i> Seen
+                                      </button>
                                   </div>
-                                </td>
-                              </tr>
-                              {% endfor %}
-                              <tr>
-                                <td>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- /Today Appointment Tab -->
-  
-                  
-                </div>
-              </div>
-            </div>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
           </div>
-        </div>
       </div>
-    </div>
   </div>
-  <!-- /Page Content -->
+</div>
+<!-- /Today Appointment Tab -->
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- /Page Content -->
+
+<!-- JavaScript Function for Marking Appointment as Seen -->
+<script>
+function markAppointmentSeen(appointmentId) {
+fetch(`/mark_seen/${appointmentId}`, {
+method: 'PUT',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify({})
+})
+.then(response => {
+if (response.ok) {
+// Reload the page to reflect the changes
+location.reload();
+} else {
+// Handle error appropriately
+console.error('Failed to mark appointment as seen');
+}
+})
+.catch(error => console.error('Error:', error));
+}
+</script>
   
   {% endblock %}
