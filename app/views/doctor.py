@@ -143,7 +143,7 @@ def doctor_profile():
 @doctor_permission.require(http_exception=403)
 def add_prescription():
     form = AddMedicineForm()
-    patient_id = "f6f977bc-2c89-4dfc-94f2-48251e5f52dd"
+    patient_id = "800b065d-945d-4ba0-bb20-10c1d480d352"
     # patient_id = request.args.get("patient_id")
     if form.validate_on_submit():
         try:
