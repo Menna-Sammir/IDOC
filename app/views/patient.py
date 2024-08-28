@@ -21,8 +21,7 @@ from app import load_translations, translations
 
 
 def convert_to_24_hour(time_str):
-    return datetime.strptime(time_str, '%I%p').time()
-    # return datetime.strptime(time_str, '%I:%M %p').time()
+    return datetime.strptime(time_str, '%I:%M %p').time()
 
 
 @app.route('/')
@@ -159,19 +158,19 @@ def doctor_appointments():
             for hour in range(start_hour_int, end_hour_int):
                 start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
                 end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
-                timeslot = f"{date[0]} {start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+                timeslot = f"{date[0]} {start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
                 daily_timeslots.append(
                     (
                         timeslot,
-                        f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+                        f"{start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
                     )
                 )
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date[0]
         ).all()
         booked_timeslots = [
-            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-"
-            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%H:%M')}"
+            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%I:%M %p')}-"
+            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%I:%M %p')}"
             for a in existing_appointments
         ]
         available_timeslots = []
