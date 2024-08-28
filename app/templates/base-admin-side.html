@@ -17,31 +17,31 @@
 
                     <a href="{{ url_for('dashboard') }}">
                         <i class="fas fa-columns"></i>
-                        <span>Dashboard</span>
+                        <span>{{ translate('Dashboard') }}</span>
                     </a>
                 </li>
                 <li class="{{ 'active' if request.endpoint == 'add_clinic' else '' }}">
                     <a href="{{ url_for('add_clinic') }}">
                         <i class="fas fa-clinic-medical"></i>
-                        <span>Add Clinic</span>
+                        <span>{{ translate('Add Clinic') }}</span>
                     </a>
                 </li>
                 <li class="{{ 'active' if request.endpoint == 'add_doctor' else '' }}">
                     <a href="{{ url_for('add_doctor') }}">
                         <i class="fas fa-user-nurse"></i>
-                        <span>ADD Doctor</span>
+                        <span>{{ translate('ADD Doctor') }}</span>
                     </a>
                 </li>
                 <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
                     <a href="{{ url_for('change_password') }}">
                         <i class="fas fa-lock"></i>
-                        <span>Change Password</span>
+                        <span>{{ translate('Change Password') }}</span>
                     </a>
                 </li>
                 <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
                     <a href="{{ url_for('logout_page') }}">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
+                        <span>{{ translate('Logout') }}</span>
                     </a>
                 </li>
             </ul>

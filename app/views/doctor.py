@@ -8,6 +8,7 @@ from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from app.views.forms.booking_form import AppointmentForm
 from flask_login import login_required, current_user
+from app import translate
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -27,13 +28,13 @@ def doctor_dash():
     print('User:', user)
 
     if user is None:
-        return 'User not found', 404
+        return translate('User not found'), 404
     if not hasattr(user, 'doctor_id'):
-        return 'User is not a doctor', 403
+        return translate('User is not a doctor'), 403
     doctor = Doctor.query.filter_by(id=user.doctor_id).first()
 
     if doctor is None:
-        return 'Doctor not found', 404
+        return translate('Doctor not found'), 404
     form = AppointmentForm()
     appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(asc(Appointment.time))
     nextAppt = appointments.order_by(asc(Appointment.time)).first().id
@@ -49,7 +50,7 @@ def doctor_dash():
             if appointment:
                 appointment.seen = True
                 db.session.commit()
-                flash('Appointment marked as seen', category='success')
+                flash(translate('Appointment marked as seen'), category='success')
                 return redirect(url_for('doctor_dash'))
     return render_template(
         'doctor-dashboard.html',
