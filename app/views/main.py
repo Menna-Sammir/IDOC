@@ -66,6 +66,8 @@ def login_page():
     if request.method == 'POST':
         if form.validate_on_submit():
             attempted_user = User.query.filter_by(email=form.email_address.data).first()
+            if not attempted_user:
+                attempted_user =  Doctor.query.filter_by(iDNum=form.email_address.data).first().users
             if attempted_user and attempted_user.check_password_correction(
                 attempted_password=form.password.data
             ):

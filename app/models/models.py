@@ -96,7 +96,7 @@ class Doctor(BaseModel):
     price = db.Column(INTEGER)
     duration  = db.Column(TIME)
     isAdv = db.Column(BOOLEAN, nullable=False)
-    iDNum = db.Column(VARCHAR(50), nullable=False)
+    iDNum = db.Column(VARCHAR(50), nullable=False, unique = True)
 
     specialization_id = db.Column(
         VARCHAR(60), ForeignKey('specialization.id'), nullable=False

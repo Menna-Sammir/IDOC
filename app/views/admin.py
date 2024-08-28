@@ -65,27 +65,29 @@ def add_clinic():
     ]
     if request.method == 'POST':
         try:
-            clinic = User.query.filter_by(
-                name=add_clinic_form.clinicName.data
-            ).first()
+            clinic = User.query.filter_by(name=add_clinic_form.clinicName.data).first()
 
             if clinic:
                 flash(translate('clinic already exists!'))
             else:
                 if add_clinic_form.validate_on_submit():
                     user_to_create = User(
-                        name = add_clinic_form.clinicName.data,
-                        email = add_clinic_form.email_address.data,
-                        activated = False
+                        name=add_clinic_form.clinicName.data,
+                        email=add_clinic_form.email_address.data,
+                        activated=False
                     )
                     Clinic_create = Clinic(
                         phone=add_clinic_form.phone.data,
                         address=add_clinic_form.clinicAddress.data,
                         governorate_id=add_clinic_form.gov_id.data,
-                        users = user_to_create
+                        users=user_to_create
                     )
-                    clinic_role = Role.query.filter_by(role_name='clinic').first_or_404()
-                    role_to_create = UserRole(role_id=clinic_role.id, user=user_to_create)
+                    clinic_role = Role.query.filter_by(
+                        role_name='clinic'
+                    ).first_or_404()
+                    role_to_create = UserRole(
+                        role_id=clinic_role.id, user=user_to_create
+                    )
 
                     if 'logo' not in request.files:
                         flash(translate('No file part'))
@@ -97,7 +99,7 @@ def add_clinic():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = f"{unique_str}_{add_clinic_form.clinicName.data.replace(' ', '_')}{extension}"
-                    Clinic_create.photo = new_filename
+                    user_to_create.photo = new_filename
 
                     if file and allowed_file(file.filename):
                         filename = secure_filename(new_filename)
@@ -122,9 +124,9 @@ def add_clinic():
                             app.root_path, 'static', 'img', 'logo.png'
                         )
                         msg = MIMEMultipart()
-                        msg['From'] = add_clinic_form.email_address.data
-                        msg['To'] = email_address
-                        msg['Subject'] = "IDOC, Email confirmation"
+                        msg['From'] = email_address
+                        msg['To'] = add_clinic_form.email_address.data
+                        msg['Subject'] = 'IDOC, Email confirmation'
                         reset_link = url_for(
                             'reset_password',
                             email=add_clinic_form.email_address.data,
@@ -146,34 +148,36 @@ def add_clinic():
                     except Exception as e:
                         flash(f'something wrong', category='danger')
                         print(str(e))
-                    flash(f'added clinic success  ${user_to_create.name}', category='success')
+                    flash(
+                        f'added clinic success  ${user_to_create.name}',
+                        category='success'
+                    )
                     return redirect(url_for('dashboard'))
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
-                        print("error",err_msg)
+                        print('error', err_msg)
                         flash(
                             f'there was an error with creating a user: {err_msg}',
                             category='danger'
                         )
         except Exception as e:
             flash(f'something wrong', category='danger')
-            print("Exception", e)
+            print('Exception', e)
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
 @login_required
-@admin_permission.require(http_exception=403)
+# @clinic_permission.require(http_exception=403)
 @app.route(
     '/add_doctor', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_doctor'
 )
 def add_doctor():
     add_doctor_form = DoctorForm()
-    clinics = Clinic.query.filter().all()
     specializations = Specialization.query.filter().all()
-    add_doctor_form.clinic_id.choices = [('', translate('Select a clinic'))] + [
-        (clinic.id, translate(clinic.name)) for clinic in clinics
-    ]
-    add_doctor_form.specialization_id.choices = [('', translate('Select a specialization'))] + [
+
+    add_doctor_form.specialization_id.choices = [
+        ('', translate('Select a specialization'))
+    ] + [
         (specialization.id, translate(specialization.specialization_name))
         for specialization in specializations
     ]
@@ -182,27 +186,26 @@ def add_doctor():
             doctor_name = (
                 add_doctor_form.firstname.data + ' ' + add_doctor_form.lastname.data
             )
-            doctor = Doctor.query.filter_by(
-                name=doctor_name, clinic_id=add_doctor_form.clinic_id.data
-            ).first()
-
-            if doctor:
-                flash(translate('doctor already exists!'))
-            else:
-                try:
-                    clinic = Clinic.query.get(add_doctor_form.clinic_id.data).name
+            try:
+                if current_user.user_roles.role.role_name == 'clinic':
+                    clinic = Clinic.query.filter_by(user_id=current_user.id).first_or_404()
                     doc_dur = int(add_doctor_form.duration.data)
-                    Doctor_create = Doctor(
+                    user_to_create = User(
                         name=doctor_name,
-                        phone=add_doctor_form.phone.data,
                         email=add_doctor_form.email_address.data,
-                        From_working_hours = add_doctor_form.fromHour.data,
-                        To_working_hours = add_doctor_form.toHour.data,
-                        duration = str(doc_dur * 100),
+                        activated=False
+                    )
+                    Doctor_create = Doctor(
+                        phone=add_doctor_form.phone.data,
+                        From_working_hours=add_doctor_form.fromHour.data,
+                        To_working_hours=add_doctor_form.toHour.data,
+                        duration=str(doc_dur * 100),
                         price=add_doctor_form.price.data,
                         specialization_id=add_doctor_form.specialization_id.data,
-                        clinic_id=add_doctor_form.clinic_id.data,
-                        iDNum=add_doctor_form.IDNum.data
+                        isAdv = False,
+                        clinic_id=clinic.id,
+                        iDNum=add_doctor_form.IDNum.data,
+                        users = user_to_create
                     )
                     if 'photo' not in request.files:
                         flash(translate('No file part'))
@@ -213,8 +216,8 @@ def add_doctor():
                         return redirect(request.url)
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
-                    new_filename = f"{unique_str}_{clinic.replace(' ', '_')}_{doctor_name.replace(' ', '_')}{extension}"
-                    Doctor_create.photo = new_filename
+                    new_filename = f"{unique_str}_{current_user.name.replace(' ', '_')}_{doctor_name.replace(' ', '_')}{extension}"
+                    user_to_create.photo = new_filename
                     if file and allowed_file(file.filename):
                         filename = secure_filename(new_filename)
                         file.save(
@@ -222,12 +225,60 @@ def add_doctor():
                                 app.config['UPLOAD_FOLDER'], 'doctors', filename
                             )
                         )
+                    doctor_role = Role.query.filter_by(
+                        role_name='doctor'
+                    ).first_or_404()
+                    role_to_create = UserRole(
+                        role_id=doctor_role.id, user=user_to_create
+                    )
+                    temp_password = secrets.token_urlsafe(8)
+                    user_to_create.temp_pass = temp_password
+                    db.session.add(user_to_create)
+                    db.session.add(role_to_create)
                     db.session.add(Doctor_create)
                     db.session.commit()
-                    flash(f'added Doctor success created with ID ${Doctor_create.iDNum}', category='success')
-                    return redirect(url_for('dashboard'))
-                except Exception as e:
-                    flash(f'something wrong', category='danger')
+                    try:
+                        server = smtplib.SMTP('smtp.gmail.com', 587)
+                        server.starttls()
+                        email_address = os.getenv('EMAIL_ADDRESS')
+                        app_password = os.getenv('APP_PASSWORD')
+                        server.login(email_address, app_password)
+                        logo_path = os.path.join(
+                            app.root_path, 'static', 'img', 'logo.png'
+                        )
+                        msg = MIMEMultipart()
+                        msg['From'] = email_address
+                        msg['To'] = add_doctor_form.email_address.data
+                        msg['Subject'] = 'IDOC, Email confirmation'
+                        reset_link = url_for(
+                            'reset_password',
+                            email=add_doctor_form.email_address.data,
+                            _external=True
+                        )
+                        message_body = f"Your temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
+
+                        message = message_body
+                        msg.attach(MIMEText(message, 'html'))
+                        with open(logo_path, 'rb') as f:
+                            logo_data = f.read()
+                        logo_part = MIMEImage(logo_data)
+                        logo_part.add_header('Content-ID', '<logo_image>')
+                        msg.attach(logo_part)
+
+                        server.send_message(msg)
+                        server.quit()
+                        # flash('A temporary password has been sent to your email.', 'success')
+                    except Exception as e:
+                        flash(f'something wrong', category='danger')
+                        print(str(e))
+                    flash(
+                        f'added Doctor success created with ID ${Doctor_create.iDNum}',
+                        category='success'
+                    )
+                    return redirect(url_for('clinic_dash'))
+            except Exception as e:
+                print(str(e))
+                flash(f'something wrong', category='danger')
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
