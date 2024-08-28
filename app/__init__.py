@@ -5,15 +5,11 @@ import os
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_principal import Principal
-<<<<<<< HEAD
 from flask_socketio import SocketIO
-=======
-from flask_uploads import UploadSet, IMAGES, configure_uploads
+# from flask_uploads import UploadSet, IMAGES, configure_uploads
 import uuid
 from flask_wtf.csrf import CSRFProtect
 
-
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 
 load_dotenv()
 app = Flask(__name__)
@@ -23,12 +19,9 @@ IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
 IDOC_HOST = os.getenv('IDOC_HOST')
 IDOC_DB = os.getenv('IDOC_DB')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqldb://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
-# app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
-# app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(os.getcwd(), 'uploads')
 
 
 db = SQLAlchemy(app)
@@ -60,11 +53,8 @@ principal = Principal(app)
 
 
 from app.views import main
-<<<<<<< HEAD
 from app.views import doctor
 from app.views import admin
-from app.views import auth_form
+
 from app.views import patient
-=======
-from app.views import patient
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
+

@@ -61,7 +61,6 @@ def admin_dash():
         return redirect(url_for('logout'))
     
     return render_template('admin-dashboard.html', 
-                           current_user=user,
                            doctor_details=doctor_details,
                            clinic_details=clinic_details, 
                            doctor_count=doctor_count,
