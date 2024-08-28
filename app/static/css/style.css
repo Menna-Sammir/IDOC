@@ -6472,12 +6472,21 @@ height: 100% !important;
 padding: 18px !important;
 }
 .Report-appointment-card{
-  width: 100%;
+  width: 25%;
   height: 248px !important;
   background-color: #ffffff;
   border-radius: 22px;
 }
-
+.fa-vial,
+.fa-pills,
+.fa-x-ray {
+  font-size: 50px !important;
+  margin-bottom: 8px !important;
+  color: #0077B6;
+  }
+  .fa-calendar-check{
+    color: green;
+  }
 /*-----------------
 	30. Profile Settings
 -----------------------*/
