@@ -9,4 +9,4 @@ if __name__ == '__main__':
         db.create_all()
         seed_governorates()
         create_admin_user()
-    app.run(debug=True)
+    socketio.run(app, debug=True)
