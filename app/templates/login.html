@@ -52,6 +52,13 @@
                       <!-- <div class="text-right">
 												<a class="forgot-link" href="forgot-password.html">Forgot Password ?</a>
 											</div> -->
+                      <div class="text-right">
+                        <a
+                          class="forgot-link"
+                          href="{{ url_for('doctor_signup_page') }}"
+                          >{{ translate('Don’t have an account?') }}</a
+                        >
+                      </div>
                       {{ form.submit(class="btn btn-primary btn-block btn-lg
                       login-btn") }}
                     </form>

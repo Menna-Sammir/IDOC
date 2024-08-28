@@ -102,16 +102,15 @@
                 data-toggle="dropdown"
               >
                 <span class="user-img">
-                  {% set base_path = 'static/images/' %}
                   <img
                     class="rounded-circle"
-                    src="{{base_path ~ current_user.photo}}"
+                    src="{{current_user.photo}}"
                     width="31"
                     alt="Darren Elder"
                   />
                 </span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-menu user-menu dropdown-menu-right">
                 <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
                     <img
@@ -128,11 +127,11 @@
                 {% if current_user.roles.role_name == 'Admin' %}
                 <a
                   class="dropdown-item"
-                  href="{{ url_for('doctor_dash') }}"
+                  href="{{ url_for('admin_dash') }}"
                   >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
-                <a class="nav-link" href="{{ url_for('logout_page') }}"
+                <a class="dropdown-item" href="{{ url_for('logout_page') }}"
                   >{{ translate('Logout') }}</a
                 >
               </div>
