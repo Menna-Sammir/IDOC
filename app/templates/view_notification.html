@@ -1,7 +1,5 @@
 {% extends 'base.html' %} {% block title %} {{ translate('Notifications') }} {%
 endblock %} {% block body %}
-<meta name="csrf-token" content="{{ csrf_token() }}" />
-
 <div class="row">
   <div class="col-md-12">
     <h4 class="mb-4" style="text-align: center; margin-top: 20px">
@@ -11,12 +9,15 @@ endblock %} {% block body %}
       <!-- All notifications -->
       <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
         <li class="nav-item">
-          <a class="nav-link active" href="#read-appointments" data-toggle="tab"
+          <a
+            class="nav-link active"
+            href="#read-notifications"
+            data-toggle="tab"
             >Read</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#unread-appointments" data-toggle="tab"
+          <a class="nav-link" href="#unread-notifications" data-toggle="tab"
             >Unread</a
           >
         </li>
@@ -25,16 +26,19 @@ endblock %} {% block body %}
 
       <div class="tab-content">
         <!-- Read -->
-        <div class="tab-pane show active" id="read-appointments">
+        <div class="tab-pane show active" id="read-notifications">
           <div class="card card-table mb-0">
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-hover table-center mb-0">
                   {% if notifications %}
-                  <tbody>
-                    {% for notification in notifications %} {% if
-                    notification.isRead %}
-                    <tr>
+                  <tbody id="read-notifications-body">
+                    {% for notification in notifications if notification.isRead
+                    %}
+                    <tr
+                      data-id="{{ notification.id }}"
+                      class="read-notification"
+                    >
                       <td class="notification-message">
                         {% if notification.photo %}
                         <a
@@ -50,15 +54,21 @@ endblock %} {% block body %}
                         {% endif %}
                         <span>{{ notification.patient }}</span> has an
                         appointment with Dr. {{ notification.doctor }}
-                        <span class="d-inline-block ml-2 text-info">
-                          on {{ notification.date }} at {{ notification.time }}
-                        </span>
-                        <span class="d-inline-block ml-2 text-info">
-                          {{ notification.formatted_time }}
-                        </span>
+                        <span class="d-inline-block ml-2 text-info"
+                          >on {{ notification.date }} at {{ notification.time
+                          }}</span
+                        >
+                        <span class="d-inline-block ml-2 text-info"
+                          >{{ notification.formatted_time }}</span
+                        >
                       </td>
                       <td class="text-right">
                         <div class="table-action">
+                          <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                          />
                           <button
                             class="btn btn-sm bg-danger-light delete-btn"
                             data-id="{{ notification.id }}"
@@ -68,7 +78,7 @@ endblock %} {% block body %}
                         </div>
                       </td>
                     </tr>
-                    {% endif %} {% endfor %}
+                    {% endfor %}
                   </tbody>
                   {% else %}
                   <tr>
@@ -85,16 +95,19 @@ endblock %} {% block body %}
         <!-- /Read -->
 
         <!-- Unread -->
-        <div class="tab-pane" id="unread-appointments">
+        <div class="tab-pane" id="unread-notifications">
           <div class="card card-table mb-0">
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-hover table-center mb-0">
                   {% if notifications %}
-                  <tbody>
-                    {% for notification in notifications %} {% if not
+                  <tbody id="unread-notifications-body">
+                    {% for notification in notifications if not
                     notification.isRead %}
-                    <tr>
+                    <tr
+                      data-id="{{ notification.id }}"
+                      class="unread-notification"
+                    >
                       <td class="notification-message">
                         {% if notification.photo %}
                         <a
@@ -110,15 +123,27 @@ endblock %} {% block body %}
                         {% endif %}
                         <span>{{ notification.patient }}</span> has an
                         appointment with Dr. {{ notification.doctor }}
-                        <span class="d-inline-block ml-2 text-info">
-                          on {{ notification.date }} at {{ notification.time }}
-                        </span>
-                        <span class="d-inline-block ml-2 text-info">
-                          {{ notification.formatted_time }}
-                        </span>
+                        <span class="d-inline-block ml-2 text-info"
+                          >on {{ notification.date }} at {{ notification.time
+                          }}</span
+                        >
+                        <span class="d-inline-block ml-2 text-info"
+                          >{{ notification.formatted_time }}</span
+                        >
                       </td>
                       <td class="text-right">
                         <div class="table-action">
+                          <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                          />
+                          <button
+                            class="btn btn-sm bg-success-light mark-read-btn"
+                            data-id="{{ notification.id }}"
+                          >
+                            <i class="fas fa-check"></i> Mark as Read
+                          </button>
                           <button
                             class="btn btn-sm bg-danger-light delete-btn"
                             data-id="{{ notification.id }}"
@@ -128,7 +153,7 @@ endblock %} {% block body %}
                         </div>
                       </td>
                     </tr>
-                    {% endif %} {% endfor %}
+                    {% endfor %}
                   </tbody>
                   {% else %}
                   <tr>
@@ -147,5 +172,107 @@ endblock %} {% block body %}
     </div>
   </div>
 </div>
+{% block js %} {% include 'base-js.html' %}
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    let unreadCount = parseInt(
+      document.getElementById('notification-count').textContent,
+      10
+    );
 
-{% endblock %}
+    document.querySelectorAll('.mark-read-btn').forEach((button) => {
+      button.addEventListener('click', function () {
+        const notificationId = this.getAttribute('data-id');
+        fetch('/mark_as_read', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token() }}',
+          },
+          body: new URLSearchParams({
+            notification_id: notificationId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message === 'Notification marked as read') {
+              const notificationRow = this.closest('tr');
+              if (notificationRow) {
+                notificationRow.classList.remove('unread-notification');
+                document
+                  .getElementById('read-notifications-body')
+                  .appendChild(notificationRow);
+                notificationRow.querySelector('.mark-read-btn').remove();
+                notificationRow
+                  .querySelector('.delete-btn')
+                  .classList.replace('bg-success-light', 'bg-danger-light');
+                notificationRow
+                  .querySelector('.delete-btn i')
+                  .classList.replace('fa-check', 'fa-times');
+                notificationRow.querySelector('.delete-btn').innerHTML =
+                  '<i class="fas fa-times"></i> Delete';
+
+                unreadCount -= 1;
+                document.getElementById('notification-count').textContent =
+                  unreadCount;
+
+                if (unreadCount === 0) {
+                  document.getElementById('notification-count').style.display =
+                    'inline';
+                  document.getElementById('notification-count').textContent =
+                    '0';
+                }
+              } else {
+                console.error('Notification row not found.');
+              }
+            } else {
+              console.error(
+                'Error marking notification as read:',
+                data.message
+              );
+            }
+          })
+          .catch((error) => console.error('Error:', error));
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach((button) => {
+      button.addEventListener('click', function () {
+        const notificationId = this.getAttribute('data-id');
+        fetch('/delete_notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token() }}',
+          },
+          body: new URLSearchParams({
+            notification_id: notificationId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message === 'Notification deleted') {
+              this.closest('tr').remove();
+
+              if (this.classList.contains('mark-read-btn')) {
+                unreadCount -= 1;
+                document.getElementById('notification-count').textContent =
+                  unreadCount;
+
+                if (unreadCount === 0) {
+                  document.getElementById('notification-count').style.display =
+                    'inline';
+                  document.getElementById('notification-count').textContent =
+                    '0';
+                }
+              }
+            } else {
+              console.error('Error deleting notification:', data.message);
+            }
+          })
+          .catch((error) => console.error('Error:', error));
+      });
+    });
+  });
+</script>
+{% endblock %} {% endblock %}
