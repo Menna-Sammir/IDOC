@@ -50,13 +50,25 @@ def search_doctor():
                            selected_date=selected_date)
 
 
+
 # doctor search page >>> book appointment
 @app.route('/book_appointment', methods=['POST'])
 def book_appointment():
     if request.method == 'POST':
         doctor_id = request.form.get('doctor_id')
+        print(f"Posted data: doctor_id={doctor_id}")
+
         session['doctor_id'] = doctor_id
-        return redirect('booking.html')
+        return redirect(url_for('book_appointment_form'))
+
+
+@app.route('/book_appointment_form')
+def book_appointment_form():
+    doctor_id = session.get('doctor_id', None)
+    if doctor_id:
+        return f'Booking appointment with doctor_id={doctor_id}'
+    else:
+        return 'No doctor_id found in session.'
 
 
 # doctor dashboard page >>> view appointments today
