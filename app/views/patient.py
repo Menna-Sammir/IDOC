@@ -121,22 +121,6 @@ def search_doctor():
         form=form
     )
 
-def convert_time_to_minutes(time_obj):
-    """Converts a datetime.time object to minutes."""
-    return time_obj.hour * 60 + time_obj.minute
-
-def create_time_slots(start_time, end_time, duration):
-    """Creates a list of available time slots based on start time, end time, and duration."""
-    slots = []
-    current_time = start_time
-    
-    while current_time + duration <= end_time:
-        end_slot_time = current_time + duration
-        slots.append((current_time, end_slot_time))
-        current_time = end_slot_time
-        
-    return slots
-
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
@@ -150,12 +134,15 @@ def doctor_appointments():
         .limit(3)
         .all()
     )
-    dates = []
-    for i in range(9):
-        date = datetime.now() + timedelta(days=i)
-        dates.append(
-            (date.date(), date.strftime('%a'), date.strftime('%d'))
-        )
+    
+    # Generate upcoming dates with format (date, day_of_week, day_of_month)
+    dates = [
+        ((datetime.now() + timedelta(days=i)).strftime('%Y-%m-%d'), 
+         (datetime.now() + timedelta(days=i)).strftime('%a'), 
+         (datetime.now() + timedelta(days=i)).strftime('%d'))
+        for i in range(9)
+    ]
+    
     timeslots_by_date = {}
     
     # Convert duration from TIME to timedelta
@@ -163,19 +150,19 @@ def doctor_appointments():
     
     for date in dates:
         daily_timeslots = []
-        start_time = datetime.combine(date[0], doctor.From_working_hours)
-        end_time = datetime.combine(date[0], doctor.To_working_hours)
+        start_time = datetime.combine(datetime.strptime(date[0], '%Y-%m-%d').date(), doctor.From_working_hours)
+        end_time = datetime.combine(datetime.strptime(date[0], '%Y-%m-%d').date(), doctor.To_working_hours)
         
-        slots = create_time_slots(start_time, end_time, duration)
+        if start_time > end_time:
+            end_time += timedelta(days=1)  # Handle cases where end time is on the next day
         
-        for start_slot, end_slot in slots:
-            timeslot = f"{date[0]} {start_slot.strftime('%I:%M %p')}-{end_slot.strftime('%I:%M %p')}"
-            daily_timeslots.append(
-                (
-                    timeslot,
-                    f"{start_slot.strftime('%I:%M %p')}-{end_slot.strftime('%I:%M %p')}"
-                )
-            )
+        current_time = start_time
+        
+        while current_time + duration <= end_time:
+            end_slot_time = current_time + duration
+            timeslot = f"{date[0]} {current_time.strftime('%I:%M %p')}-{end_slot_time.strftime('%I:%M %p')}"
+            daily_timeslots.append((timeslot, f"{current_time.strftime('%I:%M %p')}-{end_slot_time.strftime('%I:%M %p')}"))
+            current_time = end_slot_time
         
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date[0]
@@ -183,7 +170,7 @@ def doctor_appointments():
         
         booked_timeslots = [
             f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%I:%M %p')}-"
-            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%I:%M %p')}"
+            f"{(datetime.combine(a.date, a.time) + duration).strftime('%I:%M %p')}"
             for a in existing_appointments
         ]
         
@@ -193,8 +180,9 @@ def doctor_appointments():
                 available_timeslots.append((timeslot[0], timeslot[1], False))
             else:
                 available_timeslots.append((timeslot[0], timeslot[1], True))
-        timeslots_by_date[date[0]] = available_timeslots
         
+        timeslots_by_date[date[0]] = available_timeslots
+    
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
         if not selected_timeslot:
@@ -208,9 +196,14 @@ def doctor_appointments():
             end_time_str = end_time_str.strip()
             start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
             end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
-        except ValueError:
-            flash('Invalid time slot format. Please try again.', 'danger')
+        except ValueError as e:
+            flash(f'Invalid time slot format. Please try again. Error: {e}', 'danger')
             return redirect(request.url)
+        
+        print(f"Selected Timeslot: {selected_timeslot}")
+        print(f"Date: {date_str}")
+        print(f"Start Time: {start_time}")
+        print(f"End Time: {end_time}")
         
         session['doctor_id'] = doctor_id
         session['date'] = date_str
@@ -227,6 +220,7 @@ def doctor_appointments():
         specialization_name=specialization_name,
         other_doctors=other_doctors
     )
+
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
