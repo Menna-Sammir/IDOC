@@ -33,7 +33,7 @@ body %}
         <div class="card">
           <div class="card-header">
             <a
-              href="#Add_Specialities_details"
+            data-target="#Add_Specialities_details"
               data-toggle="modal"
               class="btn btn-primary float-right mt-2"
               >Add</a
@@ -240,11 +240,11 @@ body %}
 <!-- Add Modal -->
 <div
   class="modal fade"
-  id="Add_Specialities_details"
+  id="Add"
   aria-hidden="true"
-  role="dialog"
+  role="dialog" tabindex="-1"
 >
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document" >
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add Specialities</h5>
@@ -283,75 +283,6 @@ body %}
 </div>
 <!-- /ADD Modal -->
 
-<!-- Edit Details Modal -->
-<div
-  class="modal fade"
-  id="edit_specialities_details"
-  aria-hidden="true"
-  role="dialog"
->
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Specialities</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="row form-row">
-            <div class="col-12 col-sm-6">
-              <div class="form-group">
-                <label>Specialities</label>
-                <input type="text" class="form-control" value="Cardiology" />
-              </div>
-            </div>
-            <div class="col-12 col-sm-6">
-              <div class="form-group">
-                <label>Image</label>
-                <input type="file" class="form-control" />
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">
-            Save Changes
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /Edit Details Modal -->
-
-<!-- Delete Modal -->
-<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <!--	<div class="modal-header">
-							<h5 class="modal-title">Delete</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>-->
-      <div class="modal-body">
-        <div class="form-content p-2">
-          <h4 class="modal-title">Delete</h4>
-          <p class="mb-4">Are you sure want to delete?</p>
-          <button type="button" class="btn btn-primary">Save</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <!-- /Delete Modal -->
 {% endblock %}
 <!-- Footer -->
