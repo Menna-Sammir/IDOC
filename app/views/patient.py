@@ -1,5 +1,5 @@
 from app import app, db, socketio
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
 from app.views.forms.search_form import SearchForm
@@ -19,6 +19,9 @@ import json
 from flask_babel import lazy_gettext as _, format_decimal
 from app import load_translations, translations
 import secrets
+from app.views.forms.patient_form import PatientForm
+from werkzeug.utils import secure_filename
+from flask_login import login_required
 
 
 @app.route('/')
@@ -872,3 +875,73 @@ def sendEmail():
                 f'there was an error with creating a user: {err_msg}', category='danger'
             )
     return redirect(url_for('home'))
+
+
+### patient profile
+@app.route('/patient-profile/<string:patient_id>')
+def patient_profile(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    
+    return render_template('patient-profile.html')
+
+
+### patient setting
+@app.route('/patient_setting', methods=['GET', 'PUT'])
+@login_required
+def patient_setting():
+    form = PatientForm()
+
+    user = User.query.filter_by(id=current_user.id).first()
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+
+    if request.method == 'PUT':
+        if form.validate():
+            if form.photo.data:
+                photo_filename = secure_filename(form.photo.data.filename)
+                photo_directory = os.path.join('static', 'images', 'patients')
+                
+                if not os.path.exists(photo_directory):
+                    os.makedirs(photo_directory)
+                    
+                photo_path = os.path.join(photo_directory, photo_filename)
+                form.photo.data.save(photo_path)
+                user.photo = photo_path
+            else:
+                photo_path = user.photo if user else None
+
+
+            email_exists = User.query.filter(User.email == form.email.data, User.id != user.id).first()
+            if email_exists:
+                return jsonify({'status': 'error', 'message': 'Email address already exists!'}), 400
+
+            if not patient:
+                patient = Patient(user_id=current_user.id)
+
+            patient.firstname = form.firstname.data
+            patient.lastname = form.lastname.data
+            patient.email_address = form.email.data
+            patient.phone = form.phone.data
+            patient.address = form.address.data
+            patient.governorate_id = form.governorate.data
+            patient.age = form.age.data
+            patient.blood_group = form.blood_group.data
+            patient.allergy = form.allergy.data
+
+            user.name = f"{form.firstname.data} {form.lastname.data}"
+            user.email = form.email.data
+
+            try:
+                db.session.add(patient)
+                db.session.add(user)
+                db.session.commit()
+                flash('Your profile has been updated!', 'success')
+                return jsonify({'status': 'success'})
+            
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({'status': 'error', 'message': 'An error occurred while updating your settings. Please try again.'}), 500
+
+        errors = {field: errors[0] for field, errors in form.errors.items()}
+        return jsonify({'status': 'error', 'errors': errors}), 400
+
+    return render_template('patient-setting.html', form=form, patient=patient)
