@@ -7,12 +7,9 @@ from app import translate
 from datetime import datetime
 from flask import jsonify
 
-
-
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
-
 
 @app.route('/clinic_dashboard', methods=['GET'], strict_slashes=False)
 @login_required
@@ -37,10 +34,8 @@ def clinic_dash():
     )
     today = datetime.today().strftime('%Y-%m-%d')
 
-    working_hours = clinic.working_hours.split('-')
-    opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
-    closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
-    is_open_today = opening_time <= current_time <= closing_time
+    # Removed working_hours logic
+    is_open_today = None  # Or any other logic if applicable
 
     appointments = (
         db.session.query(Appointment, Patient, Doctor)
@@ -58,7 +53,6 @@ def clinic_dash():
         appointments=appointments
     )
 
-
 @app.route('/calender', methods=['GET'], strict_slashes=False)
 @login_required
 @clinic_permission.require(http_exception=403)
@@ -72,17 +66,14 @@ def clinic_calender():
     clinic = Clinic.query.get_or_404(user.clinic_id)
     current_time = datetime.now().time()
 
-    working_hours = clinic.working_hours.split('-')
-    opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
-    closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
-    is_open_today = opening_time <= current_time <= closing_time
+    # Removed working_hours logic
+    is_open_today = None  # Or any other logic if applicable
 
     return render_template(
         'clinicCalender.html',
-        working_hours=clinic.working_hours,
+        working_hours=None,  # This will be None or you may adjust based on your needs
         is_open_today=is_open_today
     )
-
 
 @app.route('/getcaldata', methods=['GET'], strict_slashes=False)
 def clinic_cal():
@@ -112,8 +103,6 @@ def clinic_cal():
         for appointment in appointments
     ]
     return jsonify({'appointment_events': appointment_events})
-
-
 
 @app.route('/clear', methods=['GET', 'POST', 'PUT'], strict_slashes=False)
 @login_required
