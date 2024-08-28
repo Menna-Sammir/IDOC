@@ -149,30 +149,26 @@ def doctor_appointments():
     timeslots_by_date = {}
     for date in dates:
         daily_timeslots = []
-        for hours in clinic.working_hours.split(','):
-            start_hour, end_hour = map(lambda x: x.strip(), hours.split('-'))
-            start_hour_24 = convert_to_24_hour(start_hour)
-            end_hour_24 = convert_to_24_hour(end_hour)
-            start_hour_int = start_hour_24.hour
-            end_hour_int = end_hour_24.hour
+        start_hour = doctor.From_working_hours.hour
+        end_hour = doctor.To_working_hours.hour
 
-            if start_hour_int > end_hour_int:
-                end_hour_int += 24  
+        if start_hour > end_hour:
+            end_hour += 24
 
-            for hour in range(start_hour_int, end_hour_int):
-                start_time = datetime.strptime(f"{hour % 24}:00", '%H:%M').time()
-                end_time = datetime.strptime(f"{(hour + 1) % 24}:00", '%H:%M').time()
+        for hour in range(start_hour, end_hour):
+            start_time = datetime.strptime(f"{hour % 24}:00", '%H:%M').time()
+            end_time = datetime.strptime(f"{(hour + 1) % 24}:00", '%H:%M').time()
 
-                if start_time.strftime('%p') == 'AM' and hour >= 24:
-                    break  
+            if start_time.strftime('%p') == 'AM' and hour >= 24:
+                break  
 
-                timeslot = f"{date[0]} {start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
-                daily_timeslots.append(
-                    (
-                        timeslot,
-                        f"{start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
-                    )
+            timeslot = f"{date[0]} {start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
+            daily_timeslots.append(
+                (
+                    timeslot,
+                    f"{start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
                 )
+            )
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date[0]
         ).all()
@@ -211,7 +207,7 @@ def doctor_appointments():
         session['doctor_id'] = doctor_id
         session['date'] = date_str
         session['start_time'] = start_time_str
-        session['end_time'] = start_time_str
+        session['end_time'] = end_time_str
         return redirect(url_for('patient_checkout'))
     return render_template(
         'booking.html',
