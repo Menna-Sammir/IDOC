@@ -77,6 +77,7 @@ def search_doctor():
         query = query.filter(Clinic.governorate_id == governorate_id)
     if doctor_name:
         query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
+        
     specializations = Specialization.query.all()
     governorates = Governorate.query.all()
 
