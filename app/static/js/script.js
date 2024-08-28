@@ -352,11 +352,11 @@ Version      : 1.0
         $(this)
           .find(".circle-graph3")
           .circleProgress({
-            value: percent / 100,
+            value: percent / 200,
             size: 400,
             thickness: 30,
             fill: {
-              color: "#1b5a90",
+              color: "#5ac9d0",
             },
           });
       }
@@ -383,5 +383,26 @@ $(document).ready(function () {
   $(".location-select2").select2({
     containerCssClass: "location-select",
     width: "100%",
+  });
+});
+document.addEventListener("DOMContentLoaded", function() {
+  const dateItems = document.querySelectorAll(".date-item");
+  const timeslotsContainers = document.querySelectorAll(".timeslots");
+  dateItems.forEach((item, index) => {
+    item.addEventListener("click", () => {
+      dateItems.forEach(i => i.classList.remove("active"));
+      timeslotsContainers.forEach(c => c.classList.remove("active"));
+      item.classList.add("active");
+      timeslotsContainers[index].classList.add("active");
+    });
+  });
+
+  const timeslots = document.querySelectorAll(".timeslot");
+  timeslots.forEach(slot => {
+    slot.addEventListener("click", () => {
+      timeslots.forEach(s => s.classList.remove("active"));
+      slot.classList.add("active");
+      slot.querySelector("input[type='radio']").checked = true;
+    });
   });
 });

@@ -122,15 +122,15 @@
                       <div class="dash-widget">
                         <div class="circle-bar circle-bar3">
                           <div class="circle-graph3" data-percent="50">
-                            <img src="assets/img/icon-03.png" class="img-fluid" alt="Patient">
+                            <img src="../static/img/clock-time-icon.jpg" class="w-50" alt="Patient">
                           </div>
                         </div>
                         <div class="dash-widget-info">
                           <h3>Working Hours Today</h3>
                           {% if is_open_today %}
-                          <p>The clinic in this time open</p>
+                          <p class="text-info">The clinic in this time open</p>
                           {% else %}
-                          <p class="text-danger ">The clinic in this time closed <br> <span class="text-info">Working hours: {{ clinic.working_hours }}.</span></p>
+                          <p class="text-danger ">The clinic in this time closed <br> <i class="far fa-clock text-info"></i> <span class="text-info">Working hours: {{ clinic.working_hours }}.</span></p>
                           {% endif %}
                         </div>
                       </div>
