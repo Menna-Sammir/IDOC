@@ -119,7 +119,7 @@
                       >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
                     >
                   </h4>
-                  <h5 class="text-muted ">{{ doctor.clinic.name}}</h5>
+                  <h5 class="text-muted ">{{ translate(doctor.clinic.name) }}</h5>
                   <p class="doc-department mt-2">
                     <img
                       src="{{ specialization.photo }}"
@@ -157,8 +157,7 @@
                   <a
                     href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                     class="apt-btn"
-                    ><i class="far fa-calendar-alt"></i> {{ translate('Book
-                    Appointment') }}</a
+                    ><i class="far fa-calendar-alt"></i> {{ translate('Book Appointment') }}</a
                   >
                 </div>
               </div>
