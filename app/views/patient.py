@@ -15,6 +15,9 @@ from app.views.forms.booking_form import AppointmentForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_
 from app import translate, get_locale
+import json
+from flask_babel import lazy_gettext as _
+from app import load_translations, translations
 
 
 def convert_to_24_hour(time_str):
@@ -26,11 +29,13 @@ def convert_to_24_hour(time_str):
 def home():
     form = SearchForm()
     E_form = EmailForm()
-    form.specialization.choices = [('', 'Select a specialization')] + [
-        (s.id, s.specialization_name) for s in Specialization.query.all()
+
+
+    form.specialization.choices = [('', translate('Select a specialization'))] + [
+        (s.id, translate(f'specializations.{s.id}')) for s in Specialization.query.all()
     ]
-    form.governorate.choices = [('', 'Select a governorate')] + [
-        (g.id, g.governorate_name) for g in Governorate.query.all()
+    form.governorate.choices = [('', translate('Select a governorate'))] + [
+        (g.id, translate(f'governorates.{g.id}')) for g in Governorate.query.all()
     ]
     specialties = Specialization.query.filter().all()
     doctor = Doctor.query.filter().all()
@@ -105,6 +110,7 @@ def search_doctor():
             query = query.filter(Doctor.id.in_(subquery))
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
+        
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
 
