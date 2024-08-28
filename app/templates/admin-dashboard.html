@@ -70,7 +70,7 @@
                             <span>{{ translate('Doctors') }}</span>
                           </div>
                           <div class="d-block text-muted">
-                            {{ doctor_count }}
+                            {{ translate(doctor_count) }}
                           </div>
                         </div>
                       </div>
@@ -142,11 +142,11 @@
                                             {% set base_path = 'static/images/doctors/' %}
                                             <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.photo}}" alt="User Image"></a>
 
-                                              <a href="#">Dr. {{ doctor.name }}</a>
+                                              <a href="#">{{ translate('Dr.') }} {{ translate(doctor.name) }}</a>
                                           </h2>
                                       </td>
-                                      <td>{{ doctor.specialization.specialization_name }}</td>
-                                      <td>{{ doctor.total_earnings() }} $</td>
+                                      <td>{{ translate(doctor.specialization.specialization_name) }}</td>
+                                      <td>{{ translate(doctor.total_earnings()) }} $</td>
 
                                   </tr>
                                   {% endfor %}
@@ -181,13 +181,13 @@
                                           <h2 class="table-avatar">
                                             {% set base_path = 'static/images/clinic/' %}
                                             <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.photo}}" alt="User Image"></a>
-                                              <a href="profile.html">{{ clinic.name }}</a>
+                                              <a href="profile.html">{{ translate(clinic.name) }}</a>
                                           </h2>
                                       </td>
-                                      <td>{{ clinic.address }}</td>
+                                      <td>{{ translate(clinic.address) }}</td>
                                        <td>
                                           <h2 class="table-avatar">
-                                              <a>{{ clinic.phone }}</a>
+                                              <a>{{ translate(clinic.phone) }}</a>
                                           </h2>
                                       </td>
 

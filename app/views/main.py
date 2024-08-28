@@ -6,7 +6,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed
 from app import socketio
-
+from flask import session
+from flask_socketio import disconnect
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -138,6 +139,12 @@ def login_page():
 
 
 
+@socketio.on('disconnect request')
+def handle_disconnect_request():
+    session_id = request.sid
+    disconnect(sid=session_id)
+
+
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
     print(f"User before logout: {current_user}")
@@ -147,6 +154,7 @@ def logout_page():
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
     flash('You have been logged out!', category='info')
+    session.pop('clinic_id', None)
     socketio.emit('disconnect request')
     return redirect(url_for('login_page'))
 
