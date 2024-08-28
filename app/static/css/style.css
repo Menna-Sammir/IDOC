@@ -2773,7 +2773,6 @@ html.menu-opened body {
 .social-login .btn:focus {
 	color: #fff;
 }
-
 /*-----------------
 	15. Home
 -----------------------*/
@@ -2800,9 +2799,6 @@ html.menu-opened body {
 
 .home-sub {
 	height: 64px;
-	border-top-right-radius: 10px;
-	border-bottom-right-radius: 10px;
-
 }
 
 .section-header h2 {
@@ -4181,6 +4177,63 @@ html.menu-opened body {
 /*-----------------
 	18. Booking
 -----------------------*/
+
+.date-container {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 20px;
+	border: 2px solid #ddd;
+	border-radius: 5px;
+  }
+  .date-item {
+	flex: 1;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px;
+	margin: 0px;
+	cursor: pointer;
+	width: 100%;
+  }
+  .date-item.active {
+	background-color: #5ac9d0;
+	color: #fff;
+  }
+  .timeslots {
+	display: none;
+	
+  }
+  .timeslots.active {
+	display: block;
+  }
+  .timeslot {
+	display: inline-block;
+	margin: 5px;
+	padding: 10px;
+	border: 2px solid #ddd;
+	cursor: pointer;
+	border-radius: 20px;
+
+  }
+  .timeslot input[type="radio"] {
+	display: none;
+  }
+  .timeslot.active {
+	background-color: #5ac9d0;
+	color: #fff;
+	margin: auto;
+	border-radius: 20px;
+  }
+ .timeslots label{
+	margin: auto;
+	}
+  .timeslot input[type="radio"]:checked + label {
+	background-color: #5ac9d0;
+	color: #fff;
+	margin: auto;
+  }
+
 
 .booking-doc-info {
 	display: -webkit-box;
@@ -8213,6 +8266,7 @@ html.menu-opened body {
 		border-bottom-right-radius: 256px;
 	}
 }
+
 
 .logout-btn {
     background: none;

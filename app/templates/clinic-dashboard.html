@@ -1,303 +1,212 @@
-<!-- <!DOCTYPE html> -->
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>{% block title %} {% endblock %}</title>
-
-    {% block head %} {% include 'base-css.html' %} {% endblock %}
-  </head>
-  <body>
-    <!-- Main Wrapper -->
-    <div class="loader">
-      {% block loading %} {% include 'base-loading.html' %} {% endblock %}
+{% extends 'base.html' %} {% block title %} Doctor Dashboard {% endblock %} {%
+  block body %}
+  
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Dashboard
+              </li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">Dashboard</h2>
+        </div>
+      </div>
     </div>
-    <div class="main-wrapper">
-      <!-- Header -->
-      <header class="header">
-        <nav class="navbar navbar-expand-lg header-nav">
-          <div class="navbar-header">
-            <a id="mobile_btn" href="javascript:void(0);">
-              <span class="bar-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-              </span>
-            </a>
-            <a href="{{ url_for('home_page') }}" class="navbar-brand logo">
-              <?xml version="1.0" encoding="UTF-8"?>
-              <svg
-                id="svg4171"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 148.6 53.1"
-              >
-                <defs>
-                  <style>
-                    .cls-1 {
-                      fill: url(#linear-gradient);
-                    }
-                  </style>
-                  <linearGradient
-                    id="linear-gradient"
-                    x1="0"
-                    y1="26.55"
-                    x2="148.6"
-                    y2="26.55"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop offset="0" stop-color="#69f8fd" />
-                    <stop offset=".17" stop-color="#4de5f9" />
-                    <stop offset=".32" stop-color="#26caf3" />
-                    <stop offset=".53" stop-color="#1cabe4" />
-                    <stop offset=".69" stop-color="#0d7dce" />
-                    <stop offset=".85" stop-color="#0361c0" />
-                    <stop offset="1" stop-color="#0056bb" />
-                  </linearGradient>
-                </defs>
-                <path
-                  class="cls-1"
-                  d="M56.3,9.86c2.2,0,3.8,1.6,3.8,3.6s-1.7,3.5-3.8,3.5-3.8-1.6-3.8-3.5c0-2,1.7-3.6,3.8-3.6Zm-3.1,31.9V20.46h6.2v21.3h-6.2Zm13.4,0V11.06h11.9c9.5,0,16.4,5.7,16.4,15.4s-7,15.3-16.4,15.3h-11.9Zm11.6-5.6c5.4,0,10-3.1,10-9.8s-4.5-9.8-9.9-9.8h-5.2v19.6h5.1Zm44.3-5.1c0,6.5-5.2,11.3-12.1,11.3s-12.1-4.8-12.1-11.3,5.2-11.3,12.1-11.3,12.1,4.7,12.1,11.3Zm-6.2,0c0-4-2.8-6.1-5.8-6.1s-5.8,2-5.8,6.1,2.8,6.1,5.8,6.1,5.8-2.1,5.8-6.1Zm15.6,0c0,3.9,2.7,6,5.9,6s4.8-2,5.3-3.6l5.5,1.7c-1,3.6-4.6,7.2-10.8,7.2-6.8,0-12.1-4.8-12.1-11.3s5.2-11.3,11.9-11.3c6.3,0,9.8,3.6,10.8,7.2l-5.6,1.7c-.6-1.8-2-3.6-5.1-3.6-3.1,0-5.8,2.2-5.8,6ZM45.1,52.3h1.9c-3.3-8.1-9.2-14.2-16.3-16.8-.6-.6-1.3-1.2-2.2-1.7,3-2.1,5.8-5.7,7.4-10.1,1.6-.2,2.9-1.6,2.9-3.2,0-1.3-.8-2.4-1.8-2.9v-.2c0-9.9-1.2-17.4-13.3-17.4S10.3,7.6,10.3,17.4v.2c-1,.5-1.8,1.6-1.8,2.9,0,1.7,1.3,3.1,2.9,3.2,1.6,4.4,4.5,8,7.4,10.1-.8,.5-1.6,1-2.2,1.6-7.2,2.4-13.2,8.7-16.6,16.9H1.9c2.8-6.4,7.2-11.5,12.7-14.2-.4,.7-.7,1.5-.9,2.2-1,3.3-.5,6.3-.4,6.4v.1c-1.1,.6-1.8,1.8-1.5,3.1,.2,1.4,1.5,2.4,2.9,2.4h.5c1.6-.3,2.6-1.8,2.4-3.4-.2-1.3-1.3-2.2-2.5-2.4v-.1s-.5-2.7,.4-5.6c.5-1.5,1.2-2.8,2.2-3.9,.3-.1,.6-.2,.9-.3l-.5,1.7c-.2,.4-.3,.8-.3,1.2-.1,.3-.1,.7-.1,1,0,3.3,2.7,6,6,6s6-2.7,6-6c0-.4,0-.7-.1-1-.1-.5-.2-1-.4-1.4l-.4-1.4c.3,.1,.7,.2,1,.3,1.3,1.4,2,3,2.3,4.5-.4,.2-.8,.4-1.2,.6-1.1,.8-1.9,2-2.1,3.4l-.5,2.8c-.6,.2-1,.7-1.1,1.3-.1,.5,0,.9,.3,1.3s.7,.6,1.1,.7h.3c.8,0,1.6-.6,1.7-1.4,.1-.5,0-.9-.3-1.3-.1-.1-.2-.2-.3-.3l.5-2.8c.2-.9,.7-1.7,1.4-2.2,.2-.1,.3-.2,.5-.3,.5-.3,1.1-.4,1.7-.3h.4c.9,.2,1.7,.7,2.2,1.4,.5,.8,.7,1.7,.6,2.6l-.5,2.8c-.6,.2-1,.7-1.1,1.3-.1,.4,0,.8,.2,1.2,.2,.4,.7,.8,1.2,.8h.3c.6,0,1.2-.3,1.5-.9,.1-.2,.2-.4,.2-.6,.1-.6-.1-1.2-.6-1.6l.5-2.8c.2-1.4-.1-2.7-.9-3.9-.8-1.1-2-1.9-3.4-2.1-.3-.1-.7-.1-1-.1-.1-.3-.1-.6-.2-.9-.2-.6-.5-1.3-.8-2,5.3,2.8,9.7,7.8,12.4,14.1h0Zm-8.1-33.3c.4,.4,.7,.9,.7,1.5,0,.9-.5,1.6-1.3,1.9,.3-1.1,.5-2.2,.6-3.4Zm-27.2,1.5c0-.6,.2-1.1,.6-1.4v.1c.1,1.1,.3,2.2,.6,3.2-.7-.3-1.2-1.1-1.2-1.9h0Zm6.1,28.7c.1,.3,0,.6-.2,.9s-.4,.4-.8,.5h-.2c-.6,0-1-.4-1.1-1s.3-1.2,.9-1.3h.2c.6-.1,1.1,.3,1.2,.9h0Zm7.8-4.4c-2.4,0-4.3-1.9-4.3-4.3,0-.2,0-.4,.1-.7l.3-1.1,.7-2.5,.4-1.3c1,.5,2,.7,2.8,.7,.9,0,1.8-.2,2.8-.6l.4,1.2,.7,2.3,.4,1.3v.6c0,2.5-2,4.4-4.3,4.4h0Zm0-10.8h-.1c-.7,0-1.4-.3-2.3-.7-.2-.1-.4-.2-.6-.3-.3-.2-.6-.4-1-.6-2.5-1.8-5.1-5-6.6-8.9-.1-.4-.3-.8-.4-1.2-.3-1-.5-2.1-.7-3.2,.1-.2,.2-.3,.3-.5,.3-.4,.5-.7,.8-1,2.2-2.3,5.3-2.8,8.8-3.4,1.3-.2,2.7-.5,4.1-.8,1.8-.4,3.1-1.4,3.9-2.8,1.6-2.8,.5-6.6,.5-6.7-.1-.5-.6-.7-1.1-.6-.5,.1-.7,.6-.6,1.1,0,0,.9,3.2-.3,5.4-.6,1-1.5,1.6-2.8,2-1.3,.3-2.7,.6-4,.8-3.7,.6-7.2,1.2-9.8,3.9,.1-10.1,2-14.7,11.6-14.7,6.5,0,8.7,2.4,9.7,4.1,1.5,2.7,1.9,6.5,1.9,11.4v1.2c-.1,1.3-.3,2.5-.7,3.7-.1,.4-.2,.8-.4,1.2-1.4,4-4.1,7.3-6.7,9.1-.3,.2-.5,.3-.7,.5-.3,.2-.5,.3-.8,.4-.8,.3-1.5,.5-2,.6,.1-.1,0-.1,0,0h0Z"
-                />
-              </svg>
-            </a>
-          </div>
-          <div class="main-menu-wrapper">
-            <div class="menu-header">
-              <a href="index-2.html" class="menu-logo">
-                <img src="static/img/logo.png" class="img-fluid" alt="Logo" />
-              </a>
-              <a id="menu_close" class="menu-close" href="javascript:void(0);">
-                <i class="fas fa-times"></i>
-              </a>
-            </div>
-            <ul class="main-nav">
-              <li>
-                <a href="index.html">Home</a>
-              </li>
-              <li class="has-submenu active">
-                <a href="#">Doctors <i class="fas fa-chevron-down"></i></a>
-                <ul class="submenu">
-                  <li class="active">
-                    <a href="doctor-dashboard.html">Doctor Dashboard</a>
-                  </li>
-                  <li>
-                    <a href="doctor-profile-settings.html">Profile Settings</a>
-                  </li>
-                  <li><a href="doctor-register.html">Doctor Register</a></li>
-                </ul>
-              </li>
-              <li class="has-submenu">
-                <a href="#">Patients <i class="fas fa-chevron-down"></i></a>
-                <ul class="submenu">
-                  <li><a href="search.html">Search Doctor</a></li>
-                  <li><a href="booking.html">Booking</a></li>
-                  <li><a href="checkout.html">Checkout</a></li>
-                  <li><a href="booking-success.html">Booking Success</a></li>
-                </ul>
-              </li>
-
-              <li>
-                <a href="admin/index.html" target="_blank">Admin</a>
-              </li>
-              <li class="login-link">
-                <a href="login.html">Login / Signup</a>
-              </li>
-            </ul>
-          </div>
-          <ul class="nav header-navbar-rht">
-                        					<!-- Notifications -->
-					<li class="nav-item dropdown noti-dropdown">
-						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-							<i class="fas fa-bell"></i> <span id="notification-count" class="badge badge-pill">0</span>
-						</a>
-						<div class="dropdown-menu notifications">
-							<div class="topnav-dropdown-header">
-								<span class="notification-title">Notifications</span>
-								<a href="javascript:void(0)" class="clear-noti" id="clear-all-notifications"> Clear All </a>
-							</div>
-							<div class="noti-content">
-								<ul class="notification-list" id="notification-list">
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-												<span class="avatar avatar-sm">
-													<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
-											</div>
-										</a>
-									</li>
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-											
-											</div>
-										</a>
-									</li>
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-										
-											</div>
-										</a>
-									</li>
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-
-											</div>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<div class="topnav-dropdown-footer">
-								<a href="#">View all Notifications</a>
-							</div>
-						</div>
-					</li>
-					<!-- /Notifications -->
-            <!-- User Menu -->
-            <li class="nav-item dropdown has-arrow logged-item">
-              <a
-                href="#"
-                class="dropdown-toggle nav-link"
-                data-toggle="dropdown"
-              >
-                <span class="user-img">
-                  <img
-                    class="rounded-circle"
-                    src="static/img/doctors/doctor-thumb-02.jpg"
-                    width="31"
-                    alt="Darren Elder"
-                  />
-                </span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="user-header">
-                  <div class="avatar avatar-sm">
-                    <img
-                      src="static/img/doctors/doctor-thumb-02.jpg"
-                      alt="User Image"
-                      class="avatar-img rounded-circle"
-                    />
-                  </div>
-                  <div class="user-text">
-                    <h6>{{ current_user.username }}</h6>
-                    <p class="text-muted mb-0">Doctor</p>
+  </div>
+  <!-- /Breadcrumb -->
+  
+  <!-- Page Content -->
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+          <!-- Profile Sidebar -->
+          <div class="profile-sidebar">
+            <div class="widget-profile pro-widget-content">
+              <div class="profile-info-widget">
+                <a href="#" class="booking-doc-img">
+                  <img src="{{ clinic_image_path }}" alt="{{ clinic.name }} Image">
+                </a>
+                <div class="profile-det-info">
+                  <h3>{{ clinic.name }}</h3>
+                  <div class="patient-details">
+                    <h5 class="mb-0">{{ clinic.address }} <br> {{ clinic.phone }}</h5>
                   </div>
                 </div>
-                
-                {% if current_user.roles.role_name == 'Admin' %}
-                <a
-                  class="dropdown-item"
-                  href="{{ url_for('doctor_dash') }}"
-                  >Dashboard</a
-                >
-                {% else %}
-                <p>You are not an admin.</p>
-                {% endif %}
-
-                <a class="dropdown-item" href="doctor-profile-settings.html"
-                  >Profile Settings</a
-                >
-                <a class="nav-link" href="{{ url_for('logout_page') }}"
-                  >Logout</a
-                >
               </div>
-            </li>
-            <!-- /User Menu -->
-
-          </ul>
-        </nav>
-        {% block alert %} {% include 'base-alert.html' %} {% endblock %}
-      </header>
-      <!-- /Header -->
-
-      {% block body %} {% endblock %}
-      <!-- Future Content here -->
-
-      <!-- Footer -->
-      {% block footer %} {% include 'base-footer.html' %} {% endblock %}
-
-      <!-- /Footer -->
-    </div>
-    <!-- /Main Wrapper -->
-    {% block js %} {% include 'base-js.html' %}
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', (event) => {
-        var clinic_id = '{{ clinic_id }}';
-        
-        if (!clinic_id) {
-            console.error('Clinic ID is missing. Cannot establish WebSocket connection.');
-            return;
-        }
-
-        console.log('Connecting with clinic_id:', clinic_id);
-
-        var socket = io.connect('http://127.0.0.1:5000', {
-            query: 'clinic_id=' + clinic_id
-        });
-
-        socket.on('connected', function(msg) {
-            console.log(msg.message);
-        });
-
-        socket.on('appointment_notification', function(data) {
-            console.log('Appointment notification:', data);
-            addNotification(data);
-        });
-
-        socket.on('disconnected', function(msg) {
-            console.log(msg.message);
-        });
-
-        function addNotification(data) {
-            var notificationList = document.getElementById('notification-list');
-            var notificationCount = document.getElementById('notification-count');
-            
-            var newNotification = document.createElement('li');
-            newNotification.classList.add('notification-message');
-
-            var notificationContent = `
-                <a href="#">
-                    <div class="media">
-                        <span class="avatar avatar-sm">
-                            <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
-                        </span>
-                        <div class="media-body">
-                            <p class="noti-details">
-                                <span class="noti-title">Dr. ${data.doctor}</span> has a new appointment on 
-                                <span class="noti-title">${data.date} at ${data.time}</span>
-                            </p>
-                            <p class="noti-time">
-                                <span class="notification-time">Just now</span>
-                            </p>
+            </div>
+            <div class="dashboard-widget">
+              <nav class="dashboard-menu">
+                <ul>
+                  <li class="active">
+                    <a href="doctor-dashboard.html">
+                      <i class="fas fa-columns"></i>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="doctor-profile-settings.html">
+                      <i class="fas fa-user-cog"></i>
+                      <span>Profile Settings</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="doctor-change-password.html">
+                      <i class="fas fa-lock"></i>
+                      <span>Change Password</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="index.html">
+                      <i class="fas fa-sign-out-alt"></i>
+                      <span>Logout</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <!-- /Profile Sidebar -->
+        </div>
+  
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card dash-card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget dct-border-rht">
+                        <div class="circle-bar circle-bar1">
+                          <div class="circle-graph1" data-percent="75">
+                            <img
+                              src="../static/img/icon-01.png"
+                              class="img-fluid"
+                              alt="patient"
+                            />
+                          </div>
                         </div>
+                        <div class="dash-widget-info">
+                          <h6>Total Patient</h6>
+                          <h3>{{ total_appointments }}</h3>
+                        </div>
+                      </div>
                     </div>
-                </a>
-            `;
-
-            newNotification.innerHTML = notificationContent;
-            notificationList.prepend(newNotification);
-
-            var currentCount = parseInt(notificationCount.textContent);
-            notificationCount.textContent = currentCount + 1;
-        }
-
-        document.getElementById('clear-all-notifications').addEventListener('click', function() {
-            clearAllNotifications();
-        });
-
-        function clearAllNotifications() {
-            var notificationList = document.getElementById('notification-list');
-            var notificationCount = document.getElementById('notification-count');
-            if (notificationList && notificationCount) {
-                notificationList.innerHTML = '';
-                notificationCount.textContent = '0';
-            }
-        }
-      });
-    </script>
-     {% endblock %}
-  </body>
-</html>
+  
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget dct-border-rht">
+                        <div class="circle-bar circle-bar2">
+                          <div class="circle-graph2" data-percent="65">
+                            <img
+                              src="../static/img/icon-02.png"
+                              class="img-fluid"
+                              alt="Patient"
+                            />
+                          </div>
+                        </div>
+                        <div class="dash-widget-info">
+                          <h6>Today Patient</h6>
+                          <h3>{{ today_appointments }}</h3>
+                          <p class="text-muted">{{ today }}</p>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget">
+                        <div class="circle-bar circle-bar3">
+                          <div class="circle-graph3" data-percent="50">
+                            <img src="../static/img/clock-time-icon.jpg" class="w-50" alt="Patient">
+                          </div>
+                        </div>
+                        <div class="dash-widget-info">
+                          <h3>Working Hours Today</h3>
+                          {% if is_open_today %}
+                          <p class="text-info">The clinic in this time open</p>
+                          {% else %}
+                          <p class="text-danger ">The clinic in this time closed <br> <i class="far fa-clock text-info"></i> <span class="text-info">Working hours: {{ clinic.working_hours }}.</span></p>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-12">
+              <h4 class="mb-4">Patient Appoinment</h4>
+              <div class="appointment-tab">
+                <!-- Appointment Tab -->
+                <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
+                  <li class="nav-item">
+                    <a
+                      class="nav-link active"
+                      href="#today-appointments"
+                      data-toggle="tab"
+                      >appointment</a
+                    >
+                  </li>
+                </ul>
+                <!-- /Appointment Tab -->
+  
+                <div class="tab-content">
+                  <!-- Today Appointment Tab -->
+                  <div class="tab-pane active" id="today-appointments">
+                    <div class="card card-table mb-0">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                            <thead>
+                              <tr>
+                                <th>Patient Name</th>
+                                <th>Appt Date</th>
+                                <th class="text-center">Paid Amount</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment, patient, doctor in appointments %}
+                              <tr>
+                                <td>
+                                  <h2 class="table-avatar">
+                                    <a href="patient-profile.html"class="avatar avatar-sm mr-2"><img src="{{ patient_image_path }}" alt="{{ patient.name }} Photo"></a>
+                                    <a href="patient-profile.html"
+                                      >{{ patient.name }}<span>{{ doctor.name }}</span></a
+                                    >
+                                  </h2>
+                                </td>
+                                <td>
+                                  {{ appointment.date }}
+                                  <span class="d-block text-info">{{ appointment.time }}</span>
+                                </td>
+                                <td class="text-center">{{ appointment.price }}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /Today Appointment Tab -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+  
+  {% endblock %}
+  

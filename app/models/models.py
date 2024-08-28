@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import relationship
 from app import bcrypt
 from flask_login import UserMixin
+from datetime import datetime
 from flask_principal import RoleNeed, identity_loaded, UserNeed
 from flask_login import current_user
 from sqlalchemy import func
@@ -30,6 +31,7 @@ def inject_cache_id():
 @app.context_processor
 def inject_current_user():
     return {'current_user': app.config['Current_user']}
+
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
@@ -118,6 +120,7 @@ class Patient(BaseModel):
     name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
+    photo = db.Column(db.String(255))
 
     appointments = relationship("Appointment", back_populates="patient")
 
