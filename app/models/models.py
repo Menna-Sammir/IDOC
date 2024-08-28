@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from app import bcrypt
 from flask_login import UserMixin
+from datetime import datetime
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
