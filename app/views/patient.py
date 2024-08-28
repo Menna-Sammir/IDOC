@@ -13,10 +13,7 @@ from datetime import datetime
 from flask import session
 from werkzeug.utils import secure_filename
 import uuid
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from app import socketio
 
-clinic_rooms = {}
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -774,17 +771,7 @@ def patient_checkout():
         session['doctor'] = doctor_data.name
         session['date'] = date.strftime('%d %b %Y')
         session['time'] = time.strftime('%H:%M:%S')
-        
-        clinic_id = clinic_data.id
-        if clinic_id in clinic_rooms:
-            socketio.emit('appointment_notification', {
-                'doctor': doctor_data.name,
-                'date': date.strftime('%d %b %Y'),
-                'time': time.strftime('%H:%M:%S')
-            }, room=clinic_rooms[clinic_id])
-
         return redirect(url_for('checkout_success'))
-
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -793,24 +780,11 @@ def patient_checkout():
         date=date.strftime('%d %b %Y'),
         form=checkout_form
     )
-    
 
-@socketio.on('connect')
-def handle_connect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        clinic_rooms[clinic_id] = request.sid
-        join_room(clinic_rooms[clinic_id])
-        emit('connected', {'message': f'Clinic {clinic_id} connected.'})
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id and clinic_id in clinic_rooms:
-        leave_room(clinic_rooms[clinic_id])
-        del clinic_rooms[clinic_id]
-        emit('disconnected', {'message': f'Clinic {clinic_id} disconnected.'})
-
-@app.route('/clinic_dash', methods=['GET'])
-def clinic_dash():
-    return render_template('clinic.html')
+# todo special page
+@app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
+def specialities():
+    return render_template(
+        'specialities.html'
+    )
