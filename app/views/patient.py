@@ -70,23 +70,25 @@ def patient_dashboard():
     if patient is None:
         return translate('User is not a patient'), 403
 
-    # Get next appointment
-    next_appointment_query = (
+    # Unified query to fetch all appointments
+    appointments_query = (
         db.session.query(Appointment, Doctor, Clinic, Specialization)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
         .join(Clinic, Doctor.clinic_id == Clinic.id)
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.date >= db.func.current_date())
-        .filter(Appointment.seen == False)
-        .filter(Appointment.status != AppStatus.Confirmed.value)
-        .order_by(Appointment.date.asc(), Appointment.time.asc())
     )
+
+    # Get next appointment (excluding cancelled ones)
+    next_appointment_query = appointments_query.filter(
+        Appointment.date >= db.func.current_date(),
+        Appointment.status != AppStatus.Cancelled.value  # Exclude cancelled appointments
+    ).order_by(Appointment.date.asc(), Appointment.time.asc())
+
     next_appointment = next_appointment_query.first()
 
     if next_appointment:
         appointment, doctor, clinic, specialization = next_appointment
-
         appointment_start_time = datetime.combine(appointment.date, appointment.time)
         duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
         appointment_end_time = (appointment_start_time + duration_delta).time()
@@ -107,46 +109,40 @@ def patient_dashboard():
     else:
         appointment_data = None
 
-    # Get seen appointments
-    seen_appointments_query = (
-        db.session.query(Appointment, Doctor)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == True)
-        .order_by(Appointment.date.desc())
-    )
-
-    seen_appointments = [
-        {
-            'doctor_name': doctor.users.name,
-            'doctor_photo': doctor.users.photo,
-            'appointment_date': appointment.date.strftime('%A, %d %B'),
-            'price': doctor.price,
-            'status': appointment.status
-        }
-        for appointment, doctor in seen_appointments_query.all()
-    ]
-
-    # Get monthly appointment count
-    month_appointments_count = (
-        Appointment.query.filter(
-            func.extract('month', Appointment.date) == datetime.now().month,
-            Appointment.patient_id == patient.id
-        ).count()
-    )
-
-    # Get the number of upcoming appointments
-    upcoming_appointments_count = next_appointment_query.count()
-
     # Blood group and allergy info
     blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
     allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
+    all_appointments_query = appointments_query.order_by(Appointment.date.desc(), Appointment.time.desc())
+
+    all_appointments = []
+    for appointment, doctor, clinic, specialization in all_appointments_query.all():
+        doctor_user = User.query.filter_by(id=doctor.user_id).first()
+        appointment_start_time = datetime.combine(appointment.date, appointment.time)
+        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+        appointment_end_time = (appointment_start_time + duration_delta).time()
+
+        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+        duration_str = f"{doctor.duration.minute} min"
+        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
+
+        all_appointments.append({
+            'date': formatted_date,
+            'time_range': time_range,
+            'duration': duration_str,
+            'clinic_address': clinic.address,
+            'doctor_name': doctor_user.name,
+            'doctor_photo': doctor_user.photo,
+            'doctor_specialization': specialization.specialization_name,
+            'price': doctor.price,
+            'status': AppStatus(appointment.status).name
+        })
+
     # Fetch prescriptions
-    prescriptions_query = (
-        db.session.query(PatientMedicine)
-        .filter(PatientMedicine.patient_id == patient.id)
+    prescriptions_query = db.session.query(PatientMedicine).filter(
+        PatientMedicine.patient_id == patient.id
     )
+
     all_prescriptions = [
         {
             'name': medicine.medName,
@@ -161,27 +157,18 @@ def patient_dashboard():
     limited_prescriptions = all_prescriptions[:4]
     show_more_button = len(all_prescriptions) > 4
 
-    if request.method == 'POST':
-        # Handle form submission if necessary
-        pass
-    
-    specialties = Specialization.query.all()
+    # Render the template with the necessary data
     return render_template(
         'patient-dashboard.html',
         user_name=current_user.name,
         patient=patient,
         appointment=appointment_data,
-        seen_appointments=seen_appointments,
-        upcoming_appointments_count=upcoming_appointments_count,
-        month_appointments_count=month_appointments_count,
         blood_group=blood_group,
         allergy=allergy,
-        specialties=specialties,
         prescriptions=limited_prescriptions,
         show_more_button=show_more_button,
-        AppStatus=AppStatus
+        all_appointments=all_appointments
     )
-
 
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
@@ -197,7 +184,7 @@ def appointment_History():
         .join(Clinic, Doctor.clinic_id == Clinic.id)
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == False)
+        .filter(Appointment.seen == True)
         .order_by(Appointment.date.desc(), Appointment.time.desc())
         .all()
     )
@@ -317,13 +304,13 @@ def cancel_appointment():
     
     if appointment is None:
         flash('Appointment not found', 'danger')
-        return redirect(url_for('appointment_History'))
+        return redirect(url_for('patient_dashboard'))
 
     # Check if the current user is the patient who made the appointment
     patient = Patient.query.filter_by(user_id=current_user.id).first()
     if patient is None:
         flash('Patient record not found', 'danger')
-        return redirect(url_for('appointment_History'))
+        return redirect(url_for('patient_dashboard'))
 
     # Update status to Cancelled and mark as seen
     appointment.status = AppStatus.Cancelled.name  # Use Enum name
@@ -331,7 +318,7 @@ def cancel_appointment():
     db.session.commit()
     flash('Appointment cancelled successfully', 'success')
 
-    return redirect(url_for('appointment_History'))
+    return redirect(url_for('patient_dashboard'))
 
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)

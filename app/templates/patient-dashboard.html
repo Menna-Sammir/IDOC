@@ -33,7 +33,7 @@
 
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="row">
-            <div class="col-md-7 col-lg-8 col-xl-5">
+            <div class="col-md-6 col-lg-6 col-xl-6">
                 <h3>Next appointment</h3>
                 <div class="Next-appointment-card">
                     <div>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7 col-lg-8 col-xl-5">
+            <div class="col-md-6 col-lg-6 col-xl-6">
               <h3>Prescription Details</h3>
               <div class="Next-appointment-card">
                   {% if prescriptions %}
@@ -78,54 +78,68 @@
           </div>
         </div>
     
-        <div class="col-md-12 col-lg-12 col-xl-12">
-            <h3>Seen Appointments</h3>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-center mb-0">
-                        <thead>
-                            <tr>
+        <div class="col-md-12 col-lg-12 col-xl-12 mt-5">
+            <div class="card">
+              <div class="card-body pt-0">
+                <div class="user-tabs">
+                  <ul class="nav nav-tabs nav-tabs-bottom nav-justified flex-wrap">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#pat_appointments" data-toggle="tab">last Appointments</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-content">
+                  
+                  <!-- Appointment Tab -->
+                  <div id="pat_appointments" class="tab-pane fade show active">
+                    <div class="card card-table mb-0">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                            <thead>
+                              <tr>
                                 <th>Doctor</th>
                                 <th>Appt Date</th>
                                 <th>Amount</th>
-                                <th>Follow Up</th>
-                                <th class="text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if seen_appointments %}
-                            {% for seen in seen_appointments %}
-                            <tr>
+                                <th>Status</th>
+                                <th class="text-center">Edit</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for appointment in all_appointments %}
+                              <tr>
                                 <td>
-                                    <h2 class="table-avatar">
-                                        <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-                                            <img class="avatar-img rounded-circle" src="{{ seen.doctor_photo }}" alt="User Image">
-                                        </a>
-                                        <a href="doctor-profile.html">Dr. {{ seen.doctor_name }} <span>{{ seen.specialization_name }}</span></a>
-                                    </h2>
+                                  <h2 class="table-avatar">
+                                    <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
+                                      <img class="avatar-img rounded-circle" src="{{ appointment.doctor_photo }}" alt="User Image">
+                                    </a>
+                                    <a href="doctor-profile.html">{{ appointment.doctor_name }} <span>{{ appointment.specialization }}</span></a>
+                                  </h2>
                                 </td>
-                                <td>{{ seen.appointment_date }}</td>
-                                <td>${{ seen.price }}</td>
-                                <td>$lfkansf;</td>
+                                <td>{{ appointment.date }} <span class="d-block text-info">{{ appointment.time }}</span></td>
+                                <td>$350</td>
+                                <td><span class="badge badge-pill bg-warning-light position-relative d-inline">{{ appointment.status }}</span></td>
                                 <td class="text-center">
-                                  {% if appointment.status == AppStatus.Confirmed.value %}
-                                    <i class="fas fa-calendar-check"></i><!-- Icon for confirmed -->
-                                  {% else %}
-                                    <i class="far fa-times-circle"></i> <!-- Icon for cancelled -->
-                                  {% endif %}
-                              </td>
-
-                                
-                            </tr>
-                            {% endfor %}
-                            {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center">No appointments marked as seen.</td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                                  <div class="table-action">
+                                    <a href="edit-prescription.html" class="btn btn-sm bg-success-light">
+                                      <i class="far fa-edit"></i> Edit
+                                    </a>
+                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+                                      <i class="far fa-trash-alt"></i> Cancel
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /Appointment Tab -->
                 </div>
+              </div>
             </div>
         </div>
     </div>
@@ -136,38 +150,3 @@
 </div>
 <!-- /Page Content -->
 {% endblock %}
-  <!-- <h3>Report</h3>
-          <div class="Report-appointment-card d-flex">
-            <div class="w-75">
-              <p></p>
-              <p></p>
-              <p></p>
-            </div>
-           <div class="w-25">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-              <i class="fas fa-scroll"></i> Report
-            </button>
-            
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">print</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-           </div>
-            
-            
-          </div> -->
