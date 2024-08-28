@@ -129,9 +129,7 @@ def add_doctor():
         for specialization in specializations
     ]
     if request.method == 'POST':
-        print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
         if add_doctor_form.validate_on_submit():
-            print("ggggggggggggggggggggggggggggggggggggg", add_doctor_form)
             doctor_name = (
                 add_doctor_form.firstname.data + ' ' + add_doctor_form.lastname.data
             )
@@ -179,7 +177,6 @@ def add_doctor():
                     return redirect(url_for('dashboard'))
                 except Exception as e:
                     flash(f'something wrong', category='danger')
-                    print("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",str(e))
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
