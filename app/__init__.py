@@ -24,7 +24,7 @@ CORS(app)
 # @socketio.on("logout")
 # def handle_logout():
 #     disconnect()
-    
+
 
 
 
@@ -78,9 +78,9 @@ def translate(key, value=None, format_type=None):
         elif isinstance(value, timedelta):
             if format_type == 'timedelta':
                 return format_timedelta(value)
-            
+
     return translations.get(lang, {}).get(key, key)
-    
+
 def lazy_translate(key):
     return lambda: translate(key)
 
@@ -133,5 +133,3 @@ from app.views import doctor
 from app.views import admin
 from app.views import patient
 from app.views import clinic
-
-
