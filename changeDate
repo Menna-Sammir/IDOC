@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Checkout to the branch you want to modify
-git checkout Adham-Branch
+git checkout Fatma_pages
 
 # Filter the branch and modify the dates
 git filter-branch --env-filter '
@@ -17,4 +17,4 @@ export GIT_COMMITTER_DATE="$NEW_COMMITTER_DATE"
 ' -- --all
 
 # Force push the changes
-git push --force --tags origin refs/heads/Adham-Branch
+git push --force --tags origin refs/heads/Fatma_pages
