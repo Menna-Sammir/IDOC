@@ -3,6 +3,7 @@
 <html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
+
     <title>{% block title %} {% endblock %}</title>
 
     {% block head %} {% include 'base-css.html' %} {% endblock %}
@@ -108,7 +109,8 @@
                 </div>
               </div>
             </li>
-
+            {% if current_user.is_authenticated and
+            current_user.user_roles.role.role_name == 'clinic'%}
             <!-- Notifications -->
             <li class="nav-item dropdown noti-dropdown mr-3">
               <a
@@ -141,7 +143,9 @@
                   <ul class="notification-list" id="notification-list">
                     {% if notifications %} {% for notification in notifications
                     %} {% if notification.isRead %}
-                    <li class="notification-message">
+                    <li class="notification-message">{% else %}</li>
+
+                    <li class="notification-message alert-info">
                       {% endif %}
                       <a href="{{ url_for('clear_noti') }}">
                         <div class="media">
@@ -181,14 +185,14 @@
                   </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
-                  <a href="view_notification.html"
+                  <a href="{{ url_for('view_notifi') }}"
                     >{{ translate('View all Notifications') }}</a
                   >
                 </div>
               </div>
             </li>
             <!-- /Notifications -->
-
+            {% endif %}
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item mr-3">
@@ -357,6 +361,19 @@
             clearAllNotifications();
           });
 
+          function fetchNotifications() {
+            fetch(`/notifications?clinic_id=${clinic_id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.forEach(notification => addNotification(notification, false));
+                })
+                .catch(error => console.error('Error fetching notifications:', error));
+
         function clearAllNotifications() {
           var notificationList = document.getElementById('notification-list');
           var notificationCount = document.getElementById('notification-count');
@@ -368,6 +385,7 @@
         }
 
         loadNotifications();
+        fetchNotifications();
       });
     </script>
 
