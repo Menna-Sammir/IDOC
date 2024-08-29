@@ -26,6 +26,6 @@ login_manager.login_view = "login_page"
 principal = Principal(app)
 
 
+
 from app.views import main
 from app.views import patient
-from app.views import test
