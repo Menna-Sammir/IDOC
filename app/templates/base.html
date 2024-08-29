@@ -106,55 +106,62 @@
             </ul>
           </div>
           <ul class="nav header-navbar-rht">
-                        					<!-- Notifications -->
-					<li class="nav-item dropdown noti-dropdown">
-						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-							<i class="fas fa-bell"></i> <span id="notification-count" class="badge badge-pill">0</span>
-						</a>
-						<div class="dropdown-menu notifications">
-							<div class="topnav-dropdown-header">
-								<span class="notification-title">Notifications</span>
-								<a href="javascript:void(0)" class="clear-noti" id="clear-all-notifications"> Clear All </a>
-							</div>
-							<div class="noti-content">
-								<ul class="notification-list" id="notification-list">
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-												<span class="avatar avatar-sm">
-													<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
-											</div>
-										</a>
-									</li>
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-											
-											</div>
-										</a>
-									</li>
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-										
-											</div>
-										</a>
-									</li>
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-
-											</div>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<div class="topnav-dropdown-footer">
-								<a href="#">View all Notifications</a>
-							</div>
-						</div>
-					</li>
-					<!-- /Notifications -->
+            <!-- User Menu -->
+            <li class="nav-item dropdown has-arrow logged-item">
+              <!-- Notifications -->
+            </li>
+            {% if current_user.roles.role_name == 'clinic' %}
+            <li class="nav-item dropdown noti-dropdown">
+              <a
+                href="#"
+                class="dropdown-toggle nav-link"
+                data-toggle="dropdown"
+              >
+                <i class="fas fa-bell"></i>
+                <span class="badge badge-pill"></span>
+              </a>
+              <div class="dropdown-menu notifications">
+                <div class="topnav-dropdown-header">
+                  <span class="notification-title">Notifications</span>
+                  <a href="javascript:void(0)" class="clear-noti">
+                    Clear All
+                  </a>
+                </div>
+                <div class="noti-content">
+                  <ul class="notification-list">
+                    <li class="notification-message">
+                      <a href="#">
+                        <div class="media">
+                          <span class="avatar avatar-sm">
+                            <img
+                              class="avatar-img rounded-circle"
+                              alt="User Image"
+                              src="assets/img/doctors/doctor-thumb-01.jpg"
+                            />
+                          </span>
+                          <div class="media-body">
+                            <p class="noti-details">
+                              <span class="noti-title">Dr. Ruby Perrin</span>
+                              Schedule
+                              <span class="noti-title">her appointment</span>
+                            </p>
+                            <p class="noti-time">
+                              <span class="notification-time">4 mins ago</span>
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li class="notification-message"></li>
+                  </ul>
+                </div>
+                <div class="topnav-dropdown-footer">
+                  <a href="#">View all Notifications</a>
+                </div>
+              </div>
+            </li>
+            {% endif %}
+            <!-- /Notifications -->
             <!-- User Menu -->
             <li class="nav-item dropdown has-arrow logged-item">
               <a
@@ -185,14 +192,14 @@
                     <p class="text-muted mb-0">Doctor</p>
                   </div>
                 </div>
-                
-                
-                <a
-                  class="dropdown-item"
-                  href="{{ url_for('doctor_dash') }}"
+
+                {% if current_user.roles.role_name == 'Admin' %}
+                <a class="dropdown-item" href="{{ url_for('doctor_dash') }}"
                   >Dashboard</a
                 >
-               
+                {% else %}
+                <p>You are not an admin.</p>
+                {% endif %}
 
                 <a class="dropdown-item" href="doctor-profile-settings.html"
                   >Profile Settings</a
@@ -203,7 +210,6 @@
               </div>
             </li>
             <!-- /User Menu -->
-
           </ul>
         </nav>
         {% block alert %} {% include 'base-alert.html' %} {% endblock %}
@@ -229,33 +235,33 @@
             console.error('Clinic ID is missing. Cannot establish WebSocket connection.');
             return;
         }
-
+    
         console.log('Connecting with clinic_id:', clinic_id);
-
+    
         var socket = io.connect('http://127.0.0.1:5000', {
             query: 'clinic_id=' + clinic_id
         });
-
+    
         socket.on('connected', function(msg) {
             console.log(msg.message);
         });
-
+    
         socket.on('appointment_notification', function(data) {
             console.log('Appointment notification:', data);
             addNotification(data);
         });
-
+    
         socket.on('disconnected', function(msg) {
             console.log(msg.message);
         });
-
+    
         function addNotification(data) {
             var notificationList = document.getElementById('notification-list');
             var notificationCount = document.getElementById('notification-count');
             
             var newNotification = document.createElement('li');
             newNotification.classList.add('notification-message');
-
+    
             var notificationContent = `
                 <a href="#">
                     <div class="media">
@@ -274,28 +280,45 @@
                     </div>
                 </a>
             `;
-
+    
             newNotification.innerHTML = notificationContent;
             notificationList.prepend(newNotification);
-
+    
             var currentCount = parseInt(notificationCount.textContent);
             notificationCount.textContent = currentCount + 1;
+    
+            saveNotificationToLocal(data);
         }
-
+    
+        function saveNotificationToLocal(data) {
+            let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            notifications.push(data);
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+    
+        function loadNotificationsFromLocal() {
+            let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            notifications.forEach(notification => addNotification(notification));
+        }
+    
         document.getElementById('clear-all-notifications').addEventListener('click', function() {
             clearAllNotifications();
         });
-
+    
         function clearAllNotifications() {
             var notificationList = document.getElementById('notification-list');
             var notificationCount = document.getElementById('notification-count');
             if (notificationList && notificationCount) {
                 notificationList.innerHTML = '';
                 notificationCount.textContent = '0';
+                localStorage.removeItem('notifications'); 
             }
         }
+    
+        loadNotificationsFromLocal();
       });
     </script>
+    
     {% endblock %}
   </body>
 </html>
