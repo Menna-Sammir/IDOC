@@ -76,7 +76,7 @@ def book_appointment():
 # @login_required
 # @doctor_permission.require(http_exception=403)
 def doctor_dash():
-    user_id = session.get('current_user', None)
+    user_id = session.get('current_user')
     user = User.query.filter_by(id=user_id).first()
     print("User:", user)
 
@@ -119,7 +119,7 @@ def doctor_dash():
         })
         
     patient_count = len(appointments_list)
-    session.pop('current_user', None)
+
     if request.method == 'POST':
         if 'seen' in request.form:
             appointment_id = request.form.get('appointment_id')
