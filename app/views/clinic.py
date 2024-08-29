@@ -7,7 +7,7 @@ from app import translate
 from datetime import datetime
 from flask import jsonify, request
 from sqlalchemy.orm import joinedload
-
+from flask_socketio import emit
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -174,6 +174,7 @@ def mark_as_read():
 
     notification.isRead = True
     db.session.commit()
+    
 
     return jsonify({'message': 'Notification marked as read'})
 
@@ -193,3 +194,4 @@ def delete_notification():
     db.session.commit()
 
     return jsonify({'message': 'Notification deleted'})
+

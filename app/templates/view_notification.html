@@ -173,8 +173,7 @@ endblock %} {% block body %}
   </div>
 </div>
 {% block js %} {% include 'base-js.html' %}
-
-<script>
+<script type="text/javascript">
   document.addEventListener('DOMContentLoaded', (event) => {
     let unreadCount = parseInt(
       document.getElementById('notification-count').textContent,
@@ -276,4 +275,5 @@ endblock %} {% block body %}
     });
   });
 </script>
+
 {% endblock %} {% endblock %}
