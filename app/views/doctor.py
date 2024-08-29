@@ -151,7 +151,6 @@ def doctor_profile():
         'doctor-profile-settings.html', user_form=user_form, doctor_form=doctor_form
     )
 
-
 @app.route('/Prescription', methods=['GET', 'POST'])
 @login_required
 @doctor_permission.require(http_exception=403)
@@ -160,31 +159,41 @@ def add_prescription():
     patient_id = "f6f977bc-2c89-4dfc-94f2-48251e5f52dd"
     # patient_id = request.args.get("patient_id")
     if form.validate_on_submit():
-        # MedicineTimes
-        for item in form.items:
-            Patient_Medicine = PatientMedicine(
-                medName = item.form.name.data,
-                Quantity = item.form.quantity.data,
-                Days = item.form.Days.data,
-                patient_id = patient_id
-            )
-            db.session.add(Patient_Medicine)
+        try:
+            # MedicineTimes
+            for item in form.items:
+                med_exist = PatientMedicine.query.filter_by(medName=item.form.name.data).first()
+                if not med_exist:
+                    Patient_Medicine = PatientMedicine(
+                        medName=item.form.name.data,
+                        Quantity=item.form.quantity.data,
+                        Days=item.form.Days.data,
+                        patient_id=patient_id
+                    )
+                    db.session.add(Patient_Medicine)
+                    current_medicine = Patient_Medicine
+                    flash('Medicine added successfully', category='success')
+
+                else:
+                    med_exist.Quantity = item.form.quantity.data
+                    med_exist.Days = item.form.Days.data
+                    current_medicine = med_exist
+                    MedicineTimes.query.filter_by(patient_medicine=med_exist).delete()
+                    flash('Medicine updated successfully', category='success')
             for time_of_day in item.form.time_of_day.data:
                 Medicine_Times = MedicineTimes(
-                    patient_medicine = Patient_Medicine,
-                    time_of_day = time_of_day
+                    patient_medicine=current_medicine,
+                    time_of_day=time_of_day
                 )
                 db.session.add(Medicine_Times)
-
             db.session.commit()
-            flash(f'medicine added successfully', category='success')
             return redirect(url_for('add_prescription'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'There was an error: {e}', category='danger')
 
     if form.errors != {}:
         for err_msg in form.errors.values():
-            flash(
-                f'there was an error with adding doctor: {err_msg}',
-                category='danger'
-            )
+            flash(f'There was an error with adding medicine: {err_msg}', category='danger')
 
     return render_template('prescription.html', form=form)
