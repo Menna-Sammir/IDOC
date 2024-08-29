@@ -13,7 +13,10 @@ from datetime import datetime
 from flask import session
 from werkzeug.utils import secure_filename
 import uuid
+from flask_socketio import SocketIO, emit, join_room, leave_room
+from app import socketio
 
+clinic_rooms = {}
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -145,7 +148,8 @@ def add_doctor():
     return render_template('add-doctor.html', form=add_doctor_form)
 
 
-@app.route('/checkout-success', methods=['GET'], strict_slashes=False)
+
+@app.route('/checkout-success', methods=['GET'])
 def checkout_success():
     doctor = session.get('doctor', None)
     date = session.get('date', None)
@@ -155,6 +159,7 @@ def checkout_success():
     session.pop('date', None)
     session.pop('time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
+
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
@@ -771,7 +776,17 @@ def patient_checkout():
         session['doctor'] = doctor_data.name
         session['date'] = date.strftime('%d %b %Y')
         session['time'] = time.strftime('%H:%M:%S')
+        
+        clinic_id = clinic_data.id
+        if clinic_id in clinic_rooms:
+            socketio.emit('appointment_notification', {
+                'doctor': doctor_data.name,
+                'date': date.strftime('%d %b %Y'),
+                'time': time.strftime('%H:%M:%S')
+            }, room=clinic_rooms[clinic_id])
+
         return redirect(url_for('checkout_success'))
+
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -781,8 +796,23 @@ def patient_checkout():
         form=checkout_form
     )
     
-def send_dashboard_notification(doctor_id, patient_name, appointment_time, appointment_date, clinic_id):
-    # This is a placeholder for your actual notification sending logic.
-    # You would implement the logic to send a notification to the clinic dashboard here.
-    # For example, you might use a WebSocket connection or a message queue system.
-    pass
+
+@socketio.on('connect')
+def handle_connect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        clinic_rooms[clinic_id] = request.sid
+        join_room(clinic_rooms[clinic_id])
+        emit('connected', {'message': f'Clinic {clinic_id} connected.'})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id and clinic_id in clinic_rooms:
+        leave_room(clinic_rooms[clinic_id])
+        del clinic_rooms[clinic_id]
+        emit('disconnected', {'message': f'Clinic {clinic_id} disconnected.'})
+
+@app.route('/clinic_dash', methods=['GET'])
+def clinic_dash():
+    return render_template('clinic.html')
