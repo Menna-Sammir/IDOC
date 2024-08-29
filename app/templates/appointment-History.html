@@ -171,7 +171,7 @@
                                         <thead>
                                             <tr>
                                                 <th>ID Doctor</th>
-                                                <th>Date</th>
+                                                <th>Time</th>
                                                 <th>diagnosis</th>
                                                 <th>date appioment</th>
                                                 <th>Created by</th>
@@ -181,8 +181,8 @@
                                         <tbody>
                                             {% for record in medical_records %}
                                             <tr>
-                                                <td>{{ record.doctor_idnum }}</td>
-                                                <td>{{ record.date }}</td>
+                                                <td>#{{ record.doctor_idnum }}</td>
+                                                <td>{{ record.booking_time }}</td>
                                                 <td>{{ record.diagnosis }}</td>
                                                 <td>{{ record.appointment_date }}</td>
                                                 <td>
