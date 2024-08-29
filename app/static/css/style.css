@@ -2216,7 +2216,7 @@ button.bg-danger:hover {
 	display: -webkit-inline-box;
 	display: -ms-inline-flexbox;
 	display: inline-flex;
-	padding-right: 20px;
+	/* padding-right: 20px; */
 	justify-content: center;
 	-webkit-justify-content: center;
 	-ms-flex-pack: center;
@@ -8632,4 +8632,128 @@ color: #4cb5ab;
     border-radius: 50%;
     display: flex;
     justify-content: center;
+}
+
+
+/*-----------------
+	13. Notifications
+-----------------------*/
+
+.notifications {
+	padding: 0;
+}
+.notifications .notification-time {
+	font-size: 12px;
+	line-height: 1.35;
+	color: #bdbdbd;
+}
+.notifications .media {
+	margin-top: 0;
+	border-bottom: 1px solid #f5f5f5;
+}
+.notifications .media:last-child {
+	border-bottom: none;
+}
+.notifications .media a {
+	display: block;
+	padding: 10px 15px;
+	border-radius: 2px;
+}
+.notifications .media a:hover {
+	background-color: #fafafa;
+}
+.notifications .media > .avatar {
+	margin-right: 10px;
+}
+.notifications .media-list .media-left {
+	padding-right: 8px;
+}
+.topnav-dropdown-header {
+	border-bottom: 1px solid #eee;
+	text-align: center;
+}
+.topnav-dropdown-header,
+.topnav-dropdown-footer {
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.topnav-dropdown-footer {
+	border-top: 1px solid #eee;
+}
+.topnav-dropdown-footer a {
+	display: block;
+	text-align: center;
+	color: #333;
+}
+.user-menu.nav > li > a .badge {
+	background-color: #1b5a90;
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    min-height: 15px;
+    min-width: 15px;
+    position: absolute;
+    right: 3px;
+    color: #fff;
+    top: 6px;
+}
+.user-menu.nav > li > a > i {
+	font-size: 1.5rem;
+	line-height: 60px;
+}
+.noti-details {
+	color: #989c9e;
+    margin-bottom: 0;
+}
+.noti-title {
+	color: #333;
+}
+.notifications .noti-content {
+	height: 290px;
+	width: 350px;
+	overflow-y: auto;
+	position: relative;
+}
+.notification-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.notifications ul.notification-list > li{
+	margin-top: 0;
+	border-bottom: 1px solid #f5f5f5;
+}
+.notifications ul.notification-list > li:last-child {
+	border-bottom: none;
+}
+.notifications ul.notification-list > li a {
+	display: block;
+	padding: 10px 15px;
+	border-radius: 2px;
+}
+.notifications ul.notification-list > li a:hover {
+	background-color: #fafafa;
+}
+.notifications ul.notification-list > li .list-item {
+    border: 0;
+    padding: 0;
+    position: relative;
+}
+.topnav-dropdown-header .notification-title {
+    color: #333;
+    display: block;
+    float: left;
+    font-size: 14px;
+}
+.topnav-dropdown-header .clear-noti {
+    color: #f83f37;
+    float: right;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+.noti-time {
+    margin: 0;
 }
