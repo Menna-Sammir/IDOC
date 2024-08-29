@@ -17,6 +17,7 @@
       {% block loading %} {% include 'base-loading.html' %} {% endblock %}
     </div>
     <div class="main-wrapper">
+      <button id="backToTop" title="Go to top"><i class="fas fa-angle-double-up"></i></button>
       <!-- Home Banner -->
       <section class="w-full">
         <!-- <section class="section section-search"> -->
@@ -155,14 +156,14 @@
                 id="navbarNavDropdown"
               >
                 <ul class="navbar-nav align-items-center list-unstyled">
-                  <li class="nav-item mr-3">
+                  <li class="nav-item mr-3" >
                     <a
                       class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
                       href="#home"
                       >{{ translate('Home') }}</a
                     >
                   </li>
-                  <li class="nav-item mr-3">
+                  <li class="nav-item mr-3" >
                     <a
                       class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
                       href="#aboutus"
@@ -314,7 +315,7 @@
           class="w-100 h-100 position-absolute z-index-1 d-flex justify-content-center align-items-center"
         >
           <div class="card w-75 bg-none border-0 mt-md-0 mt-sm-5">
-            <div class="card-header d-flex align-items-center">
+            <div class="card-header d-flex align-items-center" data-aos="fade-right" data-aos-duration="3000">
               <i class="far fa-calendar-alt fa-2x text-home"></i>
               <div class="ml-2">
                 <p
@@ -335,7 +336,7 @@
                 </p>
               </div>
             </div>
-            <div class="card mt-4 bg-none border-0">
+            <div class="card mt-4 bg-none border-0" data-aos="fade-right" data-aos-delay="100">
               <div class="card-header p-0 border-0">
                 <form
                   method="POST"
@@ -375,15 +376,15 @@
       </section>
       <!-- end hero -->
       <!-- Clinic and Specialities -->
-      <section class="section section-specialities" id="service">
+      <section class="section section-specialities" id="service" >
         <div class="container-fluid">
-          <div class="section-header text-center">
+          <div class="section-header text-center" data-aos="fade-left"  data-aos-duration="2000">
             <h2>{{ translate('Clinic and Specialities') }}</h2>
             <p class="sub-title">
               {{ translate('We offer a wide range of specialties to meet the diverse healthcare needs of our patients. Our dedicated team of professionals provides expert care in areas such as cardiology,orthopedics, neurology, and pediatrics.') }}
             </p>
           </div>
-          <div class="row justify-content-center">
+          <div class="row justify-content-center" data-aos="fade-right"  data-aos-duration="2000">
             <div class="col-md-9">
               <!-- Slider -->
               <div class="specialities-slider slider">
@@ -415,7 +416,7 @@
       <section class="section section-about mt-5" id="aboutus">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-lg-2 col-sm-2 col-md-12 container">
+            <div class="col-lg-2 col-sm-2 col-md-12 container" data-aos="fade-right"  data-aos-duration="2000">
               <div class="circle large">
                 <img src="../static/img/doctors/doctor-02.jpg" alt="Doctor" />
               </div>
@@ -425,7 +426,7 @@
               <div class="circle background-large"></div>
               <div class="circle background background-small"></div>
             </div>
-            <div class="col-lg-5 col-md-12">
+            <div class="col-lg-5 col-md-12" data-aos="fade-left"  data-aos-duration="2000">
               <h3 class="text-muted">{{ translate('ABOUT US') }}</h3>
               <h2 class="mr-5 pr-5">
                 {{ translate('Health Clinic With Quality For You') }}
@@ -546,7 +547,7 @@
             <div class="col-md-7">
               <div class="section-header">
                 <h2 class="mt-2">
-                  {{ translate('Availabe Features in Our Clinic') }}
+                  {{ translate('Availabe Features in Our APP') }}
                 </h2>
                 <div class="section-header text-md-left text-sm-center">
                   <p>
@@ -634,7 +635,7 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-md-9 row justify-content-between">
-              <div class="contact-card col-md-4 d-md-block d-sm-none">
+              <div class="contact-card col-md-4 d-md-block d-sm-none" data-aos="fade-right"  data-aos-duration="2000">
                 <span class="head-contact"
                   >{{ translate('Contact Information') }}</span
                 >
@@ -656,7 +657,7 @@
                 </div>
                 <div class="circle-contact"></div>
               </div>
-              <div class="col-md-8 p-5">
+              <div class="col-md-8 p-5" data-aos="fade-left"  data-aos-duration="2000">
                 <form
                   class="row"
                   action="{{ url_for('sendEmail') }}"
@@ -711,6 +712,6 @@
     </div>
     <!-- /Main Wrapper -->
     {% block js %} {% include 'base-js.html' %} {% endblock %}
-    <script src="{{ url_for('static', filename='../static/js/index.js') + '?' + cache_id }}"></script>
+    <script src="{{ url_for('static', filename='/js/index.js') + '?' + cache_id }}"></script>
   </body>
 </html>
