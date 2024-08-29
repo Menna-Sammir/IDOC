@@ -27,8 +27,11 @@ from app.models.models import db, Patient, User
 from enum import Enum
 from uuid import UUID
 from flask_wtf.csrf import CSRFProtect
-
+from flask_principal import Permission, RoleNeed
 csrf = CSRFProtect(app)
+
+doctor_permission = Permission(RoleNeed('doctor'))
+
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
@@ -188,6 +191,128 @@ def patient_dashboard():
 def appointment_History():
     if current_user.patient:
         patient = Patient.query.filter_by(user_id=current_user.id).first()
+        if patient is None:
+            return translate('User is not a patient'), 403
+
+    # Fetch all appointments (regardless of status) that have not been seen (seen is False)
+        appointments = (
+            db.session.query(Appointment, Doctor, Clinic, Specialization)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .join(Clinic, Doctor.clinic_id == Clinic.id)
+            .join(Specialization, Doctor.specialization_id == Specialization.id)
+            .filter(Appointment.patient_id == patient.id)
+            .filter(Appointment.seen == False)
+            .order_by(Appointment.date.desc(), Appointment.time.desc())
+            .all()
+        )
+
+    # Fetch patient history
+        patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
+
+    # Fetch patient medicines
+        patient_medicines = (
+            db.session.query(PatientMedicine, MedicineTimes)
+            .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
+            .filter(PatientMedicine.patient_id == patient.id)
+            .all()
+        )
+
+    # Process appointment data
+        appointment_data = []
+        for appointment, doctor, clinic, specialization in appointments:
+            appointment_start_time = datetime.combine(appointment.date, appointment.time)
+            duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+            appointment_end_time = (appointment_start_time + duration_delta).time()
+            time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+            duration_str = f"{doctor.duration.minute} min"
+            formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
+
+            status_enum = AppStatus(appointment.status)  # Convert status to enum
+            status_str = status_enum.name
+            report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+            
+            appointment_data.append({
+                'appointment_id': appointment.id,
+                'date': formatted_date,
+                'time_range': time_range,
+                'duration': duration_str,
+                'clinic_address': clinic.address,
+                'doctor_name': doctor.users.name,
+                'doctor_photo': doctor.users.photo,
+                'doctor_specialization': specialization.specialization_name,
+                'price': doctor.price,
+                'status': status_str,
+                'report_url': report_url,
+                'is_pending': status_enum == AppStatus.Pending,
+                'is_confirmed': status_enum == AppStatus.Confirmed,
+                'is_cancelled': status_enum == AppStatus.Cancelled
+            })
+        
+        blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
+        allergy = patient.allergy.name if patient.allergy else "Not Provided"
+
+        # Process patient history data
+        history_data = []
+        for history in patient_histories:
+            added_by_user = User.query.get(history.addedBy)
+            history_data.append({
+                'details': history.details,
+                'type': PatientHisType(history.type).name,
+                'added_by': added_by_user.name if added_by_user else 'Unknown'
+            })
+
+        # Process patient medicine data
+        medicine_data = []
+        for medicine, medicine_time in patient_medicines:
+            medicine_data.append({
+                'days': medicine.Days,
+                'name': medicine.medName,
+                'quantity': medicine.Quantity,
+                'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
+            })
+
+        records = (
+            db.session.query(Appointment, Doctor, Specialization)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .join(Specialization, Doctor.specialization_id == Specialization.id)
+            .filter(Appointment.patient_id == patient.id)
+            .filter(Appointment.seen == True)
+            .order_by(Appointment.date.desc(), Appointment.time.desc())
+            .all()
+        )
+
+        # Process records data
+        medical_records_data = []
+        for appointment, doctor, specialization in records:
+            formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
+            diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
+            report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+
+            medical_records_data.append({
+                'doctor_idnum': doctor.iDNum,
+                'booking_time': formatted_booking_time,  # Use the formatted time instead of date
+                'diagnosis': diagnosis,
+                'appointment_date': appointment.date,
+                'doctor_name': doctor.users.name,
+                'doctor_specialization': specialization.specialization_name,
+                'report_url': report_url
+            })
+
+        specialties = Specialization.query.all()
+
+        return render_template(
+            'appointment-History.html',
+            user_name=current_user.name,
+            patient=patient,
+            appointments=appointment_data,
+            patient_history=history_data,
+            blood_group=blood_group,
+            allergy=allergy,
+            specialties=specialties,
+            medicine_data=medicine_data,
+            medical_records=medical_records_data
+        )
+
     elif current_user.doctor:
         patient_id = request.args.get('patient_id')
         if not patient_id:
@@ -199,128 +324,56 @@ def appointment_History():
             flash('Patient not found', 'danger')
             return redirect(url_for('doctor_dash'))
         
-    else:
-        flash('Unauthorized access', 'danger')
-        return redirect(url_for('index'))
-
-    # Fetch all appointments (regardless of status) that have not been seen (seen is False)
-    appointments = (
-        db.session.query(Appointment, Doctor, Clinic, Specialization)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .join(Clinic, Doctor.clinic_id == Clinic.id)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == False)
-        .order_by(Appointment.date.desc(), Appointment.time.desc())
-        .all()
-    )
-
-    # Fetch patient history
-    patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
-
-    # Fetch patient medicines
-    patient_medicines = (
-        db.session.query(PatientMedicine, MedicineTimes)
-        .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
-        .filter(PatientMedicine.patient_id == patient.id)
-        .all()
-    )
-
-    # Process appointment data
-    appointment_data = []
-    for appointment, doctor, clinic, specialization in appointments:
-        appointment_start_time = datetime.combine(appointment.date, appointment.time)
-        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
-        appointment_end_time = (appointment_start_time + duration_delta).time()
-        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
-        duration_str = f"{doctor.duration.minute} min"
-        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
-
-        status_enum = AppStatus(appointment.status)  # Convert status to enum
-        status_str = status_enum.name
-        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+        appointments = (Appointment.query
+                        .filter_by(patient_id=patient.id)
+                        .join(Doctor, Appointment.doctor_id == Doctor.id)
+                        .join(User, Doctor.user_id == User.id)
+                        .add_columns(User.name.label('doctor_name'), Doctor.specialization)
+                        .all())
         
-        appointment_data.append({
-            'appointment_id': appointment.id,
-            'date': formatted_date,
-            'time_range': time_range,
-            'duration': duration_str,
-            'clinic_address': clinic.address,
-            'doctor_name': doctor.users.name,
-            'doctor_photo': doctor.users.photo,
-            'doctor_specialization': specialization.specialization_name,
-            'price': doctor.price,
-            'status': status_str,
-            'report_url': report_url,
-            'is_pending': status_enum == AppStatus.Pending,
-            'is_confirmed': status_enum == AppStatus.Confirmed,
-            'is_cancelled': status_enum == AppStatus.Cancelled
-        })
-    
-    blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
-    allergy = patient.allergy.name if patient.allergy else "Not Provided"
+        return render_template('appointment-History.html', 
+                               patient=patient,
+                               appointments=appointments,
+                               AppStatus=AppStatus)
 
-    # Process patient history data
-    history_data = []
-    for history in patient_histories:
-        added_by_user = User.query.get(history.addedBy)
-        history_data.append({
-            'details': history.details,
-            'type': PatientHisType(history.type).name,
-            'added_by': added_by_user.name if added_by_user else 'Unknown'
-        })
 
-    # Process patient medicine data
-    medicine_data = []
-    for medicine, medicine_time in patient_medicines:
-        medicine_data.append({
-            'days': medicine.Days,
-            'name': medicine.medName,
-            'quantity': medicine.Quantity,
-            'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
-        })
+@app.route('/update_follow_up', methods=['POST'])
+@login_required
+@doctor_permission.require(http_exception=403)
+def update_follow_up():
+    appointment_id = request.form.get('appointment_id')
+    follow_up_date_str = request.form.get('follow_up_date')
+    follow_up_time_str = request.form.get('follow_up_time')
 
-    records = (
-        db.session.query(Appointment, Doctor, Specialization)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == True)
-        .order_by(Appointment.date.desc(), Appointment.time.desc())
-        .all()
-    )
+    appointment = Appointment.query.get_or_404(appointment_id)
 
-    # Process records data
-    medical_records_data = []
-    for appointment, doctor, specialization in records:
-        formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
-        diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
-        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+    try:
+        if follow_up_date_str and follow_up_time_str:
+            follow_up_date_time_str = f"{follow_up_date_str} {follow_up_time_str}"
+            follow_up_date = datetime.strptime(follow_up_date_time_str, '%Y-%m-%d %H:%M')
+        else:
+            follow_up_date = None
 
-        medical_records_data.append({
-            'doctor_idnum': doctor.iDNum,
-            'booking_time': formatted_booking_time,  # Use the formatted time instead of date
-            'diagnosis': diagnosis,
-            'appointment_date': appointment.date,
-            'doctor_name': doctor.users.name,
-            'doctor_specialization': specialization.specialization_name,
-            'report_url': report_url
-        })
+        appointment_date = appointment.date
+        if isinstance(appointment_date, datetime):
+            appointment_date = appointment_date
+        else:
+            appointment_date = datetime.combine(appointment_date, datetime.min.time())
 
-    specialties = Specialization.query.all()
+        if follow_up_date and follow_up_date <= appointment_date:
+            flash('Follow-up date must be after the appointment date.', 'danger')
+            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
 
-    return render_template(
-        'appointment-History.html',
-        user_name=current_user.name,
-        patient=patient,
-        appointments=appointment_data,
-        patient_history=history_data,
-        blood_group=blood_group,
-        allergy=allergy,
-        specialties=specialties,
-        medicine_data=medicine_data,
-        medical_records=medical_records_data
-    )
+        appointment.follow_up = follow_up_date
+        db.session.commit()
+        flash('Follow-up date updated successfully', 'success')
+        return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+
+    except ValueError:
+        flash('Invalid date format. Please try again.', 'danger')
+        return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+
+
 
 @app.route('/cancel_appointment', methods=['POST'])
 @login_required
@@ -346,7 +399,6 @@ def cancel_appointment():
 
     return redirect(url_for('appointment_History'))
 
-
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
@@ -360,11 +412,10 @@ def search_doctor():
     form = AppointmentForm()
 
     query = (
-        db.session.query(Doctor, Specialization, Clinic, Governorate, User)
+        db.session.query(Doctor, Specialization, Clinic, Governorate)
         .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
         .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
         .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
-        .outerjoin(User, Doctor.user_id == User.id)
     )
 
     if request.method == 'GET':
@@ -373,8 +424,7 @@ def search_doctor():
         if governorate_id:
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
-            query = query.filter(User.name.ilike(f'%{doctor_name}%'))
-
+            query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -388,40 +438,35 @@ def search_doctor():
         if selected_specializations:
             query = query.filter(Doctor.specialization_id.in_(selected_specializations))
         if selected_date:
-            try:
-                search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
-                subquery = (
-                    db.session.query(Doctor.id)
-                    .outerjoin(
-                        Appointment,
-                        and_(
-                            Doctor.id == Appointment.doctor_id,
-                            func.date(Appointment.date) == search_date
-                        )
+            search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
+            subquery = (
+                db.session.query(Doctor.id)
+                .outerjoin(
+                    Appointment,
+                    and_(
+                        Doctor.id == Appointment.doctor_id,
+                        func.date(Appointment.date) == search_date
                     )
-                    .filter(Appointment.id == None)
                 )
-                query = query.filter(Doctor.id.in_(subquery))
-            except ValueError:
-                flash("Invalid date format", "error")
-
+                .filter(Appointment.id == None)
+            )
+            query = query.filter(Doctor.id.in_(subquery))
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
-
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
-
     return render_template(
         'search.html',
         doctors=doctors,
         specializations=specializations,
         governorates=governorates,
-        selected_specializations=selected_specializations if request.method == 'POST' else [],
+        selected_specializations=selected_specializations
+        if request.method == 'POST'
+        else [],
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
-
 
 
 @app.route('/book', methods=['GET', 'POST'])
@@ -980,20 +1025,10 @@ def sendEmail():
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():
+    form = PatientForm()
+
     user = User.query.filter_by(id=current_user.id).first()
     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    
-    form = PatientForm(
-        firstname=user.name.split()[0] if user.name else '',
-        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
-        email=user.email,
-        phone=patient.phone if patient else '',
-        address=patient.address if patient else '',
-        governorate=patient.governorate_id if patient else None,
-        age=patient.age if patient else None,
-        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
-        allergy=patient.allergy.name if patient and patient.allergy else None
-    )
 
     if request.method == 'PUT':
         if form.validate():
