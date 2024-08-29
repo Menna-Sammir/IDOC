@@ -19,12 +19,12 @@ Version      : 1.0
   }
 
   $(window).on("load", function() {
-    $(".loader").fadeOut( "slow");
-        $(".main-wrapper").css("opacity", "1");
-    // setTimeout(function() {
-    //     $(".loader").fadeOut( "slow");
+    // $(".loader").fadeOut( "slow");
     //     $(".main-wrapper").css("opacity", "1");
-    // }, 4000);
+    setTimeout(function() {
+        $(".loader").fadeOut( "slow");
+        $(".main-wrapper").css("opacity", "1");
+    }, 4000);
 });
 
 
@@ -377,11 +377,11 @@ Version      : 1.0
     animateElements();
   }
   $(window).scroll(animateElements);
-  $(".alert")
-    .fadeTo(2000, 500)
-    .slideUp(1000, function () {
-      $(".alert").slideUp(1000);
-    });
+//   $(".alert")
+//     .fadeTo(2000, 500)
+//     .slideUp(1000, function () {
+//       $(".alert").slideUp(1000);
+//     });
 })(jQuery);
 
 // select2
