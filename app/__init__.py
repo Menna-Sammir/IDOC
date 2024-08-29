@@ -5,7 +5,6 @@ import os
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_principal import Principal
-from flask_socketio import SocketIO, emit
 import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO

@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
-                    <a href="doctor-change-password.html">
+                    <a href="{{url_for('change_password')}}">
                         <i class="fas fa-lock"></i>
                         <span>Change Password</span>
                     </a>
