@@ -15,22 +15,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, and_
 
 
-@socketio.on('connect')
-def handle_connect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        join_room(clinic_id)
-        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        leave_room(clinic_id)
-        emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
-
-def send_appointment_notification(clinic_id, data):
-    socketio.emit('appointment_notification', data, room=clinic_id)
 
 def convert_to_24_hour(time_str):
     return datetime.strptime(time_str, '%I%p').time()
@@ -166,7 +151,7 @@ def doctor_appointments():
                 daily_timeslots.append((timeslot, f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"))
 
         existing_appointments = Appointment.query.filter_by(doctor_id=doctor.id, date=date[0]).all()
-        booked_timeslots = [f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(a.time + timedelta(hours=1)).strftime('%H:%M')}" for a in existing_appointments]
+        booked_timeslots = [f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(datetime.combine(datetime.min, a.time) + timedelta(hours=1)).strftime('%H:%M')}" for a in existing_appointments]
 
         available_timeslots = []
         for timeslot in daily_timeslots:
@@ -844,3 +829,20 @@ def checkout_success():
     session.pop('date', None)
     session.pop('start_time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=start_time)
+
+@socketio.on('connect')
+def handle_connect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        join_room(clinic_id)
+        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
+
+# # @socketio.on('disconnect')
+# # def handle_disconnect():
+# #     clinic_id = request.args.get('clinic_id')
+# #     if clinic_id:
+# #         leave_room(clinic_id)
+# #         emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
+
+def send_appointment_notification(clinic_id, data):
+    socketio.emit('appointment_notification', data, room=clinic_id)
