@@ -49,17 +49,20 @@ translations = load_translations('translations.json')
 def get_locale():
     return session.get('lang', request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']))
 
-
 def translate(key):
-    lang = None
-    parts = key.split('.')
-    if len(parts) == 2 and parts[0] in ['specializations', 'governorates']:
-        lang = get_locale()
-        category, item_id = parts
-        return translations.get(lang, {}).get(category, {}).get(item_id, key)
-    else:
-        lang = get_locale()
-        return translations.get(lang, {}).get(key, key)
+    lang = get_locale()
+    translation = translations.get(lang, {}).get(key, key)
+    return translation
+# def translate(key):
+#     lang = None
+#     parts = key.split('.')
+#     if len(parts) == 2 and parts[0] in ['specializations', 'governorates']:
+#         lang = get_locale()
+#         category, item_id = parts
+#         return translations.get(lang, {}).get(category, {}).get(item_id, key)
+#     else:
+#         lang = get_locale()
+#         return translations.get(lang, {}).get(key, key)
 
 
 def lazy_translate(key):
