@@ -20,8 +20,11 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @app.route('/search_doctor', methods=['GET', 'POST'])
 def search_doctor():
     page = request.args.get('page', 1, type=int)
-    per_page = 10 
+    per_page = 10
     form = AppointmentForm()
+    specialization_id = session.get('specialization_id', None)
+    governorate_id = session.get('governorate_id', None)
+    doctor_name = session.get('doctor_name', None)
     query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
         .join(Specialization, Doctor.specialization_id == Specialization.id) \
         .join(Clinic, Doctor.clinic_id == Clinic.id) \
@@ -39,7 +42,7 @@ def search_doctor():
 
         if selected_specializations:
             query = query.filter(Doctor.specialization_id.in_(selected_specializations))
-        
+
         if selected_date:
             search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
             subquery = db.session.query(Doctor.id).outerjoin(Appointment, and_(
@@ -48,18 +51,18 @@ def search_doctor():
             )).filter(Appointment.id == None)
 
             query = query.filter(Doctor.id.in_(subquery))
-    
+
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
     print(f"Doctors: {doctors}")
     print(f"Generated SQL Query: {query}")
-    return render_template('search.html', doctors=doctors, 
+    return render_template('search.html', doctors=doctors,
                            specializations=specializations, governorates=governorates,
                            selected_specializations=selected_specializations,
                            selected_date=selected_date,
                            pagination=pagination,
                            form=form)
-    
+
 
 # doctor search page >>> book appointment
 @app.route('/booking', methods=['POST'])
@@ -67,7 +70,7 @@ def book_appointment():
     if request.method == 'POST':
         doctor_id = request.form.get('doctor_id')
         session['doctor_id'] = doctor_id
-       
+
         return redirect(url_for('doctor_appointments'))
 
 
@@ -98,7 +101,7 @@ def doctor_dash():
     #     .filter(Appointment.doctor_id == doctor_id, Appointment.date == today, Appointment.seen == False).all()
 
     # specialization = Specialization.query.filter(Specialization.id == doctor.specialization_id).first()
-    
+
     # appointments_list = []
     # for appointment, doctor_name, specialization_name, patient_name, patient_phone in appointments:
     #     appointments_list.append({

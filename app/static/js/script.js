@@ -416,7 +416,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
   });
-});
+
 
 $(document).on("change", ".Specialization", function () {
   if ($(this).is(":checked")) {
@@ -506,4 +506,3 @@ $(function () {
       slot.querySelector("input[type='radio']").checked = true;
     });
   });
-});
