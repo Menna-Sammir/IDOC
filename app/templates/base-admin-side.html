@@ -38,6 +38,12 @@
                         <span>{{ translate('Patient') }}</span>
                     </a>
                 </li>
+                <li class="{{ 'active' if request.endpoint == 'all_appointments' else '' }}">
+                    <a href="{{ url_for('all_appointments') }}">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>{{ translate('Appointments') }}</span>
+                    </a>
+                </li>
                 <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
                     <a href="{{ url_for('change_password') }}">
                         <i class="fas fa-lock"></i>
