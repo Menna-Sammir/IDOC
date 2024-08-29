@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
-from app.models.models import Specialization, Doctor, Clinic, Governorate
+from app.models.models import Specialization, Doctor, Clinic, Governorate, Patient
 from flask_principal import Permission, RoleNeed
 from werkzeug.utils import secure_filename
 import uuid
@@ -37,12 +37,14 @@ def admin_dash():
     clinic_details = db.session.query(Clinic).all()
     doctor_count = db.session.query(Doctor).count()
     clinic_count = db.session.query(Clinic).count()
+    patient_count = db.session.query(Patient).count()
     return render_template(
         'admin-dashboard.html',
         doctor_details=doctor_details,
         clinic_details=clinic_details,
         doctor_count=doctor_count,
-        clinic_count=clinic_count
+        clinic_count=clinic_count,
+        patient_count=patient_count
     )
 
 
