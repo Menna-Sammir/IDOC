@@ -20,10 +20,6 @@ from flask_babel import lazy_gettext as _, format_decimal
 from app import load_translations, translations
 
 
-def convert_to_24_hour(time_str):
-    return datetime.strptime(time_str, '%I:%M %p').time()
-
-
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
@@ -125,13 +121,11 @@ def search_doctor():
         form=form
     )
 
-
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
     doctor_id = request.args.get('doctor_id')
     doctor = Doctor.query.get_or_404(doctor_id)
-    clinic = doctor.clinic
     specialization_name = doctor.specialization.specialization_name
     other_doctors = (
         Doctor.query.filter(
@@ -140,50 +134,55 @@ def doctor_appointments():
         .limit(3)
         .all()
     )
-    dates = []
-    for i in range(9):
-        date = datetime.now() + timedelta(days=i)
-        dates.append(
-            (date.strftime('%Y-%m-%d'), date.strftime('%a'), date.strftime('%d'))
-        )
+    
+    # Generate upcoming dates with format (date, day_of_week, day_of_month)
+    dates = [
+        ((datetime.now() + timedelta(days=i)).strftime('%Y-%m-%d'), 
+         (datetime.now() + timedelta(days=i)).strftime('%a'), 
+         (datetime.now() + timedelta(days=i)).strftime('%d'))
+        for i in range(9)
+    ]
+    
     timeslots_by_date = {}
+    
+    # Convert duration from TIME to timedelta
+    duration = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+    
     for date in dates:
         daily_timeslots = []
-        start_hour = doctor.From_working_hours.hour
-        end_hour = doctor.To_working_hours.hour
-
-        if start_hour > end_hour:
-            end_hour += 24
-
-        for hour in range(start_hour, end_hour):
-            start_time = datetime.strptime(f"{hour % 24}:00", '%H:%M').time()
-            end_time = datetime.strptime(f"{(hour + 1) % 24}:00", '%H:%M').time()
-
-            if start_time.strftime('%p') == 'AM' and hour >= 24:
-                break  
-
-            timeslot = f"{date[0]} {start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
-            daily_timeslots.append(
-                (
-                    timeslot,
-                    f"{start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
-                )
-            )
+        start_time = datetime.combine(datetime.strptime(date[0], '%Y-%m-%d').date(), doctor.From_working_hours)
+        end_time = datetime.combine(datetime.strptime(date[0], '%Y-%m-%d').date(), doctor.To_working_hours)
+        
+        if start_time > end_time:
+            end_time += timedelta(days=1)  # Handle cases where end time is on the next day
+        
+        current_time = start_time
+        
+        while current_time + duration <= end_time:
+            end_slot_time = current_time + duration
+            timeslot = f"{date[0]} {current_time.strftime('%I:%M %p')}-{end_slot_time.strftime('%I:%M %p')}"
+            daily_timeslots.append((timeslot, f"{current_time.strftime('%I:%M %p')}-{end_slot_time.strftime('%I:%M %p')}"))
+            current_time = end_slot_time
+        
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date[0]
         ).all()
+        
         booked_timeslots = [
             f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%I:%M %p')}-"
-            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%I:%M %p')}"
+            f"{(datetime.combine(a.date, a.time) + duration).strftime('%I:%M %p')}"
             for a in existing_appointments
         ]
+        
         available_timeslots = []
         for timeslot in daily_timeslots:
             if timeslot[0] in booked_timeslots:
                 available_timeslots.append((timeslot[0], timeslot[1], False))
             else:
                 available_timeslots.append((timeslot[0], timeslot[1], True))
+        
         timeslots_by_date[date[0]] = available_timeslots
+    
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
         if not selected_timeslot:
@@ -197,28 +196,31 @@ def doctor_appointments():
             end_time_str = end_time_str.strip()
             start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
             end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
-        except ValueError:
-            flash('Invalid time slot format. Please try again.', 'danger')
+        except ValueError as e:
+            flash(f'Invalid time slot format. Please try again. Error: {e}', 'danger')
             return redirect(request.url)
-        print(selected_timeslot)
-        print(date_str)
-        print(start_time)
-        print(end_time)
+        
+        print(f"Selected Timeslot: {selected_timeslot}")
+        print(f"Date: {date_str}")
+        print(f"Start Time: {start_time}")
+        print(f"End Time: {end_time}")
+        
         session['doctor_id'] = doctor_id
         session['date'] = date_str
         session['start_time'] = start_time_str
         session['end_time'] = end_time_str
         return redirect(url_for('patient_checkout'))
+    
     return render_template(
         'booking.html',
         form=form,
         doctor=doctor,
         dates=dates,
         timeslots_by_date=timeslots_by_date,
-        clinic=clinic,
         specialization_name=specialization_name,
         other_doctors=other_doctors
     )
+
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
