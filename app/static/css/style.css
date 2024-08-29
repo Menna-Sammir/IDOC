@@ -8191,3 +8191,17 @@ html.menu-opened body {
 		border-bottom-right-radius: 256px;
 	}
 }
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logout-btn i {
+    margin-right: 5px;
+}
