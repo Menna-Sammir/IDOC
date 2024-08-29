@@ -173,7 +173,7 @@ def login_page():
                 elif attempted_user.roles.role_name == 'doctor':
                     return redirect(url_for('doctor_dash'))
                 elif attempted_user.roles.role_name == 'clinic':
-                    return redirect(url_for('clinic_dash'))
+                    return redirect(url_for('clinic_details'))
                 return redirect(url_for('home_page'))
             else:
                 flash('user name and password are not match', category='danger')
@@ -234,14 +234,14 @@ def permission_denied(e):
     return 'Permission Denied', 403
 
 
-@app.route('/doctor-dashboard', methods=['GET', 'POST'])
-def doctor_dashboard():
-    return render_template('doctor-dashboard.html')
-    flash('You not authorized to open this page, please login', category='warning')
-    return redirect(url_for('login_page'))
+# @app.route('/doctor-dashboard', methods=['GET', 'POST'])
+# def doctor_dashboard():
+#     return render_template('doctor-dashboard.html')
+#     flash('You not authorized to open this page, please login', category='warning')
+#     return redirect(url_for('login_page'))
 
 
-@app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
-def clinic_dashboard():
-    return render_template('doctor-dashboard.html')
+# @app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# def clinic_dashboard():
+#     return render_template('doctor-dashboard.html')
 
