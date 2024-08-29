@@ -22,7 +22,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/add_clinic', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/add_clinic', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_clinic')
 def add_clinic():
     add_clinic_form = ClinicForm()
     govs = Governorate.query.filter().all()
@@ -82,7 +82,7 @@ def add_clinic():
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
-@app.route('/add_doctor', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/add_doctor', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_doctor')
 def add_doctor():
     add_doctor_form = DoctorForm()
     clinics = Clinic.query.filter().all()
