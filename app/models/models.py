@@ -224,7 +224,7 @@ class Patient(BaseModel):
     name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
-    photo = db.Column(db.String(255))
+    # photo = db.Column(db.String(255))
 
     user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
     users = relationship('User', back_populates='patient')
