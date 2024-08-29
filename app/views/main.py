@@ -198,9 +198,3 @@ def reset_password(email):
 def permission_denied(e):
     return 'Permission Denied', 403
 
-
-# doctor dashboard page >>> view appointments today
-@app.route('/patient_dashboard', methods=['GET', 'POST'])
-@login_required
-def patient_dash():
-    return render_template('patient-dashboard.html')

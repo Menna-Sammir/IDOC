@@ -22,7 +22,8 @@ import secrets
 from app.views.forms.patient_form import PatientForm
 from werkzeug.utils import secure_filename
 from flask_login import login_required
-
+from flask import Flask, render_template
+from app.models.models import db, Patient, User
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
@@ -55,6 +56,100 @@ def home():
         'index.html', form=form, specialties=specialties, doctors=doctor, E_form=E_form
     )
 
+
+@app.route('/patient_dashboard')
+def patient_dashboard():
+    user_id = "7f1fb767-5765-4678-90cc-07cb1c437885"  # معرف المستخدم الثابت لتجربة الكود
+    current_user_id = current_user.id  # معرف المستخدم الحالي (يجب التأكد من تطابقه مع المستخدم)
+
+    # جلب بيانات المستخدم
+    user = User.query.filter_by(id=user_id).first()
+
+    if user:
+        user_name = user.name
+        patient_data = {
+            'email': user.email,
+            'photo': user.photo,
+            'activated': user.activated
+        }
+        
+        patient = Patient.query.filter_by(user_id=user.id).first()
+
+        if patient:
+            # جلب الموعد القادم
+            next_appointment = (
+                db.session.query(Appointment, Doctor, Clinic, Specialization)
+                .join(Doctor, Appointment.doctor_id == Doctor.id)
+                .join(Clinic, Doctor.clinic_id == Clinic.id)
+                .join(Specialization, Doctor.specialization_id == Specialization.id)
+                .filter(Appointment.patient_id == patient.id)
+                .filter(Appointment.date >= db.func.current_date())
+                .order_by(Appointment.date.asc(), Appointment.time.asc())
+                .first()
+            )
+
+            if next_appointment:
+                appointment, doctor, clinic, specialization = next_appointment
+
+                # حساب وقت نهاية الموعد
+                appointment_start_time = datetime.combine(appointment.date, appointment.time)
+                duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+                appointment_end_time = (appointment_start_time + duration_delta).time()
+
+                # تجهيز البيانات للعرض
+                time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+                duration_str = f"{doctor.duration.minute} min"
+                appointment_day = appointment.date.strftime('%A')
+                appointment_date_formatted = appointment.date.strftime('%d %B')
+                formatted_date = f"{appointment_day.capitalize()}, {appointment_date_formatted.capitalize()}"
+                doctor_user = doctor.users
+
+                appointment_data = {
+                    'date': formatted_date,
+                    'time_range': time_range,
+                    'duration': duration_str,
+                    'clinic_address': clinic.address,
+                    'doctor_name': doctor_user.name,
+                    'doctor_photo': doctor_user.photo,
+                    'doctor_specialization': specialization.specialization_name
+                }
+            else:
+                appointment_data = None
+
+            # جلب المواعيد السابقة
+            past_appointments = (
+                db.session.query(Appointment, Doctor, Specialization)
+                .join(Doctor, Appointment.doctor_id == Doctor.id)
+                .join(Specialization, Doctor.specialization_id == Specialization.id)
+                .filter(Appointment.patient_id == patient.id)
+                .filter(Appointment.date < db.func.current_date())  # جلب المواعيد السابقة
+                .order_by(Appointment.date.desc(), Appointment.time.desc())
+                .all()
+            )
+
+            past_appointments_data = []
+            for appointment, doctor, specialization in past_appointments:
+                past_appointments_data.append({
+                    'doctor_name': doctor.users.name,
+                    'doctor_specialization': specialization.specialization_name,
+                    'appointment_date': appointment.date.strftime('%d %B %Y'),
+                    'appointment_time': appointment.time.strftime('%H:%M'),
+                    'report': appointment.Report  # Assuming 'Report' is a field in Appointment model
+                })
+
+        else:
+            appointment_data = None
+            past_appointments_data = []
+
+    else:
+        user_name = "User not found"
+        patient_data = None
+        appointment_data = None
+        past_appointments_data = []
+
+    specialties = Specialization.query.all()
+
+    return render_template('patient-dashboard.html', user_name=user_name, patient=patient_data, appointment=appointment_data, past_appointments=past_appointments_data, specialties=specialties)
 
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
