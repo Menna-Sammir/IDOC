@@ -108,8 +108,7 @@
                 </div>
               </div>
             </li>
-            {% if current_user.is_authenticated and current_user.user_roles.role.role_name
-            == 'clinic'%}
+
             <!-- Notifications -->
             <li class="nav-item dropdown noti-dropdown mr-3">
               <a
@@ -182,12 +181,14 @@
                   </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
-                  <a href="#">{{ translate('View all Notifications') }}</a>
+                  <a href="view_notification.html"
+                    >{{ translate('View all Notifications') }}</a
+                  >
                 </div>
               </div>
             </li>
             <!-- /Notifications -->
-            {% endif %}
+
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item mr-3">
