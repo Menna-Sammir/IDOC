@@ -286,3 +286,45 @@ def add_doctor():
                     category='danger'
                 )
     return render_template('add-doctor.html', form=add_doctor_form)
+@app.route('/all_patients', methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def all_patients():
+    # Query to fetch all patients with their details
+    patients = db.session.query(
+        Patient.id.label('patient_id'),
+        User.name.label('patient_name'),
+        User.photo.label('patient_photo'),
+        Patient.phone.label('patient_phone'),
+        Patient.blood_group.label('blood_group'),
+        Patient.allergy.label('allergy')
+    ).join(User, Patient.user_id == User.id).all()
+
+    # Initialize a list to hold patient data
+    patient_data = []
+
+    # Loop through each patient to get appointment counts
+    for patient in patients:
+        # Fetch appointment counts by status
+        completed_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='completed').count()
+        confirmed_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='confirmed').count()
+        canceled_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='cancelled').count()
+
+        # Extract the desired parts of blood group and allergy using .value
+        blood_group = patient.blood_group.value.replace('_positive', ' +').replace('_negative', ' -')
+        allergy = patient.allergy.value.replace('_', ' ')
+
+        # Add patient details and appointment counts to the list
+        patient_data.append({
+            'patient_id': patient.patient_id,
+            'patient_name': patient.patient_name,
+            'patient_photo': patient.patient_photo,
+            'patient_phone': patient.patient_phone,
+            'blood_group': blood_group,
+            'allergy': allergy,
+            'completed_count': completed_count,
+            'confirmed_count': confirmed_count,
+            'canceled_count': canceled_count
+        })
+
+    return render_template('all-patients.html', patient_data=patient_data)

@@ -27,207 +27,271 @@
     <div class="row">
       <!-- Profile Sidebar -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
+        %}
       </div>
       <!-- / Profile Sidebar -->
 
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="card">
-            <div class="card-body pt-0">
-            
-                <!-- Tab Menu -->
-                <nav class="user-tabs mb-4">
-                    <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#pat_appointments" data-toggle="tab">Appointments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#pat_prescriptions" data-toggle="tab">Prescriptions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#pat_medical_records" data-toggle="tab"><span class="med-records">Medical Records</span></a>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- /Tab Menu -->
-                
-                <!-- Tab Content -->
-                <div class="tab-content pt-0">
-                    
-                    <!-- Appointment Tab -->
-                    <div id="pat_appointments" class="tab-pane fade show active">
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Doctor</th>
-                                                <th>Appt Date</th>
-                                                <th>Appt Time</th>
-                                                <th>Amount</th>
-                                                <th>Follow Up</th>
-                                                <th>Status</th>
-                                                <th class="text-center">Edite</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for appointment in appointments %}
-                                            <tr>
-                                                    <td>
-                                                        <h2 class="table-avatar">
-                                                            <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-                                                                <img class="avatar-img rounded-circle" src="{{ appointment.doctor_photo }}" alt="User Image">
-                                                            </a>
-                                                            <a href="doctor-profile.html">{{ appointment.doctor_name }} <span>{{ appointment.doctor_specialization }}</span></a>
-                                                        </h2>
-                                                    </td>
-                                                    <td>{{ appointment.date }}</td>
-                                                    <td>{{ appointment.time_range }}</td>
-                                                    <td>${{ appointment.price }}</td>
-                                                    <td>{{ appointment.follow_up }}</td>
-                                                    <td>
-                                                        {% if appointment.is_cancelled %}
-                                                            <span class="badge badge-pill bg-danger position-relative d-inline">Cancelled</span>
-                                                        {% elif appointment.is_pending %}
-                                                            <span class="badge badge-pill bg-info position-relative d-inline">Pending</span>
-                                                        {% elif appointment.is_confirmed %}
-                                                            <span class="badge badge-pill bg-success position-relative d-inline">Confirmed</span>
-                                                        {% else %}
-                                                            <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status }}</span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td class="text-right">
-                                                        <form action="{{ url_for('cancel_appointment') }}" method="post">
+          <div class="card-body pt-0">
+            <!-- Tab Menu -->
+            <nav class="user-tabs mb-4">
+              <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    href="#pat_appointments"
+                    data-toggle="tab"
+                    >Appointments</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    href="#pat_prescriptions"
+                    data-toggle="tab"
+                    >Prescriptions</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    href="#pat_medical_records"
+                    data-toggle="tab"
+                    ><span class="med-records">Medical Records</span></a
+                  >
+                </li>
+              </ul>
+            </nav>
+            <!-- /Tab Menu -->
 
-                                                        <div class="table-action">
-                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                            <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
-                                                            <button type="submit" class="btn btn-danger">Cancel</button>
-                                                        </div>
-                                                    </form>
+            <!-- Tab Content -->
+            <div class="tab-content pt-0">
+              <!-- Appointment Tab -->
+              <div id="pat_appointments" class="tab-pane fade show active">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Doctor</th>
+                            <th>Appt Date</th>
+                            <th>Appt Time</th>
+                            <th>Amount</th>
+                            <th>Follow Up</th>
+                            <th>Status</th>
+                            <th class="text-center">Edite</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for appointment in appointments %}
+                          <tr>
+                            <td>
+                              <h2 class="table-avatar">
+                                <a
+                                  href="doctor-profile.html"
+                                  class="avatar avatar-sm mr-2"
+                                >
+                                  <img
+                                    class="avatar-img rounded-circle"
+                                    src="{{ appointment.doctor_photo }}"
+                                    alt="User Image"
+                                  />
+                                </a>
+                                <a href="doctor-profile.html"
+                                  >{{ appointment.doctor_name }}
+                                  <span
+                                    >{{ appointment.doctor_specialization
+                                    }}</span
+                                  ></a
+                                >
+                              </h2>
+                            </td>
+                            <td>{{ appointment.date }}</td>
+                            <td>{{ appointment.time_range }}</td>
+                            <td>${{ appointment.price }}</td>
+                            <td>{{ appointment.follow_up }}</td>
+                            <td>
+                              {% if appointment.is_cancelled %}
+                              <span
+                                class="badge badge-pill bg-danger position-relative d-inline"
+                                >Cancelled</span
+                              >
+                              {% elif appointment.is_pending %}
+                              <span
+                                class="badge badge-pill bg-info position-relative d-inline"
+                                >Pending</span
+                              >
+                              {% elif appointment.is_confirmed %}
+                              <span
+                                class="badge badge-pill bg-success position-relative d-inline"
+                                >Confirmed</span
+                              >
+                              {% else %}
+                              <span
+                                class="badge badge-pill bg-secondary position-relative d-inline"
+                                >{{ appointment.status }}</span
+                              >
+                              {% endif %}
+                            </td>
+                            <td class="text-right">
+                              <form
+                                action="{{ url_for('cancel_appointment') }}"
+                                method="post"
+                              >
+                                <div class="table-action">
+                                  <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="appointment_id"
+                                    value="{{ appointment.appointment_id }}"
+                                  />
+                                  <button type="submit" class="btn btn-danger">
+                                    Cancel
+                                  </button>
+                                </div>
+                              </form>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
 
-                                                    </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>                                        
-                                        
-                                        {% with messages = get_flashed_messages(with_categories=True) %}
-                                        {% if messages %}
-                                            <div class="alert-container">
-                                                {% for category, message in messages %}
-                                                    <div class="alert alert-{{ category }}">
-                                                        {{ message }}
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                        {% endwith %}
-                                        </table>
-                                        
-                                </div>
-                            </div>
+                        {% with messages =
+                        get_flashed_messages(with_categories=True) %} {% if
+                        messages %}
+                        <div class="alert-container">
+                          {% for category, message in messages %}
+                          <div class="alert alert-{{ category }}">
+                            {{ message }}
+                          </div>
+                          {% endfor %}
                         </div>
+                        {% endif %} {% endwith %}
+                      </table>
                     </div>
-                    <!-- /Appointment Tab -->
-                    
-                    <!-- Prescription Tab -->
-                    <div class="tab-pane fade" id="pat_prescriptions">
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Days</th>
-                                                <th>Name</th>									
-                                                <th>Quantity</th>
-                                                <th>Time of Day</th>
-                                            </tr>     
-                                        </thead>
-                                        <tbody>
-                                            {% for medicine in medicine_data %}
-                                            <tr>
-                                                <td>{{ medicine.days }}</td>
-                                                <td>{{ medicine.name }}</td>
-                                                <td>{{ medicine.quantity }}</td>
-                                                <td>{{ medicine.time_of_day }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>	
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Prescription Tab -->
-                        
-                    <!-- Medical Records Tab -->
-                    <div id="pat_medical_records" class="tab-pane fade">
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>ID Doctor</th>
-                                                <th>Time</th>
-                                                <th>diagnosis</th>
-                                                <th>date appioment</th>
-                                                <th>Created by</th>
-                                                <th></th>
-                                            </tr>     
-                                        </thead>
-                                        <tbody>
-                                            {% for record in medical_records %}
-                                            <tr>
-                                                <td>#{{ record.doctor_idnum }}</td>
-                                                <td>{{ record.booking_time }}</td>
-                                                <td>{{ record.diagnosis }}</td>
-                                                <td>{{ record.appointment_date }}</td>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="javascript:void(0);" class="avatar avatar-sm mr-2">
-                                                            <img class="avatar-img rounded-circle" src="{{ record.doctor_photo }}" alt="User Image">
-                                                        </a>
-                                                        <a href="doctor-profile.html">{{ record.doctor_name }} <span>{{ record.doctor_specialization }}</span></a>
-                                                    </h2>
-                                                </td>
-                                                <td class="text-right">
-                                                    <div class="table-action">
-                                                        
-                                                        {% if record.report_url %}
-                                                        <a href="{{ url_for('static', filename='reports/' + record.report_url) }}" class="btn btn-sm bg-primary-light" download>
-                                                            <i class="fas fa-print"></i> Print
-                                                        </a>
-                                                    {% else %}
-                                                        <span class="text-muted">No Report Available</span>
-                                                    {% endif %}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>  	
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Medical Records Tab -->
+                  </div>
                 </div>
-                <!-- Tab Content -->
-                
+              </div>
+              <!-- /Appointment Tab -->
+
+              <!-- Prescription Tab -->
+              <div class="tab-pane fade" id="pat_prescriptions">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Days</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Time of Day</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for medicine in medicine_data %}
+                          <tr>
+                            <td>{{ medicine.days }}</td>
+                            <td>{{ medicine.name }}</td>
+                            <td>{{ medicine.quantity }}</td>
+                            <td>{{ medicine.time_of_day }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Prescription Tab -->
+
+              <!-- Medical Records Tab -->
+              <div id="pat_medical_records" class="tab-pane fade">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>ID Doctor</th>
+                            <th>Time</th>
+                            <th>diagnosis</th>
+                            <th>date appioment</th>
+                            <th>Created by</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for record in medical_records %}
+                          <tr>
+                            <td>#{{ record.doctor_idnum }}</td>
+                            <td>{{ record.booking_time }}</td>
+                            <td>{{ record.diagnosis }}</td>
+                            <td>{{ record.appointment_date }}</td>
+                            <td>
+                              <h2 class="table-avatar">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="avatar avatar-sm mr-2"
+                                >
+                                  <img
+                                    class="avatar-img rounded-circle"
+                                    src="{{ record.doctor_photo }}"
+                                    alt="User Image"
+                                  />
+                                </a>
+                                <a href="doctor-profile.html"
+                                  >{{ record.doctor_name }}
+                                  <span
+                                    >{{ record.doctor_specialization }}</span
+                                  ></a
+                                >
+                              </h2>
+                            </td>
+                            <td class="text-right">
+                              <div class="table-action">
+                                {% if record.report_url %}
+                                <a
+                                  href="{{ url_for('static', filename='reports/' + record.report_url) }}"
+                                  class="btn btn-sm bg-primary-light"
+                                  download
+                                >
+                                  <i class="fas fa-print"></i> Print
+                                </a>
+                                {% else %}
+                                <span class="text-muted"
+                                  >No Report Available</span
+                                >
+                                {% endif %}
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Medical Records Tab -->
             </div>
+            <!-- Tab Content -->
+          </div>
         </div>
-    </div>
+      </div>
     </div>
   </div>
 </div>
 <!-- Modal for rescheduling appointments -->
-<div id="reschedule-modal" style="display:none;">
-    <!-- Modal content will be loaded dynamically -->
+<div id="reschedule-modal" style="display: none">
+  <!-- Modal content will be loaded dynamically -->
 </div>
-
 
 <!-- /Page Content -->
 {% endblock %}
