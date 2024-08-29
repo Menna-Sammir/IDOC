@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% block title %} {{ translate('search Dashboard') }} {% endblock %} {%
-block body %}
+{% extends 'base.html' %} {% block title %} {{ translate('search Dashboard') }}
+{% endblock %} {% block body %}
 
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -8,11 +8,17 @@ block body %}
       <div class="col-md-8 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ translate('Search') }}</li>
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Search') }}
+            </li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">{{ translate(pagination.total) }} {{ translate('matches found') }}</h2>
+        <h2 class="breadcrumb-title">
+          {{ pagination.total }} {{ translate('matches found') }}
+        </h2>
       </div>
       <div class="col-md-4 col-12 d-md-block d-none"></div>
     </div>
@@ -51,33 +57,37 @@ block body %}
               <div class="filter-widget"></div>
               <div class="filter-widget">
                 <h4>{{ translate('Select specialization') }}</h4>
-                {% for specialization in specializations %}
-                <div>
-                  <label class="custom_check">
-                    <input
-                      type="checkbox"
-                      name="select_specialization"
-                      value="{{ specialization.id}}"
-                      class="Specialization"
-                      {%
-                      if
-                      specialization.id
-                      in
-                      selected_specializations
-                      %}
-                      checked
-                      {%
-                      endif
-                      %}
-                    />
-                    <span class="checkmark"></span> {{
-                    translate(specialization.specialization_name) }}
-                  </label>
+                <div class="search_filter">
+                  {% for specialization in specializations %}
+                  <div>
+                    <label class="custom_check">
+                      <input
+                        type="checkbox"
+                        name="select_specialization"
+                        value="{{ specialization.id}}"
+                        class="Specialization"
+                        {%
+                        if
+                        specialization.id
+                        in
+                        selected_specializations
+                        %}
+                        checked
+                        {%
+                        endif
+                        %}
+                      />
+                      <span class="checkmark"></span> {{
+                      translate(specialization.specialization_name) }}
+                    </label>
+                  </div>
+                  {% endfor %}
                 </div>
-                {% endfor %}
               </div>
               <div class="btn-search">
-                <button type="submit" class="btn btn-block">{{ translate('Search') }}</button>
+                <button type="submit" class="btn btn-block">
+                  {{ translate('Search') }}
+                </button>
               </div>
             </form>
           </div>
@@ -99,14 +109,18 @@ block body %}
                   <img
                     src="{{base_path ~ doctor.photo}}"
                     alt="User Image"
-                    class="img-fluid" height="150"
+                    class="img-fluid"
+                    height="150"
                   />
                 </div>
                 <div class="doc-info-cont">
                   <h4 class="doc-name">
-                    <a href="doctor-profile.html">{{ translate('Dr.') }}{{ translate(doctor.name) }}</a>
+                    <a href="#"
+                      >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
+                    >
                   </h4>
-                  <p class="doc-department">
+                  <h5 class="text-muted ">{{ doctor.clinic.name}}</h5>
+                  <p class="doc-department mt-2">
                     <img
                       src="{{ specialization.photo }}"
                       class="img-fluid"
@@ -115,8 +129,8 @@ block body %}
                   </p>
                   <div class="clinic-details">
                     <p class="doc-location">
-                      <i class="fas fa-map-marker-alt"></i> {{
-                      translate(doctor.clinic.address) }}
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{ translate(doctor.clinic.address) }}
                     </p>
                   </div>
                   <div class="clinic-services"></div>
@@ -126,11 +140,16 @@ block body %}
                 <div class="clini-infos">
                   <ul>
                     <li>
-                      <i class="fas fa-map-marker-alt"></i> {{
-                      translate(governorate.governorate_name) }}{{ translate(',Egypt') }}
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{
+                      translate(governorate.governorate_name) }}{{
+                      translate(',Egypt') }}
                     </li>
                     <li>
                       <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $
+                    </li>
+                    <li>
+                      <i class="far fa-clock"></i> {{ doctor.clinic.working_hours }}
                     </li>
                   </ul>
                 </div>
@@ -138,7 +157,8 @@ block body %}
                   <a
                     href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                     class="apt-btn"
-                    ><i class="far fa-calendar-alt"></i> {{ translate('Book Appointment') }}</a
+                    ><i class="far fa-calendar-alt"></i> {{ translate('Book
+                    Appointment') }}</a
                   >
                 </div>
               </div>

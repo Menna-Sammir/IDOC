@@ -26,22 +26,23 @@ def on_identity_loaded(sender, identity):
 def inject_cache_id():
     return {'cache_id': app.config['CACHE_ID']}
 
-# @app.before_request
-# def load_notification():
-#     current_time = datetime.now()
-#     notification= Notification.query.filter_by(clinic_id=current_user.clinic_id)
-#     processed_notifications = [{
-#         'doctor': n.appointment.doctor.name,
-#         'patient': n.appointment.patient.name,
-#         'body': n.noteBody,
-#         'isRead': n.isRead,
-#         'time': n.time.strftime('%H:%M %p'),
-#         'date': n.date.strftime('%d %B'),
-#         'photo': n.appointment.doctor.photo,
-#         'formatted_time':  calculate_time_ago(current_time, datetime.combine(n.date, n.time)),
-#     } for n in notification.all()[:10]]
-#     g.notifications = processed_notifications
-#     g.notification_count = len(notification.filter_by(isRead=False).all()) | 0
+@app.before_request
+def load_notification():
+    current_time = datetime.now()
+    if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
+        notification= Notification.query.filter_by(clinic_id=current_user.clinic_id)
+        processed_notifications = [{
+            'doctor': n.appointment.doctor.name,
+            'patient': n.appointment.patient.name,
+            'body': n.noteBody,
+            'isRead': n.isRead,
+            'time': n.time.strftime('%H:%M %p'),
+            'date': n.date.strftime('%d %B'),
+            'photo': n.appointment.doctor.photo,
+            'formatted_time':  calculate_time_ago(current_time, datetime.combine(n.date, n.time)),
+        } for n in notification.all()[:10]]
+        g.notifications = processed_notifications
+        g.notification_count = len(notification.filter_by(isRead=False).all()) | 0
 
 @app.context_processor
 def inject_notification():

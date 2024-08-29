@@ -1,4 +1,6 @@
 if ($("#calendar").length) {
+  var currentLang = $("html").attr("lang");
+  var dir = (currentLang == 'ar') ? 'rtl' : 'ltr';
   var CalendarApp = function () {
     this.$body = $("body");
     (this.$calendar = $("#calendar")),
@@ -90,6 +92,8 @@ if ($("#calendar").length) {
         eventLimit: false, // allow "more" link when too many events
         selectable: true,
         events: [],
+        locale: currentLang,
+        dir: dir,
         eventRender: function (event, element) {
           element.find(".fc-title").html(event.doctor);
 
@@ -112,3 +116,6 @@ if ($("#calendar").length) {
     ($.CalendarApp = new CalendarApp());
   $.CalendarApp.init();
 }
+// function changelocale(language){
+
+
