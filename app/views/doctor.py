@@ -15,14 +15,11 @@ def search_doctor():
 
     specializations = Specialization.query.all()
     governorates = Governorate.query.all()
-    
+
     if request.method == 'POST':
-        specialization_ids = request.form.getlist('select_specialization[]')
+        specialization_ids = request.form.getlist('select_specialization')
         date = request.form.get('date')
         
-        print("Specialization IDs:", specialization_ids)
-        print("Date:", date)
-
         if specialization_ids:
             query = query.filter(Doctor.specialization_id.in_(specialization_ids))
         
@@ -34,7 +31,6 @@ def search_doctor():
             query = query.filter(Doctor.id.in_(select(subquery)))
 
     doctors = query.all()
-    print("Doctors:", doctors)  # Debug statement to check the query results
     return render_template('search.html', doctors=doctors, specializations=specializations, governorates=governorates)
 
 
@@ -45,8 +41,10 @@ def book_appointment():
         session['doctor_id'] = doctor_id
         return redirect('booking.html')
 
-# @app.route('/doctor_dashboard', methods=['GET', 'POST'])
-# def doctor_dashboard():
+@app.route('/doctor_dashboard')
+def doctor_dashboard():
+    
+    return render_template('doctor-dashboard.html')
 
 
 
