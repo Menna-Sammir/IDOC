@@ -8,7 +8,7 @@ from flask_login import LoginManager, current_user
 from flask_principal import Principal
 import uuid
 from flask_wtf.csrf import CSRFProtect
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, disconnect
 from flask_cors import CORS
 
 
@@ -16,6 +16,9 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
+@socketio.on('disconnect request')
+def disconnect_request():
+    disconnect()
 
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
@@ -29,7 +32,6 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 db = SQLAlchemy(app)
 app.config['CACHE_ID'] = str(uuid.uuid4())
-app.config['Current_user'] = current_user
 
 #Configure flask_bcrypt
 bcrypt= Bcrypt(app)
