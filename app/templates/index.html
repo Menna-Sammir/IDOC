@@ -415,9 +415,9 @@
               <div class="card-body">
                 <div class="d-md-flex justify-content-center overflow-hidden">
                   <select class="doctor-select2 col-md-3 border-rd-r-0" name="state" data-width="100%">
-                    <option default>Choose doctor</option>
-                    <option value="AL">Alabama</option>
-                    <option value="WY">Wyoming</option>
+                    {% for specialization in specializations %}
+                      <option >{{ specialization.id }}</option>
+                    {% endfor %}
                   </select>
                   <select class="location-select2 col-md-3 border-rd-r-0" name="state" data-width="100%">
                     <option default>Choose location</option>
