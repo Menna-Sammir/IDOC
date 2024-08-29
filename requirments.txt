@@ -1,0 +1,13 @@
+Flask==2.1.1
+Flask-SQLAlchemy==2.5.1
+pymysql==1.0.2
+python-dotenv==0.19.2
+cryptography==36.0.2
+Werkzeug==2.0.3
+SQLAlchemy==1.4.31
+
+***** push database migration **********
+from app import app, db
+from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
+app.app_context().push()
+db.create_all()
