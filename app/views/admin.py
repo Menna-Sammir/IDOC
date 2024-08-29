@@ -17,6 +17,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 # admin dashboard page >>> view appointments today
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 @login_required
+# @admin_permission.require(http_exception=403)
 def admin_dash():
     user_id = request.args.get('current_user', None)
     user = User.query.filter_by(id=user_id).first()
