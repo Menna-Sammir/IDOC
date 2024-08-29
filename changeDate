@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Checkout to the branch you want to modify
-git checkout MennaEdit
+# git checkout MennaEdit
 
 # Filter the branch and modify the dates
 git filter-branch --env-filter '
