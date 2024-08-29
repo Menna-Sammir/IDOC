@@ -55,15 +55,13 @@ def clinic_dash():
 @login_required
 @clinic_permission.require(http_exception=403)
 def clinic_calender():
-    user_id = current_user.id
-    user = User.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(id=current_user.id).first()
     if user is None:
         return translate('User not found'), 404
-    if not hasattr(user, 'clinic_id'):
+    clinic = Clinic.query.filter_by(user_id = current_user.id)
+    if clinic is None:
         return translate('User is not a clinic'), 403
-    clinic = Clinic.query.get_or_404(user.clinic_id)
     current_time = datetime.now().time()
-
     # Removed working_hours logic
     is_open_today = None  # Or any other logic if applicable
 
@@ -75,17 +73,17 @@ def clinic_calender():
 
 @app.route('/getcaldata', methods=['GET'], strict_slashes=False)
 def clinic_cal():
-    user_id = current_user.id
-    user = User.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(id=current_user.id).first()
     if user is None:
-        return jsonify({'error': 'User not found'}), 404
-    if not hasattr(user, 'clinic_id'):
-        return jsonify({'error': 'User is not a clinic'}), 403
+        return translate('User not found'), 404
+    clinic = Clinic.query.filter_by(user_id = current_user.id).first()
+    if clinic is None:
+        return translate('User is not a clinic'), 403
     appointments = (
         db.session.query(Appointment, Patient, Doctor)
         .join(Patient, Appointment.patient_id == Patient.id)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .filter(Appointment.clinic_id == user.clinic_id, Appointment.seen == False)
+        .filter(Appointment.clinic_id == clinic.id, Appointment.seen == False)
         .all()
     )
     appointment_events = [
@@ -170,7 +168,7 @@ def mark_as_read():
 
     notification.isRead = True
     db.session.commit()
-    
+
 
     return jsonify({'message': 'Notification marked as read'})
 
@@ -190,4 +188,3 @@ def delete_notification():
     db.session.commit()
 
     return jsonify({'message': 'Notification deleted'})
-
