@@ -72,16 +72,16 @@ def patient_dashboard():
 
     # Get next appointment
     next_appointment_query = (
-    db.session.query(Appointment, Doctor, Clinic, Specialization)
-    .join(Doctor, Appointment.doctor_id == Doctor.id)
-    .join(Clinic, Doctor.clinic_id == Clinic.id)
-    .join(Specialization, Doctor.specialization_id == Specialization.id)
-    .filter(Appointment.patient_id == patient.id)
-    .filter(Appointment.date >= db.func.current_date())
-    .filter(Appointment.seen == False)  # Exclude appointments marked as seen
-    .filter(Appointment.status != AppStatus.Confirmed.value)  # Exclude cancelled appointments
-    .order_by(Appointment.date.asc(), Appointment.time.asc())
-)
+        db.session.query(Appointment, Doctor, Clinic, Specialization)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .join(Clinic, Doctor.clinic_id == Clinic.id)
+        .join(Specialization, Doctor.specialization_id == Specialization.id)
+        .filter(Appointment.patient_id == patient.id)
+        .filter(Appointment.date >= db.func.current_date())
+        .filter(Appointment.seen == False)
+        .filter(Appointment.status != AppStatus.Confirmed.value)
+        .order_by(Appointment.date.asc(), Appointment.time.asc())
+    )
     next_appointment = next_appointment_query.first()
 
     if next_appointment:
@@ -112,7 +112,7 @@ def patient_dashboard():
         db.session.query(Appointment, Doctor)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
         .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == 1)
+        .filter(Appointment.seen == True)
         .order_by(Appointment.date.desc())
     )
 
@@ -122,6 +122,7 @@ def patient_dashboard():
             'doctor_photo': doctor.users.photo,
             'appointment_date': appointment.date.strftime('%A, %d %B'),
             'price': doctor.price,
+            'status': appointment.status
         }
         for appointment, doctor in seen_appointments_query.all()
     ]
@@ -146,7 +147,7 @@ def patient_dashboard():
         db.session.query(PatientMedicine)
         .filter(PatientMedicine.patient_id == patient.id)
     )
-    prescriptions = [
+    all_prescriptions = [
         {
             'name': medicine.medName,
             'quantity': medicine.Quantity,
@@ -155,6 +156,10 @@ def patient_dashboard():
         }
         for medicine in prescriptions_query.all()
     ]
+
+    # Limit to 4 prescriptions for display
+    limited_prescriptions = all_prescriptions[:4]
+    show_more_button = len(all_prescriptions) > 4
 
     if request.method == 'POST':
         # Handle form submission if necessary
@@ -172,8 +177,11 @@ def patient_dashboard():
         blood_group=blood_group,
         allergy=allergy,
         specialties=specialties,
-        prescriptions=prescriptions
+        prescriptions=limited_prescriptions,
+        show_more_button=show_more_button,
+        AppStatus=AppStatus
     )
+
 
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
@@ -189,7 +197,7 @@ def appointment_History():
         .join(Clinic, Doctor.clinic_id == Clinic.id)
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == False)  # Filter by unseen appointments
+        .filter(Appointment.seen == False)
         .order_by(Appointment.date.desc(), Appointment.time.desc())
         .all()
     )
@@ -197,7 +205,15 @@ def appointment_History():
     # Fetch patient history
     patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
 
-    # Process appointment and patient history data
+    # Fetch patient medicines
+    patient_medicines = (
+        db.session.query(PatientMedicine, MedicineTimes)
+        .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
+        .filter(PatientMedicine.patient_id == patient.id)
+        .all()
+    )
+
+    # Process appointment data
     appointment_data = []
     for appointment, doctor, clinic, specialization in appointments:
         appointment_start_time = datetime.combine(appointment.date, appointment.time)
@@ -241,6 +257,43 @@ def appointment_History():
             'added_by': added_by_user.name if added_by_user else 'Unknown'
         })
 
+    # Process patient medicine data
+    medicine_data = []
+    for medicine, medicine_time in patient_medicines:
+        medicine_data.append({
+            'days': medicine.Days,
+            'name': medicine.medName,
+            'quantity': medicine.Quantity,
+            'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
+        })
+
+    records = (
+        db.session.query(Appointment, Doctor, Specialization)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .join(Specialization, Doctor.specialization_id == Specialization.id)
+        .filter(Appointment.patient_id == patient.id)
+        .filter(Appointment.seen == True)
+        .order_by(Appointment.date.desc(), Appointment.time.desc())
+        .all()
+    )
+
+    # Process records data
+    medical_records_data = []
+    for appointment, doctor, specialization in records:
+        formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
+        diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
+        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+
+        medical_records_data.append({
+            'doctor_idnum': doctor.iDNum,
+            'booking_time': formatted_booking_time,  # Use the formatted time instead of date
+            'diagnosis': diagnosis,
+            'appointment_date': appointment.date,
+            'doctor_name': doctor.users.name,
+            'doctor_specialization': specialization.specialization_name,
+            'report_url': report_url
+        })
+
     specialties = Specialization.query.all()
 
     return render_template(
@@ -251,9 +304,10 @@ def appointment_History():
         patient_history=history_data,
         blood_group=blood_group,
         allergy=allergy,
-        specialties=specialties
+        specialties=specialties,
+        medicine_data=medicine_data,
+        medical_records=medical_records_data
     )
-
 
 @app.route('/cancel_appointment', methods=['POST'])
 @login_required
@@ -265,25 +319,17 @@ def cancel_appointment():
         flash('Appointment not found', 'danger')
         return redirect(url_for('appointment_History'))
 
-    # Debugging outputs
-    print(f"Appointment ID: {appointment.id}, Status: {appointment.status}, Patient ID: {appointment.patient_id}, User ID: {current_user.id}")
-
     # Check if the current user is the patient who made the appointment
-    if appointment.patient_id == current_user.id:
-        # Debugging status values
-        print(f"Confirmed value: {AppStatus.Confirmed.value}, Appointment status: {appointment.status}")
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    if patient is None:
+        flash('Patient record not found', 'danger')
+        return redirect(url_for('appointment_History'))
 
-        # Check if the status is Confirmed
-        if appointment.status == AppStatus.Confirmed.value:
-            # Update status to Cancelled and mark as seen
-            appointment.status = AppStatus.Cancelled.value
-            appointment.seen = True
-            db.session.commit()
-            flash('Appointment cancelled successfully', 'success')
-        else:
-            flash('This appointment cannot be cancelled', 'danger')
-    else:
-        flash('You are not allowed to cancel this appointment', 'danger')
+    # Update status to Cancelled and mark as seen
+    appointment.status = AppStatus.Cancelled.name  # Use Enum name
+    appointment.seen = True
+    db.session.commit()
+    flash('Appointment cancelled successfully', 'success')
 
     return redirect(url_for('appointment_History'))
 
