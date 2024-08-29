@@ -68,7 +68,7 @@
 
               <!-- Submit Section -->
               <div class="submit-section mt-4">
-                {{ form.submit(class="btn btn-primary submit-btn")}}
+                {{ form.submit(class="btn btn-secondary submit-btn")}}
               </div>
               <!-- /Submit Section -->
             </form>
@@ -94,10 +94,10 @@
                 />
               </a>
               <div class="booking-info">
-                <h4><a href="#">{{doctor.name}}</a></h4>
+                <h4><a href="#">Dr. {{doctor.name}}</a></h4>
                 <div class="clinic-details">
                   <p class="doc-location">
-                    <i class="fas fa-map-marker-alt"></i> {{clinic.address}}, {{gov.governorate_name}}
+                    <i class="fas fa-map-marker-alt"></i> {{clinic.address}}, {{gov.governorate_name}}, Egypt
                   </p>
                 </div>
               </div>
@@ -108,7 +108,7 @@
               <div class="booking-item-wrap">
                 <ul class="booking-date mt-3">
                   <li>Date <span>{{date}}</span></li>
-                  <li>Time <span>{{clinic.working_hours}}</span></li>
+                  <li>Time <span>from {{clinic.working_hours}}</span></li>
                 </ul>
                 <ul class="booking-fee">
                   <li>Consulting Fee <span>${{doctor.price}}</span></li>
