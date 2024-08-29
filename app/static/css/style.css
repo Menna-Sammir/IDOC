@@ -8234,7 +8234,7 @@ html.menu-opened body {
 
 
   #clock{
-    width:370px;
+    width:400px;
     padding:40px;
     margin:100px auto 60px;
     position:relative;
@@ -8527,9 +8527,10 @@ html.menu-opened body {
 
 
   #clock .ampm{
-    position:absolute;
-    bottom:20px;
-    font-size:12px;
+	position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 12px;
   }
 
 
