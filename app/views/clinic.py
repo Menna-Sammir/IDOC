@@ -125,3 +125,4 @@ def clear_noti():
     rows_changed = Notification.query.filter_by(clinic_id=clinic_id).update(dict(isRead=True))
     db.session.commit()
     return redirect(url_for('clinic_calender'))
+
