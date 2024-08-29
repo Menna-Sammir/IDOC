@@ -61,8 +61,8 @@ def home():
 @app.route('/patient_dashboard', methods=['GET', 'POST'])
 @login_required
 def patient_dashboard():
+    # Fetch patient details
     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    patient = db.session.query(Patient).join(User).filter(Patient.user_id == current_user.id).first()
     if patient is None:
         return translate('User is not a patient'), 403
 
@@ -77,8 +77,6 @@ def patient_dashboard():
         .filter(Appointment.seen == False)  # Exclude appointments marked as seen
         .order_by(Appointment.date.asc(), Appointment.time.asc())
     )
-
-    
     next_appointment = next_appointment_query.first()
 
     if next_appointment:
@@ -139,6 +137,21 @@ def patient_dashboard():
     blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
     allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
+    # Fetch prescriptions
+    prescriptions_query = (
+        db.session.query(PatientMedicine)
+        .filter(PatientMedicine.patient_id == patient.id)
+    )
+    prescriptions = [
+        {
+            'name': medicine.medName,
+            'quantity': medicine.Quantity,
+            'days': medicine.Days,
+            'times_of_day': [time.time_of_day for time in medicine.medicine_times]
+        }
+        for medicine in prescriptions_query.all()
+    ]
+
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
@@ -154,7 +167,8 @@ def patient_dashboard():
         month_appointments_count=month_appointments_count,
         blood_group=blood_group,
         allergy=allergy,
-        specialties=specialties
+        specialties=specialties,
+        prescriptions=prescriptions
     )
 
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
@@ -561,7 +575,6 @@ def patient_checkout():
                 except Exception as e:
                     db.session.rollback()
                     flash(f'something wrong', category='danger')
-                    print('dddddddddddd', str(e))
                 notification_create = Notification(
                     clinic_id=clinic_data.id,
                     date=date.strftime('%Y-%m-%d'),

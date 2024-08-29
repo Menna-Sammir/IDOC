@@ -1,29 +1,29 @@
 (function ($) {
-  'use strict';
+  "use strict";
 
   // Stick Sidebar
 
   if ($(window).width() > 767) {
-    if ($('.theiaStickySidebar').length > 0) {
-      $('.theiaStickySidebar').theiaStickySidebar({
+    if ($(".theiaStickySidebar").length > 0) {
+      $(".theiaStickySidebar").theiaStickySidebar({
         // Settings
         additionalMarginTop: 30,
       });
     }
   }
 
-  $(window).on('load', function () {
+  $(window).on("load", function () {
     setTimeout(function () {
-      $('.loader').fadeOut('slow');
-      $('.main-wrapper').css('opacity', '1');
+      $(".loader").fadeOut("slow");
+      $(".main-wrapper").css("opacity", "1");
     }, 2500);
 
     // preview image after upload
-    $('.upload').on('change', function (event) {
+    $(".upload").on("change", function (event) {
       var file = event.target.files[0];
       var reader = new FileReader();
       reader.onload = function (event) {
-        $('#imagePreview').attr('src', event.target.result);
+        $("#imagePreview").attr("src", event.target.result);
       };
       reader.readAsDataURL(file);
     });
@@ -32,23 +32,23 @@
   // Sidebar
   if ($(window).width() <= 991) {
     var Sidemenu = function () {
-      this.$menuItem = $('.main-nav a');
+      this.$menuItem = $(".main-nav a");
     };
 
     function init() {
       var $this = Sidemenu;
-      $('.main-nav a').on('click', function (e) {
-        if ($(this).parent().hasClass('has-submenu')) {
+      $(".main-nav a").on("click", function (e) {
+        if ($(this).parent().hasClass("has-submenu")) {
           e.preventDefault();
         }
-        if (!$(this).hasClass('submenu')) {
-          $('ul', $(this).parents('ul:first')).slideUp(350);
-          $('a', $(this).parents('ul:first')).removeClass('submenu');
-          $(this).next('ul').slideDown(350);
-          $(this).addClass('submenu');
-        } else if ($(this).hasClass('submenu')) {
-          $(this).removeClass('submenu');
-          $(this).next('ul').slideUp(350);
+        if (!$(this).hasClass("submenu")) {
+          $("ul", $(this).parents("ul:first")).slideUp(350);
+          $("a", $(this).parents("ul:first")).removeClass("submenu");
+          $(this).next("ul").slideDown(350);
+          $(this).addClass("submenu");
+        } else if ($(this).hasClass("submenu")) {
+          $(this).removeClass("submenu");
+          $(this).next("ul").slideUp(350);
         }
       });
       //$('.main-nav li.has-submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
@@ -61,75 +61,75 @@
   // Textarea Text Count
 
   var maxLength = 100;
-  $('#review_desc').on('keyup change', function () {
+  $("#review_desc").on("keyup change", function () {
     var length = $(this).val().length;
     length = maxLength - length;
-    $('#chars').text(length);
+    $("#chars").text(length);
   });
 
   // Select 2
 
-  if ($('.select').length > 0) {
-    $('.select').select2({
+  if ($(".select").length > 0) {
+    $(".select").select2({
       minimumResultsForSearch: -1,
-      width: '100%',
+      width: "100%",
     });
   }
 
   // Date Time Picker
 
-  if ($('.datetimepicker').length > 0) {
-    $('.datetimepicker').datetimepicker({
-      format: 'DD/MM/YYYY',
+  if ($(".datetimepicker").length > 0) {
+    $(".datetimepicker").datetimepicker({
+      format: "DD/MM/YYYY",
       icons: {
-        up: 'fas fa-chevron-up',
-        down: 'fas fa-chevron-down',
-        next: 'fas fa-chevron-right',
-        previous: 'fas fa-chevron-left',
+        up: "fas fa-chevron-up",
+        down: "fas fa-chevron-down",
+        next: "fas fa-chevron-right",
+        previous: "fas fa-chevron-left",
       },
     });
   }
 
   // Fancybox Gallery
 
-  if ($('.clinic-gallery a').length > 0) {
-    $('.clinic-gallery a').fancybox({
-      buttons: ['thumbs', 'close'],
+  if ($(".clinic-gallery a").length > 0) {
+    $(".clinic-gallery a").fancybox({
+      buttons: ["thumbs", "close"],
     });
   }
 
   // Floating Label
 
-  if ($('.floating').length > 0) {
-    $('.floating')
-      .on('focus blur', function (e) {
+  if ($(".floating").length > 0) {
+    $(".floating")
+      .on("focus blur", function (e) {
         $(this)
-          .parents('.form-focus')
-          .toggleClass('focused', e.type === 'focus' || this.value.length > 0);
+          .parents(".form-focus")
+          .toggleClass("focused", e.type === "focus" || this.value.length > 0);
       })
-      .trigger('blur');
+      .trigger("blur");
   }
 
   // Mobile menu sidebar overlay
 
-  $('body').append('<div class="sidebar-overlay"></div>');
-  $(document).on('click', '#mobile_btn', function () {
-    $('main-wrapper').toggleClass('slide-nav');
-    $('.sidebar-overlay').toggleClass('opened');
-    $('html').addClass('menu-opened');
+  $("body").append('<div class="sidebar-overlay"></div>');
+  $(document).on("click", "#mobile_btn", function () {
+    $("main-wrapper").toggleClass("slide-nav");
+    $(".sidebar-overlay").toggleClass("opened");
+    $("html").addClass("menu-opened");
     return false;
   });
 
-  $(document).on('click', '.sidebar-overlay', function () {
-    $('html').removeClass('menu-opened');
-    $(this).removeClass('opened');
-    $('main-wrapper').removeClass('slide-nav');
+  $(document).on("click", ".sidebar-overlay", function () {
+    $("html").removeClass("menu-opened");
+    $(this).removeClass("opened");
+    $("main-wrapper").removeClass("slide-nav");
   });
 
-  $(document).on('click', '#menu_close', function () {
-    $('html').removeClass('menu-opened');
-    $('.sidebar-overlay').removeClass('opened');
-    $('main-wrapper').removeClass('slide-nav');
+  $(document).on("click", "#menu_close", function () {
+    $("html").removeClass("menu-opened");
+    $(".sidebar-overlay").removeClass("opened");
+    $("main-wrapper").removeClass("slide-nav");
   });
 
   // Mobile Menu
@@ -162,46 +162,46 @@
 
   // Add More Hours
 
-  $('.hours-info').on('click', '.trash', function () {
-    $(this).closest('.hours-cont').remove();
+  $(".hours-info").on("click", ".trash", function () {
+    $(this).closest(".hours-cont").remove();
     return false;
   });
 
-  $('.add-hours').on('click', function () {
+  $(".add-hours").on("click", function () {
     var hourscontent =
       '<div class="row form-row hours-cont">' +
       '<div class="col-12 col-md-10">' +
       '<div class="row form-row">' +
       '<div class="col-12 col-md-6">' +
       '<div class="form-group">' +
-      '<label>Start Time</label>' +
+      "<label>Start Time</label>" +
       '<select class="form-control">' +
-      '<option>-</option>' +
-      '<option>12.00 am</option>' +
-      '<option>12.30 am</option>' +
-      '<option>1.00 am</option>' +
-      '<option>1.30 am</option>' +
-      '</select>' +
-      '</div>' +
-      '</div>' +
+      "<option>-</option>" +
+      "<option>12.00 am</option>" +
+      "<option>12.30 am</option>" +
+      "<option>1.00 am</option>" +
+      "<option>1.30 am</option>" +
+      "</select>" +
+      "</div>" +
+      "</div>" +
       '<div class="col-12 col-md-6">' +
       '<div class="form-group">' +
-      '<label>End Time</label>' +
+      "<label>End Time</label>" +
       '<select class="form-control">' +
-      '<option>-</option>' +
-      '<option>12.00 am</option>' +
-      '<option>12.30 am</option>' +
-      '<option>1.00 am</option>' +
-      '<option>1.30 am</option>' +
-      '</select>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
+      "<option>-</option>" +
+      "<option>12.00 am</option>" +
+      "<option>12.30 am</option>" +
+      "<option>1.00 am</option>" +
+      "<option>1.30 am</option>" +
+      "</select>" +
+      "</div>" +
+      "</div>" +
+      "</div>" +
+      "</div>" +
       '<div class="col-12 col-md-2"><label class="d-md-block d-sm-none d-none">&nbsp;</label><a href="#" class="btn btn-danger trash"><i class="far fa-trash-alt"></i></a></div>' +
-      '</div>';
+      "</div>";
 
-    $('.hours-info').append(hourscontent);
+    $(".hours-info").append(hourscontent);
     return false;
   });
 
@@ -209,19 +209,19 @@
 
   function resizeInnerDiv() {
     var height = $(window).height();
-    var header_height = $('.header').height();
-    var footer_height = $('.footer').height();
+    var header_height = $(".header").height();
+    var footer_height = $(".footer").height();
     var setheight = height - header_height;
     var trueheight = setheight - footer_height;
-    $('.content').css('min-height', trueheight);
+    $(".content").css("min-height", trueheight);
   }
 
-  if ($('.content').length > 0) {
+  if ($(".content").length > 0) {
     resizeInnerDiv();
   }
 
   $(window).resize(function () {
-    if ($('.content').length > 0) {
+    if ($(".content").length > 0) {
       resizeInnerDiv();
     }
     /*if($(window).width() <= 991){
@@ -233,8 +233,8 @@
 
   // Slick Slider
 
-  if ($('.specialities-slider').length > 0) {
-    $('.specialities-slider').slick({
+  if ($(".specialities-slider").length > 0) {
+    $(".specialities-slider").slick({
       dots: true,
       autoplay: true,
       infinite: true,
@@ -244,19 +244,19 @@
     });
   }
 
-  $('.specialities-slider').on(
-    'afterChange',
+  $(".specialities-slider").on(
+    "afterChange",
     function (event, slick, currentSlide) {
-      var $dots = $(this).find('.slick-dots li');
+      var $dots = $(this).find(".slick-dots li");
       // $dots.hide();
       $dots.slice(0, Math.min(currentSlide + 1, 4)).show();
     }
   );
 
-  if ($('.doctor-slider').length > 0) {
-    $('.doctor-slider').slick({
+  if ($(".doctor-slider").length > 0) {
+    $(".doctor-slider").slick({
       centerMode: true,
-      centerPadding: '60px',
+      centerPadding: "60px",
       slidesToShow: 4,
       dots: false,
       autoplay: true,
@@ -264,8 +264,8 @@
       variableWidth: true,
     });
   }
-  if ($('.features-slider').length > 0) {
-    $('.features-slider').slick({
+  if ($(".features-slider").length > 0) {
+    $(".features-slider").slick({
       dots: true,
       infinite: true,
       centerMode: true,
@@ -287,57 +287,57 @@
 
   // Date Time Picker
 
-  if ($('.datepicker').length > 0) {
-    $('.datepicker').datetimepicker({
-      viewMode: 'years',
+  if ($(".datepicker").length > 0) {
+    $(".datepicker").datetimepicker({
+      viewMode: "years",
       showTodayButton: true,
-      format: 'DD-MM-YYYY',
+      format: "DD-MM-YYYY",
       // minDate:new Date(),
       widgetPositioning: {
-        horizontal: 'auto',
-        vertical: 'bottom',
+        horizontal: "auto",
+        vertical: "bottom",
       },
     });
   }
 
   // Chat
 
-  var chatAppTarget = $('.chat-window');
+  var chatAppTarget = $(".chat-window");
   (function () {
-    if ($(window).width() > 991) chatAppTarget.removeClass('chat-slide');
+    if ($(window).width() > 991) chatAppTarget.removeClass("chat-slide");
 
     $(document).on(
-      'click',
-      '.chat-window .chat-users-list a.media',
+      "click",
+      ".chat-window .chat-users-list a.media",
       function () {
         if ($(window).width() <= 991) {
-          chatAppTarget.addClass('chat-slide');
+          chatAppTarget.addClass("chat-slide");
         }
         return false;
       }
     );
-    $(document).on('click', '#back_user_list', function () {
+    $(document).on("click", "#back_user_list", function () {
       if ($(window).width() <= 991) {
-        chatAppTarget.removeClass('chat-slide');
+        chatAppTarget.removeClass("chat-slide");
       }
       return false;
     });
   })();
 
   function changeFont(language) {
-    if (language === 'en') {
-      $('body').css('font-family', 'Poppins, sans-serif');
+    if (language === "en") {
+      $("body").css("font-family", "Poppins, sans-serif");
       // $("html").css("direction", "ltr");
-    } else if (language === 'ar') {
-      $('body').css('font-family', 'Cairo, sans-serif');
+    } else if (language === "ar") {
+      $("body").css("font-family", "Cairo, sans-serif");
       // $("html").css("direction", "rtl");
     }
   }
 
   function setLanguage(language) {
     $.ajax({
-      url: '/set_language',
-      type: 'GET',
+      url: "/set_language",
+      type: "GET",
       data: { language: language },
       success: function () {
         changeFont(language);
@@ -346,14 +346,14 @@
     });
   }
 
-  var currentLang = $('html').attr('lang');
+  var currentLang = $("html").attr("lang");
 
   changeFont(currentLang);
-  $('#language-select .dropdown-item').on('click', function () {
-    var language = $(this).data('lang');
+  $("#language-select .dropdown-item").on("click", function () {
+    var language = $(this).data("lang");
     setLanguage(language);
-    var dir = language == 'ar' ? 'rtl' : 'ltr';
-    $('#calendar').fullCalendar('option', {
+    var dir = language == "ar" ? "rtl" : "ltr";
+    $("#calendar").fullCalendar("option", {
       locale: language,
       dir: dir,
     });
@@ -367,27 +367,27 @@
   //     });
 
   var monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
   var dayNames = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
   ];
 
   var newDatecal = new Date();
@@ -395,82 +395,82 @@
 
   setInterval(function () {
     var hours = new Date().getHours();
-    $('.hour').html((hours < 10 ? '0' : '') + hours);
+    $(".hour").html((hours < 10 ? "0" : "") + hours);
     var seconds = new Date().getSeconds();
-    $('.second').html((seconds < 10 ? '0' : '') + seconds);
+    $(".second").html((seconds < 10 ? "0" : "") + seconds);
     var minutes = new Date().getMinutes();
-    $('.minute').html((minutes < 10 ? '0' : '') + minutes);
+    $(".minute").html((minutes < 10 ? "0" : "") + minutes);
 
-    $('.month span,.month2 span').text(monthNames[newDatecal.getMonth()]);
-    $('.date span,.date2 span').text(newDatecal.getDate());
-    $('.day span,.day2 span').text(dayNames[newDatecal.getDay()]);
-    $('.year span').html(newDatecal.getFullYear());
+    $(".month span,.month2 span").text(monthNames[newDatecal.getMonth()]);
+    $(".date span,.date2 span").text(newDatecal.getDate());
+    $(".day span,.day2 span").text(dayNames[newDatecal.getDay()]);
+    $(".year span").html(newDatecal.getFullYear());
   }, 1000);
 })(jQuery);
 
 // select2
 $(document).ready(function () {
-  $('.doctor-select2').select2({
-    containerCssClass: 'doctor-select',
-    width: '100%',
+  $(".doctor-select2").select2({
+    containerCssClass: "doctor-select",
+    width: "100%",
   });
-  $('.location-select2').select2({
-    containerCssClass: 'location-select',
-    width: '100%',
+  $(".location-select2").select2({
+    containerCssClass: "location-select",
+    width: "100%",
   });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const dateItems = document.querySelectorAll('.date-item');
-  const timeslotsContainers = document.querySelectorAll('.timeslots');
+document.addEventListener("DOMContentLoaded", function () {
+  const dateItems = document.querySelectorAll(".date-item");
+  const timeslotsContainers = document.querySelectorAll(".timeslots");
   dateItems.forEach((item, index) => {
-    item.addEventListener('click', () => {
+    item.addEventListener("click", () => {
       dateItems.forEach((i) =>
-        i.querySelector('h6').classList.remove('active')
+        i.querySelector("h6").classList.remove("active")
       );
-      timeslotsContainers.forEach((c) => c.classList.remove('active'));
-      item.querySelector('h6').classList.add('active');
-      dateItems.forEach((i) => i.classList.remove('active'));
-      timeslotsContainers.forEach((c) => c.classList.remove('active'));
-      item.classList.add('active');
-      timeslotsContainers[index].classList.add('active');
+      timeslotsContainers.forEach((c) => c.classList.remove("active"));
+      item.querySelector("h6").classList.add("active");
+      dateItems.forEach((i) => i.classList.remove("active"));
+      timeslotsContainers.forEach((c) => c.classList.remove("active"));
+      item.classList.add("active");
+      timeslotsContainers[index].classList.add("active");
     });
   });
 });
 
-$(document).on('change', '.Specialization', function () {
-  if ($(this).is(':checked')) {
-    $(this).prop('checked', true);
+$(document).on("change", ".Specialization", function () {
+  if ($(this).is(":checked")) {
+    $(this).prop("checked", true);
   } else {
-    $(this).prop('checked', false);
+    $(this).prop("checked", false);
   }
 });
 $(function () {
   // Cache some selectors
 
-  var clock = $('#clock'),
-    ampm = clock.find('.ampm');
+  var clock = $("#clock"),
+    ampm = clock.find(".ampm");
 
   // Map digits to their names (this will be an array)
-  var digit_to_name = 'zero one two three four five six seven eight nine'.split(
-    ' '
+  var digit_to_name = "zero one two three four five six seven eight nine".split(
+    " "
   );
 
   // This object will hold the digit elements
   var digits = {};
 
   // Positions for the hours, minutes, and seconds
-  var positions = ['h1', 'h2', ':', 'm1', 'm2', ':', 's1', 's2'];
+  var positions = ["h1", "h2", ":", "m1", "m2", ":", "s1", "s2"];
 
   // Generate the digits with the needed markup,
   // and add them to the clock
-  var digit_holder = clock.find('.digits');
+  var digit_holder = clock.find(".digits");
 
   $.each(positions, function () {
-    if (this == ':') {
+    if (this == ":") {
       digit_holder.append('<div class="dots">');
     } else {
-      var pos = $('<div>');
+      var pos = $("<div>");
       for (var i = 1; i < 8; i++) {
         pos.append('<span class="d' + i + '">');
       }
@@ -482,14 +482,14 @@ $(function () {
   });
 
   // Add the weekday names
-  var weekday_names = 'SUN MON TUE WED THU FRI SAT'.split(' '),
-    weekday_holder = clock.find('.weekdays');
+  var weekday_names = "SUN MON TUE WED THU FRI SAT".split(" "),
+    weekday_holder = clock.find(".weekdays");
 
   $.each(weekday_names, function () {
-    weekday_holder.append('<span>' + this + '</span>');
+    weekday_holder.append("<span>" + this + "</span>");
   });
 
-  var weekdays = clock.find('.weekdays span');
+  var weekdays = clock.find(".weekdays span");
 
   // Run a timer every second and update the clock
   (function update_time() {
@@ -497,20 +497,20 @@ $(function () {
     // hh is for the hours in 12-hour format,
     // mm - minutes, ss-seconds (all with leading zeroes),
     // d is for day of week and A is for AM/PM
-    var now = moment().format('hhmmssdA');
+    var now = moment().format("hhmmssdA");
 
-    digits.h1.attr('class', digit_to_name[now[0]]);
-    digits.h2.attr('class', digit_to_name[now[1]]);
-    digits.m1.attr('class', digit_to_name[now[2]]);
-    digits.m2.attr('class', digit_to_name[now[3]]);
-    digits.s1.attr('class', digit_to_name[now[4]]);
-    digits.s2.attr('class', digit_to_name[now[5]]);
+    digits.h1.attr("class", digit_to_name[now[0]]);
+    digits.h2.attr("class", digit_to_name[now[1]]);
+    digits.m1.attr("class", digit_to_name[now[2]]);
+    digits.m2.attr("class", digit_to_name[now[3]]);
+    digits.s1.attr("class", digit_to_name[now[4]]);
+    digits.s2.attr("class", digit_to_name[now[5]]);
 
     // Directly use the day of the week from moment.js
     var dow = now[6];
 
     // Mark the active day of the week
-    weekdays.removeClass('active').eq(dow).addClass('active');
+    weekdays.removeClass("active").eq(dow).addClass("active");
 
     // Set the am/pm text:
     ampm.text(now[7] + now[8]);
@@ -520,28 +520,28 @@ $(function () {
   })();
 });
 
-const timeslots = document.querySelectorAll('.timeslot');
+const timeslots = document.querySelectorAll(".timeslot");
 if (timeslots) {
   timeslots.forEach((slot) => {
-    slot.addEventListener('click', () => {
-      timeslots.forEach((s) => s.classList.remove('active'));
-      slot.classList.add('active');
+    slot.addEventListener("click", () => {
+      timeslots.forEach((s) => s.classList.remove("active"));
+      slot.classList.add("active");
       slot.querySelector("input[type='radio']").checked = true;
     });
   });
-  var continueButton = document.getElementById('continue-button');
+  var continueButton = document.getElementById("continue-button");
   if (continueButton) {
     document
-      .getElementById('continue-button')
-      .addEventListener('click', function (event) {
+      .getElementById("continue-button")
+      .addEventListener("click", function (event) {
         var selectedTimeslot = document.querySelector(
           'input[name="timeslot"]:checked'
         );
         if (!selectedTimeslot) {
-          document.getElementById('warning-message').style.display = 'block';
+          document.getElementById("warning-message").style.display = "block";
         } else {
-          document.getElementById('warning-message').style.display = 'none';
-          document.getElementById('appointment-form').submit();
+          document.getElementById("warning-message").style.display = "none";
+          document.getElementById("appointment-form").submit();
         }
       });
   }
@@ -549,132 +549,132 @@ if (timeslots) {
 
   $(window).scroll(function () {
     if ($(this).scrollTop() > 20) {
-      $('#backToTop').fadeIn();
+      $("#backToTop").fadeIn();
     } else {
-      $('#backToTop').fadeOut();
+      $("#backToTop").fadeOut();
     }
   });
 
   // Click event to scroll to top
-  $('#backToTop').click(function () {
-    $('html, body').animate({ scrollTop: 0 }, 'fast');
+  $("#backToTop").click(function () {
+    $("html, body").animate({ scrollTop: 0 }, "fast");
     return false;
   });
 }
 
 // view all notifications (delete and mark as read) to be continued...
 $(document).ready(function () {
-  let unreadCount = parseInt($('#notification-count').text(), 10);
+  let unreadCount = parseInt($("#notification-count").text(), 10);
 
-  $('.mark-read-btn').on('click', function () {
-    const notificationId = $(this).data('id');
-    console.log('Notification ID:', notificationId);
+  $(".mark-read-btn").on("click", function () {
+    const notificationId = $(this).data("id");
+    console.log("Notification ID:", notificationId);
     $.ajax({
-      type: 'POST',
-      url: '/mark_as_read',
+      type: "POST",
+      url: "/mark_as_read",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"),
       },
       data: {
         notification_id: notificationId,
       },
       success: function (data) {
-        console.log('AJAX request successful', data);
+        console.log("AJAX request successful", data);
 
-        if (data.message === 'Notification marked as read') {
-          const notificationRow = $(this).closest('tr');
+        if (data.message === "Notification marked as read") {
+          const notificationRow = $(this).closest("tr");
           if (notificationRow.length) {
-            notificationRow.removeClass('unread-notification');
-            $('#read-notifications-body').append(notificationRow);
-            notificationRow.find('.mark-read-btn').remove();
+            notificationRow.removeClass("unread-notification");
+            $("#read-notifications-body").append(notificationRow);
+            notificationRow.find(".mark-read-btn").remove();
             notificationRow
-              .find('.delete-btn')
-              .removeClass('bg-success-light')
-              .addClass('bg-danger-light');
+              .find(".delete-btn")
+              .removeClass("bg-success-light")
+              .addClass("bg-danger-light");
             notificationRow
-              .find('.delete-btn i')
-              .removeClass('fa-check')
-              .addClass('fa-times');
+              .find(".delete-btn i")
+              .removeClass("fa-check")
+              .addClass("fa-times");
             notificationRow
-              .find('.delete-btn')
+              .find(".delete-btn")
               .html('<i class="fas fa-times"></i> Delete');
 
             unreadCount -= 1;
             updateNotificationCount();
           } else {
-            console.error('Notification row not found.');
+            console.error("Notification row not found.");
           }
         } else {
-          console.error('Error marking notification as read:', data.message);
+          console.error("Error marking notification as read:", data.message);
         }
       }.bind(this),
       error: function (xhr, status, error) {
-        console.error('AJAX request failed with status:', status);
-        console.error('Response text:', xhr.responseText);
-        console.error('Error:', error);
+        console.error("AJAX request failed with status:", status);
+        console.error("Response text:", xhr.responseText);
+        console.error("Error:", error);
       },
     });
   });
 
-  $('.delete-btn').on('click', function () {
-    const notificationId = $(this).data('id');
-    console.log('Notification ID:', notificationId);
+  $(".delete-btn").on("click", function () {
+    const notificationId = $(this).data("id");
+    console.log("Notification ID:", notificationId);
     $.ajax({
-      type: 'POST',
-      url: '/delete_notification',
+      type: "POST",
+      url: "/delete_notification",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"),
       },
       data: {
         notification_id: notificationId,
       },
       success: function (data) {
-        if (data.message === 'Notification deleted') {
-          const notificationRow = $(this).closest('tr');
-          if (notificationRow.hasClass('unread-notification')) {
+        if (data.message === "Notification deleted") {
+          const notificationRow = $(this).closest("tr");
+          if (notificationRow.hasClass("unread-notification")) {
             unreadCount -= 1;
             updateNotificationCount();
           }
           notificationRow.remove();
         } else {
-          console.error('Error deleting notification:', data.message);
+          console.error("Error deleting notification:", data.message);
         }
       }.bind(this),
       error: function (xhr, status, error) {
-        console.error('AJAX request failed with status:', status);
-        console.error('Response text:', xhr.responseText);
-        console.error('Error:', error);
+        console.error("AJAX request failed with status:", status);
+        console.error("Response text:", xhr.responseText);
+        console.error("Error:", error);
       },
     });
   });
 
   function updateNotificationCount() {
-    $('#notification-count').text(unreadCount);
+    $("#notification-count").text(unreadCount);
     if (unreadCount === 0) {
-      $('#notification-count').css('display', 'inline').text('0');
+      $("#notification-count").css("display", "inline").text("0");
     }
   }
 });
 
 // update patient profile
-$('#patientForm').on('submit', function (event) {
+$("#patientForm").on("submit", function (event) {
   event.preventDefault();
 
   let formData = new FormData(this);
 
   $.ajax({
-    url: '/patient_setting',
-    type: 'PUT',
+    url: "/patient_setting",
+    type: "PUT",
     data: formData,
     processData: false,
     contentType: false,
     headers: {
-      'X-CSRFToken': '{{ form.csrf_token._value() }}',
+      "X-CSRFToken": "{{ form.csrf_token._value() }}",
     },
     success: function (data) {
-      if (data.status === 'success') {
+      if (data.status === "success") {
         location.reload();
       } else if (data.errors) {
         $.each(data.errors, function (field, error) {
@@ -685,7 +685,39 @@ $('#patientForm').on('submit', function (event) {
       }
     },
     error: function (xhr, status, error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     },
+  });
+});
+$(document).ready(function () {
+  $("#add-more-item").click(function () {
+    // Clone the last row
+    var newRow = $("#items-container tr:last").clone();
+
+    // Clear the values of all input elements in the cloned row
+    newRow.find("input").val("");
+
+    // Clear the values of any select elements if they exist
+    newRow.find("select").val("");
+
+    // Update the names of the input elements in the cloned row
+    newRow.find("input, select").each(function () {
+      var currentName = $(this).attr("name");
+      var newName = currentName.replace(/items-\d+-/g, function (match) {
+        var index = parseInt(match.match(/\d+/)) + 1;
+        return "items-" + index + "-";
+      });
+      $(this).attr("name", newName);
+    });
+
+    // Append the cloned row to the container
+    console.log(newRow)
+    $("#items-container").append(newRow);
+  });
+
+  // Remove a row when the trash button is clicked
+  $("#items-container").on("click", ".trash", function (e) {
+    e.preventDefault();
+    $(this).closest("tr").remove();
   });
 });
