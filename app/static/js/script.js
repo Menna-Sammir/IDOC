@@ -19,10 +19,10 @@ Version      : 1.0
   }
 
   $(window).on("load", function () {
-    setTimeout(function() {
-        $(".loader").fadeOut( "slow");
-        $(".main-wrapper").css("opacity", "1");
-    }, 2000);
+    setTimeout(function () {
+      $(".loader").fadeOut("slow");
+      $(".main-wrapper").css("opacity", "1");
+    }, 1000);
 
     // preview image after upload
     $(".upload").on("change", function (event) {
@@ -392,6 +392,27 @@ Version      : 1.0
     });
   }
 
+  $(window).on("scroll", function () {
+    if ($(this).scrollTop() > 50) {
+      $(".navbar").addClass("scrollednav");
+      $(".navbar").removeClass("topnavbar");
+    } else {
+      $(".navbar").addClass("topnavbar");
+      $(".navbar").removeClass("scrollednav");
+    }
+  });
+
+  $('.nav-link').each(function() {
+    var $link = $(this);
+    var text = $link.text();
+    $link.empty();
+
+    $.each(text.split(''), function(index, char) {
+        var $span = $('<span>').text(char).css('animation-delay', (index * 0.1) + 's');
+        $link.append($span);
+    });
+});
+
   if ($(".circle-bar").length > 0) {
     animateElements();
   }
@@ -461,9 +482,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const timeslotsContainers = document.querySelectorAll(".timeslots");
   dateItems.forEach((item, index) => {
     item.addEventListener("click", () => {
-      dateItems.forEach(i => i.querySelector('h6').classList.remove("active"));
-      timeslotsContainers.forEach(c => c.classList.remove("active"));
-      item.querySelector('h6').classList.add("active");
+      dateItems.forEach((i) =>
+        i.querySelector("h6").classList.remove("active")
+      );
+      timeslotsContainers.forEach((c) => c.classList.remove("active"));
+      item.querySelector("h6").classList.add("active");
       dateItems.forEach((i) => i.classList.remove("active"));
       timeslotsContainers.forEach((c) => c.classList.remove("active"));
       item.classList.add("active");
@@ -562,6 +585,7 @@ timeslots.forEach((slot) => {
     slot.querySelector("input[type='radio']").checked = true;
   });
 });
+<<<<<<< HEAD
 
 
 $(document).ready(function() {
@@ -580,3 +604,18 @@ $(document).ready(function() {
       changeFont(selectedLanguage);
   });
 });
+=======
+document
+  .getElementById("continue-button")
+  .addEventListener("click", function (event) {
+    var selectedTimeslot = document.querySelector(
+      'input[name="timeslot"]:checked'
+    );
+    if (!selectedTimeslot) {
+      document.getElementById("warning-message").style.display = "block";
+    } else {
+      document.getElementById("warning-message").style.display = "none";
+      document.getElementById("appointment-form").submit();
+    }
+  });
+>>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132

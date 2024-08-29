@@ -64,7 +64,7 @@
           </div>
           <ul class="nav header-navbar-rht">
             {% if current_user.is_authenticated and current_user.roles.role_name == 'clinic'%}
-                        					<!-- Notifications -->
+          <!-- Notifications -->
 					<li class="nav-item dropdown noti-dropdown">
 						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 							<i class="fas fa-bell"></i> <span id="notification-count" class="badge badge-pill">0</span>
@@ -255,6 +255,6 @@
       });
     </script>
     
-     {% endblock %}
+    {% endblock %}
   </body>
 </html>
