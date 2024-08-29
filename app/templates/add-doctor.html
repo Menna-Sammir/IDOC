@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %} Doctor Profile {% endblock %}
+{% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Profile Settings
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">Profile Settings</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
+        {% block sidebar %} {% include 'base-admin-side.html' %} {% endblock %}
+        <!-- /Profile Sidebar -->
+      </div>
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <!-- Basic Information -->
+        <form method="POST" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          {{ form.csrf_token }}
+        <div class="card">
+          <div class="card-body">
+
+            <div class="row form-row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="change-avatar">
+                    <div class="profile-img">
+                      <img
+                        src="static/img/user.svg" id="imagePreview"
+                        alt="User Image"
+                      />
+                    </div>
+                    <div class="upload-img">
+                      <div class="change-photo-btn">
+                        <span><i class="fa fa-upload"></i> Upload Photo</span>
+                        {{ form.photo(class="upload" )}}
+                      </div>
+                      <small class="form-text text-muted"
+                        >Allowed JPG, GIF or PNG. Max size of 2MB</small
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.firstname.label() }} {{
+                    form.firstname(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.lastname.label() }} {{
+                    form.lastname(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.email_address.label() }} {{
+                    form.email_address(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.phone.label() }} {{
+                    form.phone(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.clinic_id.label() }}
+                  {{ form.clinic_id(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.price.label() }}
+                  {{ form.price(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="form-group">
+                  {{ form.specialization_id.label() }}
+                  {{ form.specialization_id(class="form-control" )}}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- /Basic Information -->
+
+
+        <div class="submit-section submit-btn-bottom">
+          <div class="submit-section submit-btn-bottom">
+            {{ form.submit(class="btn btn-primary submit-btn") }}
+        </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+{% endblock %}
+<!-- Footer -->

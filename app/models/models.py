@@ -12,7 +12,6 @@ from flask_login import current_user
 def load_user(user_id):
     return User.query.get(user_id)
 
-
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     identity.user = current_user
@@ -21,10 +20,22 @@ def on_identity_loaded(sender, identity):
     if hasattr(current_user, 'roles'):
         identity.provides.add(RoleNeed(current_user.roles.role_name))
 
+@app.context_processor
+def inject_cache_id():
+    return {'cache_id': app.config['CACHE_ID']}
+
+
+@app.context_processor
+def inject_current_user():
+    return {'current_user': app.config['Current_user']}
+
+
+
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
 
     specialization_name = db.Column(VARCHAR(100), nullable=False)
+    photo = db.Column(VARCHAR(255))
     doctors = relationship("Doctor", back_populates="specialization")
 
 class Doctor(BaseModel):
@@ -127,5 +138,3 @@ class Message(BaseModel):
 
     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
     appointment = relationship("Appointment", back_populates="messages")
-
-
