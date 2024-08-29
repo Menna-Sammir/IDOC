@@ -73,8 +73,8 @@ def clinic_calender():
     current_time = datetime.now().time()
 
     working_hours = clinic.working_hours.split('-')
-    opening_time = datetime.strptime(working_hours[0], '%I%p').time()
-    closing_time = datetime.strptime(working_hours[1], '%I%p').time()
+    opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
+    closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
     is_open_today = opening_time <= current_time <= closing_time
 
     return render_template(
