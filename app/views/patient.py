@@ -287,6 +287,7 @@ def cancel_appointment():
 
     return redirect(url_for('appointment_History'))
 
+
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
@@ -300,10 +301,11 @@ def search_doctor():
     form = AppointmentForm()
 
     query = (
-        db.session.query(Doctor, Specialization, Clinic, Governorate)
+        db.session.query(Doctor, Specialization, Clinic, Governorate, User)
         .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
         .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
         .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
+        .outerjoin(User, Doctor.user_id == User.id)
     )
 
     if request.method == 'GET':
@@ -312,7 +314,8 @@ def search_doctor():
         if governorate_id:
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
-            query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
+            query = query.filter(User.name.ilike(f'%{doctor_name}%'))
+
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -326,35 +329,40 @@ def search_doctor():
         if selected_specializations:
             query = query.filter(Doctor.specialization_id.in_(selected_specializations))
         if selected_date:
-            search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
-            subquery = (
-                db.session.query(Doctor.id)
-                .outerjoin(
-                    Appointment,
-                    and_(
-                        Doctor.id == Appointment.doctor_id,
-                        func.date(Appointment.date) == search_date
+            try:
+                search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
+                subquery = (
+                    db.session.query(Doctor.id)
+                    .outerjoin(
+                        Appointment,
+                        and_(
+                            Doctor.id == Appointment.doctor_id,
+                            func.date(Appointment.date) == search_date
+                        )
                     )
+                    .filter(Appointment.id == None)
                 )
-                .filter(Appointment.id == None)
-            )
-            query = query.filter(Doctor.id.in_(subquery))
+                query = query.filter(Doctor.id.in_(subquery))
+            except ValueError:
+                flash("Invalid date format", "error")
+
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
+
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
+
     return render_template(
         'search.html',
         doctors=doctors,
         specializations=specializations,
         governorates=governorates,
-        selected_specializations=selected_specializations
-        if request.method == 'POST'
-        else [],
+        selected_specializations=selected_specializations if request.method == 'POST' else [],
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
+
 
 
 @app.route('/book', methods=['GET', 'POST'])
