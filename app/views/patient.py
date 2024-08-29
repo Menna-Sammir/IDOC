@@ -30,7 +30,3 @@ def patient_checkout():
     clinic_data = doctor_data.clinic
     gov = clinic_data.governorate
     return render_template('checkout.html', doctor=doctor_data, clinic=clinic_data, gov = gov, date = date, form = checkout_form)
-
-
-# current_user = request.args.get('current_user', None)
-# hhh =
