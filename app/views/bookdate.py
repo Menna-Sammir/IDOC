@@ -30,11 +30,13 @@ def doctor_appointments():
     doctor = Doctor.query.get_or_404(doctor_id)
     clinic = doctor.clinic
     specialization_name = doctor.specialization.specialization_name
+    other_doctors = Doctor.query.filter(Doctor.specialization_id == doctor.specialization_id, Doctor.id != doctor_id).limit(3).all()
+
     dates = []
 
-    for i in range(6):
+    for i in range(9):
         date = datetime.now() + timedelta(days=i)
-        dates.append((date.strftime('%Y-%m-%d'), date.strftime('%A')))
+        dates.append((date.strftime('%Y-%m-%d'), date.strftime('%a'), date.strftime('%d'))) 
 
     timeslots_by_date = {}
 
@@ -76,4 +78,4 @@ def doctor_appointments():
         print(f"Doctor ID: {doctor_id}, Date: {date_str}, Start Time: {start_time_str}, End Time: {end_time_str}")
         # return redirect(url_for('next_step', doctor_id=doctor_id, timeslot=selected_timeslot, start_time=start_time_str, end_time=end_time_str))
 
-    return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name)
+    return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name, other_doctors=other_doctors)
