@@ -393,7 +393,6 @@ def patient_checkout():
                 except Exception as e:
                     db.session.rollback()
                     flash(f'something wrong', category='danger')
-                    print('dddddddddddd', str(e))
                 notification_create = Notification(
                     clinic_id=clinic_data.id,
                     date=date.strftime('%Y-%m-%d'),

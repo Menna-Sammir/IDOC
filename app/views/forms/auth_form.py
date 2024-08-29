@@ -3,6 +3,7 @@ from wtforms import StringField,PasswordField, SubmitField, SelectField, RadioFi
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from app.models.models import *
 import re
+from flask_wtf.file import FileField
 
 class RegisterForm(FlaskForm):
     def validate_email_address(self, email_address_to_check):
@@ -52,3 +53,28 @@ class ResetPasswordForm(FlaskForm):
 class AppointmentForm(FlaskForm):
     timeslots = RadioField('Available Timeslots', choices=[], validators=[DataRequired()])
     submit = SubmitField('Book Appointment')
+
+
+
+class EditUserForm(FlaskForm):
+    def validate_email_address(self, email_address_to_check):
+        email = User.query.filter_by(email= email_address_to_check.data).first()
+        if email:
+            raise ValidationError('email address already exists!')
+
+    def file_size_check(self, photo):
+        allowed_extensions = {'png', 'jpg', 'jpeg'}
+        if photo.data:
+            if len(photo.data.read()) > 2 * 1024 * 1024:
+                raise ValidationError(translate('File size must be less than 2MB.'))
+            photo.data.seek(0)
+            filename = photo.data.filename
+            if '.' not in filename or filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
+                raise ValidationError(translate('Unsupported file extension.'))
+
+    firstname = StringField(validators=[Length(min=2, max=30), DataRequired()])
+    lastname = StringField(validators=[Length(min=2, max=70), DataRequired()])
+    email = StringField(label='Email Address:', validators=[Email(), DataRequired()])
+    phone = StringField(validators=[Length(min=0, max=11), DataRequired()])
+    photo = FileField(validators=[file_size_check])
+

@@ -689,6 +689,38 @@ $('#patientForm').on('submit', function (event) {
     },
   });
 });
+$(document).ready(function () {
+  $('#add-more-item').click(function () {
+    // Clone the last row
+    var newRow = $('#items-container tr:last').clone();
+
+    // Clear the values of all input elements in the cloned row
+    newRow.find('input').val('');
+
+    // Clear the values of any select elements if they exist
+    newRow.find('select').val('');
+
+    // Update the names of the input elements in the cloned row
+    newRow.find('input, select').each(function () {
+      var currentName = $(this).attr('name');
+      var newName = currentName.replace(/items-\d+-/g, function (match) {
+        var index = parseInt(match.match(/\d+/)) + 1;
+        return 'items-' + index + '-';
+      });
+      $(this).attr('name', newName);
+    });
+
+    // Append the cloned row to the container
+    console.log(newRow);
+    $('#items-container').append(newRow);
+  });
+
+  // Remove a row when the trash button is clicked
+  $('#items-container').on('click', '.trash', function (e) {
+    e.preventDefault();
+    $(this).closest('tr').remove();
+  });
+});
 
 // update appointment status
 $(document).ready(function () {

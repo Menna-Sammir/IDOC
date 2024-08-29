@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import render_template, redirect, url_for, flash, request
 from datetime import datetime
 from sqlalchemy import func, asc
 from flask import session
@@ -7,14 +7,23 @@ from datetime import date
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from app.views.forms.booking_form import AppointmentForm
+from app.views.forms.auth_form import EditUserForm
+from app.views.forms.addDoctor_form import EditDoctorForm
+from app.views.forms.Prescription_form import AddMedicineForm, MedicineForm
 from flask_login import login_required, current_user
 from app import translate
+import os
 from werkzeug.utils import secure_filename
-
+import uuid
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
+
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 
@@ -27,9 +36,10 @@ def doctor_dash():
     print(doctor)
     if doctor is None:
         return translate('User is not a doctor'), 403
-    
     form = AppointmentForm()
-    appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(asc(Appointment.time))
+    appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(
+        asc(Appointment.time)
+    )
     if appointments.all():
         nextAppt = appointments.order_by(asc(Appointment.time)).first().id
     else:
@@ -55,9 +65,9 @@ def doctor_dash():
         appointments=appointments.all(),
         patient_count=patient_count,
         monthAppointments=monthAppointments,
-        nextAppt = nextAppt,
+        nextAppt=nextAppt,
         form=form
-        )
+    )
 
 
 ### patient list
@@ -68,7 +78,6 @@ def patient_list():
     doctor = Doctor.query.filter_by(user_id=current_user.id).first()
     if doctor is None:
         return translate('User is not a doctor'), 403
-
     appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
     patients = [appointment.patient for appointment in appointments]
 
