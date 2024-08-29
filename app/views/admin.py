@@ -69,14 +69,12 @@ def add_clinic():
                 flash(translate('clinic already exists!'))
             else:
                 if add_clinic_form.validate_on_submit():
-                    from_hour = add_clinic_form.fromHour.data.strftime('%I:%M %p')
-                    to_hour = add_clinic_form.toHour.data.strftime('%I:%M %p')
+
                     Clinic_create = Clinic(
                         name=add_clinic_form.clinicName.data,
                         phone=add_clinic_form.phone.data,
                         email=add_clinic_form.email_address.data,
                         address=add_clinic_form.clinicAddress.data,
-                        working_hours=f' {from_hour} - {to_hour}',
                         governorate_id=add_clinic_form.gov_id.data
                     )
 
@@ -131,7 +129,9 @@ def add_doctor():
         for specialization in specializations
     ]
     if request.method == 'POST':
+        print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
         if add_doctor_form.validate_on_submit():
+            print("ggggggggggggggggggggggggggggggggggggg", add_doctor_form)
             doctor_name = (
                 add_doctor_form.firstname.data + ' ' + add_doctor_form.lastname.data
             )
@@ -148,9 +148,13 @@ def add_doctor():
                         name=doctor_name,
                         phone=add_doctor_form.phone.data,
                         email=add_doctor_form.email_address.data,
+                        From_working_hours = add_doctor_form.fromHour.data,
+                        To_working_hours = add_doctor_form.toHour.data,
+                        duration = add_doctor_form.duration.data,
                         price=add_doctor_form.price.data,
                         specialization_id=add_doctor_form.specialization_id.data,
-                        clinic_id=add_doctor_form.clinic_id.data
+                        clinic_id=add_doctor_form.clinic_id.data,
+                        iDNum=add_doctor_form.IDNum.data
                     )
                     if 'photo' not in request.files:
                         flash(translate('No file part'))
@@ -175,7 +179,7 @@ def add_doctor():
                     return redirect(url_for('dashboard'))
                 except Exception as e:
                     flash(f'something wrong', category='danger')
-                    print(str(e))
+                    print("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",str(e))
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
