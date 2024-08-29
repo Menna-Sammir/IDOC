@@ -1,7 +1,8 @@
 from app import app, db, principal
 from flask import render_template, redirect, url_for, flash, request, current_app
-from app.models.models import User, Patient, Doctor, Role, Appointment, Message
-from app.views.checkout_form import checkoutForm
+from app.models.models import *
+from app.views.forms.checkout_form import checkoutForm
+from app.views.forms.addClinic_form import ClinicForm
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -9,8 +10,58 @@ from email.mime.image import MIMEImage
 import os
 from datetime import datetime
 from flask import session
+from werkzeug.utils import secure_filename
+import uuid
 
 
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/add_clinic', methods=['GET', 'POST'], strict_slashes=False)
+def add_clinic():
+    add_clinic_form = ClinicForm()
+    govs = Governorate.query.filter().all()
+    add_clinic_form.gov_id.choices = [('', 'Select a governorate')] + [(gov.id, gov.governorate_name) for gov in govs]
+    if request.method == 'POST':
+        try:
+            from_hour = add_clinic_form.fromHour.data.strftime('%H:%M %p')
+            to_hour = add_clinic_form.toHour.data.strftime('%H:%M %p')
+            Clinic_create = Clinic(
+                name = add_clinic_form.clinicName.data,
+                phone = add_clinic_form.phone.data,
+                email = add_clinic_form.email_address.data,
+                address = add_clinic_form.clinicAddress.data,
+                working_hours = f'from {from_hour} to {to_hour}',
+                governorate_id = add_clinic_form.gov_id.data
+                )
+
+            if 'logo' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['logo']
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            unique_str = str(uuid.uuid4())[:8]
+            original_filename, extension = os.path.splitext(file.filename)
+            new_filename = f"{unique_str}_{add_clinic_form.clinicName.data}{extension}"
+            Clinic_create.photo = new_filename
+            if file and allowed_file(file.filename):
+                filename = secure_filename(new_filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            db.session.add(Clinic_create)
+            db.session.commit()
+            return redirect(url_for('admin_dash'))
+
+        except Exception as e:
+            flash(
+                    f'something wrong',
+                    category='danger'
+                )
+            print(str(e))
+    return render_template('add-clinic.html', form=add_clinic_form)
 
 @app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():

@@ -18,6 +18,16 @@ Version      : 1.0
     }
   }
 
+  $(window).on("load", function() {
+    $(".loader").fadeOut( "slow");
+        $(".main-wrapper").css("opacity", "1");
+    // setTimeout(function() {
+    //     $(".loader").fadeOut( "slow");
+    //     $(".main-wrapper").css("opacity", "1");
+    // }, 4000);
+});
+
+
   // Sidebar
   if ($(window).width() <= 991) {
     var Sidemenu = function () {
@@ -139,7 +149,7 @@ Version      : 1.0
 			if(!$(this).next('.dropdown-menu').hasClass('show')) {
 				$(this).next('.dropdown-menu').slideDown(350);
 			}
-			
+
 		});
 	}*/
 

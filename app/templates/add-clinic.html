@@ -1,0 +1,134 @@
+{% extends 'base.html' %} {% block title %} Doctor Profile {% endblock %} {%
+block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Profile Settings
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">Profile Settings</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
+        <div class="profile-sidebar">
+          <div class="widget-profile pro-widget-content">
+            <div class="profile-info-widget">
+              <a href="#" class="booking-doc-img">
+                <img
+                  src="static/img/doctors/doctor-thumb-02.jpg"
+                  alt="User Image"
+                />
+              </a>
+              <div class="profile-det-info">
+                <h3>Dr. Darren Elder</h3>
+
+                <div class="patient-details">
+                  <h5 class="mb-0">BDS, MDS - Oral & Maxillofacial Surgery</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Profile Sidebar -->
+      </div>
+      <div class="col-md-7 col-lg-8 col-xl-9 row justify-content-center">
+        <form method="POST" enctype="multipart/form-data">
+        <!-- Clinic Info -->
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title border-bottom pb-2">Clinic Info</h4>
+            <div class="row form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.clinicName.label() }} {{
+                  form.clinicName(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.email_address.label() }} {{
+                  form.email_address(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.phone.label() }} {{ form.phone(class="form-control"
+                  )}}
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  {{ form.fromHour.label() }} {{
+                  form.fromHour(class="form-control" )}}
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  {{ form.toHour.label() }} {{ form.toHour(class="form-control"
+                  )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.gov_id.label() }} {{ form.gov_id(class="form-control"
+                  )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.clinicAddress.label() }} {{
+                  form.clinicAddress(class="form-control",size=20 )}}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div class="change-avatar">
+                    <div class="profile-img">
+                      <img src="static/img/user.svg" alt="User Image" />
+                    </div>
+                    <div class="upload-img">
+                      <div class="change-photo-btn">
+                        <span><i class="fa fa-upload"></i> Upload Photo</span>
+                        {{ form.logo(class="upload" )}}
+                      </div>
+                      <small class="form-text text-muted"
+                        >Allowed JPG, GIF or PNG. Max size of 2MB</small
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Clinic Info -->
+        <div class="submit-section submit-btn-bottom">
+            {{ form.submit(class="btn btn-primary submit-btn") }}
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Contact Details -->
+
+<!-- /Page Content -->
+{% endblock %}
+<!-- Footer -->
