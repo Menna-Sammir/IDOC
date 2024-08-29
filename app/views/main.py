@@ -5,6 +5,16 @@ from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinic
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
+from app.models.models import *
+from app.views.auth_form import LoginForm
+from flask_login import login_user, logout_user, login_required, current_user
+from sqlalchemy import not_
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from app.models.models import Specialization, Doctor, Clinic, Governorate, Appointment
+from app.views.search import SearchForm
+from datetime import datetime, timedelta
+from app.views.booking import AppointmentForm
 from datetime import datetime, timedelta
 from flask import session
 
@@ -17,6 +27,24 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 @app.route('/')
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    form = SearchForm()
+    form.specialization.choices = [(s.id, s.specialization_name) for s in Specialization.query.all()]
+    form.governorate.choices = [(g.id, g.governorate_name) for g in Governorate.query.all()]
+
+    if form.validate_on_submit():
+        specialization_id = form.specialization.data
+        governorate_id = form.governorate.data
+        doctor_name = form.doctor_name.data
+        return redirect(url_for('search_results', specialization_id=specialization_id, governorate_id=governorate_id, doctor_name=doctor_name))
+
+    return render_template('index.html', form=form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+@login_required
+@admin_permission.require()
 @app.route('/home', strict_slashes=False)
 def home_page():
     return render_template('index.html')
@@ -129,6 +157,7 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
+                return redirect(url_for('home'))
                 session['current_user'] =attempted_user.id
                 if(attempted_user.roles.role_name == 'Admin'):
                     return redirect(url_for('dashboard'))
@@ -153,6 +182,7 @@ def logout_page():
     logout_user()
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     flash('You have been logged out!', category='info')
+    return redirect(url_for('home'))
     return redirect(url_for('login_page'))
 
 
@@ -185,6 +215,12 @@ def change_password():
 
 @app.errorhandler(403)
 def permission_denied(e):
+    return 'Permission Denied', 403
+
+
+@app.route('/doctor-dashboard', methods=['GET', 'POST'])
+def doctor_dashboard():
+    return render_template('doctor-dashboard.html')
     flash('You not authorized to open this page, please login', category='warning')
     return redirect(url_for('login_page'))
 
