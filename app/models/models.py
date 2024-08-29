@@ -1,7 +1,7 @@
 from app import db, login_manager,app
 from app.models.base import BaseModel
 from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import relationship
 from app import bcrypt
 from flask_login import UserMixin
@@ -54,6 +54,10 @@ class Doctor(BaseModel):
     specialization = relationship("Specialization", back_populates="doctors")
     clinic = relationship("Clinic", back_populates="doctors")
     appointments = relationship("Appointment", back_populates="doctor")
+    
+    def total_earnings(self):
+        appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
+        return appointment_count * (self.price or 0)
 
     def total_earnings(self):
         appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
