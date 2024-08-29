@@ -50,12 +50,13 @@
 									{% for specialization in specializations %}
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist" checked>
+											<input type="checkbox" name="select_specialization" checked>
 											<span class="checkmark"></span> {{ specialization.specialization_name}}
 										</label>
 									</div>
 									{% endfor %}
 								</div>
+								{% block scripts %}
 								    <!-- jQuery -->
                                     <script src="static/js/jquery.min.js"></script>
 
@@ -79,25 +80,26 @@
 										<script>
 											$(document).ready(function() {
 												$('#search-btn').click(function() {
-													var select_specialist = [];
-													$("input[name='select_specialist']:checked").each(function() {
-														select_specialist.push($(this).val());
+													var select_specialization = [];
+													$("input[name='select_specialization']:checked").each(function() {
+														select_specialization.push($(this).val());
 													});
 													var date = $('.datetimepicker').val();
-													var clinic_address = $('#clinic-address').val();
-									
-													// Send AJAX request to Flask route
 													$.ajax({
 														method: "POST",
 														url: "/search_doctor",
 														data: {
-															specialization_name: select_specialist,
-															doctor_name: $('#doctor-name').val(),
-															clinic_address: clinic_address,
+															select_specialization: select_specialization,
 															date: date
 														},
 														success: function(data) {
-															$("#search-results").html(data);
+															$('#search-results').empty();
+															$.each(data.doctors, function(index, doctor) {
+																var cardHtml = `
+
+																`;
+																$('#search-results').append(cardHtml);
+															});
 														},
 														error: function(xhr, status, error) {
 															console.error('Error:', error);
@@ -109,6 +111,7 @@
 									</div>	
 								</div>
 							</div>
+							{% endblock %}
 							<!-- /Search Filter -->
 							
 						</div>
@@ -167,71 +170,3 @@
 			<!-- /Page Content -->
 {% endblock %}
 
-			{% block scripts %}
-			<!-- jQuery -->
-            <!-- jQuery -->
-            <script src="static/js/jquery.min.js"></script>
-
-            <!-- Bootstrap Core JS -->
-            <script src="static/js/popper.min.js"></script>
-            <script src="static/js/bootstrap.min.js"></script>
-
-            <!-- Sticky Sidebar JS -->
-            <script src="static/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-            <script src="static/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
-
-            <!-- Circle Progress JS -->
-            <script src="static/js/circle-progress.min.js"></script>
-            <script src="static/js/slick.js"></script>
-
-
-           <!-- Custom JS -->
-           <script src="static/js/script.js"></script>
-			
-			<!-- Bootstrap Datepicker CSS -->
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-			
-			<!-- Bootstrap Datepicker JS -->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-			
-			<!-- Custom JS -->
-			<script src="static/js/script.js"></script>
-			
-			<script>
-				$(document).ready(function () {
-					// Initialize the datepicker
-					$('.datetimepicker').datepicker({
-						format: 'yyyy-mm-dd',
-						autoclose: true
-					});
-			
-					// Ajax search functionality
-					$('.btn-search').click(function () {
-						var query = $('#search-input').val(); // Assuming there's an input field with the id 'search-input'
-						var select_specialist = []; // Assuming there's a checkbox group with the name 'select_specialist'
-						$("input[name='select_specialist']:checked").each(function () {
-							select_specialist.push($(this).val());
-						});
-						var date = $('.datetimepicker').val(); // Assuming there's an input field with the class 'datetimepicker'
-						var clinic_address = $('#clinic-address').val(); // Assuming there's an input field with the id 'clinic-address'
-			
-						$.ajax({
-							url: '/search_doctor',
-							type: 'POST',
-							data: {
-								specialization_name: select_specialist,
-								doctor_name: query,
-								clinic_address: clinic_address,
-								date: date
-							},
-							success: function (data) {
-								$('#search-results').html(data);
-							},
-							error: function (xhr, status, error) {
-								console.error('Error:', error);
-							}
-						});
-					});
-				});
-			</script>
-			{% endblock %}
