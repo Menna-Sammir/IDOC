@@ -35,8 +35,8 @@
                   <div class="col-md-12 col-lg-6 login-right">
                     <div class="login-header">
                       <h3>
-                        Doctor Register
-                        <a href="{{ url_for('clinic_signup_page') }}">Not a Doctor?</a>
+                        clinic Register
+                        <a href="{{ url_for('doctor_signup_page') }}">Not a clinic?</a>
                       </h3>
                     </div>
                     <!-- Register Form -->
@@ -62,8 +62,8 @@
                         form.password2(class="form-control floating") }}
                       </div>
                       <div class="form-group form-focus">
-						{{ form.doctor_id.label(class="focus-label") }} {{
-							form.doctor_id(class="form-control floating") }}
+						{{ form.clinic_id.label(class="focus-label") }} {{
+							form.clinic_id(class="form-control floating") }}
                       </div>
                       <div class="text-right">
                         <a
