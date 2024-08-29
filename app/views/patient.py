@@ -236,21 +236,23 @@ def patient_checkout():
         gov = clinic_data.governorate
         if request.method == 'POST':
             confirm_message = ''
-            status = AppStatus.Confirmed
+            status = AppStatus.Pending
             if checkout_form.validate_on_submit():
                 temp_password = secrets.token_urlsafe(8)
-                patient = Patient.query.filter_by(
-                    email=checkout_form.email_address.data
-                ).first()
-                # role = Role.query.filter_by(role_name='patient').first().id
-                # patient = (
-                #     User.query.filter_by(email=checkout_form.email_address.data)
-                #     .join(UserRole)
-                #     .filter(UserRole.role_id == role)
-                #     .first()
-                # )
+                # patient = Patient.query.filter_by(
+                #     email=checkout_form.email_address.data
+                # ).first()
+                role = Role.query.filter_by(role_name='patient').first().id
+                patient = (
+                    User.query.filter_by(email=checkout_form.email_address.data)
+                    .join(UserRole)
+                    .filter(UserRole.role_id == role)
+                    .first()
+                )
                 if patient:
                     patient_create = patient
+                    status = AppStatus.Confirmed
+                else:
                     reset_link = url_for(
                         'reset_password',
                         email=checkout_form.email_address.data,
@@ -258,8 +260,6 @@ def patient_checkout():
                     )
                     confirm_message = f"To confirm your appointment please login temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
                     print('ccccccccccccccccccccccccccc', confirm_message)
-                    status = AppStatus.Pending
-                else:
                     user_to_create = User(
                         name=checkout_form.firstname.data
                         + ' '
