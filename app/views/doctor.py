@@ -7,7 +7,7 @@ from datetime import date
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from app.views.forms.booking_form import AppointmentForm
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -22,7 +22,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @login_required
 @doctor_permission.require(http_exception=403)
 def doctor_dash():
-    user_id = session.get('current_user')
+    user_id = current_user.id
     user = User.query.filter_by(id=user_id).first()
     print('User:', user)
 
