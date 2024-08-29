@@ -5,7 +5,8 @@ iDoc is a comprehensive appointment scheduling platform designed for both patien
 The idea for iDoc originated from our experiences with the inefficiencies of scheduling healthcare appointments, such as long waits, difficulty finding slots, and miscommunication. We created iDoc to address these issues and provide a more efficient, user-friendly solution.
 
 
-![Home Page]([IDOC/app/static/images/screencapture-localhost-5000-2024-06-12-14_02_53.png](https://github.com/manonaSamir/IDOC/blob/main/app/static/images/screencapture-localhost-5000-2024-06-12-14_02_53.png))
+![Home Page](https://github.com/manonaSamir/IDOC/blob/main/app/static/images/screencapture-localhost-5000-2024-06-12-14_02_53.png)
+
 
 ## Authors
 
