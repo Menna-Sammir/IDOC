@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
 {% endblock %} {% block body %}
 
@@ -150,3 +151,178 @@
 </div>
 <!-- /Page Content -->
 {% endblock %}
+=======
+{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
+{% endblock %} {% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Dashboard
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">Dashboard</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Profile Sidebar -->
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+      </div>
+      <!-- / Profile Sidebar -->
+
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="row">
+            <div class="col-md-7 col-lg-8 col-xl-5">
+                <h3>Next appointment</h3>
+                <div class="Next-appointment-card">
+                    <div>
+                        {% if appointment %}
+                        <h2>{{ appointment.date }}</h2>
+                        <p><i class="far fa-clock"></i> {{ appointment.time_range }} - {{ appointment.duration }}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ appointment.clinic_address }}</p>
+                        <div class="d-flex">
+                            <img class="bor" src="{{ appointment.doctor_photo }}" alt="Doctor Photo" width="100">
+                            <div>
+                                <p>{{ appointment.doctor_name }}</p>
+                                <p>{{ appointment.doctor_specialization }}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="w-100 h-100 d-flex justify-content-center align-items-center">No upcoming appointments.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 col-lg-8 col-xl-5">
+              <h3>Prescription Details</h3>
+              <div class="Next-appointment-card">
+                  {% if prescriptions %}
+                  <ul>
+                      {% for prescription in prescriptions %}
+                      <li>
+                          <strong>{{ prescription.name }}</strong><br>
+                          Quantity: {{ prescription.quantity }}<br>
+                          Days: {{ prescription.days }}<br>
+                          Times of Day: {{ prescription.times_of_day | join(', ') }}
+                      </li>
+                      {% endfor %}
+                  </ul>
+                  {% if show_more_button %}
+                  <a href="{{ url_for('patient_history') }}" class="btn btn-primary">Show More</a>
+                  {% endif %}
+                  {% else %}
+                  <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
+                  {% endif %}
+              </div>
+          </div>
+        </div>
+    
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <h3>Seen Appointments</h3>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0">
+                        <thead>
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Appt Date</th>
+                                <th>Amount</th>
+                                <th>Follow Up</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if seen_appointments %}
+                            {% for seen in seen_appointments %}
+                            <tr>
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
+                                            <img class="avatar-img rounded-circle" src="{{ seen.doctor_photo }}" alt="User Image">
+                                        </a>
+                                        <a href="doctor-profile.html">Dr. {{ seen.doctor_name }} <span>{{ seen.specialization_name }}</span></a>
+                                    </h2>
+                                </td>
+                                <td>{{ seen.appointment_date }}</td>
+                                <td>${{ seen.price }}</td>
+                                <td>$lfkansf;</td>
+                                <td class="text-center">
+                                  {% if appointment.status == AppStatus.Confirmed.value %}
+                                    <i class="fas fa-calendar-check"></i><!-- Icon for confirmed -->
+                                  {% else %}
+                                    <i class="far fa-times-circle"></i> <!-- Icon for cancelled -->
+                                  {% endif %}
+                              </td>
+
+                                
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No appointments marked as seen.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+{% endblock %}
+  <!-- <h3>Report</h3>
+          <div class="Report-appointment-card d-flex">
+            <div class="w-75">
+              <p></p>
+              <p></p>
+              <p></p>
+            </div>
+           <div class="w-25">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              <i class="fas fa-scroll"></i> Report
+            </button>
+            
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">print</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+           </div>
+            
+            
+          </div> -->
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97

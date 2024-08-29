@@ -327,6 +327,7 @@ def all_patients():
             'canceled_count': canceled_count
         })
 
+<<<<<<< HEAD
     return render_template('all-appointments.html', patient_data=patient_data)
 
 
@@ -371,3 +372,6 @@ def all_appointments():
         })
 
     return render_template('all-appointments.html', appointments=appointment_data)
+=======
+    return render_template('all-patients.html', patient_data=patient_data)
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97

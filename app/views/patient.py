@@ -70,13 +70,19 @@ def patient_dashboard():
     if patient is None:
         return translate('User is not a patient'), 403
 
+<<<<<<< HEAD
     # Unified query to fetch all appointments
     appointments_query = (
+=======
+    # Get next appointment
+    next_appointment_query = (
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
         db.session.query(Appointment, Doctor, Clinic, Specialization)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
         .join(Clinic, Doctor.clinic_id == Clinic.id)
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
+<<<<<<< HEAD
     )
 
     # Get next appointment (excluding cancelled ones)
@@ -85,10 +91,21 @@ def patient_dashboard():
         Appointment.status != AppStatus.Cancelled.value  # Exclude cancelled appointments
     ).order_by(Appointment.date.asc(), Appointment.time.asc())
 
+=======
+        .filter(Appointment.date >= db.func.current_date())
+        .filter(Appointment.seen == False)
+        .filter(Appointment.status != AppStatus.Confirmed.value)
+        .order_by(Appointment.date.asc(), Appointment.time.asc())
+    )
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
     next_appointment = next_appointment_query.first()
 
     if next_appointment:
         appointment, doctor, clinic, specialization = next_appointment
+<<<<<<< HEAD
+=======
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
         appointment_start_time = datetime.combine(appointment.date, appointment.time)
         duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
         appointment_end_time = (appointment_start_time + duration_delta).time()
@@ -109,10 +126,45 @@ def patient_dashboard():
     else:
         appointment_data = None
 
+<<<<<<< HEAD
+=======
+    # Get seen appointments
+    seen_appointments_query = (
+        db.session.query(Appointment, Doctor)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .filter(Appointment.patient_id == patient.id)
+        .filter(Appointment.seen == True)
+        .order_by(Appointment.date.desc())
+    )
+
+    seen_appointments = [
+        {
+            'doctor_name': doctor.users.name,
+            'doctor_photo': doctor.users.photo,
+            'appointment_date': appointment.date.strftime('%A, %d %B'),
+            'price': doctor.price,
+            'status': appointment.status
+        }
+        for appointment, doctor in seen_appointments_query.all()
+    ]
+
+    # Get monthly appointment count
+    month_appointments_count = (
+        Appointment.query.filter(
+            func.extract('month', Appointment.date) == datetime.now().month,
+            Appointment.patient_id == patient.id
+        ).count()
+    )
+
+    # Get the number of upcoming appointments
+    upcoming_appointments_count = next_appointment_query.count()
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
     # Blood group and allergy info
     blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
     allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
+<<<<<<< HEAD
     all_appointments_query = appointments_query.order_by(Appointment.date.desc(), Appointment.time.desc())
 
     all_appointments = []
@@ -143,6 +195,13 @@ def patient_dashboard():
         PatientMedicine.patient_id == patient.id
     )
 
+=======
+    # Fetch prescriptions
+    prescriptions_query = (
+        db.session.query(PatientMedicine)
+        .filter(PatientMedicine.patient_id == patient.id)
+    )
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
     all_prescriptions = [
         {
             'name': medicine.medName,
@@ -157,12 +216,21 @@ def patient_dashboard():
     limited_prescriptions = all_prescriptions[:4]
     show_more_button = len(all_prescriptions) > 4
 
+<<<<<<< HEAD
     # Render the template with the necessary data
+=======
+    if request.method == 'POST':
+        # Handle form submission if necessary
+        pass
+    
+    specialties = Specialization.query.all()
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
     return render_template(
         'patient-dashboard.html',
         user_name=current_user.name,
         patient=patient,
         appointment=appointment_data,
+<<<<<<< HEAD
         blood_group=blood_group,
         allergy=allergy,
         prescriptions=limited_prescriptions,
@@ -176,6 +244,39 @@ def appointment_History():
     patient = Patient.query.filter_by(user_id=current_user.id).first()
     if patient is None:
         return translate('User is not a patient'), 403
+=======
+        seen_appointments=seen_appointments,
+        upcoming_appointments_count=upcoming_appointments_count,
+        month_appointments_count=month_appointments_count,
+        blood_group=blood_group,
+        allergy=allergy,
+        specialties=specialties,
+        prescriptions=limited_prescriptions,
+        show_more_button=show_more_button,
+        AppStatus=AppStatus
+    )
+
+
+@app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
+@login_required
+def appointment_History():
+    if current_user.patient:
+        patient = Patient.query.filter_by(user_id=current_user.id).first()
+    elif current_user.doctor:
+        patient_id = request.args.get('patient_id')
+        if not patient_id:
+            flash('Patient ID is missing.', 'danger')
+            return redirect(url_for('doctor_dash'))
+
+        patient = Patient.query.get(patient_id)
+        if not patient:
+            flash('Patient not found', 'danger')
+            return redirect(url_for('doctor_dash'))
+        
+    else:
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('index'))
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 
     # Fetch all appointments (regardless of status) that have not been seen (seen is False)
     appointments = (
@@ -184,7 +285,11 @@ def appointment_History():
         .join(Clinic, Doctor.clinic_id == Clinic.id)
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
+<<<<<<< HEAD
         .filter(Appointment.seen == True)
+=======
+        .filter(Appointment.seen == False)
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
         .order_by(Appointment.date.desc(), Appointment.time.desc())
         .all()
     )
@@ -304,13 +409,21 @@ def cancel_appointment():
     
     if appointment is None:
         flash('Appointment not found', 'danger')
+<<<<<<< HEAD
         return redirect(url_for('patient_dashboard'))
+=======
+        return redirect(url_for('appointment_History'))
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 
     # Check if the current user is the patient who made the appointment
     patient = Patient.query.filter_by(user_id=current_user.id).first()
     if patient is None:
         flash('Patient record not found', 'danger')
+<<<<<<< HEAD
         return redirect(url_for('patient_dashboard'))
+=======
+        return redirect(url_for('appointment_History'))
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 
     # Update status to Cancelled and mark as seen
     appointment.status = AppStatus.Cancelled.name  # Use Enum name
@@ -318,7 +431,12 @@ def cancel_appointment():
     db.session.commit()
     flash('Appointment cancelled successfully', 'success')
 
+<<<<<<< HEAD
     return redirect(url_for('patient_dashboard'))
+=======
+    return redirect(url_for('appointment_History'))
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
@@ -333,10 +451,18 @@ def search_doctor():
     form = AppointmentForm()
 
     query = (
+<<<<<<< HEAD
         db.session.query(Doctor, Specialization, Clinic, Governorate)
         .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
         .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
         .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
+=======
+        db.session.query(Doctor, Specialization, Clinic, Governorate, User)
+        .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
+        .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
+        .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
+        .outerjoin(User, Doctor.user_id == User.id)
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
     )
 
     if request.method == 'GET':
@@ -345,7 +471,12 @@ def search_doctor():
         if governorate_id:
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
+<<<<<<< HEAD
             query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
+=======
+            query = query.filter(User.name.ilike(f'%{doctor_name}%'))
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -359,6 +490,7 @@ def search_doctor():
         if selected_specializations:
             query = query.filter(Doctor.specialization_id.in_(selected_specializations))
         if selected_date:
+<<<<<<< HEAD
             search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
             subquery = (
                 db.session.query(Doctor.id)
@@ -376,20 +508,53 @@ def search_doctor():
         governorates = Governorate.query.all()
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
+=======
+            try:
+                search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
+                subquery = (
+                    db.session.query(Doctor.id)
+                    .outerjoin(
+                        Appointment,
+                        and_(
+                            Doctor.id == Appointment.doctor_id,
+                            func.date(Appointment.date) == search_date
+                        )
+                    )
+                    .filter(Appointment.id == None)
+                )
+                query = query.filter(Doctor.id.in_(subquery))
+            except ValueError:
+                flash("Invalid date format", "error")
+
+        specializations = Specialization.query.all()
+        governorates = Governorate.query.all()
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    doctors = pagination.items
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
     return render_template(
         'search.html',
         doctors=doctors,
         specializations=specializations,
         governorates=governorates,
+<<<<<<< HEAD
         selected_specializations=selected_specializations
         if request.method == 'POST'
         else [],
+=======
+        selected_specializations=selected_specializations if request.method == 'POST' else [],
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
@@ -942,6 +1107,7 @@ def sendEmail():
     return redirect(url_for('home'))
 
 
+<<<<<<< HEAD
 ### patient profile
 @app.route('/patient-profile/<string:patient_id>')
 def patient_profile(patient_id):
@@ -950,14 +1116,33 @@ def patient_profile(patient_id):
     return render_template('patient-profile.html')
 
 
+=======
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 ### patient setting
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():
+<<<<<<< HEAD
     form = PatientForm()
 
     user = User.query.filter_by(id=current_user.id).first()
     patient = Patient.query.filter_by(user_id=current_user.id).first()
+=======
+    user = User.query.filter_by(id=current_user.id).first()
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    
+    form = PatientForm(
+        firstname=user.name.split()[0] if user.name else '',
+        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
+        email=user.email,
+        phone=patient.phone if patient else '',
+        address=patient.address if patient else '',
+        governorate=patient.governorate_id if patient else None,
+        age=patient.age if patient else None,
+        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
+        allergy=patient.allergy.name if patient and patient.allergy else None
+    )
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 
     if request.method == 'PUT':
         if form.validate():

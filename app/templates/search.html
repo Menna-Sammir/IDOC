@@ -98,8 +98,14 @@
 
       <div class="col-md-12 col-lg-8 col-xl-9">
         <!-- Doctor Widget -->
+<<<<<<< HEAD
         {% for doctor, specialization, clinic, governorate in pagination.items
         %}
+=======
+        {% for doctor, specialization, clinic, governorate, user in
+        pagination.items %}
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
         <div class="card">
           <div class="card-body">
             <div class="doctor-widget">
@@ -116,10 +122,19 @@
                 <div class="doc-info-cont">
                   <h4 class="doc-name">
                     <a href="#"
+<<<<<<< HEAD
                       >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
                     >
                   </h4>
                   <h5 class="text-muted ">{{ translate(doctor.clinic.name) }}</h5>
+=======
+                      >{{ translate('Dr.') }}{{ translate(user.name) }}</a
+                    >
+                  </h4>
+                  <h5 class="text-muted">
+                    {{ translate(doctor.clinic.name) }}
+                  </h5>
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
                   <p class="doc-department mt-2">
                     <img
                       src="{{ specialization.photo }}"
@@ -141,15 +156,24 @@
                   <ul>
                     <li>
                       <i class="fas fa-map-marker-alt"></i>
+<<<<<<< HEAD
                       {{
                       translate(governorate.governorate_name) }}{{
+=======
+                      {{ translate(governorate.governorate_name) }}{{
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
                       translate(',Egypt') }}
                     </li>
                     <li>
                       <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $
                     </li>
                     <li>
+<<<<<<< HEAD
                       <i class="far fa-clock"></i> {{ doctor.clinic.working_hours }}
+=======
+                      <i class="far fa-clock"></i> {{
+                      doctor.clinic.working_hours }}
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
                     </li>
                   </ul>
                 </div>
@@ -157,7 +181,12 @@
                   <a
                     href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                     class="apt-btn"
+<<<<<<< HEAD
                     ><i class="far fa-calendar-alt"></i> {{ translate('Book Appointment') }}</a
+=======
+                    ><i class="far fa-calendar-alt"></i> {{ translate('Book
+                    Appointment') }}</a
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
                   >
                 </div>
               </div>

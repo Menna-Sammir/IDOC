@@ -1,10 +1,18 @@
+<<<<<<< HEAD
 from flask import Flask, request, redirect, url_for, session
+=======
+from flask import Flask, request, redirect, url_for, session, flash, render_template
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from flask_bcrypt import Bcrypt
+<<<<<<< HEAD
 from flask_login import LoginManager
+=======
+from flask_login import LoginManager, login_required
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 from flask_principal import Principal
 import uuid
 from flask_wtf.csrf import CSRFProtect
@@ -14,8 +22,11 @@ from flask_babel import Babel, format_number, format_decimal, format_currency, f
 import json
 from datetime import timedelta
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -104,6 +115,10 @@ def inject_translations():
     }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 db = SQLAlchemy(app)
 app.config['CACHE_ID'] = str(uuid.uuid4())
 
@@ -122,6 +137,16 @@ directory = 'app/static/images/'
 os.chmod(directory, 0o755)
 
 
+<<<<<<< HEAD
+=======
+app.config['PDF_UPLOAD_FOLDER'] = os.path.join('app', 'static', 'pdfs')
+os.makedirs(app.config['PDF_UPLOAD_FOLDER'], exist_ok=True)
+
+pdf_directory = 'app/static/pdfs/'
+os.chmod(pdf_directory, 0o755)
+
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 csrf = CSRFProtect(app)
 #Configure flask_principal
 principal = Principal(app)

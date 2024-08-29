@@ -13,7 +13,12 @@ from app.views.forms.auth_form import (
     LoginForm,
     RegisterForm,
     ChangePasswordForm,
+<<<<<<< HEAD
     ResetPasswordForm
+=======
+    ResetPasswordForm,
+    AppointmentForm
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 )
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
@@ -26,6 +31,11 @@ from flask_principal import (
 )
 from flask_socketio import disconnect
 from datetime import datetime, timedelta
+<<<<<<< HEAD
+=======
+from sqlalchemy import asc
+
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))

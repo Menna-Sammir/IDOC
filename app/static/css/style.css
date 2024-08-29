@@ -6454,13 +6454,18 @@ div.date-item > h6.active {
   top: 50%;
   transform: translateY(-50%);
 }
+<<<<<<< HEAD
 .Next-appointment-card{
+=======
+.Next-appointment-card {
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
   width: 100%;
   height: 248px !important;
   background-color: #ffffff;
   border-radius: 22px;
 }
 .activated {
+<<<<<<< HEAD
             color: green;
         }
 .not-activated {
@@ -6472,6 +6477,19 @@ height: 100% !important;
 padding: 18px !important;
 }
 .Report-appointment-card{
+=======
+  color: green;
+}
+.not-activated {
+  color: red;
+}
+.Next-appointment-card > div:nth-child(1) {
+  width: 100%;
+  height: 100% !important;
+  padding: 18px !important;
+}
+.Report-appointment-card {
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
   width: 25%;
   height: 248px !important;
   background-color: #ffffff;
@@ -6482,11 +6500,19 @@ padding: 18px !important;
 .fa-x-ray {
   font-size: 50px !important;
   margin-bottom: 8px !important;
+<<<<<<< HEAD
   color: #0077B6;
   }
   .fa-calendar-check{
     color: green;
   }
+=======
+  color: #0077b6;
+}
+.fa-calendar-check {
+  color: green;
+}
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
 /*-----------------
 	30. Profile Settings
 -----------------------*/
@@ -9004,15 +9030,23 @@ textarea {
 .badge {
   position: absolute;
   top: -5px;
+<<<<<<< HEAD
   /* Adjusted position */
   right: -5px;
   /* Adjusted position */
   /* background-color: #15558d; */
+=======
+  right: -5px;
+  background-color: #15558d;
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
   color: white;
   display: flex;
   border-radius: 50%;
   font-size: 10px;
+<<<<<<< HEAD
   /* Smaller font size */
+=======
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
   font-weight: bold;
 }
 
@@ -9823,3 +9857,57 @@ body::-webkit-scrollbar-thumb {
   background-color: #d9f5fb;
   border-left: 4px solid #0056b3;
 }
+<<<<<<< HEAD
+=======
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+.modal-dialog {
+  z-index: 1000;
+}
+
+.modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100% - 1rem);
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 600px;
+  margin: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  display: none;
+}
+
+.status-dropdown-item {
+  text-align: center;
+}
+
+.status-dropdown {
+  position: relative;
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97

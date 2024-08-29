@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %} {% block title %} {{ translate('Patient Profile') }}
 {% endblock %} {% block body %}
 
@@ -218,3 +219,226 @@
 <!-- /Page Content -->
 
 {% endblock %}
+=======
+{% extends 'base.html' %} {% block title %} {{ translate('Patient Profile') }}
+{% endblock %} {% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Profile Settings
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">Profile Settings</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Profile Sidebar -->
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <div class="profile-sidebar">
+          <div class="widget-profile pro-widget-content">
+            <div class="profile-info-widget">
+              <a href="#" class="booking-doc-img">
+                {% if current_user.is_authenticated %} {% if current_user.photo
+                %}
+                <img
+                  src="{{ url_for('static', filename=current_user.photo) }}"
+                  alt="User Image"
+                />
+                {% else %}
+                <img
+                  src="{{ url_for('static', filename='default-profile.png') }}"
+                  alt="Default User Image"
+                />
+                {% endif %} {% else %}
+                <img
+                  src="{{ url_for('static', filename='default-profile.png') }}"
+                  alt="Default User Image"
+                />
+                {% endif %}
+              </a>
+              <div class="profile-det-info">
+                <h3>{{ current_user.name }}</h3>
+                <div class="patient-details">
+                  <h5>
+                    <i class="fas fa-birthday-cake"></i> {{ patient.age }} years
+                    old
+                  </h5>
+                  <h5 class="mb-0">
+                    <i class="fas fa-map-marker-alt"></i> {{ patient.address }},
+                    {{ patient.governorate.governorate_name if
+                    patient.governorate else 'Unknown' }}
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-widget">
+            <nav class="dashboard-menu">
+              <ul>
+                <li>
+                  <a href="#">
+                    <i class="fas fa-columns"></i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="favourites.html">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Favourites</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="chat.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Message</span>
+                    <small class="unread-msg">23</small>
+                  </a>
+                </li>
+                <li class="active">
+                  <a href="profile-settings.html">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Profile Settings</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="change-password.html">
+                    <i class="fas fa-lock"></i>
+                    <span>Change Password</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="index-2.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <!-- /Profile Sidebar -->
+
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="card">
+          <div class="card-body">
+            <!-- Profile Settings Form -->
+            <form id="patientForm" enctype="multipart/form-data">
+              {{ form.hidden_tag() }}
+              <div class="row form-row">
+                <!-- Profile Photo -->
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="change-avatar">
+                      <div class="profile-img">
+                        <img
+                          src="assets/img/patients/patient.jpg"
+                          alt="User Image"
+                        />
+                      </div>
+                      <div class="upload-img">
+                        <div class="change-photo-btn">
+                          <span><i class="fa fa-upload"></i> Upload Photo</span>
+                          {{ form.photo(class="upload") }}
+                        </div>
+                        <small class="form-text text-muted"
+                          >Allowed JPG, GIF or PNG. Max size of 2MB</small
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- First Name -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.firstname.label }} {{
+                    form.firstname(class="form-control") }}
+                  </div>
+                </div>
+                <!-- Last Name -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.lastname.label }} {{
+                    form.lastname(class="form-control") }}
+                  </div>
+                </div>
+                <!-- Blood Group -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.blood_group.label }} {{
+                    form.blood_group(class="form-control") }}
+                  </div>
+                </div>
+                <!-- Age -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.age.label }} {{ form.age(class="form-control") }}
+                  </div>
+                </div>
+                <!-- Email Address -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.email.label }} {{ form.email(class="form-control")
+                    }}
+                  </div>
+                </div>
+                <!-- Address -->
+                <div class="col-12">
+                  <div class="form-group">
+                    {{ form.address.label }} {{
+                    form.address(class="form-control") }}
+                  </div>
+                </div>
+                <!-- Phone -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.phone.label }} {{ form.phone(class="form-control")
+                    }}
+                  </div>
+                </div>
+                <!-- Governorate -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    {{ form.governorate.label }} {{
+                    form.governorate(class="form-control") }}
+                  </div>
+                </div>
+                <!-- Allergies -->
+                <div class="col-12">
+                  <div class="form-group">
+                    {{ form.allergy.label }} {{
+                    form.allergy(class="form-control") }}
+                  </div>
+                </div>
+              </div>
+              <div class="submit-section">
+                {{ form.submit(class="btn btn-primary submit-btn", value="Save
+                Changes") }}
+              </div>
+            </form>
+            <!-- /Profile Settings Form -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+
+{% endblock %}
+>>>>>>> b54daea9fe5eb616c0bdbd1a608e3b2206e33a97
