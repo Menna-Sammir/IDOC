@@ -417,14 +417,14 @@
                     {{ form.hidden_tag() }}
                     <p class=" col-md-3  h-100 mb-0 d-flex border-dark border-right">
                       <img src="../static/img/scope.png" class="w-15">
-                        {{ form.specialization(class=" w-75 border-0") }}
+                        {{ form.specialization(class=" w-75 border-0 bg-transparent") }}
                     </p>
                     <p class="col-md-3  h-100 mb-0 d-flex border-dark border-right">
                       <img src="../static/img/location1.png" class="w-15">
                       
-                        {{ form.governorate (class=" w-75 border-0") }}
+                        {{ form.governorate (class=" w-75 border-0 bg-transparent") }}
                     </p>
-                    <p class="col-md-3h-100 mb-0 ml-3" placeholder="Doctor Name">
+                    <p class="col-md-3h-100 mb-0 ml-5" placeholder="Doctor Name">
                         {{ form.doctor_name( class=" border-0 form-control")}}
                     </p>
                     <p class="col-md-3 mb-0 mr-0 p-0">{{ form.submit(class="btn-primary home-sub w-100") }}</p>

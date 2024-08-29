@@ -2772,6 +2772,9 @@ html.menu-opened body {
 	color: #fff;
 }
 
+input[type="radio"] {
+    display: none;
+}
 /*-----------------
 	15. Home
 -----------------------*/
