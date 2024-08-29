@@ -9,7 +9,7 @@ from datetime import datetime
 from flask_principal import RoleNeed, identity_loaded, UserNeed
 from flask_login import current_user
 from sqlalchemy import func
-
+from datetime import date
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -71,6 +71,22 @@ class Clinic(BaseModel):
     governorate = relationship("Governorate", back_populates="clinics")
     doctors = relationship("Doctor", back_populates="clinic")
     appointments = relationship("Appointment", back_populates="clinic")
+
+    def total_earnings(self):
+        today = date.today()
+        total_earnings = 0
+        for doctor in self.doctors:
+            appointment_count = db.session.query(func.count(Appointment.id)).filter(
+                Appointment.clinic_id == self.id,
+                Appointment.doctor_id == doctor.id,
+                func.date(Appointment.date) == today
+            ).scalar() or 0
+            total_earnings += appointment_count * (doctor.price or 0)
+        return total_earnings
+
+
+    def doctor_count(self):
+        return len(self.doctors)
 
 class Governorate(BaseModel):
     __tablename__ = 'governorate'
