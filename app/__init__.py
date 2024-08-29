@@ -5,7 +5,7 @@ import os
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal
-from flask_mail import Mail
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -25,14 +25,6 @@ login_manager.login_view = "login_page"
 
 principal = Principal(app)
 
-
-app.config['MAIL_SERVER']=os.getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] =False
-mail = Mail(app)
 
 from app.views import main
 from app.views import patient
