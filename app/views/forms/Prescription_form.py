@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from flask_wtf import FlaskForm
 from wtforms import widgets
 from wtforms import FormField, FieldList, StringField, IntegerField, SelectMultipleField, SubmitField
@@ -23,6 +24,8 @@ class AddMedicineForm(FlaskForm):
     items = FieldList(FormField(MedicineForm), min_entries=1, max_entries=10)
     submit = SubmitField('Submit')
 =======
+=======
+>>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
 from flask_wtf import FlaskForm
 from wtforms import widgets
 from wtforms import FormField, FieldList, StringField, IntegerField, SelectMultipleField, SubmitField
@@ -46,4 +49,7 @@ class MedicineForm(FlaskForm):
 class AddMedicineForm(FlaskForm):
     items = FieldList(FormField(MedicineForm), min_entries=1, max_entries=10)
     submit = SubmitField('Submit')
+<<<<<<< HEAD
+>>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
+=======
 >>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
