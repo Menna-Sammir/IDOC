@@ -8,18 +8,23 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import os
 from datetime import datetime
+from flask import session
 
 
 
-@app.route('/checkout-success', methods=['GET'])
+@app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():
-    doctor = request.args.get('doctor', None)
-    date = request.args.get('date', None)
-    time = request.args.get('time', None)
+    doctor = session.get('doctor', None)
+    date = session.get('date', None)
+    time = session.get('time', None)
+
+    session.pop('doctor', None)
+    session.pop('date', None)
+    session.pop('time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
 
 
-@app.route('/checkout', methods=['GET', 'POST'])
+@app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
     doctor_id = 'doc2'
@@ -212,7 +217,10 @@ def patient_checkout():
         db.session.add(appointment_create)
         db.session.add(message_create)
         db.session.commit()
-        return redirect(url_for('checkout_success', doctor=doctor_data.name, date=date.strftime('%d %b %Y'), time=time.strftime('%H:%M:%S')))
+        session['doctor'] = doctor_data.name
+        session['date'] = date.strftime('%d %b %Y')
+        session['time'] = time.strftime('%H:%M:%S')
+        return redirect(url_for('checkout_success'))
     return render_template(
         'checkout.html',
         doctor=doctor_data,
