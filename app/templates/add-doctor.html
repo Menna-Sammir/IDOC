@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Doctor Profile {% endblock %}
+{% block title %} {{ translate('Doctor Profile') }} {% endblock %}
 {% block body %}
 
 <!-- Breadcrumb -->
@@ -9,13 +9,17 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
+<<<<<<< HEAD
+            <li class="breadcrumb-item"><a href="index-2.html">{{ translate('Home') }}</a></li>
+=======
             <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+>>>>>>> e2e8676b6eb66312de48e2de7fdeaef101bdc132
             <li class="breadcrumb-item active" aria-current="page">
-              Profile Settings
+              {{ translate('Profile Settings') }}
             </li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Profile Settings</h2>
+        <h2 class="breadcrumb-title">{{ translate('Profile Settings') }}</h2>
       </div>
     </div>
   </div>
@@ -51,11 +55,11 @@
                     </div>
                     <div class="upload-img">
                       <div class="change-photo-btn">
-                        <span><i class="fa fa-upload"></i> Upload Photo</span>
+                        <span><i class="fa fa-upload"></i> {{ translate('Upload Photo') }}</span>
                         {{ form.photo(class="upload" )}}
                       </div>
                       <small class="form-text text-muted"
-                        >Allowed JPG, GIF or PNG. Max size of 2MB</small
+                        >{{ translate('Allowed JPG, GIF or PNG. Max size of 2MB') }}</small
                       >
                     </div>
                   </div>

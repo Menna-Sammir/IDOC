@@ -575,6 +575,9 @@ timeslots.forEach((slot) => {
     slot.querySelector("input[type='radio']").checked = true;
   });
 });
+
+
+
 document
   .getElementById("continue-button")
   .addEventListener("click", function (event) {
@@ -588,3 +591,25 @@ document
       document.getElementById("appointment-form").submit();
     }
   });
+
+
+  $(document).ready(function() {
+    function changeFont(language) {
+        console.log('Changing font for language:', language);
+        if (language === 'en') {
+            $('body').css('font-family', "Poppins, sans-serif");
+        } else if (language === 'ar') {
+            $('body').css('font-family', 'Cairo, sans-serif');
+        }
+    }
+    changeFont($('#languageSelect').val());
+
+    $('#languageSelect').change(function() {
+        var selectedLanguage = $(this).val();
+        console.log('Selected language:', selectedLanguage);
+        changeFont(selectedLanguage);
+    });
+});
+
+
+
