@@ -14,12 +14,12 @@ admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
 
+
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'])
 def search_doctor():
     page = request.args.get('page', 1, type=int)
     per_page = 10 
-        
     
     query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
         .join(Specialization, Doctor.specialization_id == Specialization.id) \
@@ -57,8 +57,7 @@ def search_doctor():
                            selected_specializations=selected_specializations,
                            selected_date=selected_date,
                            pagination=pagination)
-
-
+    
 
 # doctor search page >>> book appointment
 @app.route('/booking', methods=['POST'])
