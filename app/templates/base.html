@@ -136,15 +136,10 @@
                     <p class="text-muted mb-0">Doctor</p>
                   </div>
                 </div>
-<<<<<<< HEAD
-
-                <a class="dropdown-item" href="doctor-dashboard.html"
-=======
                 {% if current_user.roles.role_name == 'Admin' %}
                 <a
                   class="dropdown-item"
                   href="{{ url_for('doctor_dashboard') }}"
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
                   >Dashboard</a
                 >
                 {% else %}
@@ -154,13 +149,9 @@
                 <a class="dropdown-item" href="doctor-profile-settings.html"
                   >Profile Settings</a
                 >
-<<<<<<< HEAD
-                <a class="nav-link" href="">Logout</a>
-=======
                 <a class="nav-link" href="{{ url_for('logout_page') }}"
                   >Logout</a
                 >
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
               </div>
             </li>
             <!-- /User Menu -->
