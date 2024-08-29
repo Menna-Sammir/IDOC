@@ -255,7 +255,7 @@ def add_doctor():
                             email=add_doctor_form.email_address.data,
                             _external=True
                         )
-                        message_body = f"Your temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
+                        message_body = f"Your ID is: {add_doctor_form.IDNum.data} temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
 
                         message = message_body
                         msg.attach(MIMEText(message, 'html'))
