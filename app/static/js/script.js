@@ -419,6 +419,7 @@ $(document).on("change", ".Specialization", function () {
 
 
 
+
 $(function(){
 
   // Cache some selectors
@@ -525,6 +526,8 @@ $(function(){
   });
   
   });
+  
+  
   
   
   

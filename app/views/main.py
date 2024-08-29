@@ -1,11 +1,7 @@
 from app import app, db, principal
 from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import User, Clinic, Doctor, Role,Appointment
-<<<<<<< HEAD
-from app.views.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm
-=======
 from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
@@ -61,17 +57,10 @@ def doctor_signup_page():
                 )
                 return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
             flash(
-<<<<<<< HEAD
-                f'account created Success! You are logged in as: {user_to_create.name}',
-                category='success'
-            )
-            return redirect(url_for('doctor_dashboard'), current_user=user_to_create.id)
-=======
                     f'this account already exists',
                     category='danger'
                 )
 
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -81,11 +70,7 @@ def doctor_signup_page():
     return render_template('doctor-signup.html', form=form)
 
 
-<<<<<<< HEAD
-@app.route('/register-clinic', methods=['GET', 'POST'])
-=======
 @app.route('/register-clinic', methods=['GET', 'POST'], strict_slashes=False)
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 @login_required
 @admin_permission.require(http_exception=403)
 def clinic_signup_page():
@@ -143,23 +128,14 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
-<<<<<<< HEAD
-                
                 if(attempted_user.roles.role_name == 'Admin'):
                     return redirect(url_for('admin_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'doctor'):
                     return redirect(url_for('doctor_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'clinic'):
                     return redirect(url_for('doctor_dash'), current_user=attempted_user.id)
-=======
-                if(attempted_user.roles.role_name == 'Admin'):
-                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
-                elif(attempted_user.roles.role_name == 'doctor'):
-                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
-                elif(attempted_user.roles.role_name == 'clinic'):
-                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
                 return redirect(url_for('home_page'))
+
             else:
                 flash('user name and password are not match', category='danger')
         if form.errors != {}:
@@ -185,28 +161,20 @@ def permission_denied(e):
     return redirect(url_for('login_page'))
 
 
-<<<<<<< HEAD
-@app.route('/doctor-dashboard', methods=['GET', 'POST'])
-=======
-@app.route('/doctor-dashboard', methods=['GET', 'POST'], strict_slashes=False)
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
-@login_required
-def doctor_dashboard():
-    current_user = request.args.get('current_user',None)
-    print(current_user)
+# @app.route('/doctor-dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# @login_required
+# def doctor_dashboard():
+#     current_user = request.args.get('current_user',None)
+#     print(current_user)
 
-    return render_template('doctor-dashboard.html')
+#     return render_template('doctor-dashboard.html')
 
 
-@app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
-def clinic_dashboard():
-    return render_template('doctor-dashboard.html')
+# @app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# def clinic_dashboard():
+#     return render_template('doctor-dashboard.html')
 
-<<<<<<< HEAD
-@app.route('/booking', methods=['GET', 'POST'])
-=======
 @app.route('/booking', methods=['GET', 'POST'], strict_slashes=False)
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 def doctor_appointments():
     form = AppointmentForm()
 

@@ -33,8 +33,4 @@ class DoctorForm(FlaskForm):
     photo = FileField(label='Doctor Image', validators=[DataRequired(), file_size_check])
     clinic_id = SelectField(label='governorate', validators=[DataRequired()])
     specialization_id = SelectField(label='governorate', validators=[DataRequired()])
-<<<<<<< HEAD
     submit = SubmitField(label='Add Doctor')
-=======
-    submit = SubmitField(label='Add Doctor')
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e

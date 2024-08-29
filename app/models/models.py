@@ -19,8 +19,6 @@ def on_identity_loaded(sender, identity):
         identity.provides.add(UserNeed(current_user.id))
     if hasattr(current_user, 'roles'):
         identity.provides.add(RoleNeed(current_user.roles.role_name))
-<<<<<<< HEAD
-=======
 
 @app.context_processor
 def inject_cache_id():
@@ -32,7 +30,6 @@ def inject_current_user():
     return {'current_user': app.config['Current_user']}
 
 
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'

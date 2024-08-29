@@ -1,269 +1,200 @@
 {% extends 'base.html' %} {% block title %} Doctor Dashboard {% endblock %} {%
-<<<<<<< HEAD
-    block body %}
-    
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-bar">
-      <div class="container-fluid">
-        <div class="row align-items-center">
-          <div class="col-md-12 col-12">
-            <nav aria-label="breadcrumb" class="page-breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  Dashboard
-=======
-block body %}
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar">
-  <div class="container-fluid">
-    <div class="row align-items-center">
-      <div class="col-md-12 col-12">
-        <nav aria-label="breadcrumb" class="page-breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('home_page') }}">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">
-              Dashboard
-            </li>
-          </ol>
-        </nav>
-        <h2 class="breadcrumb-title">Dashboard</h2>
+  block body %}
+  
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Dashboard
+              </li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">Dashboard</h2>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- /Breadcrumb -->
-
-<!-- Page Content -->
-<div class="content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        <!-- Profile Sidebar -->
-        <div class="profile-sidebar">
-          <div class="widget-profile pro-widget-content">
-            <div class="profile-info-widget">
-              <a href="#" class="booking-doc-img">
-                <img
-                  src="assets/img/doctors/doctor-thumb-02.jpg"
-                  alt="User Image"
-                />
-              </a>
-              <div class="profile-det-info">
-                <h3>Dr. Darren Elder</h3>
-
-                <div class="patient-details">
-                  <h5 class="mb-0">BDS, MDS - Oral & Maxillofacial Surgery</h5>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="dashboard-widget">
-            <nav class="dashboard-menu">
-              <ul>
-                <li class="active">
-                  <a href="doctor-dashboard.html">
-                    <i class="fas fa-columns"></i>
-                    <span>Dashboard</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="doctor-profile-settings.html">
-                    <i class="fas fa-user-cog"></i>
-                    <span>Profile Settings</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="doctor-change-password.html">
-                    <i class="fas fa-lock"></i>
-                    <span>Change Password</span>
-                  </a>
->>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
-                </li>
-              </ol>
-            </nav>
-            <h2 class="breadcrumb-title">Dashboard</h2>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /Breadcrumb -->
-    
-    <!-- Page Content -->
-    <div class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-            <!-- Profile Sidebar -->
-            <div class="profile-sidebar">
-              <div class="widget-profile pro-widget-content">
-                <div class="profile-info-widget">
-                  <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ doctor.photo }}" alt="User Image"></a>
-                  <div class="profile-det-info">
-                    <h3>{{ doctor.name }}</h3>
-    
-                    <div class="specialization">
-                      <h5 class="mb-0">{{ specialization.specialization_name }}</h5>
-                    </div>
+  <!-- /Breadcrumb -->
+  
+  <!-- Page Content -->
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+          <!-- Profile Sidebar -->
+          <div class="profile-sidebar">
+            <div class="widget-profile pro-widget-content">
+              <div class="profile-info-widget">
+                <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ doctor.photo }}" alt="User Image"></a>
+                <div class="profile-det-info">
+                  <h3>{{ doctor.name }}</h3>
+  
+                  <div class="specialization">
+                    <h5 class="mb-0">{{ specialization.specialization_name }}</h5>
                   </div>
                 </div>
               </div>
-              <div class="dashboard-widget">
-                <nav class="dashboard-menu">
-                  <ul>
-                    <li class="active">
-                      <a href="doctor-dashboard.html">
-                        <i class="fas fa-columns"></i>
-                        <span>Dashboard</span>
-                      </a>
-                    </li>
-                    <li>
-                    </li>
-                    <li>
-                    </li>
-                    <li>
-                      <a href="index.html">
-                        <form action="/logout" method="post">
-                          <button type="submit" class="logout-btn">
-                              <i class="fas fa-sign-out-alt"></i>
-                              <span>Logout</span>
-                          </button>
-                      </form>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
             </div>
-            <!-- /Profile Sidebar -->
+            <div class="dashboard-widget">
+              <nav class="dashboard-menu">
+                <ul>
+                  <li class="active">
+                    <a href="doctor-dashboard.html">
+                      <i class="fas fa-columns"></i>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+                  <li>
+                  </li>
+                  <li>
+                  </li>
+                  <li>
+                    <a href="index.html">
+                      <form action="/logout" method="post">
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
-    
-          <div class="col-md-7 col-lg-8 col-xl-9">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card dash-card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-12 col-lg-4">
-                        <div class="col-md-12 col-lg-4">
-                          <div class="dash-widget">
-                            <div class="circle-bar circle-bar3">
-
-                         
-                        </div>
-                      </div>
+          <!-- /Profile Sidebar -->
+        </div>
+  
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card dash-card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-4">
                       <div class="col-md-12 col-lg-4">
                         <div class="dash-widget">
-                          <div class="circle-bar circle-bar2">
-                            <div class="circle-graph2" data-percent="100">
-                              <img
-                                src="static/img/icon-02.png"
-                                class="img-fluid"
-                                alt="Patient"
-                              />
-                            </div>
-                          </div>
-                          <div class="dash-widget-info">
-                            <h6>Today Patient</h6>
-                            <h3>{{ patient_count }}</h3>
-                            <p class="text-muted">{{ today }}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div id="clock" class="light">
-                        <div class="display">
-                          <div class="weekdays"></div>
-                          <div class="ampm"></div>
-                          <div class="alarm"></div>
-                          <div class="digits"></div>
-                        </div>
-                      </div>
+                          <div class="circle-bar circle-bar3">
 
-                  <!-- JavaScript Includes -->
-                      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-                      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+                       
+                      </div>
                     </div>
+                    <div class="col-md-12 col-lg-4">
+                      <div class="dash-widget">
+                        <div class="circle-bar circle-bar2">
+                          <div class="circle-graph2" data-percent="100">
+                            <img
+                              src="static/img/icon-02.png"
+                              class="img-fluid"
+                              alt="Patient"
+                            />
+                          </div>
+                        </div>
+                        <div class="dash-widget-info">
+                          <h6>Today Patient</h6>
+                          <h3>{{ patient_count }}</h3>
+                          <p class="text-muted">{{ today }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="clock" class="light">
+                      <div class="display">
+                        <div class="weekdays"></div>
+                        <div class="ampm"></div>
+                        <div class="alarm"></div>
+                        <div class="digits"></div>
+                      </div>
+                    </div>
+
+                <!-- JavaScript Includes -->
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
                   </div>
+                </div>
 
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-    
-            <div class="row">
-              <div class="col-md-12">
-                <h4 class="mb-4">Patient Appoinment</h4>
-                <div class="appointment-tab">
-                  <!-- Appointment Tab -->
-                  <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
-                    <li class="nav-item">
-                      <a
-                        class="nav-link active"
-                        href="#Today-appointments"
-                        data-toggle="tab"
-                        >Today</a
-                      >
-                    </li>
-                  
-                  </ul>
-                  <!-- /Appointment Tab -->
-    
+          </div>
+  
+          <div class="row">
+            <div class="col-md-12">
+              <h4 class="mb-4">Patient Appoinment</h4>
+              <div class="appointment-tab">
+                <!-- Appointment Tab -->
+                <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
+                  <li class="nav-item">
+                    <a
+                      class="nav-link active"
+                      href="#Today-appointments"
+                      data-toggle="tab"
+                      >Today</a
+                    >
+                  </li>
+                
+                </ul>
+                <!-- /Appointment Tab -->
+  
+                <div class="tab-content">
+                  <!-- Today Appointment Tab -->
                   <div class="tab-content">
                     <!-- Today Appointment Tab -->
-                    <div class="tab-content">
-                      <!-- Today Appointment Tab -->
-                      <div class="tab-pane show active" id="upcoming-appointments">
-                        <div class="card card-table mb-0">
-                          <div class="card-body">
-                            <div class="table-responsive">
-                              <table class="table table-hover table-center mb-0">
-                                <thead>
-                                  <tr>
-                                    <th>Patient Name</th>
-                                    <th>Appt Date</th>
-                                    <th>Phone</th>
-                                    <th>Status</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {% for appointment in appointments %}
-                                  <tr>
-                                    <td>
-                                      <h2 class="table-avatar">
-                                       
-                                        <a href="patient-profile.html"
-                                          >{{ appointment.patient_name  }} <span>{{ appointment.appointment_id }}</span></a
-                                        >
-                                      </h2>
-                                    </td>
-                                    <td>
-                                      {{ appointment.appointment_date }}
-                                      <span class="d-block text-info">{{ appointment.appointment_time }}</span>
-                                    </td>
-                                    <td>{{ appointment.patient_phone }}</td>
-                                  <td class="text-centre">
-                                    <div class="table-action">
-                                      {% if not appointment.seen %}
-                                      <form action="/doctor_dashboard?current_user={{ current_user }}" method="POST">
-                                        <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
-                                        <button type="submit" name="seen" class="btn btn-sm bg-success-light">Seen</button>
-                                           
-                                            
-                                        </form>
-                                        {% endif %}
-                                    </div>
-                                  </td>
+                    <div class="tab-pane show active" id="upcoming-appointments">
+                      <div class="card card-table mb-0">
+                        <div class="card-body">
+                          <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                              <thead>
+                                <tr>
+                                  <th>Patient Name</th>
+                                  <th>Appt Date</th>
+                                  <th>Phone</th>
+                                  <th>Status</th>
                                 </tr>
-                                {% endfor %}
-                              </tbody>
-                            </table>
-                          </div>
+                              </thead>
+                              <tbody>
+                                {% for appointment in appointments %}
+                                <tr>
+                                  <td>
+                                    <h2 class="table-avatar">
+                                     
+                                      <a href="patient-profile.html"
+                                        >{{ appointment.patient_name  }} <span>{{ appointment.appointment_id }}</span></a
+                                      >
+                                    </h2>
+                                  </td>
+                                  <td>
+                                    {{ appointment.appointment_date }}
+                                    <span class="d-block text-info">{{ appointment.appointment_time }}</span>
+                                  </td>
+                                  <td>{{ appointment.patient_phone }}</td>
+                                <td class="text-centre">
+                                  <div class="table-action">
+                                    {% if not appointment.seen %}
+                                    <form action="/doctor_dashboard?current_user={{ current_user }}" method="POST">
+                                      <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
+                                      <button type="submit" name="seen" class="btn btn-sm bg-success-light">Seen</button>
+                                         
+                                          
+                                      </form>
+                                      {% endif %}
+                                  </div>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </div>
-                    <!-- /Today Appointment Tab -->
                   </div>
+                  <!-- /Today Appointment Tab -->
                 </div>
               </div>
             </div>
@@ -271,7 +202,8 @@ block body %}
         </div>
       </div>
     </div>
-    <!-- /Page Content -->
+  </div>
+  <!-- /Page Content -->
 
-  
-  {% endblock %}
+
+{% endblock %}
