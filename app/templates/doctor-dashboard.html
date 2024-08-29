@@ -86,7 +86,6 @@
                          
                         </div>
                       </div>
-    
                       <div class="col-md-12 col-lg-4">
                         <div class="dash-widget">
                           <div class="circle-bar circle-bar2">
@@ -171,7 +170,7 @@
                                       <span class="d-block text-info">{{ appointment.appointment_time }}</span>
                                     </td>
                                     <td>{{ appointment.patient_phone }}</td>
-                                  <td class="text-right">
+                                  <td class="text-centre">
                                     <div class="table-action">
                                       {% if not appointment.seen %}
                                       <form action="/doctor_dashboard?current_user={{ current_user }}" method="POST">
