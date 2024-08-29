@@ -15,21 +15,21 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 # admin dashboard page >>> view appointments today
-# @app.route('/admin_dashboard', methods=['GET', 'POST'])
-# @login_required
-# def admin_dash():
-#     user_id = request.args.get('current_user', None)
+@app.route('/admin_dashboard', methods=['GET', 'POST'])
+@login_required
+def admin_dash():
+    user_id = request.args.get('current_user', None)
     
-#     user = User.query.filter_by(id=user_id).first()
+    # user = User.query.filter_by(id=user_id).first()
 
-#     doctor_id = user.doctor_id
+    # doctor_id = user.doctor_id
 
-#     doctor = Doctor.query.filter_by(id=doctor_id).first()
+    # doctor = Doctor.query.filter_by(id=doctor_id).first()
 
  
-#     # if request.method == 'POST':
-#     #     return redirect(url_for('logout'))
+    # if request.method == 'POST':
+    #     return redirect(url_for('logout'))
 
-#     return render_template('admin-dashboard.html')
+    return render_template('admin-dashboard.html')
 
 
