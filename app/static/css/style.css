@@ -2771,10 +2771,6 @@ html.menu-opened body {
 .social-login .btn:focus {
 	color: #fff;
 }
-
-input[type="radio"] {
-    display: none;
-}
 /*-----------------
 	15. Home
 -----------------------*/
