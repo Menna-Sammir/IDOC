@@ -103,11 +103,11 @@ def add_clinic():
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
                         flash(
-                            translate('there was an error with creating a user:) {err_msg}').format(err_msg=err_msg),
+                            f'there was an error with creating a user: {err_msg}',
                             category='danger'
                         )
         except Exception as e:
-            flash(translate('something wrong'), category='danger')
+            flash(f'something wrong', category='danger')
             print(str(e))
     return render_template('add-clinic.html', form=add_clinic_form)
 
@@ -121,10 +121,10 @@ def add_doctor():
     add_doctor_form = DoctorForm()
     clinics = Clinic.query.filter().all()
     specializations = Specialization.query.filter().all()
-    add_doctor_form.clinic_id.choices = [('', 'Select a clinic')] + [
+    add_doctor_form.clinic_id.choices = [('', translate('Select a clinic'))] + [
         (clinic.id, clinic.name) for clinic in clinics
     ]
-    add_doctor_form.specialization_id.choices = [('', 'Select a specialization')] + [
+    add_doctor_form.specialization_id.choices = [('', translate('Select a specialization'))] + [
         (specialization.id, specialization.specialization_name)
         for specialization in specializations
     ]
@@ -177,7 +177,7 @@ def add_doctor():
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
-                    translate('there was an error with adding doctor: {err_msg}'.format(err_msg=err_msg)),
+                    f'there was an error with adding doctor: {err_msg}',
                     category='danger'
                 )
     return render_template('add-doctor.html', form=add_doctor_form)

@@ -48,8 +48,7 @@ def home():
     if form.errors != {}:
         for err_msg in form.errors.values():
             flash(
-                translate('there was an error with creating a user: {err_msg}'.format(err_msg=err_msg)), 
-                category='danger'
+                f'there was an error with creating a user: {err_msg}', category='danger'
             )
     return render_template(
         'index.html', form=form, specialties=specialties, doctors=doctor, E_form=E_form
