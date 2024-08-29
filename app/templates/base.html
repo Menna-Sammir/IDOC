@@ -1,6 +1,6 @@
 <!-- <!DOCTYPE html> -->
 
-<html lang="en">
+<html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
     <title>{% block title %} {% endblock %}</title>
@@ -71,8 +71,8 @@
 						</a>
 						<div class="dropdown-menu notifications">
 							<div class="topnav-dropdown-header">
-								<span class="notification-title">Notifications</span>
-								<a href="javascript:void(0)" class="clear-noti" id="clear-all-notifications"> Clear All </a>
+								<span class="notification-title">{{ translate('Notifications') }}</span>
+								<a href="javascript:void(0)" class="clear-noti" id="clear-all-notifications"> {{ translate('Clear All') }} </a>
 							</div>
 							<div class="noti-content">
 								<ul class="notification-list" id="notification-list">
@@ -87,7 +87,7 @@
 								</ul>
 							</div>
 							<div class="topnav-dropdown-footer">
-								<a href="#">View all Notifications</a>
+								<a href="#">{{ translate('View all Notifications') }}</a>
 							</div>
 						</div>
 					</li>
@@ -129,11 +129,11 @@
                 <a
                   class="dropdown-item"
                   href="{{ url_for('doctor_dash') }}"
-                  >Dashboard</a
+                  >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
                 <a class="nav-link" href="{{ url_for('logout_page') }}"
-                  >Logout</a
+                  >{{ translate('Logout') }}</a
                 >
               </div>
             </li>

@@ -13,6 +13,7 @@ from flask_socketio import emit, join_room, leave_room
 from app.views.forms.booking_form import AppointmentForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_
+from app import translate, get_locale
 
 
 def convert_to_24_hour(time_str):
@@ -40,7 +41,8 @@ def home():
     if form.errors != {}:
         for err_msg in form.errors.values():
             flash(
-                f'there was an error with creating a user: {err_msg}', category='danger'
+                translate('there was an error with creating a user: {err_msg}'.format(err_msg=err_msg)), 
+                category='danger'
             )
     return render_template(
         'index.html', form=form, specialties=specialties, doctors=doctor
@@ -161,7 +163,8 @@ def doctor_appointments():
             doctor_id=doctor.id, date=date[0]
         ).all()
         booked_timeslots = [
-            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(a.time + timedelta(hours=1)).strftime('%H:%M')}"
+            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-"
+            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%H:%M')}"
             for a in existing_appointments
         ]
         available_timeslots = []
@@ -2470,7 +2473,7 @@ def patient_checkout():
             if checkout_form.errors != {}:
                 for err_msg in checkout_form.errors.values():
                     flash(
-                        f'there was an error with creating a user: {err_msg}',
+                        translate('there was an error with creating a user: {err_msg}'.format(err_msg=err_msg)),
                         category='danger'
                     )
     else:
