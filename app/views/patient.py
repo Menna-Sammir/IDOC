@@ -34,11 +34,15 @@ def patient_checkout():
     clinic_data = doctor_data.clinic
     gov = clinic_data.governorate
     if request.method == 'POST':
-        patient_create = Patient(
-            name=checkout_form.firstname.data + ' ' + checkout_form.lastname.data,
-            phone=checkout_form.phone.data,
-            email=checkout_form.email_address.data
-        )
+        patient = Patient.query.filter_by(email= checkout_form.email_address.data).first()
+        if patient:
+            patient_create = patient
+        else:
+            patient_create = Patient(
+                name=checkout_form.firstname.data + ' ' + checkout_form.lastname.data,
+                phone=checkout_form.phone.data,
+                email=checkout_form.email_address.data
+            )
         appointment_create = Appointment(
             date=date.strftime('%Y-%m-%d'),
             time=time.strftime('%H:%M:%S'),
@@ -212,6 +216,10 @@ def patient_checkout():
             server.quit()
             message_create.status = True
         except Exception as e:
+            flash(
+                    f'something wrong',
+                    category='danger'
+                )
             print(str(e))
         db.session.add(patient_create)
         db.session.add(appointment_create)
