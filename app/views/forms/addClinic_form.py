@@ -33,4 +33,8 @@ class ClinicForm(FlaskForm):
     toHour=TimeField(label='To', validators=[DataRequired()])
     logo=FileField(label='Clinic Logo', validators=[DataRequired(),file_size_check])
 
+<<<<<<< HEAD
     submit = SubmitField(label='Add Clinic')
+=======
+    submit = SubmitField(label='Add Clinic')
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e

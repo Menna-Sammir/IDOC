@@ -13,10 +13,14 @@ from datetime import datetime
 from flask import session
 from werkzeug.utils import secure_filename
 import uuid
+<<<<<<< HEAD
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from app import socketio
 
 clinic_rooms = {}
+=======
+
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -148,8 +152,12 @@ def add_doctor():
     return render_template('add-doctor.html', form=add_doctor_form)
 
 
+<<<<<<< HEAD
 
 @app.route('/checkout-success', methods=['GET'])
+=======
+@app.route('/checkout-success', methods=['GET'], strict_slashes=False)
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 def checkout_success():
     doctor = session.get('doctor', None)
     date = session.get('date', None)
@@ -161,7 +169,10 @@ def checkout_success():
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
@@ -776,6 +787,7 @@ def patient_checkout():
         session['doctor'] = doctor_data.name
         session['date'] = date.strftime('%d %b %Y')
         session['time'] = time.strftime('%H:%M:%S')
+<<<<<<< HEAD
         
         clinic_id = clinic_data.id
         if clinic_id in clinic_rooms:
@@ -787,6 +799,9 @@ def patient_checkout():
 
         return redirect(url_for('checkout_success'))
 
+=======
+        return redirect(url_for('checkout_success'))
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -795,6 +810,7 @@ def patient_checkout():
         date=date.strftime('%d %b %Y'),
         form=checkout_form
     )
+<<<<<<< HEAD
     
 
 @socketio.on('connect')
@@ -816,3 +832,5 @@ def handle_disconnect():
 @app.route('/clinic_dash', methods=['GET'])
 def clinic_dash():
     return render_template('clinic.html')
+=======
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
