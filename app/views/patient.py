@@ -32,11 +32,13 @@ def home():
 
 
     form.specialization.choices = [('', translate('Select a specialization'))] + [
-        (s.id, translate(f'specializations.{s.id}')) for s in Specialization.query.all()
+    (s.id, translate(s.specialization_name)) for s in Specialization.query.all()
     ]
+
     form.governorate.choices = [('', translate('Select a governorate'))] + [
-        (g.id, translate(f'governorates.{g.id}')) for g in Governorate.query.all()
+        (g.id, translate(g.governorate_name)) for g in Governorate.query.all()
     ]
+    
     specialties = Specialization.query.filter().all()
     doctor = Doctor.query.filter().all()
     if request.method == 'POST':
