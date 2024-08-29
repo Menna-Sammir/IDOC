@@ -9,7 +9,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import os
 from flask import session
-from flask_socketio import emit, join_room
+from flask_socketio import emit, join_room, leave_room
 from app.views.forms.booking_form import AppointmentForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_
@@ -21,6 +21,13 @@ def handle_connect():
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        leave_room(clinic_id)
+        emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
 
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
