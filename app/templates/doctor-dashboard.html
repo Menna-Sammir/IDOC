@@ -56,6 +56,8 @@
                   <li>
                     <a href="index.html">
                       <form action="/logout" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.csrf_token }}
                         <button type="submit" class="logout-btn">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Logout</span>
@@ -168,7 +170,9 @@
                                 <td class="text-centre">
                                   <div class="table-action">
                                     {% if not appointment.seen %}
-                                    <form action="/doctor_dashboard?current_user={{ current_user }}" method="POST">
+                                    <form action="/doctor_dashboard?current_user={{ current_user.id }}" method="POST">
+                                      {{ form.hidden_tag() }}
+                                      {{ form.csrf_token }}
                                       <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
                                       <button type="submit" name="seen" class="btn btn-sm bg-success-light">Seen</button>
                                          
@@ -198,4 +202,3 @@
 
 
 {% endblock %}
-
