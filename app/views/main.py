@@ -129,12 +129,13 @@ def login_page():
                     category='success'
                 )
                 if(attempted_user.roles.role_name == 'Admin'):
-                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
+                    return redirect(url_for('admin_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'doctor'):
-                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
+                    return redirect(url_for('doctor_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'clinic'):
-                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
+                    return redirect(url_for('doctor_dash'), current_user=attempted_user.id)
                 return redirect(url_for('home_page'))
+
             else:
                 flash('user name and password are not match', category='danger')
         if form.errors != {}:
@@ -159,9 +160,19 @@ def permission_denied(e):
     flash('You not authorized to open this page, please login', category='warning')
     return redirect(url_for('login_page'))
 
-@app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
-def clinic_dashboard():
-    return render_template('doctor-dashboard.html')
+
+# @app.route('/doctor-dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# @login_required
+# def doctor_dashboard():
+#     current_user = request.args.get('current_user',None)
+#     print(current_user)
+
+#     return render_template('doctor-dashboard.html')
+
+
+# @app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
+# def clinic_dashboard():
+#     return render_template('doctor-dashboard.html')
 
 @app.route('/booking', methods=['GET', 'POST'], strict_slashes=False)
 def doctor_appointments():
