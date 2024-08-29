@@ -1,6 +1,6 @@
 Flask==2.1.1
 Flask-SQLAlchemy==2.5.1
-pymysql==1.0.2
+Flask-MySQLdb==0.2.0
 python-dotenv==0.19.2
 cryptography==36.0.2
 Werkzeug==2.0.3
@@ -10,5 +10,4 @@ flask_mail
 wtforms-components
 Flask-WTF
 Flask-Uploads
-
-
+gunicorn==20.1.0
