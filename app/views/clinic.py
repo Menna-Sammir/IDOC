@@ -144,6 +144,7 @@ def view_notifi():
 
         processed_notifications = [
             {
+                'id': n.id,
                 'doctor': n.appointment.doctor.name if n.appointment and n.appointment.doctor else 'Unknown',
                 'patient': n.appointment.patient.name if n.appointment and n.appointment.patient else 'Unknown',
                 'body': n.noteBody,
@@ -165,21 +166,36 @@ def view_notifi():
 
     return render_template('view_notification.html', notifications=g.get('notifications', []))
 
-@app.route('/delete_notification', methods=['POST'])
+
+@app.route('/mark_as_read', methods=['POST'])
 @login_required
-def delete_notification():
-    data = request.get_json()
-    notification_id = data.get('id')
+def mark_as_read():
+    notification_id = request.form.get('notification_id')
     if not notification_id:
-        return jsonify({'message': 'No notification ID provided'}), 400
+        return jsonify({'message': 'Notification ID is missing'}), 400
 
     notification = Notification.query.get(notification_id)
     if not notification:
         return jsonify({'message': 'Notification not found'}), 404
 
-    if notification.clinic_id != current_user.clinic_id:
-        return jsonify({'message': 'You are not authorized to delete this notification'}), 403
+    notification.isRead = True
+    db.session.commit()
+
+    return jsonify({'message': 'Notification marked as read'})
+
+
+@app.route('/delete_notification', methods=['POST'])
+@login_required
+def delete_notification():
+    notification_id = request.form.get('notification_id')
+    if not notification_id:
+        return jsonify({'message': 'Notification ID is missing'}), 400
+
+    notification = Notification.query.get(notification_id)
+    if not notification:
+        return jsonify({'message': 'Notification not found'}), 404
 
     db.session.delete(notification)
     db.session.commit()
-    return jsonify({'message': 'Notification deleted successfully'}), 200
+
+    return jsonify({'message': 'Notification deleted'})
