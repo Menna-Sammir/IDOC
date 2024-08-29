@@ -1,8 +1,6 @@
 from app import app, db
 from app.models.adminUser import *
 from app.models.addGovs import *
-from app import app, socketio
-
 
 if __name__ == '__main__':
     with app.app_context():
