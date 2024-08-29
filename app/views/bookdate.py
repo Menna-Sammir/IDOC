@@ -15,7 +15,7 @@ def convert_to_24_hour(time_str):
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
-    doctor_id = 'doc1'
+    doctor_id = 'd9f2f180-fa4e-4d20-8898-6c40ed7c75a7'
     doctor = Doctor.query.get_or_404(doctor_id)
     clinic = doctor.clinic
     specialization_name = doctor.specialization.specialization_name
@@ -30,6 +30,7 @@ def doctor_appointments():
     for date in dates:
         daily_timeslots = []
         for hours in clinic.working_hours.split(','):
+            # from 10:00 AM to 12:00 PM
             start_hour, end_hour = map(lambda x: x.strip(), hours.split('-'))
             start_hour_24 = convert_to_24_hour(start_hour)
             end_hour_24 = convert_to_24_hour(end_hour)
