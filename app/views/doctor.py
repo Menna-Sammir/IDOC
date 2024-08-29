@@ -18,7 +18,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @app.route('/search_doctor', methods=['GET', 'POST'])
 def search_doctor():
     page = request.args.get('page', 1, type=int)
-    per_page = 10
+    per_page = 10 
         
     
     query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
