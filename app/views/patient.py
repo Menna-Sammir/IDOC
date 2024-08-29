@@ -2481,6 +2481,8 @@ def patient_checkout():
         clinic=clinic_data,
         gov=gov,
         date=date.strftime('%d %b %Y'),
+        start_time=start_time.strftime('%H:%M'),
+        end_time=end_time.strftime('%H:%M'),
         form=checkout_form
     )
 
