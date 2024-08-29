@@ -52,7 +52,7 @@
 									{% for specialization in specializations %}
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialization" checked>
+											<input type="checkbox" name="select_specialization" value="{{ specialization.id }}">
 											<span class="checkmark"></span> {{ specialization.specialization_name}}
 										</label>
 									</div>
@@ -102,7 +102,10 @@
 												</ul>
 											</div>
 											<div class="clinic-booking">
-												<a class="apt-btn" href="booking.html">Book Appointment</a>
+												<form action="{{ url_for('book_appointment') }}" method="POST">
+													<input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+													<button class="apt-btn" type="submit">Book Appointment</button>
+												</form>
 											</div>
 										</div>
 									</div>
