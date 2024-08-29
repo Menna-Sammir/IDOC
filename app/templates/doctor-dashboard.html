@@ -1,6 +1,5 @@
 {% extends 'base.html' %} {% block title %} Doctor Dashboard {% endblock %} {%
 block body %}
-
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
@@ -8,7 +7,7 @@ block body %}
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('home_page') }}">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">
               Dashboard
             </li>

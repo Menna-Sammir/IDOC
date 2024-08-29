@@ -369,8 +369,8 @@ Version      : 1.0
   $(window).scroll(animateElements);
   $(".alert")
     .fadeTo(2000, 500)
-    .slideUp(500, function () {
-      $(".alert").slideUp(500);
+    .slideUp(1000, function () {
+      $(".alert").slideUp(1000);
     });
 })(jQuery);
 

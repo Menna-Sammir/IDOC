@@ -16,13 +16,10 @@ def load_user(user_id):
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     identity.user = current_user
-
     if hasattr(current_user, 'id'):
         identity.provides.add(UserNeed(current_user.id))
-
-    if hasattr(current_user, 'role_name'):
-        for role in current_user.roles:
-            identity.provides.add(RoleNeed(role))
+    if hasattr(current_user, 'roles'):
+        identity.provides.add(RoleNeed(current_user.roles.role_name))
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
