@@ -10,7 +10,7 @@ from sqlalchemy.dialects.mysql import (
     DATETIME
 
 )
-
+import logging
 from sqlalchemy import ForeignKey, func, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, current_user
@@ -35,6 +35,7 @@ def on_identity_loaded(sender, identity):
         identity.provides.add(UserNeed(current_user.id))
     if hasattr(current_user, 'user_roles'):
         identity.provides.add(RoleNeed(current_user.user_roles.role.role_name))
+
 
 
 @app.context_processor
@@ -80,6 +81,41 @@ class PatientHisType(Enum):
     Lab = 1,
     medicine = 2,
     radiology = 3,
+
+class BloodGroup(Enum):
+    A_positive = 'A+'
+    A_negative = 'A-'
+    B_positive = 'B+'
+    B_negative = 'B-'
+    AB_positive = 'AB+'
+    AB_negative = 'AB-'
+    O_positive = 'O+'
+    O_negative = 'O-'
+    
+class Allergy(Enum):
+    No_Allergy = 'No Allergy'
+    Peanuts = 'Peanuts'
+    Shellfish = 'Shellfish'
+    Dairy = 'Dairy'
+    Eggs = 'Eggs'
+    Wheat = 'Wheat'
+    Soy = 'Soy'
+    Tree_nuts = 'Tree Nuts'
+    Fish = 'Fish'
+    Latex = 'Latex'
+    Pollen = 'Pollen'
+    Dust_mites = 'Dust Mites'
+    Insect_stings = 'Insect Stings'
+    Mold = 'Mold'
+    Pet_dander = 'Pet Dander'
+    Medications = 'Medications'
+    Gluten = 'Gluten'
+    Perfumes_and_scents = 'Perfumes and Scents'
+    Sunlight = 'Sunlight'
+    Cold_temperatures = 'Cold Temperatures'
+    Nickel = 'Nickel'
+    Sulfites = 'Sulfites'
+    Red_meat = 'Red Meat'
 
 
 class Specialization(BaseModel):
@@ -167,6 +203,8 @@ class Governorate(BaseModel):
 
     governorate_name = db.Column(VARCHAR(100), nullable=False)
     clinics = relationship('Clinic', back_populates='governorate')
+    patients = relationship('Patient', back_populates='governorate')
+
 
 
 class User(BaseModel, UserMixin):
@@ -233,6 +271,16 @@ class Patient(BaseModel):
 
     user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
     users = relationship('User', back_populates='patient')
+    
+    governorate_id = db.Column(VARCHAR(60), ForeignKey('governorate.id'), nullable=True)
+    governorate = relationship('Governorate', back_populates='patients')
+
+    age = db.Column(INTEGER, nullable=True)
+    address = db.Column(VARCHAR(255), nullable=True)
+
+    allergy = db.Column(SQLAlchemyEnum(Allergy), nullable=True)
+    blood_group = db.Column(SQLAlchemyEnum(BloodGroup), nullable=True)
+    
     histories = db.relationship('PatientHistory', backref='patient', uselist=False)
     appointments = db.relationship('Appointment', back_populates='patient')
 
