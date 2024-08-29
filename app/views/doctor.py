@@ -73,11 +73,10 @@ def book_appointment():
 
 # doctor dashboard page >>> view appointments today
 @app.route('/doctor_dashboard', methods=['GET', 'POST'])
-@login_required
-@doctor_permission.require(http_exception=403)
+# @login_required
+# @doctor_permission.require(http_exception=403)
 def doctor_dash():
-    user_id = request.args.get('current_user', None)
-    print("User ID:", user_id) 
+    user_id = session.get('current_user')
     user = User.query.filter_by(id=user_id).first()
     print("User:", user)
 
@@ -96,7 +95,6 @@ def doctor_dash():
 
 
     today = date.today()
-
     appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name, Patient.phone)\
         .join(Doctor, Doctor.id == Appointment.doctor_id)\
         .join(Specialization, Specialization.id == Doctor.specialization_id)\
@@ -121,16 +119,8 @@ def doctor_dash():
         })
         
     patient_count = len(appointments_list)
-    csrf_token = request.form.get('csrf_token')
-    
-    if request.method == 'POST': 
-        # if not csrf_token or csrf_token != session.get('_csrf_token'):
-        #     flash('Invalid CSRF token', category='danger')
-        #     return redirect(url_for('doctor_dash'))
-        
-        if 'logout' in request.form:
-            return redirect(url_for('logout'))
-        
+
+    if request.method == 'POST':
         if 'seen' in request.form:
             appointment_id = request.form.get('appointment_id')
             appointment = Appointment.query.get(appointment_id)
