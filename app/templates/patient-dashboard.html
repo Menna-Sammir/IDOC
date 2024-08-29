@@ -55,24 +55,27 @@
                 </div>
             </div>
             <div class="col-md-7 col-lg-8 col-xl-5">
-                <h3>Prescription Details</h3>
-                <div class="Next-appointment-card">
-                    {% if prescriptions %}
-                    <ul>
-                        {% for prescription in prescriptions %}
-                        <li>
-                            <strong>{{ prescription.name }}</strong><br>
-                            Quantity: {{ prescription.quantity }}<br>
-                            Days: {{ prescription.days }}<br>
-                            Times of Day: {{ prescription.times_of_day | join(', ') }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
-                    {% endif %}
-                </div>
-            </div>
+              <h3>Prescription Details</h3>
+              <div class="Next-appointment-card">
+                  {% if prescriptions %}
+                  <ul>
+                      {% for prescription in prescriptions %}
+                      <li>
+                          <strong>{{ prescription.name }}</strong><br>
+                          Quantity: {{ prescription.quantity }}<br>
+                          Days: {{ prescription.days }}<br>
+                          Times of Day: {{ prescription.times_of_day | join(', ') }}
+                      </li>
+                      {% endfor %}
+                  </ul>
+                  {% if show_more_button %}
+                  <a href="{{ url_for('patient_history') }}" class="btn btn-primary">Show More</a>
+                  {% endif %}
+                  {% else %}
+                  <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
+                  {% endif %}
+              </div>
+          </div>
         </div>
     
         <div class="col-md-12 col-lg-12 col-xl-12">
