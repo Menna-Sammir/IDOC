@@ -4272,12 +4272,12 @@ html.menu-opened body {
   display: none;
 }
 
-.alert {
+/* .alert {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1050;
-}
+} */
 
 /*-----------------
 	18. Booking
