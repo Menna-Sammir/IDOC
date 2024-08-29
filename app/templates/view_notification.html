@@ -64,11 +64,6 @@ endblock %} {% block body %}
                       </td>
                       <td class="text-right">
                         <div class="table-action">
-                          <input
-                            type="hidden"
-                            name="csrf_token"
-                            value="{{ csrf_token() }}"
-                          />
                           <button
                             class="btn btn-sm bg-danger-light delete-btn"
                             data-id="{{ notification.id }}"
@@ -133,11 +128,6 @@ endblock %} {% block body %}
                       </td>
                       <td class="text-right">
                         <div class="table-action">
-                          <input
-                            type="hidden"
-                            name="csrf_token"
-                            value="{{ csrf_token() }}"
-                          />
                           <button
                             class="btn btn-sm bg-success-light mark-read-btn"
                             data-id="{{ notification.id }}"
@@ -172,108 +162,4 @@ endblock %} {% block body %}
     </div>
   </div>
 </div>
-{% block js %} {% include 'base-js.html' %}
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', (event) => {
-    let unreadCount = parseInt(
-      document.getElementById('notification-count').textContent,
-      10
-    );
-
-    document.querySelectorAll('.mark-read-btn').forEach((button) => {
-      button.addEventListener('click', function () {
-        const notificationId = this.getAttribute('data-id');
-        fetch('/mark_as_read', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': '{{ csrf_token() }}',
-          },
-          body: new URLSearchParams({
-            notification_id: notificationId,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.message === 'Notification marked as read') {
-              const notificationRow = this.closest('tr');
-              if (notificationRow) {
-                notificationRow.classList.remove('unread-notification');
-                document
-                  .getElementById('read-notifications-body')
-                  .appendChild(notificationRow);
-                notificationRow.querySelector('.mark-read-btn').remove();
-                notificationRow
-                  .querySelector('.delete-btn')
-                  .classList.replace('bg-success-light', 'bg-danger-light');
-                notificationRow
-                  .querySelector('.delete-btn i')
-                  .classList.replace('fa-check', 'fa-times');
-                notificationRow.querySelector('.delete-btn').innerHTML =
-                  '<i class="fas fa-times"></i> Delete';
-
-                unreadCount -= 1;
-                document.getElementById('notification-count').textContent =
-                  unreadCount;
-
-                if (unreadCount === 0) {
-                  document.getElementById('notification-count').style.display =
-                    'inline';
-                  document.getElementById('notification-count').textContent =
-                    '0';
-                }
-              } else {
-                console.error('Notification row not found.');
-              }
-            } else {
-              console.error(
-                'Error marking notification as read:',
-                data.message
-              );
-            }
-          })
-          .catch((error) => console.error('Error:', error));
-      });
-    });
-
-    document.querySelectorAll('.delete-btn').forEach((button) => {
-      button.addEventListener('click', function () {
-        const notificationId = this.getAttribute('data-id');
-        fetch('/delete_notification', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': '{{ csrf_token() }}',
-          },
-          body: new URLSearchParams({
-            notification_id: notificationId,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.message === 'Notification deleted') {
-              this.closest('tr').remove();
-
-              if (this.classList.contains('mark-read-btn')) {
-                unreadCount -= 1;
-                document.getElementById('notification-count').textContent =
-                  unreadCount;
-
-                if (unreadCount === 0) {
-                  document.getElementById('notification-count').style.display =
-                    'inline';
-                  document.getElementById('notification-count').textContent =
-                    '0';
-                }
-              }
-            } else {
-              console.error('Error deleting notification:', data.message);
-            }
-          })
-          .catch((error) => console.error('Error:', error));
-      });
-    });
-  });
-</script>
-
-{% endblock %} {% endblock %}
+{% endblock %}
