@@ -92,7 +92,7 @@ class Clinic(BaseModel):
     governorate = relationship("Governorate", back_populates="clinics")
     doctors = relationship("Doctor", back_populates="clinic")
     appointments = relationship("Appointment", back_populates="clinic")
-    # notifications = relationship("Notification", back_populates="clinic")
+    notifications = relationship("Notification", back_populates="clinic")
 
     def total_earnings(self):
         today = date.today()
@@ -172,7 +172,7 @@ class Appointment(BaseModel):
     patient = relationship("Patient", back_populates="appointments")
     doctor = relationship("Doctor", back_populates="appointments")
     messages = relationship("Message", uselist=False, back_populates="appointment")
-    # notifications = relationship("Notification", uselist=False, back_populates="appointment")
+    notifications = relationship("Notification", uselist=False, back_populates="appointment")
 
 class Message(BaseModel):
     __tablename__ = 'message'
@@ -183,15 +183,15 @@ class Message(BaseModel):
     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
     appointment = relationship("Appointment", back_populates="messages")
 
-# class Notification(BaseModel):
-#     __tablename__ = 'notification'
-#     noteBody = db.Column(TEXT, nullable=False)
-#     isRead = db.Column(BOOLEAN, nullable=False)
-#     time = db.Column(TIME, nullable=False, default=func.now())
-#     date = db.Column(DATE, nullable=False, default=func.now())
+class Notification(BaseModel):
+    __tablename__ = 'notification'
+    noteBody = db.Column(TEXT, nullable=False)
+    isRead = db.Column(BOOLEAN, nullable=False)
+    time = db.Column(TIME, nullable=False, default=func.now())
+    date = db.Column(DATE, nullable=False, default=func.now())
 
-#     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
-#     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
+    clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
+    appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
 
-#     clinic = relationship("Clinic", back_populates="notifications")
-#     appointment = relationship("Appointment", back_populates="notifications")
+    clinic = relationship("Clinic", back_populates="notifications")
+    appointment = relationship("Appointment", back_populates="notifications")
