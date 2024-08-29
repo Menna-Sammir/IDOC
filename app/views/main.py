@@ -1,7 +1,7 @@
 from app import app, db, principal
 from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import User, Clinic, Doctor, Role,Appointment
-from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm
+from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm, AppointmentForm, ChangePasswordForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
@@ -20,10 +20,6 @@ clinic_permission = Permission(RoleNeed('clinic'))
 def home_page():
     return render_template('index.html')
 
-
-@app.route('/test')
-def test_page():
-    return render_template('search.html')
 
 @app.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 def doctor_signup_page():
@@ -87,7 +83,7 @@ def clinic_signup_page():
         if form.validate_on_submit():
             user = User.query.filter_by(name= form.username.data).first()
             if not user:
-                photo = Doctor.query.filter_by(id=form.doctor_id.data).first().photo
+                photo = Clinic.query.filter_by(id=form.clinic_id.data).first().photo
                 user_to_create = User(
                     name=form.username.data,
                     email=form.email_address.data,
@@ -104,7 +100,7 @@ def clinic_signup_page():
                     f'account created Success! You are logged in as: {user_to_create.name}',
                     category='success'
                 )
-                return redirect(url_for('admin_dash'), current_user=user_to_create.id)
+                return redirect(url_for('clinic_dash'), current_user=user_to_create.id)
         if form.errors != {}:
             for err_msg in form.errors.values():
                 flash(
@@ -157,6 +153,21 @@ def logout_page():
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     flash('You have been logged out!', category='info')
     return redirect(url_for('home_page'))
+
+
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if current_user.check_password_correction(form.current_password.data):
+            current_user.password_hash = form.new_password.data
+            db.session.commit()
+            flash('Your password has been updated!', 'success')
+            return redirect(url_for('profile'))
+        else:
+            flash('Current password is incorrect.', 'danger')
+    return render_template('change_password.html', form=form)
 
 
 @app.errorhandler(403)
