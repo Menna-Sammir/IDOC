@@ -35,5 +35,4 @@ def clinic_dash():
         join(Patient, Appointment.patient_id == Patient.id).\
         join(Doctor, Appointment.doctor_id == Doctor.id).\
         filter(Appointment.clinic_id == user.clinic_id, Appointment.date >= today).all()
-
     return render_template('clinic-dashboard.html', clinic=clinic, today_appointments=today_appointments, total_appointments=total_appointments, is_open_today=is_open_today, appointments=appointments)
