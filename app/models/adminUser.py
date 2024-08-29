@@ -15,7 +15,8 @@ def create_admin_user():
             name='Admin',
             email=admin_email,
             password_hash=admin_password,
-            photo=logo_path
+            photo=logo_path,
+            activated= True
         )
         admin_role = UserRole(
             role_id= admin_role.id,
