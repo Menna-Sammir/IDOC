@@ -5,9 +5,17 @@ python-dotenv==0.19.2
 cryptography==36.0.2
 Werkzeug==2.0.3
 SQLAlchemy==1.4.31
+flask_principal
 
 #***** push database migration **********
 # from app import app, db
+<<<<<<< HEAD
 #from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
 #app.app_context().push()
 #db.create_all()
+=======
+# from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
+# app.app_context().push()
+# db.create_all()
+# flask_principal
+>>>>>>> 7c647f741b52a88046449759a0bd5e3fa4b0bba0
