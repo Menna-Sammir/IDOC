@@ -35,7 +35,7 @@ def doctor_signup_page():
                     email=form.email_address.data,
                     password_hash=form.password1.data,
                     doctor_id=form.doctor_id.data,
-                    photo= f"doctors/{photo}"
+                    photo= f"static/images/doctors/{photo}"
                 )
                 role_to_create = Role(role_name='doctor', user=user_to_create)
                 db.session.add(user_to_create)
@@ -78,7 +78,7 @@ def clinic_signup_page():
                     email=form.email_address.data,
                     password_hash=form.password1.data,
                     clinic_id=form.clinic_id.data,
-                    photo= f"clinic/{photo}"
+                    photo= f"static/images/clinic/{photo}"
                 )
                 role_to_create = Role(role_name='clinic', user=user_to_create)
                 db.session.add(user_to_create)
