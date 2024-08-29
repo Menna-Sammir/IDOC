@@ -4184,6 +4184,9 @@ html.menu-opened body {
 /*-----------------
 	18. Booking
 -----------------------*/
+.alert-primary-formbook{
+	border-radius: 20px !important;
+}
 .date-container {
 	display: flex;
 	justify-content: space-between;
