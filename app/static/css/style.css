@@ -157,7 +157,8 @@ h6 {
 }
 
 a {
-	color: #2E3842;
+	color: #15558d;
+	
 }
 
 a:hover {
@@ -8576,4 +8577,31 @@ html.menu-opened body {
 
 textarea {
     resize: none;
+}
+
+
+.notification-container {
+	position: relative;
+	display: inline-block;
+}
+
+.notification-container .fas.fa-bell {
+	font-size: 24px;
+	color: #333;
+}
+
+.badge {
+	position: absolute;
+	top: -5px; /* Adjusted position */
+	right: -5px; /* Adjusted position */
+	background-color: #15558d;
+	color: white;
+	display: flex;
+	border-radius: 50%;
+	font-size: 10px; /* Smaller font size */
+	font-weight: bold;
+}
+
+.badge-pill {
+	border-radius: 50px;
 }
