@@ -3,14 +3,22 @@
     <div class="profile-info-widget">
       <a href="#" class="booking-doc-img">
         {% set base_path = 'static/images/clinic/' %}
-        <img src="{{base_path ~ current_user.clinic.photo}}" alt="clinic Image" />
+        <img
+          src="{{base_path ~ current_user.clinic.photo}}"
+          alt="clinic Image"
+        />
       </a>
-      <div class="profile-det-info">
+      <div class="profile-det-info ">
         <h3>{{ current_user.clinic.name }}</h3>
-        <div class="patient-details">
+        <div class="patient-details d-flex justify-content-center">
           <h5 class="mb-0">
-            {{ current_user.clinic.address }} <br />
-            {{ current_user.clinic.phone }}
+            <p class="mb-1  text-left">
+              <i class="fas fa-map-marker-alt"></i> {{
+              current_user.clinic.address }}
+            </p>
+            <p class="mb-1 text-left">
+              <i class="fas fa-phone-alt"></i> {{ current_user.clinic.phone }}
+            </p>
           </h5>
         </div>
       </div>
