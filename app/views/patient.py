@@ -650,9 +650,9 @@ def patient_checkout():
     )
 
 
-# todo special page
-@app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
-def specialities():
-    return render_template(
-        'specialities.html'
-    )
+
+# @app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
+# def specialities():
+#     return render_template(
+#         'specialities.html'
+#     )
