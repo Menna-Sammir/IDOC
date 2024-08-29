@@ -8,8 +8,9 @@ from sqlalchemy.dialects.mysql import (
     TIME,
     TEXT,
     DATETIME
+
 )
-from sqlalchemy import ForeignKey, func
+from sqlalchemy import ForeignKey, func, Enum
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, current_user
 from flask_principal import RoleNeed, identity_loaded, UserNeed
@@ -17,6 +18,8 @@ from sqlalchemy import func
 from datetime import date, datetime
 from app.models.notiTime import calculate_time_ago
 from flask import g
+import enum
+
 
 
 @login_manager.user_loader
@@ -67,6 +70,16 @@ def inject_notification():
         notification_count=g.get('notification_count', 0)
     )
 
+class appStatus(enum.Enum):
+    Pending = 0
+    Confirmed = 1,
+    Cancelled = 2,
+
+class PatientHisType(enum.Enum):
+    Lab = 1,
+    medicine = 2,
+    radiology = 3,
+
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
@@ -85,6 +98,7 @@ class Doctor(BaseModel):
     photo = db.Column(VARCHAR(255))
     price = db.Column(INTEGER)
     duration  = db.Column(TIME)
+    isAdv = db.Column(BOOLEAN, nullable=False)
     iDNum = db.Column(VARCHAR(50), nullable=False)
 
     specialization_id = db.Column(
@@ -94,8 +108,9 @@ class Doctor(BaseModel):
     From_working_hours = db.Column(TIME(), nullable=False)
     To_working_hours = db.Column(TIME(), nullable=False)
 
+    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    users = relationship('User', back_populates='doctor')
 
-    users = db.relationship('User', backref='doctor', uselist=False)
     specialization = relationship('Specialization', back_populates='doctors')
     clinic = relationship('Clinic', back_populates='doctors')
     appointments = relationship('Appointment', back_populates='doctor')
@@ -118,11 +133,14 @@ class Clinic(BaseModel):
     email = db.Column(VARCHAR(100), nullable=False)
     address = db.Column(VARCHAR(255), nullable=False)
     photo = db.Column(VARCHAR(255))
-
     governorate_id = db.Column(
         VARCHAR(60), ForeignKey('governorate.id'), nullable=False
     )
-    users = db.relationship('User', backref='clinic', uselist=False)
+
+    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    users = relationship('User', back_populates='clinic')
+
+
     governorate = relationship('Governorate', back_populates='clinics')
     doctors = relationship('Doctor', back_populates='clinic')
     appointments = relationship('Appointment', back_populates='clinic')
@@ -163,11 +181,13 @@ class User(BaseModel, UserMixin):
     email = db.Column(VARCHAR(100), nullable=False)
     password = db.Column(VARCHAR(255), nullable=False)
     photo = db.Column(VARCHAR(255), nullable=True)
+    activated = db.Column(BOOLEAN, nullable=False)
 
-    doctor_id = db.Column(VARCHAR(60), ForeignKey('doctor.id'), unique=True)
-    clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), unique=True)
-    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), unique=True)
+    doctor = relationship('Doctor', back_populates='users')
+    patient = relationship('Patient', back_populates='users')
+    clinic = relationship('Clinic', back_populates='users')
     user_roles = relationship('UserRole', uselist=False, back_populates='user')
+    patient_history = relationship('PatientHistory', back_populates='user')
 
     @property
     def password_hash(self):
@@ -204,9 +224,23 @@ class Patient(BaseModel):
     phone = db.Column(VARCHAR(50), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
     photo = db.Column(db.String(255))
-    users = db.relationship('User', backref='patient', uselist=False)
 
-    appointments = relationship('Appointment', back_populates='patient')
+    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    users = relationship('User', back_populates='patient')
+    histories = db.relationship('PatientHistory', backref='patient', uselist=False)
+    appointments = db.relationship('Appointment', back_populates='patient')
+
+
+class PatientHistory(BaseModel):
+    __tablename__ = 'PatientHistory'
+    details = db.Column(VARCHAR(255), nullable=False)
+    type =  db.Column(Enum(PatientHisType), nullable=True)
+    addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), unique=True)
+
+    user = db.relationship('User', back_populates='patient_history')
+
+
 
 
 class Appointment(BaseModel):
@@ -214,12 +248,12 @@ class Appointment(BaseModel):
 
     date = db.Column(DATE, nullable=False)
     time = db.Column(TIME, nullable=False)
-    status = db.Column(BOOLEAN, nullable=False)
     seen = db.Column(BOOLEAN, nullable=False)
     rates = db.Column(INTEGER, nullable=True)
     comment = db.Column(VARCHAR(50), nullable=True)
     Report = db.Column(VARCHAR(255), nullable=True)
     Diagnosis = db.Column(VARCHAR(255), nullable=True)
+    status = db.Column(Enum(appStatus), nullable=False)
 
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
