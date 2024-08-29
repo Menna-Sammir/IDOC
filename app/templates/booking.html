@@ -49,6 +49,8 @@
 								</div>
 							</div>
 							<form method="post" action="">
+								{{ form.hidden_tag() }}
+								{{ form.csrf_token }}
 								<div class="date-container">
 								  {% for date, day in dates %}
 									<div class="date-item slot-date{% if not loop.last %} border-right{% endif %}">
