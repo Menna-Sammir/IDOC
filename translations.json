@@ -101,6 +101,7 @@
         "Clear All": "Clear All",
         "View all Notifications": "View all Notifications",
         "Clinic ID is missing. Cannot establish WebSocket connection.": "Clinic ID is missing. Cannot establish WebSocket connection.",
+        "calender":"calender",
         "Connecting with clinic_id:": "Connecting with clinic_id:",
         "Appointment notification:": "Appointment notification:",
         "Dr. has a new appointment on": "Dr. has a new appointment on",
@@ -129,8 +130,8 @@
         "The clinic in this time open": "The clinic is open at this time",
         "The clinic in this time closed": "The clinic is closed at this time",
         "have a nice day": "have a nice day",
-        "Today Appt": "Today's Appointments",
-        "Total Appt": "Total Appointments",
+        "Today Appt": "Today's Appt",
+        "Total Appt": "Total Appt",
         "Total Doctor": "Total Doctors",
         "Earning": "Earnings",
         "Patient Appointment": "Patient Appointment",
@@ -138,9 +139,9 @@
         "Not a clinic?": "Not a clinic?",
         "Already have an account?": "Already have an account?",
         "patient": "Patient",
-        "Appointments": "Appointments",
+        "Appointments": "Appt",
         "Patient Name": "Patient Name",
-        "Appt Date": "Appointment Date",
+        "Appt Date": "Appt Date",
         "Status": "Status",
         "Today": "Today",
         "Seen": "Seen",
@@ -480,6 +481,7 @@
         "service": "الخدمات",
         "ABOUT US": "من نحن",
         "Subject": "الموضوع",
+        "calender":"التقويم",
         "We will create high quality link able content": "سنقوم بإنشاء محتوى قابل للربط عالي الجودة",
         "Contact Information": "معلومات الإتصال",
         "appointment": "المواعيد",
@@ -537,7 +539,5 @@
         "Matruh": "مطروح",
         "Sohag": "سوهاج",
         "New Valley": "الوادي الجديد"
-        
-
     }
 }

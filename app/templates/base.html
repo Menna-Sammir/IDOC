@@ -46,13 +46,13 @@
                     y2="26.55"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop offset="0"   stop-color="#69f8fd" />
+                    <stop offset="0" stop-color="#69f8fd" />
                     <stop offset=".17" stop-color="#4de5f9" />
                     <stop offset=".32" stop-color="#26caf3" />
                     <stop offset=".53" stop-color="#1cabe4" />
                     <stop offset=".69" stop-color="#0d7dce" />
                     <stop offset=".85" stop-color="#0361c0" />
-                    <stop offset="1"   stop-color="#0056bb" />
+                    <stop offset="1" stop-color="#0056bb" />
                   </linearGradient>
                 </defs>
                 <path
@@ -63,55 +63,151 @@
             </a>
           </div>
           <ul class="nav header-navbar-rht">
-            {% if current_user.is_authenticated and current_user.roles.role_name == 'clinic'%}
-          <!-- Notifications -->
-					<li class="nav-item dropdown noti-dropdown">
-						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-							<i class="fas fa-bell"></i> <span id="notification-count" class="badge badge-pill">0</span>
-						</a>
-						<div class="dropdown-menu notifications">
-							<div class="topnav-dropdown-header">
-								<span class="notification-title">{{ translate('Notifications') }}</span>
-								<a href="javascript:void(0)" class="clear-noti" id="clear-all-notifications"> {{ translate('Clear All') }} </a>
-							</div>
-							<div class="noti-content">
-								<ul class="notification-list" id="notification-list">
-									<li class="notification-message">
-										<a href="#">
-											<div class="media">
-												<span class="avatar avatar-sm">
-													<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
-											</div>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<div class="topnav-dropdown-footer">
-								<a href="#">{{ translate('View all Notifications') }}</a>
-							</div>
-						</div>
-					</li>
-					<!-- /Notifications -->
-          {% endif %}
+            <li class="nav-item dropdown logged-item mr-3" id="language-select">
+              <a
+                class="dropdown-toggle"
+                href="#"
+                data-toggle="dropdown"
+                id="language"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                {% if get_locale() == 'en' %}
+                <img
+                  class="img-fluid"
+                  src="../static/img/en.png"
+                  alt="English"
+                />
+                {% elif get_locale() == 'ar' %}
+                <img
+                  class="img-fluid"
+                  src="../static/img/ar.png"
+                  alt="Arabic"
+                />
+                {% endif %}
+              </a>
+              <div
+                class="dropdown-menu user-dropmenu dropdown-menu-right"
+                aria-labelledby="language"
+                style="max-width: 50px; min-width: 50px"
+              >
+                <div class="dropdown-item" data-lang="en">
+                  <img
+                    class="img-fluid"
+                    src="../static/img/en.png"
+                    alt="English"
+                  />
+                </div>
+                <div class="dropdown-item" data-lang="ar">
+                  <img
+                    class="img-fluid"
+                    src="../static/img/ar.png"
+                    alt="Arabic"
+                  />
+                </div>
+              </div>
+            </li>
+            {% if current_user.is_authenticated and current_user.roles.role_name
+            == 'clinic'%}
+            <!-- Notifications -->
+            <li class="nav-item dropdown noti-dropdown mr-3">
+              <a
+                href="#"
+                class="dropdown-toggle nav-link p-2"
+                data-toggle="dropdown"
+              >
+                <i class="far fa-bell" style="color: #015cbd"></i>
+                <span
+                  id="notification-count"
+                  class="badge badge-pill"
+                  style="background-color: #015cbd"
+                  >{{notification_count}}</span
+                >
+              </a>
+              <div class="dropdown-menu notifications">
+                <div class="topnav-dropdown-header">
+                  <span class="notification-title"
+                    >{{ translate('Notifications') }}</span
+                  >
+                  <a
+                    href="{{ url_for('clear_noti') }}"
+                    class="clear-noti"
+                    id="clear-all-notifications"
+                  >
+                    {{ translate('Clear All') }}
+                  </a>
+                </div>
+                <div class="noti-content">
+                  <ul class="notification-list" id="notification-list">
+                    {% if notifications %} {% for notification in notifications
+                    %} {% if notification.isRead %}
+                    <li class="notification-message alert-info">{% else %}</li>
+
+                    <li class="notification-message">
+                      {% endif %}
+                      <a href="{{ url_for('clear_noti') }}">
+                        <div class="media">
+                          <span class="avatar avatar-sm">
+                            {% set base_path = 'static/images/doctors/' %}
+                            <img
+                              class="avatar-img rounded-circle"
+                              alt="User Image"
+                              src="{{base_path ~ notification.photo}}"
+                            />
+                          </span>
+                          <div class="media-body">
+                            <p class="noti-details">
+                              <span class="noti-title"
+                                >{{notification.patient}}</span
+                              >
+                              has booked appointment to
+                              <span class="noti-title"
+                                >Dr. {{notification.doctor}}</span
+                              >
+                              on
+                              <span class="noti-title"
+                                >{{notification.date}} at
+                                {{notification.time}}</span
+                              >
+                            </p>
+                            <p class="noti-time">
+                              <span class="notification-time"
+                                >{{notification.formatted_time}}</span
+                              >
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    {% endfor %} {% endif %}
+                  </ul>
+                </div>
+                <div class="topnav-dropdown-footer">
+                  <a href="#">{{ translate('View all Notifications') }}</a>
+                </div>
+              </div>
+            </li>
+            <!-- /Notifications -->
+            {% endif %}
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
-            <li class="nav-item dropdown has-arrow logged-item">
+            <li class="nav-item dropdown has-arrow logged-item mr-3">
               <a
-                      class="dropdown-toggle"
-                      href="#"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="true"
-                    >
-                      <span class="user-img">
-                        <img
-                          class="rounded-circle"
-                          src="{{current_user.photo}}"
-                          width="31"
-                          alt="user image"
-                        />
-                      </span>
-                    </a>
+                class="dropdown-toggle"
+                href="#"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                <span class="user-img">
+                  <img
+                    class="rounded-circle"
+                    src="{{current_user.photo}}"
+                    width="31"
+                    alt="user image"
+                  />
+                </span>
+              </a>
               <div class="dropdown-menu user-dropmenu dropdown-menu-right">
                 <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
@@ -130,9 +226,15 @@
                 </div>
 
                 {% if current_user.roles.role_name == 'Admin' %}
-                <a
-                  class="dropdown-item"
-                  href="{{ url_for('dashboard') }}"
+                <a class="dropdown-item" href="{{ url_for('dashboard') }}"
+                  >{{ translate('Dashboard') }}</a
+                >
+                {% elif current_user.roles.role_name == 'doctor' %}
+                <a class="dropdown-item" href="{{ url_for('doctor_dash') }}"
+                  >{{ translate('Dashboard') }}</a
+                >
+                {% elif current_user.roles.role_name == 'clinic' %}
+                <a class="dropdown-item" href="{{ url_for('clinic_dash') }}"
                   >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
@@ -142,6 +244,7 @@
               </div>
             </li>
             {% endif %}
+
             <!-- /User Menu -->
           </ul>
         </nav>
@@ -161,52 +264,58 @@
     {% block js %} {% include 'base-js.html' %}
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', (event) => {
-        var clinic_id = '{{ current_user.clinic_id }}';
-    
+      document.addEventListener("DOMContentLoaded", (event) => {
+        var clinic_id = "{{ current_user.clinic_id }}";
+
         if (!clinic_id) {
-          console.error('Clinic ID is missing. Cannot establish WebSocket connection.');
+          console.error(
+            "Clinic ID is missing. Cannot establish WebSocket connection."
+          );
           return;
         }
-    
-        console.log('Connecting with clinic_id:', clinic_id);
-    
-        var socket = io.connect('http://localhost:5000', {
-          query: 'clinic_id=' + clinic_id,
-          transports: ['websocket', 'polling']
+
+        console.log("Connecting with clinic_id:", clinic_id);
+
+        var socket = io.connect("http://localhost:5000", {
+          query: "clinic_id=" + clinic_id,
+          transports: ["websocket", "polling"],
         });
-    
-        socket.on('connected', function(msg) {
+
+        socket.on("connected", function (msg) {
           console.log(msg.message);
         });
-    
-        socket.on('appointment_notification', function(data) {
-          console.log('Appointment notification:', data);
+
+        socket.on("appointment_notification", function (data) {
+          console.log("Appointment notification:", data);
           addNotification(data, true);
         });
-    
-        socket.on('disconnected', function(msg) {
+
+        socket.on("disconnected", function (msg) {
           console.log(msg.message);
         });
-    
+
         function addNotification(data, store = false) {
-          var notificationList = document.getElementById('notification-list');
-          var notificationCount = document.getElementById('notification-count');
-    
-          var newNotification = document.createElement('li');
-          newNotification.classList.add('notification-message');
+          var notificationList = document.getElementById("notification-list");
+          var notificationCount = document.getElementById("notification-count");
+
+          var newNotification = document.createElement("li");
+          newNotification.classList.add("notification-message");
 
           var currentTime = new Date();
-          var formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          var formattedTime = currentTime.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
           var notificationContent = `
-            <a href="#">
               <div class="media">
                 <span class="avatar avatar-sm">
-                  <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
+                  <img class="avatar-img rounded-circle" alt="User Image" src="assets/images/doctors/${data.photo}">
                 </span>
                 <div class="media-body">
                   <p class="noti-details">
-                    <span class="noti-title">Dr. ${data.doctor}</span> has a new appointment on 
+                    <span class="noti-title">${data.patient}</span>
+                    has booked appointment to
+                    <span class="noti-title">Dr. ${data.doctor}</span> on
                     <span class="noti-title">${data.date} at ${data.time}</span>
                   </p>
                   <p class="noti-time">
@@ -214,51 +323,54 @@
                   </p>
                 </div>
               </div>
-            </a>
           `;
-    
+
           newNotification.innerHTML = notificationContent;
           notificationList.prepend(newNotification);
-    
+
           var currentCount = parseInt(notificationCount.textContent);
           notificationCount.textContent = currentCount + 1;
-    
+
           if (store) {
             storeNotification(data);
           }
         }
-    
+
         function storeNotification(data) {
-          var notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+          var notifications =
+            JSON.parse(localStorage.getItem("notifications")) || [];
           notifications.unshift(data);
-          localStorage.setItem('notifications', JSON.stringify(notifications));
+          localStorage.setItem("notifications", JSON.stringify(notifications));
         }
-    
+
         function loadNotifications() {
-          var notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-          notifications.forEach(notification => {
+          var notifications =
+            JSON.parse(localStorage.getItem("notifications")) || [];
+          notifications.forEach((notification) => {
             addNotification(notification, false);
           });
         }
-    
-        document.getElementById('clear-all-notifications').addEventListener('click', function() {
-          clearAllNotifications();
-        });
-    
+
+        document
+          .getElementById("clear-all-notifications")
+          .addEventListener("click", function () {
+            clearAllNotifications();
+          });
+
         function clearAllNotifications() {
-          var notificationList = document.getElementById('notification-list');
-          var notificationCount = document.getElementById('notification-count');
+          var notificationList = document.getElementById("notification-list");
+          var notificationCount = document.getElementById("notification-count");
           if (notificationList && notificationCount) {
-            notificationList.innerHTML = '';
-            notificationCount.textContent = '0';
-            localStorage.removeItem('notifications');
+            notificationList.innerHTML = "";
+            notificationCount.textContent = "0";
+            localStorage.removeItem("notifications");
           }
         }
-    
+
         loadNotifications();
       });
     </script>
-    
+
     {% endblock %}
   </body>
 </html>
