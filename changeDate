@@ -1,20 +1,17 @@
 #!/bin/bash
 
-# Checkout to the branch you want to modify
-git checkout MennaEdit
+# Add 3 months (90 days) to all commit dates
+git filter-repo --commit-callback '
+    import time
+    from datetime import datetime, timedelta
 
-# Filter the branch and modify the dates
-git filter-branch --env-filter '
-OLD_AUTHOR_DATE=$GIT_AUTHOR_DATE
-OLD_COMMITTER_DATE=$GIT_COMMITTER_DATE
+    # Define the offset (90 days)
+    offset = timedelta(days=90)
 
-# Add 3 months to each date
-NEW_AUTHOR_DATE=$(date -d "$GIT_AUTHOR_DATE + 3 months" +"%Y-%m-%dT%H:%M:%S")
-NEW_COMMITTER_DATE=$(date -d "$GIT_COMMITTER_DATE + 3 months" +"%Y-%m-%dT%H:%M:%S")
-
-export GIT_AUTHOR_DATE="$NEW_AUTHOR_DATE"
-export GIT_COMMITTER_DATE="$NEW_COMMITTER_DATE"
-' -- --all
+    # Convert author date and committer date to datetime, add the offset, and convert back to timestamp
+    commit.author_date = str(int(time.mktime((datetime.fromtimestamp(int(commit.author_date)) + offset).timetuple())))
+    commit.committer_date = str(int(time.mktime((datetime.fromtimestamp(int(commit.committer_date)) + offset).timetuple())))
+'
 
 # Force push the changes
 git push --force --tags origin refs/heads/MennaEdit
