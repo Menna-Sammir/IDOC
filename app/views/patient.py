@@ -470,14 +470,14 @@ def patient_checkout():
 
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = request.args.get('clinic_id')
+    clinic_id = session.get('clinic_id')
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
+    clinic_id = session.get('clinic_id')
     if clinic_id:
         leave_room(clinic_id)
 
