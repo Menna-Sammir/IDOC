@@ -31,7 +31,7 @@ def allowed_file(filename):
     endpoint='dashboard'
 )
 @login_required
-# @admin_permission.require(http_exception=403)
+@admin_permission.require(http_exception=403)
 def admin_dash():
     doctor_details = db.session.query(Doctor).all()
     clinic_details = db.session.query(Clinic).all()
@@ -49,7 +49,7 @@ def admin_dash():
 
 
 @login_required
-# @admin_permission.require(http_exception=403)
+@admin_permission.require(http_exception=403)
 @app.route(
     '/add_clinic', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_clinic'
 )
@@ -113,7 +113,7 @@ def add_clinic():
 
 
 @login_required
-# @admin_permission.require(http_exception=403)
+@admin_permission.require(http_exception=403)
 @app.route(
     '/add_doctor', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_doctor'
 )
