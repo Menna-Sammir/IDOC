@@ -173,12 +173,7 @@ def doctor_appointments():
         timeslots_by_date[date[0]] = available_timeslots
     if request.method == 'POST':
 
-        selected_timeslot = request.form.get('timeslot')
-        if not selected_timeslot:
-            flash('Please select a time before continuing.', 'primary')
-            return redirect(request.url)
-        
-
+        selected_timeslot = request.form['timeslot']
         date_str, time_range = selected_timeslot.split()
         start_time_str, end_time_str = time_range.split('-')
         print(selected_timeslot)
