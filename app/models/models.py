@@ -282,6 +282,7 @@ class Patient(BaseModel):
     blood_group = db.Column(SQLAlchemyEnum(BloodGroup), nullable=True)
     
     histories = db.relationship('PatientHistory', backref='patient', uselist=False)
+    
     appointments = db.relationship('Appointment', back_populates='patient')
 
 

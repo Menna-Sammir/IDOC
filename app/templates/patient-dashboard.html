@@ -27,72 +27,7 @@
     <div class="row">
       <!-- Profile Sidebar -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        
-        <div class="profile-sidebar">
-          <div class="widget-profile pro-widget-content">
-            <div class="profile-info-widget">
-              <a href="#" class="booking-doc-img">
-                <img src="{{ patient.photo }}" alt="User Photo">
-              </a>
-              <div class="profile-det-info">
-                <h4>Welcome {{ user_name }}!</h4>
-                <div class="patient-details">
-                  <h5>
-                    <i class="far fa-envelope-open"></i> {{ patient.email }}
-                  </h5>
-                  <h5 class="mb-0">
-                    <span class="{{ 'activated' if patient.activated else 'not-activated' }}">
-                      {{ 'Activated' if patient.activated else 'Not Activated' }}
-                  </span>
-                  </h5>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="dashboard-widget">
-            <nav class="dashboard-menu">
-              <ul>
-                <li class="active">
-                  <a href="patient-dashboard.html">
-                    <i class="fas fa-columns"></i>
-                    <span>Dashboard</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="favourites.html">
-                    <i class="fas fa-bookmark"></i>
-                    <span>Favourites</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="chat.html">
-                    <i class="fas fa-comments"></i>
-                    <span>Message</span>
-                    <small class="unread-msg">23</small>
-                  </a>
-                </li>
-                <li>
-                  <a href="{{ url_for('patient_setting') }}">
-                    <i class="fas fa-user-cog"></i>
-                    <span>Profile Settings</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="change-password.html">
-                    <i class="fas fa-lock"></i>
-                    <span>Change Password</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="index-2.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock %}
       </div>
       <!-- / Profile Sidebar -->
 
@@ -115,13 +50,75 @@
                 </div>
               </div>
               {% else %}
-                <p>No upcoming appointments.</p>
+                <p class="w-100 h-100 d-flex justify-content-center align-items-center">No upcoming appointments.</p>
               {% endif %}
             </div>
           </div>
         </div>
-        <div class="col-md-7 col-lg-8 col-xl-5">
-          <h3>Report</h3>
+        <!-- <div class="col-md-7 col-lg-8 col-xl-5">
+          <h3>Prescription Details</h3>
+          <div class="Next-appointment-card">
+            <div>
+              {% if appointment.prescription %}
+              <p><strong>Medication Name:</strong> {{ appointment.prescription.name }}</p>
+              <p><strong>Quantity:</strong> {{ appointment.prescription.quantity }}</p>
+              <p><strong>Days:</strong> {{ appointment.prescription.days }}</p>
+              <p><strong>Time of Day:</strong> {{ appointment.prescription.time_of_day }}</p>              </div>
+              {% else %}
+                <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
+              {% endif %}
+            </div>
+        </div> -->
+        </div>
+        
+        <div class="col-md-12 col-lg-12 col-xl-12">
+          <h3>Seen Appointments</h3>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-center mb-0">
+                <thead>
+                  <tr>
+                    <th>Doctor</th>
+                    <th>Appt Date</th>
+                    <th>Amount</th>
+                    <th>Follow Up</th>
+                    <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% if seen_appointments %}
+                  {% for seen in seen_appointments %}
+                  <tr>
+                    <td>
+                      <h2 class="table-avatar">
+                        <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
+                          <img class="avatar-img rounded-circle" src="{{ seen.doctor_photo }}" alt="User Image">
+                        </a>
+                        <a href="doctor-profile.html">Dr. {{ seen.doctor_name }} <span>{{ seen.specialization_name }}</span></a>
+                      </h2>
+                    </td>
+                    <td>{{ seen.appointment_date }}</td>
+                    <td>${{ seen.price }}</td>
+                    <td>$lfkansf;</td>
+                    <td class="text-center"> <i class="fas fa-calendar-check"></i></td>
+                  </tr>
+                  {% endfor %}
+                  {% else %}
+                  <p>No appointments marked as seen.</p>
+                {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+       </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+{% endblock %}
+  <!-- <h3>Report</h3>
           <div class="Report-appointment-card d-flex">
             <div class="w-75">
               <p></p>
@@ -133,7 +130,6 @@
               <i class="fas fa-scroll"></i> Report
             </button>
             
-            <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -144,7 +140,7 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    ...
+                    
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -156,15 +152,4 @@
            </div>
             
             
-          </div>
-        </div>
-        <div class="col-md-12 col-lg-12 col-xl-12">
-          
-        </div>
-       </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /Page Content -->
-{% endblock %}
+          </div> -->
