@@ -53,3 +53,4 @@ from app.views import main
 from app.views import doctor
 from app.views import admin
 from app.views import patient
+
