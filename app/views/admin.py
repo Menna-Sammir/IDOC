@@ -142,13 +142,14 @@ def add_doctor():
             else:
                 try:
                     clinic = Clinic.query.get(add_doctor_form.clinic_id.data).name
+                    doc_dur = int(add_doctor_form.duration.data)
                     Doctor_create = Doctor(
                         name=doctor_name,
                         phone=add_doctor_form.phone.data,
                         email=add_doctor_form.email_address.data,
                         From_working_hours = add_doctor_form.fromHour.data,
                         To_working_hours = add_doctor_form.toHour.data,
-                        duration = add_doctor_form.duration.data,
+                        duration = str(doc_dur * 100),
                         price=add_doctor_form.price.data,
                         specialization_id=add_doctor_form.specialization_id.data,
                         clinic_id=add_doctor_form.clinic_id.data,
