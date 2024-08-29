@@ -38,7 +38,8 @@ def doctor_signup_page():
                     doctor_id=form.doctor_id.data,
                     photo= f"static/images/doctors/{photo}"
                 )
-                role_to_create = Role(role_name='doctor', user=user_to_create)
+                clinic_role = Role.query.filter_by(role_name='doctor').first_or_404()
+                role_to_create = UserRole(role_id =clinic_role.id, user_id=user_to_create)
                 db.session.add(user_to_create)
                 db.session.add(role_to_create)
                 db.session.commit()
@@ -81,7 +82,8 @@ def clinic_signup_page():
                     clinic_id=form.clinic_id.data,
                     photo= f"static/images/clinic/{photo}"
                 )
-                role_to_create = Role(role_name='clinic', user=user_to_create)
+                clinic_role = Role.query.filter_by(role_name='clinic').first_or_404()
+                role_to_create = UserRole(role_id =clinic_role.id, user_id=user_to_create)
                 db.session.add(user_to_create)
                 db.session.add(role_to_create)
                 db.session.commit()
@@ -120,11 +122,11 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
-                if attempted_user.roles.role_name == 'Admin':
+                if attempted_user.user_roles.role.role_name == 'Admin':
                     return redirect(url_for('dashboard'))
-                elif attempted_user.roles.role_name == 'doctor':
+                elif attempted_user.user_roles.role.role_name == 'doctor':
                     return redirect(url_for('doctor_dash'))
-                elif attempted_user.roles.role_name == 'clinic':
+                elif attempted_user.user_roles.role.role_name == 'clinic':
                     return redirect(url_for('clinic_dash'))
                 return redirect(url_for('home_page'))
             else:
@@ -174,11 +176,11 @@ def change_password():
                 current_user.password_hash = form.new_password.data
                 db.session.commit()
                 flash('Your password has been updated!', 'success')
-                if current_user.roles.role_name == 'Admin':
+                if current_user.user_roles.role.role_name == 'Admin':
                     return redirect(url_for('admin_dash'))
-                elif current_user.roles.role_name == 'doctor':
+                elif current_user.user_roles.role.role_name == 'doctor':
                     return redirect(url_for('doctor_dash'))
-                elif current_user.roles.role_name == 'clinic':
+                elif current_user.user_roles.role.role_name == 'clinic':
                     return redirect(url_for('clinic_dash'))
                 return redirect(url_for('home_page'))
             else:
