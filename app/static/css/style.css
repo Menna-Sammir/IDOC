@@ -6454,6 +6454,29 @@ div.date-item > h6.active {
   top: 50%;
   transform: translateY(-50%);
 }
+.Next-appointment-card{
+  width: 100%;
+  height: 248px !important;
+  background-color: #ffffff;
+  border-radius: 22px;
+}
+.activated {
+            color: green;
+        }
+.not-activated {
+            color: red;
+        }
+.Next-appointment-card > div:nth-child(1) {
+width: 100%;
+height: 100% !important;
+padding: 18px !important;
+}
+.Report-appointment-card{
+  width: 100%;
+  height: 248px !important;
+  background-color: #ffffff;
+  border-radius: 22px;
+}
 
 /*-----------------
 	30. Profile Settings
