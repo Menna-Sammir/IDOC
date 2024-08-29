@@ -7,7 +7,7 @@ Werkzeug==2.0.3
 SQLAlchemy==1.4.31
 
 ***** push database migration **********
-from app import app, db
+# from app import app, db
 from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
 app.app_context().push()
 db.create_all()
