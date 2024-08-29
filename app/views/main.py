@@ -159,16 +159,6 @@ def permission_denied(e):
     flash('You not authorized to open this page, please login', category='warning')
     return redirect(url_for('login_page'))
 
-
-@app.route('/doctor-dashboard', methods=['GET', 'POST'], strict_slashes=False)
-@login_required
-def doctor_dashboard():
-    current_user = request.args.get('current_user',None)
-    print(current_user)
-
-    return render_template('doctor-dashboard.html')
-
-
 @app.route('/clinic_dashboard', methods=['GET', 'POST'], strict_slashes=False)
 def clinic_dashboard():
     return render_template('doctor-dashboard.html')
