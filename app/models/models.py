@@ -6,6 +6,12 @@ from sqlalchemy.orm import relationship
 from app import bcrypt
 from flask_login import UserMixin
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
 
@@ -114,6 +120,3 @@ class Message(BaseModel):
     appointment = relationship("Appointment", back_populates="messages")
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
