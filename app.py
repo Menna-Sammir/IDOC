@@ -10,5 +10,5 @@ if __name__ == '__main__':
         seed_governorates()
         create_admin_user()
         create_specialties()
-        
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use the PORT environment variable if available
+    socketio.run(app, host='0.0.0.0', port=port, debug=True)
