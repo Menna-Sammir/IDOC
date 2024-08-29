@@ -392,16 +392,6 @@ Version      : 1.0
     });
   }
 
-  $(window).on("scroll", function () {
-    if ($(this).scrollTop() > 50) {
-      $(".navbar").addClass("scrollednav");
-      $(".navbar").removeClass("topnavbar");
-    } else {
-      $(".navbar").addClass("topnavbar");
-      $(".navbar").removeClass("scrollednav");
-    }
-  });
-
   $('.nav-link').each(function() {
     var $link = $(this);
     var text = $link.text();
