@@ -43,7 +43,7 @@
                           <div class="circle-border-pink">
                             <img
                               src="static/img/medical-team.png"
-                              class="img-fluid"
+                              width="60"
                               alt="patient"
                             />
                         </div>
@@ -115,9 +115,10 @@
                                   <tr>
                                       <td>
                                           <h2 class="table-avatar">
-                                            <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ doctor.photo }}" alt="User Image"></a>
+                                            {% set base_path = 'static/images/doctors/' %}
+                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.photo}}" alt="User Image"></a>
 
-                                              <a href="profile.html">{{ doctor.name }}</a>
+                                              <a href="#">{{ doctor.name }}</a>
                                           </h2>
                                       </td>
                                       <td>{{ doctor.specialization.specialization_name }}</td>
@@ -154,7 +155,8 @@
                                   <tr>
                                       <td>
                                           <h2 class="table-avatar">
-                                
+                                            {% set base_path = 'static/images/clinic/' %}
+                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.photo}}" alt="User Image"></a>
                                               <a href="profile.html">{{ clinic.name }}</a>
                                           </h2>
                                       </td>

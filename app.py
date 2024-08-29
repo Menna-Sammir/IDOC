@@ -1,4 +1,4 @@
-from app import app, db
+from app import app, db, socketio
 from app.models.adminUser import *
 from app.models.addGovs import *
 
