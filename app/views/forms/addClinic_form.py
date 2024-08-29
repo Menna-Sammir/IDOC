@@ -4,10 +4,10 @@ from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationE
 from app.models.models import *
 from wtforms_components import TimeField
 from flask_wtf.file import FileField
+from flask_wtf.csrf import CSRFProtect
 
 
-
-
+csrf = CSRFProtect()
 class ClinicForm(FlaskForm):
 
     def validate_email_address(self, email_address_to_check, clinicName):

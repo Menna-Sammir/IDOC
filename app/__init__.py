@@ -6,8 +6,8 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal
 from flask_uploads import UploadSet, IMAGES, configure_uploads
-from werkzeug.utils import secure_filename  # Updated import
 import uuid
+from flask_wtf.csrf import CSRFProtect
 
 
 
@@ -21,6 +21,7 @@ IDOC_DB = os.getenv('IDOC_DB')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqldb://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 # app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
 # app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(os.getcwd(), 'uploads')
 
@@ -37,12 +38,14 @@ login_manager.login_view = "login_page"
 
 # Configure Flask-Uploads
 # photos = UploadSet('images', IMAGES)
-app.config['UPLOAD_FOLDER'] = os.path.join('app','static', 'images', 'clinic')
+app.config['UPLOAD_FOLDER'] = os.path.join('app','static', 'images')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+directory = 'app/static/images/'
+os.chmod(directory, 0o755)
 
-# configure_uploads(app, photos)
 
+csrf = CSRFProtect(app)
 #Configure flask_principal
 principal = Principal(app)
 
