@@ -225,8 +225,16 @@
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', (event) => {
-            // Replace 'your_clinic_id' with the actual clinic ID
             var clinic_id = "{{ clinic_id }}";
+            
+            if (!clinic_id) {
+                console.error('Clinic ID is missing. Cannot establish WebSocket connection.');
+                return;
+            }
+
+            console.log('Connecting with clinic_id:', clinic_id);
+
+
 
             var socket = io.connect('http://localhost:5000', {
                 query: 'clinic_id=' + clinic_id
