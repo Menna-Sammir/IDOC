@@ -1,9 +1,14 @@
-from app import app, db
-from flask import render_template, redirect, url_for, flash, request
+from app import app, db, principal
+from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import User, Clinic, Doctor, Role
 from app.views.auth_form import RegisterDocForm, LoginForm, RegisterClinicForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
+from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
+admin_permission = Permission(RoleNeed('Admin'))
+doctor_permission = Permission(RoleNeed('doctor'))
+clinic_permission = Permission(RoleNeed('clinic'))
+
 
 
 @app.route('/')
@@ -16,8 +21,9 @@ def home_page():
 def test_page():
     return render_template('search.html')
 
-
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
+@admin_permission.require()
 def doctor_signup_page():
     form = RegisterDocForm()
     users = (
@@ -52,10 +58,13 @@ def doctor_signup_page():
                     f'there was an error with creating a user: {err_msg}',
                     category='danger'
                 )
-        return render_template('doctor-signup.html', form=form)
+    return render_template('doctor-signup.html', form=form)
+
 
 
 @app.route('/register-clinic', methods=['GET', 'POST'])
+@login_required
+@admin_permission.require()
 def clinic_signup_page():
     form = RegisterClinicForm()
     users = (
@@ -100,11 +109,13 @@ def login_page():
     if request.method == 'POST':
         if form.validate_on_submit():
             attempted_user = User.query.filter_by(email=form.email_address.data).first()
-            print(attempted_user)
+
             if attempted_user and attempted_user.check_password_correction(
                 attempted_password=form.password.data
             ):
                 login_user(attempted_user)
+                identity_changed.send(current_app._get_current_object(), identity=Identity(attempted_user.id))
+
                 flash(
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
@@ -124,8 +135,13 @@ def login_page():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout_page():
     logout_user()
+    identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     flash('You have been logged out!', category='info')
     return redirect(url_for('home_page'))
+
+@app.errorhandler(403)
+def permission_denied(e):
+    return 'Permission Denied', 403
 
 
 @app.route('/doctor-dashboard', methods=['GET', 'POST'])
@@ -136,3 +152,4 @@ def doctor_dashboard():
 @app.route('/clinic_dashboard', methods=['GET', 'POST'])
 def clinic_dashboard():
     return render_template('doctor-dashboard.html')
+
