@@ -25,6 +25,16 @@ Version      : 1.0
         $(".loader").fadeOut( "slow");
         $(".main-wrapper").css("opacity", "1");
     }, 4000);
+
+// preview image after upload
+    $('.upload').on('change', function(event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function(event) {
+          $('#imagePreview').attr('src', event.target.result);
+      };
+      reader.readAsDataURL(file);
+  });
 });
 
 
