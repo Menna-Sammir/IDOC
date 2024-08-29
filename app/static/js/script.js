@@ -395,3 +395,31 @@ $(document).on("change", ".Specialization", function () {
 			   }
 
 });
+
+$document.addEventListener("DOMContentLoaded", function () {
+  const loadMoreButton = document.getElementById("load-more");
+  const container = document.querySelector(".col-md-12.col-lg-8.col-xl-9");
+  let page = 2;
+
+  loadMoreButton.addEventListener("click", function () {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", `{{ url_for('search_doctor') }}?page=${page}`);
+      xhr.onload = function () {
+          if (xhr.status === 200) {
+              const parser = new DOMParser();
+              const newDoc = parser.parseFromString(xhr.responseText, "text/html");
+              const newDoctors = newDoc.querySelectorAll(".doctor");
+
+              newDoctors.forEach(function (doctor) {
+                  container.appendChild(doctor);
+              });
+              if (newDoctors.length === 0) {
+                  loadMoreButton.style.display = "none";
+              } else {
+                  page++;
+              }
+          }
+      };
+      xhr.send();
+  });
+});
