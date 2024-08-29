@@ -47,8 +47,8 @@ def search_doctor():
             )).filter(Appointment.id == None)
 
             query = query.filter(Doctor.id.in_(subquery))
-            print(f"Query: {query}")
-    pagination = query.paginate(page, per_page, False)
+    
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
     print(f"Doctors: {doctors}")
     print(f"Generated SQL Query: {query}")
