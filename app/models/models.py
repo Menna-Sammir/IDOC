@@ -182,6 +182,7 @@ class User(BaseModel, UserMixin):
     password = db.Column(VARCHAR(255), nullable=False)
     photo = db.Column(VARCHAR(255), nullable=True)
     activated = db.Column(BOOLEAN, nullable=False)
+    temp_password = db.Column(db.String(200), nullable=True)
 
     doctor = relationship('Doctor', back_populates='users')
     patient = relationship('Patient', back_populates='users')

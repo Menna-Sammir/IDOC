@@ -128,6 +128,8 @@ def login_page():
                     return redirect(url_for('doctor_dash'))
                 elif attempted_user.user_roles.role.role_name == 'clinic':
                     return redirect(url_for('clinic_dash'))
+                elif attempted_user.user_roles.role.role_name == 'patient':
+                    return redirect(url_for('clinic_dash'))
                 return redirect(url_for('home_page'))
             else:
                 flash('user name and password are not match', category='danger')
