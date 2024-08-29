@@ -82,7 +82,7 @@ def add_clinic():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = (
-                        f"{unique_str}_{add_clinic_form.clinicName.data}{extension}"
+                        f"{unique_str}_{add_clinic_form.clinicName.data.strip()}{extension}"
                     )
                     Clinic_create.photo = new_filename
 
@@ -149,7 +149,7 @@ def add_doctor():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = (
-                        f"{unique_str}_{clinic}_{doctor_name.strip()}{extension}"
+                        f"{unique_str}_{clinic.strip()}_{doctor_name.strip()}{extension}"
                     )
                     Doctor_create.photo = new_filename
                     if file and allowed_file(file.filename):
