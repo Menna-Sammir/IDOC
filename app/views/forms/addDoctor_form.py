@@ -31,6 +31,6 @@ class DoctorForm(FlaskForm):
     email_address = StringField(label='Email Address', validators=[Email(), DataRequired(), Length(max=50)])
     phone = StringField(label='Phone', validators=[Length(min=0, max=11)])
     photo = FileField(label='Doctor Image', validators=[DataRequired(), file_size_check])
-    clinic_id = SelectField(label='governorate', validators=[DataRequired()])
-    specialization_id = SelectField(label='governorate', validators=[DataRequired()])
+    clinic_id = SelectField(label='clinic', validators=[DataRequired()])
+    specialization_id = SelectField(label='Specialization', validators=[DataRequired()])
     submit = SubmitField(label='Add Doctor')
