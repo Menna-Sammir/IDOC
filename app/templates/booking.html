@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %} Booking {% endblock %} {%block body
+{% extends 'base.html' %} {% block title %} {{ translate('Booking') }} {% endblock %} {%block body
 %}
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -7,11 +7,11 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Booking</li>
+            <li class="breadcrumb-item"><a href="index-2.html">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ translate('Booking') }}</li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Booking</h2>
+        <h2 class="breadcrumb-title">{{ translate('Booking') }}</h2>
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@
             {{ dates[0][0] }}
           </p>
           <p class="mb-0 ml-2">
-            <i class="fas fa-clock mr-1"></i> Working hours: {{
+            <i class="fas fa-clock mr-1"></i> {{ translate('Working hours:') }} {{
             clinic.working_hours }}
           </p>
 
@@ -63,7 +63,7 @@
           <div class="col-md-12 justify-content-around mt-3">
             <!-- Display other doctors of the same specialization -->
         <h5 class="text-muted my-4 text-left">
-        you can also schedule with:
+          {{ translate('you can also schedule with:') }}
         </h5>
             {% for other_doctor in other_doctors %}
             <div class="card shadow suggestion-card">
@@ -115,11 +115,10 @@
           </div>
         {% endif %}
         {% endwith %}
-        <form method="post" class="col-md-12 justify-content-center row"
-        >
+        <form method="post" class="col-md-12 justify-content-center row">
           {{ form.hidden_tag() }}
           <h3 class="col-12 text-muted my-3 text-left">
-            Schedules
+            {{ translate('Schedules') }}
             </h3>
           <div class="date-container col-md-12">
             {% for date, day, day_only in dates %}
@@ -134,7 +133,7 @@
           {% for date, day, day_only in dates %}
           <div class="timeslots ">
             <h3 class="col-12 text-muted my-3 text-left">
-              Time
+              {{ translate('Time') }}
               </h3>
             {% for timeslot in timeslots_by_date[date] %}
             <div class="timeslot">
@@ -153,8 +152,8 @@
           {% endfor %}
         </div>
         <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
-          <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;" id="continue-button">
-            Continue <i class="fas fa-caret-right"></i>
+          <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
+            {{ translate('Continue') }} <i class="fas fa-caret-right"></i>
        </button>
         </div>
         </form>
