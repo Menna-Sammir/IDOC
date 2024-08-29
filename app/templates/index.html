@@ -137,37 +137,27 @@
             </a>
 
             <div class="col-md-6 form-inline my-2 my-lg-0">
-              <ul class="d-flex align-items-center list-unstyled">
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none d-lg-block" href="#home">{{ translate('Home') }}</a>
+
+
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown" >
               <ul class="navbar-nav ml-auto align-items-center list-unstyled">
                 <li class="nav-item mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none nav-link d-lg-block" href="#home">Home</a>
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#home">{{ translate('Home') }}</a>
+                </li>
+                <li class="nav-item mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"  href="#aboutus">{{ translate('About Us') }} </a>
+                </li>
+                <li class="nav-item mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#service">{{ translate('service') }}</a>
                 </li>
                 <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#aboutus">{{ translate('About Us') }}</a>
-                <li class="nav-item mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"  href="#aboutus">About us</a>
-                </li>
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#service">{{ translate('service') }}</a>
-                <li class="nav-item mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#service">Service</a>
-                </li>
-                <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#">{{ translate('Contact Us') }}</a>
-                <li class="mx-4">
-                    <a class="d-inline-block font-weight-semibold text-white px-4 home-login" href="{{ url_for('login_page') }}">{{ translate('Login') }}</a>
-                <li class="nav-item mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#contactus">Contact Us</a>
-                </li>
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#">{{ translate('Contact Us') }}</a>
                 <li class="nav-item mx-4">
-                    <a class="d-inline-block font-weight-semibold text-white px-4 home-login nav-link " href="{{ url_for('login_page') }}">Login</a>
-                </li>
+                    <a class="d-inline-block font-weight-semibold text-white px-4 home-login nav-link" href="{{ url_for('login_page') }}">{{ translate('Login') }}</a>
+
               </ul>
               <select id="languageSelect" onchange="location.href = '/set_language?language=' + this.value;" class="rounded border appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full">
                 <option value="en" {{ 'selected' if get_locale() == 'en' else '' }}>English</option>
