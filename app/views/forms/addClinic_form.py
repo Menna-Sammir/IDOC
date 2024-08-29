@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
-from app.models.models import Clinic
+from app.models.models import User
 from flask_wtf.file import FileField
 from flask_wtf.csrf import CSRFProtect
 from app import translate
@@ -12,7 +12,7 @@ csrf = CSRFProtect()
 class ClinicForm(FlaskForm):
 
     def validate_email_address(self, email_address_to_check):
-        email_address = Clinic.query.filter_by(email=email_address_to_check.data).first()
+        email_address = User.query.filter_by(email=email_address_to_check.data).first()
         if email_address:
             raise ValidationError(translate('email address already exists!'))
 
