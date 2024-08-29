@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from app import translate
 from datetime import datetime
 from flask import jsonify
-from sqlalchemy import update
+
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -38,8 +38,8 @@ def clinic_dash():
     today = datetime.today().strftime('%Y-%m-%d')
 
     working_hours = clinic.working_hours.split('-')
-    opening_time = datetime.strptime(working_hours[0], '%I%p').time()
-    closing_time = datetime.strptime(working_hours[1], '%I%p').time()
+    opening_time = datetime.strptime(working_hours[0].strip().upper(), '%I:%M %p').time()
+    closing_time = datetime.strptime(working_hours[1].strip().upper(), '%I:%M %p').time()
     is_open_today = opening_time <= current_time <= closing_time
 
     appointments = (
