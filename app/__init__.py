@@ -27,3 +27,4 @@ principal = Principal(app)
 
 from app.views import main
 from app.views import doctor
+from app.views import auth_form
