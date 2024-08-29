@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField, SubmitField, SelectField, RadioField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from app.models.models import *
+import re
 
 class RegisterForm(FlaskForm):
     def validate_email_address(self, email_address_to_check):
@@ -17,7 +18,14 @@ class RegisterForm(FlaskForm):
     submit = SubmitField(label='Create Account')
 
 class LoginForm(FlaskForm):
-    email_address = StringField(label='Email Address:', validators=[Email(), DataRequired()])
+    def validate_email_or_id(form, field):
+        email_regex = r'^\S+@\S+\.\S+$'
+        id_regex = r'^\d{6,10}$'
+
+        if not re.match(email_regex, field.data) and not re.match(id_regex, field.data):
+            raise ValidationError('Input must be a valid email address or a valid ID number.')
+
+    email_address = StringField(label='Email Address:', validators=[validate_email_or_id, DataRequired()])
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='log in')
 

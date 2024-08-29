@@ -17,24 +17,15 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 
-
 # doctor dashboard page >>> view appointments today
 @app.route('/doctor_dashboard', methods=['GET', 'POST'])
 @login_required
 @doctor_permission.require(http_exception=403)
 def doctor_dash():
-    user_id = current_user.id
-    user = User.query.filter_by(id=user_id).first()
-    print('User:', user)
-
-    if user is None:
-        return translate('User not found'), 404
-    if not hasattr(user, 'doctor_id'):
-        return translate('User is not a doctor'), 403
-    doctor = Doctor.query.filter_by(id=user.doctor_id).first()
-
+    doctor = Doctor.query.filter_by(user_id=current_user.id).first()
     if doctor is None:
-        return translate('Doctor not found'), 404
+        return translate('User is not a doctor'), 403
+
     form = AppointmentForm()
     appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(asc(Appointment.time))
     if appointments.all():

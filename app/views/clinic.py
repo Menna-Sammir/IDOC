@@ -18,8 +18,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @login_required
 @clinic_permission.require(http_exception=403)
 def clinic_dash():
-    user_id = current_user.id
-    clinic = Clinic.query.filter_by(user_id=user_id).first()
+    clinic = Clinic.query.filter_by(user_id=current_user.id).first()
     if clinic is None:
         return translate('User is not a clinic'), 403
     today = datetime.today().date()
