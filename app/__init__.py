@@ -22,3 +22,4 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login_page"
 
 from app.views import home
+from app.views import doctor
