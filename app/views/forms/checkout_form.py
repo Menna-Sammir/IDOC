@@ -4,10 +4,17 @@ from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationE
 from app.models.models import *
 from app import translate
 
-class checkoutForm(FlaskForm):
 
+class checkoutForm(FlaskForm):
     def validate_email_address(self, email_address_to_check):
         email_address = User.query.filter_by(email=email_address_to_check.data).first()
+        # role = Role.query.filter_by(role_name='patient').first().id
+        # email_address = (
+        #     User.query.filter_by(email=email_address_to_check.data)
+        #     .join(UserRole)
+        #     .filter(UserRole.role_id == role)
+        #     .first()
+        # )
         if email_address:
             raise ValidationError(translate('email address already exists!'))
 
