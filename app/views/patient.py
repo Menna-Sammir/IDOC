@@ -56,7 +56,7 @@ def clinic_dash():
     # clinic_id = 'cl2'  # Get the clinic_id from wherever it's stored
     # session['clinic_id'] = clinic_id
     clinic_id = session.get('clinic_id', None)
-    return render_template('clinic-dash.html', clinic_id=clinic_id)
+    return render_template('clinic-dashboard.html', clinic_id=clinic_id)
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
