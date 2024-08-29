@@ -275,8 +275,20 @@
         ",Egypt": ",Egypt",
         "122 dokki street, cairo": "122 dokki street, cairo",
         "134 Almawasi street, port said": "134 Almawasi street, port said",
-        "230 Rasheed street, Almontazah": "230 Rasheed street, Almontazah"
-
+        "230 Rasheed street, Almontazah": "230 Rasheed street, Almontazah",
+        "Sun": "Sunday",
+        "Mon": "Monday",
+        "Tue": "Tuesday",
+        "Wed": "Wednesday",
+        "Thu": "Thursday",
+        "Fri": "Friday",
+        "Sat": "Saturday",
+        "PM": "PM",
+        "Clinics": "Clinics",
+        "Doctors": "Doctors",
+        "Meswak": "Meswak",
+        "Alfarabi": "Alfarabi",
+        "Jewel clinic": "Jewel clinic"
 
     },
 
@@ -293,6 +305,9 @@
         "Nora Alsebaai": "نورة السباعي",
         "Eyad Ahmed": "إياد أحمد",
         "Ahmed Abdallah": "أحمد عبدالله",
+        "122 dokki street, cairo": "122 شارع الدقي , القاهرة",
+        "134 Almawasi street, port said": "134 شارع المواصي , بورسعيد",
+        "230 Rasheed street, Almontazah": "230 شارع الرشيد , المنتزه",
         "Add Clinic": "إضافة عيادة",
         "File size must be less than 2MB.": "حجم الملف يجب أن يكون أقل من 2MB.",
         "First Name": "الإسم الأول",
@@ -397,7 +412,7 @@
         "Appointment booked with": "تم حجز موعد مع",
         "on": "في",
         "Back to Home": "العودة للصفحة الرئيسية",
-        "DR.": "DR.",
+        "DR.": "د.",
         "Working hours:": ":ساعات العمل",
         "you can also schedule with:": ":يمكنك أيضاً حجز موعد مع",
         "Schedules": "المواعيد",
@@ -552,6 +567,19 @@
         "Faiyum": "الفيوم",
         "Matruh": "مطروح",
         "Sohag": "سوهاج",
-        "New Valley": "الوادي الجديد"
+        "New Valley": "الوادي الجديد",
+        "Sun": "الأحد",
+        "Mon": "الاثنين",
+        "Tue": "الثلاثاء",
+        "Wed": "الأربعاء",
+        "Thu": "الخميس",
+        "Fri": "الجمعة",
+        "Sat": "السبت",
+        "PM": "مساءاً",
+        "Clinics": "العيادات",
+        "Doctors": "الأطباء",
+        "Meswak": "مسواك",
+        "Alfarabi": "الفارابي",
+        "Jewel clinic": "عيادة جويل"
     }
 }
