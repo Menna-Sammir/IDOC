@@ -118,11 +118,11 @@
                                           <h2 class="table-avatar">
                                             <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ doctor.photo }}" alt="User Image"></a>
 
-                                              <a href="profile.html">{{ doctor.doctor_name }}</a>
+                                              <a href="profile.html">{{ doctor.name }}</a>
                                           </h2>
                                       </td>
-                                      <td>{{ doctor.specialization }}</td>
-                                      <td>{{ doctor.total_earnings }}</td>
+                                      <td>{{ doctor.specialization.specialization_name }}</td>
+                                      <td>{{ doctor.total_earnings() }}</td>
                                      
                                   </tr>
                                   {% endfor %}
@@ -155,15 +155,15 @@
                                   <tr>
                                       <td>
                                           <h2 class="table-avatar">
-                                
-                                              <a href="profile.html">{{ clinic.clinic_name }}</a>
+                                            <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="static/img/doctors/{{ clinic.photo }}" alt="User Image"></a>
+                                              <a href="profile.html">{{ clinic.name }}</a>
                                           </h2>
                                       </td>
-                                      <td>{{ clinic.clinic_address }}</td>
+                                      <td>{{ clinic.address }}</td>
                                       <td>
                                           <h2 class="table-avatar">
                                               
-                                              <a>{{ clinic.clinic_phone }}</a>
+                                              <a>{{ clinic.phone }}</a>
                                           </h2>
                                       </td>
                                      
