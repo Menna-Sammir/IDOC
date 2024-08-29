@@ -140,7 +140,7 @@ def doctor_profile():
 
 @app.route('/Prescription', methods=['GET', 'POST'])
 @login_required
-@doctor_permission.require(http_exception=403)
+# @doctor_permission.require(http_exception=403)
 def add_prescription():
     form = AddMedicineForm()
     patient_id = "800b065d-945d-4ba0-bb20-10c1d480d352"
@@ -213,7 +213,7 @@ def patient_list():
 #         patient = Patient.query.filter_by(user_id=current_user.id).first()
 #         appointments = Appointment.query.filter_by(patient_id=patient.id).all()
 #         return render_template('patient-dashboard.html', patient=patient, appointments=appointments)
-    
+
 #     elif current_user.doctor:
 #         patient_id = request.args.get('patient_id')
 #         if not patient_id:
@@ -224,7 +224,7 @@ def patient_list():
 #         if not patient:
 #             flash('Patient not found', 'danger')
 #             return redirect(url_for('doctor_dash'))
-        
+
 #         appointments = Appointment.query.filter_by(patient_id=patient.id).all()
 #         return render_template('patient-dashboard.html', patient=patient,
 #                                appointments=appointments,

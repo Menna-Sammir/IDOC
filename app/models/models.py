@@ -71,15 +71,15 @@ def inject_notification():
 
 
 class AppStatus(Enum):
-    Pending = 0
-    Confirmed = 1
-    Cancelled = 2
-    Completed = 3
+    Pending = "Pending"
+    Confirmed = "Confirmed"
+    Cancelled = "Cancelled"
+    Completed = "Completed"
 
 
 class PatientHisType(Enum):
-    Lab = 1
-    medicine = 3
+    Lab = "Lab"
+    medicine = "medicine"
 
 class MedicineTime(Enum):
     MORNING = "Morning"

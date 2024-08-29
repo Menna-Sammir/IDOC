@@ -1,30 +1,26 @@
-from app import app, db, socketio
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from app import app, db, socketio, translate, get_locale, load_translations, translations
+from flask import render_template, redirect, url_for, flash, request, jsonify, Flask, render_template, session
+from enum import Enum
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
 from app.views.forms.search_form import SearchForm
 from app.views.forms.email_form import EmailForm
+from app.views.forms.booking_form import AppointmentForm
+from app.views.forms.Prescription_form import AddMedicineForm, MedicineForm
+from app.views.forms.patient_form import PatientForm
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import os
-from flask import session
 from flask_socketio import emit, join_room, leave_room
-from app.views.forms.booking_form import AppointmentForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_
-from app import translate, get_locale
 import json
 from flask_babel import lazy_gettext as _, format_decimal
-from app import load_translations, translations
 import secrets
-from app.views.forms.patient_form import PatientForm
 from werkzeug.utils import secure_filename
 from flask_login import login_required
-from flask import Flask, render_template
-from app.models.models import db, Patient, User
-from enum import Enum
 from uuid import UUID
 from flask_wtf.csrf import CSRFProtect
 
@@ -164,7 +160,7 @@ def patient_dashboard():
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
-    
+
     specialties = Specialization.query.all()
     return render_template(
         'patient-dashboard.html',
@@ -186,22 +182,11 @@ def patient_dashboard():
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
 def appointment_History():
-    if current_user.patient:
-        patient = Patient.query.filter_by(user_id=current_user.id).first()
-    elif current_user.doctor:
-        patient_id = request.args.get('patient_id')
-        if not patient_id:
-            flash('Patient ID is missing.', 'danger')
-            return redirect(url_for('doctor_dash'))
+    # patient_id = ""
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    if patient is None:
+        return translate('User is not a patient'), 403
 
-        patient = Patient.query.get(patient_id)
-        if not patient:
-            flash('Patient not found', 'danger')
-            return redirect(url_for('doctor_dash'))
-        
-    else:
-        flash('Unauthorized access', 'danger')
-        return redirect(url_for('index'))
 
     # Fetch all appointments (regardless of status) that have not been seen (seen is False)
     appointments = (
@@ -239,7 +224,7 @@ def appointment_History():
         status_enum = AppStatus(appointment.status)  # Convert status to enum
         status_str = status_enum.name
         report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
-        
+
         appointment_data.append({
             'appointment_id': appointment.id,
             'date': formatted_date,
@@ -256,7 +241,7 @@ def appointment_History():
             'is_confirmed': status_enum == AppStatus.Confirmed,
             'is_cancelled': status_enum == AppStatus.Cancelled
         })
-    
+
     blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
     allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
@@ -308,10 +293,12 @@ def appointment_History():
         })
 
     specialties = Specialization.query.all()
-
+    prescriptionForm = AddMedicineForm()
+    prescriptionForm.patient_id.data = patient.id
     return render_template(
         'appointment-History.html',
         user_name=current_user.name,
+        form = prescriptionForm,
         patient=patient,
         appointments=appointment_data,
         patient_history=history_data,
@@ -327,7 +314,7 @@ def appointment_History():
 def cancel_appointment():
     appointment_id = request.form.get('appointment_id')
     appointment = Appointment.query.get(appointment_id)
-    
+
     if appointment is None:
         flash('Appointment not found', 'danger')
         return redirect(url_for('appointment_History'))
@@ -982,7 +969,7 @@ def sendEmail():
 def patient_setting():
     user = User.query.filter_by(id=current_user.id).first()
     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    
+
     form = PatientForm(
         firstname=user.name.split()[0] if user.name else '',
         lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
