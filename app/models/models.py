@@ -29,8 +29,9 @@ def on_identity_loaded(sender, identity):
     identity.user = current_user
     if hasattr(current_user, 'id'):
         identity.provides.add(UserNeed(current_user.id))
-    if hasattr(current_user, 'roles'):
-        identity.provides.add(RoleNeed(current_user.roles.role_name))
+    if hasattr(current_user, 'role'):
+        print("ggggggggggggggggggggggggggggggggggggg",current_user.user_roles.role.role_name)
+        identity.provides.add(RoleNeed(current_user.user_roles.role.role_name))
 
 
 @app.context_processor
