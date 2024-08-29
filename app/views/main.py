@@ -154,6 +154,7 @@ def logout_page():
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
     flash('You have been logged out!', category='info')
+    session.pop('clinic_id', None)
     socketio.emit('disconnect request')
     return redirect(url_for('login_page'))
 
