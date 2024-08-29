@@ -42,7 +42,7 @@ block body %}
                 <h3>{{ doctor.name }}</h3>
 
                 <div class="patient-details specialization">
-                  <h5 class="mb-0">{{ specialization.specialization_name }}</h5>
+                  <h5 class="mb-0">{{ doctor.specialization.specialization_name }}</h5>
                 </div>
               </div>
             </div>
@@ -93,7 +93,7 @@ block body %}
                           <span>patient</span>
                         </div>
                         <div class="d-block text-muted">
-                          25{{ patient_count }}
+                          {{ patient_count }}
                         </div>
                       </div>
                     </div>
@@ -112,7 +112,7 @@ block body %}
                           <span>Earning</span>
                         </div>
                         <div class="d-block text-muted">
-                          15{{ patient_count }}$
+                          {{ doctor.total_earnings() }}$
                         </div>
                       </div>
                     </div>
@@ -131,7 +131,7 @@ block body %}
                           <span>Appointments</span>
                         </div>
                         <div class="d-block text-muted">
-                          15{{ patient_count }}
+                          {{ monthAppointments }}
                         </div>
                       </div>
                     </div>
@@ -196,7 +196,7 @@ block body %}
                                 <td>
                                   <h2 class="table-avatar">
                                     <a href="patient-profile.html"
-                                      >{{ appointment.patient_name }}
+                                      >{{ appointment.patient.name }}
                                       <span
                                         >{{ appointment.appointment_id }}</span
                                       ></a
@@ -204,12 +204,12 @@ block body %}
                                   </h2>
                                 </td>
                                 <td>
-                                  {{ appointment.appointment_date }}
+                                  {{ appointment.date }}
                                   <span class="d-block text-info"
-                                    >{{ appointment.appointment_time }}</span
+                                    >{{ appointment.time.strftime('%I:%M %p') }}</span
                                   >
                                 </td>
-                                <td>{{ appointment.patient_phone }}</td>
+                                <td>{{ appointment.patient.phone }}</td>
                                 <td class="text-centre">
                                   <div class="table-action">
                                     {% if not appointment.seen %}
@@ -229,7 +229,7 @@ block body %}
                                         name="seen"
                                         class="btn btn-sm bg-success-light"
                                       >
-                                        Seen
+                                      <i class="far fa-eye"></i>  Seen
                                       </button>
                                     </form>
                                     {% endif %}

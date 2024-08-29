@@ -86,39 +86,36 @@ def doctor_dash():
     if not hasattr(user, 'doctor_id'):
         return "User is not a doctor", 403
 
-    doctor_id = user.doctor_id
-    doctor = Doctor.query.filter_by(id=doctor_id).first()
+    doctor = Doctor.query.filter_by(id=user.doctor_id).first()
 
     if doctor is None:
         return "Doctor not found", 404
     form = AppointmentForm()
+    # appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name, Patient.phone)\
+    #     .join(Doctor, Doctor.id == Appointment.doctor_id)\
+    #     .join(Specialization, Specialization.id == Doctor.specialization_id)\
+    #     .join(Patient, Patient.id == Appointment.patient_id)\
+    #     .filter(Appointment.doctor_id == doctor_id, Appointment.date == today, Appointment.seen == False).all()
 
-
-    today = date.today()
-    appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name, Patient.phone)\
-        .join(Doctor, Doctor.id == Appointment.doctor_id)\
-        .join(Specialization, Specialization.id == Doctor.specialization_id)\
-        .join(Patient, Patient.id == Appointment.patient_id)\
-        .filter(Appointment.doctor_id == doctor_id, Appointment.date == today, Appointment.seen == False).all()
-
-    specialization = Specialization.query.filter(Specialization.id == doctor.specialization_id).first()
+    # specialization = Specialization.query.filter(Specialization.id == doctor.specialization_id).first()
     
-    appointments_list = []
-    for appointment, doctor_name, specialization_name, patient_name, patient_phone in appointments:
-        appointments_list.append({
-            'appointment_id': appointment.id,
-            'appointment_time': appointment.time,
-            'appointment_date': appointment.date,
-            'patient_name': patient_name,
-            'doctor_name': doctor_name,
-            'photo': doctor.photo,
-            'patient_phone': patient_phone,
-            'specialization_name': specialization_name,
-            'status': appointment.status,
-            'seen': appointment.seen
-        })
-        
-    patient_count = len(appointments_list)
+    # appointments_list = []
+    # for appointment, doctor_name, specialization_name, patient_name, patient_phone in appointments:
+    #     appointments_list.append({
+    #         'appointment_id': appointment.id,
+    #         'appointment_time': appointment.time,
+    #         'appointment_date': appointment.date,
+    #         'patient_name': patient_name,
+    #         'doctor_name': doctor_name,
+    #         'photo': doctor.photo,
+    #         'patient_phone': patient_phone,
+    #         'specialization_name': specialization_name,
+    #         'status': appointment.status,
+    #         'seen': appointment.seen
+    #     })
+    appointments = Appointment.query.filter_by(date=date.today(), seen=False)
+    monthAppointments = Appointment.query.filter(func.extract('month', Appointment.date) == datetime.now().month).count()
+    patient_count = appointments.count()
 
     if request.method == 'POST':
         if 'seen' in request.form:
@@ -128,12 +125,12 @@ def doctor_dash():
                 appointment.seen = True
                 db.session.commit()
                 flash('Appointment marked as seen', category='success')
-                return redirect(url_for('doctor_dash', current_user=user_id))
+                return redirect(url_for('doctor_dash'))
 
-    return render_template('doctor-dashboard.html', current_user=user,
+    return render_template('doctor-dashboard.html',
                            doctor=doctor,
-                           appointments=appointments_list,
-                           specialization=specialization,
+                           appointments=appointments.all(),
                            patient_count=patient_count,
-                           today=today, form=form)
+                           monthAppointments=monthAppointments,
+                           form=form)
 
