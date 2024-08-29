@@ -1,5 +1,3 @@
-
-
 (function ($) {
   "use strict";
 
@@ -348,20 +346,18 @@
     });
   }
 
-
   var currentLang = $("html").attr("lang");
 
   changeFont(currentLang);
-  $('#language-select .dropdown-item').on('click', function() {
-    var language = $(this).data('lang');
+  $("#language-select .dropdown-item").on("click", function () {
+    var language = $(this).data("lang");
     setLanguage(language);
-    var dir = (language == 'ar') ? 'rtl' : 'ltr';
-    $('#calendar').fullCalendar('option', {
-        locale: language,
-        dir: dir
+    var dir = language == "ar" ? "rtl" : "ltr";
+    $("#calendar").fullCalendar("option", {
+      locale: language,
+      dir: dir,
     });
   });
-
 
   $(window).scroll();
   //   $(".alert")
@@ -525,24 +521,28 @@ $(function () {
 });
 
 const timeslots = document.querySelectorAll(".timeslot");
-timeslots.forEach((slot) => {
-  slot.addEventListener("click", () => {
-    timeslots.forEach((s) => s.classList.remove("active"));
-    slot.classList.add("active");
-    slot.querySelector("input[type='radio']").checked = true;
+if (timeslots) {
+  timeslots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+      timeslots.forEach((s) => s.classList.remove("active"));
+      slot.classList.add("active");
+      slot.querySelector("input[type='radio']").checked = true;
+    });
   });
-});
-
-document
-  .getElementById("continue-button")
-  .addEventListener("click", function (event) {
-    var selectedTimeslot = document.querySelector(
-      'input[name="timeslot"]:checked'
-    );
-    if (!selectedTimeslot) {
-      document.getElementById("warning-message").style.display = "block";
-    } else {
-      document.getElementById("warning-message").style.display = "none";
-      document.getElementById("appointment-form").submit();
-    }
-  });
+  var continueButton = document.getElementById("continue-button");
+  if (continueButton) {
+    document
+      .getElementById("continue-button")
+      .addEventListener("click", function (event) {
+        var selectedTimeslot = document.querySelector(
+          'input[name="timeslot"]:checked'
+        );
+        if (!selectedTimeslot) {
+          document.getElementById("warning-message").style.display = "block";
+        } else {
+          document.getElementById("warning-message").style.display = "none";
+          document.getElementById("appointment-form").submit();
+        }
+      });
+  }
+}

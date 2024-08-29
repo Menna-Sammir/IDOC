@@ -1,6 +1,6 @@
-from app import db, login_manager,app, bcrypt
+from app import db, login_manager,app, bcrypt, translate
 from app.models.base import BaseModel
-from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT
+from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT, DATETIME
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, current_user
@@ -39,7 +39,7 @@ def load_notification():
             'time': n.time.strftime('%H:%M %p'),
             'date': n.date.strftime('%d %B'),
             'photo': n.appointment.doctor.photo,
-            'formatted_time':  calculate_time_ago(current_time, datetime.combine(n.date, n.time)),
+            'formatted_time':  calculate_time_ago(current_time, n.notDate),
         } for n in notification.all()[:10]]
         g.notifications = processed_notifications
         g.notification_count = len(notification.filter_by(isRead=False).all()) | 0
@@ -75,7 +75,7 @@ class Doctor(BaseModel):
 
     def total_earnings(self):
         appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
-        return appointment_count * (self.price or 0)
+        return translate(appointment_count * (self.price or 0))
 
 class Clinic(BaseModel):
     __tablename__ = 'clinic'
@@ -189,6 +189,7 @@ class Notification(BaseModel):
     isRead = db.Column(BOOLEAN, nullable=False)
     time = db.Column(TIME, nullable=False, default=func.now())
     date = db.Column(DATE, nullable=False, default=func.now())
+    notDate = db.Column(DATETIME, nullable=False, default=func.now())
 
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)

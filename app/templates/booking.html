@@ -36,21 +36,21 @@
               </div>
               <div class="col-md-10 p-1">
                   <h4 class="mb-0 ">
-                    <a href="doctor-profile.html">DR. {{ doctor.name }}</a>
+                    <a href="doctor-profile.html">{{ translate('DR.') }} {{ translate(doctor.name) }}</a>
                   </h4>
                     <p class="text-muted mb-0">
-                      {{ specialization_name
+                      {{ translate(specialization_name)
                       }}
                     </p>
               </div>
         <div class="col-md-11 mt-3 p-2" style="background-color: #ffffff87; border-radius: 20px; color: #009efb ;">
           <p class="mb-0 ml-2">
-            <i class="fas fa-calendar-alt mr-1"></i> {{ dates[0][1] }},
-            {{ dates[0][0] }}
+            <i class="fas fa-calendar-alt mr-1"></i> {{ translate(dates[0][1]) }},
+            {{ translate(dates[0][0]) }}
           </p>
           <p class="mb-0 ml-2">
             <i class="fas fa-clock mr-1"></i> {{ translate('Working hours:') }} {{
-            clinic.working_hours }}
+            translate(clinic.working_hours) }}
           </p>
 
         </div>
@@ -83,13 +83,13 @@
               <h4 class="mb-0">
                 <a
                 href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}"
-                >Dr. {{ other_doctor.name }}</a
+                >{{ translate('Dr.') }} {{ translate(other_doctor.name) }}</a
                 >
               </h4>
 
                 <p class="text-muted mb-0 d-flex align-items-center">
                 <i class="fas fa-stethoscope pr-1"></i> {{
-                other_doctor.specialization.specialization_name }}
+                translate(other_doctor.specialization.specialization_name) }}
                 </p>
               </div>
           </div>
@@ -120,7 +120,7 @@
             {% for date, day, day_only in dates %}
             <div class="date-item slot-date">
               <h6 class="m-auto bg-white shadow-sm align-items-center d-flex">
-                {{ day }}<br />{{ day_only }}
+                {{ translate(day) }}<br />{{ translate(day_only) }}
               </h6>
             </div>
             {% endfor %}
@@ -140,7 +140,7 @@
                 value="{{ timeslot[0] }}"
                 class="rounded-sm" {%if not timeslot[2] %}disabled{% endif %} />
               <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %} >
-                {{ timeslot[1] }} {% if not timeslot[2] %}(Booked){% endif %}
+                {{ translate(timeslot[1]) }} {% if not timeslot[2] %}{{ translate('(Booked)') }}{% endif %}
                 </label>
             </div>
             {% endfor %}
