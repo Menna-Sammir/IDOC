@@ -56,8 +56,8 @@ def admin_dash():
 def add_clinic():
     add_clinic_form = ClinicForm()
     govs = Governorate.query.filter().all()
-    add_clinic_form.gov_id.choices = [('', 'Select a governorate')] + [
-        (gov.id, gov.governorate_name) for gov in govs
+    add_clinic_form.gov_id.choices = [('', translate('Select a governorate'))] + [
+        (gov.id, translate(gov.governorate_name)) for gov in govs
     ]
     if request.method == 'POST':
         try:
@@ -124,10 +124,10 @@ def add_doctor():
     clinics = Clinic.query.filter().all()
     specializations = Specialization.query.filter().all()
     add_doctor_form.clinic_id.choices = [('', translate('Select a clinic'))] + [
-        (clinic.id, clinic.name) for clinic in clinics
+        (clinic.id, translate(clinic.name)) for clinic in clinics
     ]
     add_doctor_form.specialization_id.choices = [('', translate('Select a specialization'))] + [
-        (specialization.id, specialization.specialization_name)
+        (specialization.id, translate(specialization.specialization_name))
         for specialization in specializations
     ]
     if request.method == 'POST':
