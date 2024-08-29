@@ -69,13 +69,13 @@ def book_appointment():
         return redirect(url_for('doctor_appointments'))
 
 
-@app.route('/book_appointment_form')
-def book_appointment_form():
-    doctor_id = session.get('doctor_id', None)
-    if doctor_id:
-        return f'Booking appointment with doctor_id={doctor_id}'
-    else:
-        return 'No doctor_id found in session.'
+# @app.route('/book_appointment_form')
+# def book_appointment_form():
+#     doctor_id = session.get('doctor_id', None)
+#     if doctor_id:
+#         return f'Booking appointment with doctor_id={doctor_id}'
+#     else:
+#         return 'No doctor_id found in session.'
 
 
 # doctor dashboard page >>> view appointments today
@@ -137,5 +137,5 @@ def doctor_dash():
                 db.session.commit()
             return redirect(url_for('doctor_dash', current_user=user_id))
 
-    return render_template('doctor-dashboard.html', current_user=user_id, doctor=doctor, appointments=appointments_list, specialization=specialization, patient_count=patient_count, today=today)
+    return render_template('doctor-dashboard.html', current_user=user, doctor=doctor, appointments=appointments_list, specialization=specialization, patient_count=patient_count, today=today)
 
