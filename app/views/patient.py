@@ -70,7 +70,7 @@ def patient_dashboard():
     if patient is None:
         return translate('User is not a patient'), 403
 
-    # Unified query to fetch all appointments
+    # Unified query to fetch the next appointment
     appointments_query = (
         db.session.query(Appointment, Doctor, Clinic, Specialization)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
@@ -79,10 +79,10 @@ def patient_dashboard():
         .filter(Appointment.patient_id == patient.id)
     )
 
-    # Get next appointment (excluding cancelled ones)
+    # Get next appointment (excluding canceled ones)
     next_appointment_query = appointments_query.filter(
         Appointment.date >= db.func.current_date(),
-        Appointment.status != AppStatus.Cancelled.value  # Exclude cancelled appointments
+        Appointment.status != AppStatus.Cancelled.value  # Exclude canceled appointments
     ).order_by(Appointment.date.asc(), Appointment.time.asc())
 
     next_appointment = next_appointment_query.first()
@@ -113,31 +113,6 @@ def patient_dashboard():
     blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
     allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
-    all_appointments_query = appointments_query.order_by(Appointment.date.desc(), Appointment.time.desc())
-
-    all_appointments = []
-    for appointment, doctor, clinic, specialization in all_appointments_query.all():
-        doctor_user = User.query.filter_by(id=doctor.user_id).first()
-        appointment_start_time = datetime.combine(appointment.date, appointment.time)
-        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
-        appointment_end_time = (appointment_start_time + duration_delta).time()
-
-        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
-        duration_str = f"{doctor.duration.minute} min"
-        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
-
-        all_appointments.append({
-            'date': formatted_date,
-            'time_range': time_range,
-            'duration': duration_str,
-            'clinic_address': clinic.address,
-            'doctor_name': doctor_user.name,
-            'doctor_photo': doctor_user.photo,
-            'doctor_specialization': specialization.specialization_name,
-            'price': doctor.price,
-            'status': AppStatus(appointment.status).name
-        })
-
     # Fetch prescriptions
     prescriptions_query = db.session.query(PatientMedicine).filter(
         PatientMedicine.patient_id == patient.id
@@ -156,7 +131,6 @@ def patient_dashboard():
     # Limit to 4 prescriptions for display
     limited_prescriptions = all_prescriptions[:4]
     show_more_button = len(all_prescriptions) > 4
-
     # Render the template with the necessary data
     return render_template(
         'patient-dashboard.html',
@@ -166,8 +140,6 @@ def patient_dashboard():
         blood_group=blood_group,
         allergy=allergy,
         prescriptions=limited_prescriptions,
-        show_more_button=show_more_button,
-        all_appointments=all_appointments
     )
 
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
