@@ -48,6 +48,7 @@ def doctor_appointments():
 
     if request.method == 'POST':
         selected_timeslot = request.form['timeslot']
+        print(f"TimeSolt...........................................{selected_timeslot}")
         return redirect(url_for('checkout', doctor_id=doctor.id, timeslot=selected_timeslot))
 
 

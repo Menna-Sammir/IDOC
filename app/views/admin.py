@@ -82,7 +82,7 @@ def add_clinic():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = (
-                        f"{unique_str}_{add_clinic_form.clinicName.data.strip()}{extension}"
+                        f"{unique_str}_{add_clinic_form.clinicName.data.replace(' ', '_')}{extension}"
                     )
                     Clinic_create.photo = new_filename
 
@@ -94,7 +94,7 @@ def add_clinic():
 
                     db.session.add(Clinic_create)
                     db.session.commit()
-                    return redirect(url_for('doctor_dash'))
+                    return redirect(url_for('dashboard'))
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
                         flash(
@@ -149,7 +149,7 @@ def add_doctor():
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = (
-                        f"{unique_str}_{clinic.strip()}_{doctor_name.strip()}{extension}"
+                        f"{unique_str}_{clinic.replace(' ', '_')}_{doctor_name.replace(' ', '_')}{extension}"
                     )
                     Doctor_create.photo = new_filename
                     if file and allowed_file(file.filename):
@@ -157,7 +157,7 @@ def add_doctor():
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], "doctors", filename))
                     db.session.add(Doctor_create)
                     db.session.commit()
-                    return redirect(url_for('admin_dash'))
+                    return redirect(url_for('dashboard'))
                 except Exception as e:
                     flash(f'something wrong', category='danger')
                     print(str(e))
