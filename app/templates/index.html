@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -136,6 +136,10 @@
               </svg>
             </a>
 
+            <div class="col-md-6 form-inline my-2 my-lg-0">
+              <ul class="d-flex align-items-center list-unstyled">
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none d-lg-block" href="#home">{{ translate('Home') }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -144,18 +148,33 @@
                 <li class="nav-item mr-3">
                     <a class="py-2 d-inline-block font-weight-semibold text-white d-none nav-link d-lg-block" href="#home">Home</a>
                 </li>
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#aboutus">{{ translate('About Us') }}</a>
                 <li class="nav-item mr-3">
                     <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"  href="#aboutus">About us</a>
                 </li>
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#service">{{ translate('service') }}</a>
                 <li class="nav-item mr-3">
                     <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#service">Service</a>
                 </li>
+                <li class="mr-3">
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#">{{ translate('Contact Us') }}</a>
+                <li class="mx-4">
+                    <a class="d-inline-block font-weight-semibold text-white px-4 home-login" href="{{ url_for('login_page') }}">{{ translate('Login') }}</a>
                 <li class="nav-item mr-3">
                     <a class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link" href="#contactus">Contact Us</a>
                 </li>
                 <li class="nav-item mx-4">
                     <a class="d-inline-block font-weight-semibold text-white px-4 home-login nav-link " href="{{ url_for('login_page') }}">Login</a>
                 </li>
+              </ul>
+              <select id="languageSelect" onchange="location.href = '/set_language?language=' + this.value;" class="rounded border appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full">
+                <option value="en" {{ 'selected' if get_locale() == 'en' else '' }}>English</option>
+                <option value="ar" {{ 'selected' if get_locale() == 'ar' else '' }}>العربية</option>
+            </select>
+          </div>
+            </div>
             </ul>
           </div>
           </nav>
@@ -183,7 +202,7 @@
                       padding-bottom: 1px;
                     "
                   >
-                    Search for a doctor
+                  {{ translate('Search for a doctor') }}
                   </p>
                   <p
                     class="mb-0 text-home"
@@ -192,7 +211,7 @@
                       padding-bottom: 1px;
                     "
                   >
-                    Examination or procedure
+                  {{ translate('Examination or procedure') }}
                   </p>
                 </div>
               </div>
@@ -219,6 +238,7 @@
                       {{ form.doctor_name.label(class="focus-label") }} {{
                       form.doctor_name( class="form-control border-0 p-1
                       floating")}}
+                      {{ form.doctor_name(class="form-control border-0 p-1 floating", placeholder=form.doctor_name.label.text) }}
                     </p>
                     <div class="col-md-1 "></div>
                     <p class="col-md-1 col-sm-4 mt-1 mb-1 p-0 pr-4 text-right">
@@ -242,12 +262,9 @@
       <section class="section section-specialities" id="service">
         <div class="container-fluid">
           <div class="section-header text-center">
-            <h2>Clinic and Specialities</h2>
+            <h2>{{ translate('Clinic and Specialities') }}</h2>
             <p class="sub-title">
-              We offer a wide range of specialties to meet the diverse
-              healthcare needs of our patients. Our dedicated team of
-              professionals provides expert care in areas such as cardiology,
-              orthopedics, neurology, and pediatrics.
+              {{ translate('We offer a wide range of specialties to meet the diverse healthcare needs of our patients. Our dedicated team of professionals provides expert care in areas such as cardiology,orthopedics, neurology, and pediatrics.') }}
             </p>
           </div>
           <div class="row justify-content-center">
@@ -291,34 +308,28 @@
               <div class="circle background background-small"></div>
             </div>
             <div class="col-lg-5 col-md-12">
-              <h3 class="text-muted">ABOUT US</h3>
-              <h2 class="mr-5 pr-5">Health Clinic With Quality For You</h2>
+              <h3 class="text-muted">{{ translate('ABOUT US') }}</h3>
+              <h2 class="mr-5 pr-5">{{ translate('Health Clinic With Quality For You') }}</h2>
               <p class="text-muted">
-                Doctime Group is a health insurance company that also provides
-                data analytics and consulting services to healthcare providers,
-                as well as pharmacy care services.
+                {{ translate('IDOC Group facilitates seamless appointment booking services for patients, connecting them with healthcare professionals across various clinics. We streamline the process, ensuring convenient access to quality medical care.') }}
               </p>
               <ul class="p-0">
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of females who get screened for
-                    breast cancer-C-05</span
+                    >{{ translate('Enhance Preventive Healthcare Access') }}</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of adults with arthritis who get
-                    counseling for physical activity - A-04</span
+                    >{{ translate('Optimize Wellness Consultations') }}</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of people with sickle cell disease
-                    on Medicare who received disease-modifying therapies -
-                    BDBS-02</span
+                    >{{ translate('Improve Disease Management Services') }}</span
                   >
                 </li>
               </ul>
@@ -332,7 +343,7 @@
       <section class="section section-doctor">
         <div class="container-fluid">
           <div class="section-header text-center">
-            <h2>Our Specialist Doctor</h2>
+            <h2>{{ translate('Our Specialist Doctor') }}</h2>
           </div>
           <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -379,7 +390,7 @@
                           <a
                             href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                             class="btn book-btn"
-                            >Book Now</a
+                            >{{ translate('Book Now') }}</a
                           >
                         </div>
                       </div>
@@ -407,11 +418,12 @@
               />
             </div>
             <div class="col-md-7">
+              <div class="section-header">
+                <h2 class="mt-2">{{ translate('Availabe Features in Our Clinic') }}</h2>
               <div class="section-header text-md-left text-sm-center">
                 <h2 class="mt-2">Availabe Features in Our Clinic</h2>
                 <p>
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
+                  {{ translate('Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being') }}
                 </p>
               </div>
               <div class="features-slider slider">
@@ -422,7 +434,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Patient Ward</p>
+                  <p>{{ translate('Patient Ward') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -433,7 +445,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Test Room</p>
+                  <p>{{ translate('Test Room') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -444,7 +456,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>ICU</p>
+                  <p>{{ translate('ICU') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -455,7 +467,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Laboratory</p>
+                  <p>{{ translate('Laboratory') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -466,7 +478,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Operation</p>
+                  <p>{{ translate('Operation') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -477,7 +489,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Medical</p>
+                  <p>{{ translate('Medical') }}</p>
                 </div>
                 <!-- /Slider Item -->
               </div>
@@ -491,18 +503,18 @@
       <section class="section section-contact bg-white" id="contactus">
                 <div class="container-fluid">
                   <div class="section-header text-center">
-                    <h2>CONTACT US</h2>
+                    <h2>{{ translate('CONTACT US') }}</h2>
                   </div>
                   <div class="row justify-content-center">
                     <div class="col-md-9 row justify-content-between">
                         <div class="contact-card col-md-4 d-md-block d-sm-none">
-                          <span class="head-contact">Contact Information</span>
-                          <p class="mb-4">We'll create high quality link able content </p>
+                          <span class="head-contact">{{ translate('Contact Information') }}</span>
+                          <p class="mb-4">{{ translate('We will create high quality link able content') }} </p>
                           <div class="contact-info">
                               <p class="mb-4"><i class="fas fa-phone-alt mr-2"></i> +20 012 10 10 100 </p>
                               <p class="mb-4"><i class="far fa-envelope mr-2"></i>info@IDOC.com</p>
                               <p class="mb-4"><i class="fas fa-map-marker-alt mr-2"></i>
-                                El Tayaran Street, Cairo, EGYPT</p>
+                                {{ translate('El Tayaran Street, Cairo, EGYPT') }}</p>
                           </div>
                           <div class="circle-contact "></div>
                       </div>

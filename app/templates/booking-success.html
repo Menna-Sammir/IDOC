@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Booking Success {% endblock %}
+{% block title %} {{ translate('Booking Success') }} {% endblock %}
 {%block body %}
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -8,11 +8,11 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Booking</li>
+            <li class="breadcrumb-item"><a href="#">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ translate('Booking') }}</li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Booking</h2>
+        <h2 class="breadcrumb-title">{{ translate('Booking') }}</h2>
       </div>
     </div>
   </div>
@@ -29,13 +29,13 @@
           <div class="card-body">
             <div class="success-cont">
               <i class="fas fa-check"></i>
-              <h3>Appointment booked Successfully!</h3>
+              <h3>{{ translate('Appointment booked Successfully!') }}</h3>
               <p>
-                Appointment booked with <strong>{{doctor}}</strong><br />
+                {{ translate('Appointment booked with') }} <strong>{{doctor}}</strong><br />
                 on <strong>{{date}} {{time}}</strong>
               </p>
               <a href="{{ url_for('home') }}" class="btn btn-secondary view-inv-btn"
-                >Back to Home</a
+                >{{ translate('Back to Home') }}</a
               >
             </div>
           </div>
