@@ -5,13 +5,11 @@ from app.models.models import Specialization, User, Doctor,  Patient, Appointmen
 
 
 @app.route('/')
-@app.route('/home')
-def home_page():
-    return render_template('index.html')
+@app.route('/search_doctor')
+def search_doctor():
+    
+    return render_template('search.html')
 
 
 
-@app.route('/test')
-def test_page():
-    return render_template('doctor-signup.html')
 
