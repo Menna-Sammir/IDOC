@@ -239,6 +239,8 @@ def patient_checkout():
         gov = clinic_data.governorate
         if request.method == 'POST':
             confirm_message = ''
+            user_to_create = None
+            name = ""
             status = AppStatus.Pending
             if checkout_form.validate_on_submit():
                 temp_password = secrets.token_urlsafe(8)
@@ -246,14 +248,15 @@ def patient_checkout():
                 #     email=checkout_form.email_address.data
                 # ).first()
                 role = Role.query.filter_by(role_name='patient').first().id
-                patient = (
+                patient_user = (
                     User.query.filter_by(email=checkout_form.email_address.data)
                     .join(UserRole)
                     .filter(UserRole.role_id == role)
                     .first()
                 )
-                if patient:
-                    patient_create = patient
+                if patient_user:
+                    name = patient_user.name
+                    patient_create = Patient.query.filter_by(user_id = patient_user.id).first()
                     status = AppStatus.Confirmed
                 else:
                     reset_link = url_for(
@@ -262,11 +265,9 @@ def patient_checkout():
                         _external=True
                     )
                     confirm_message = f"To confirm your appointment please login temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
-                    print('ccccccccccccccccccccccccccc', confirm_message)
+                    name=f"{checkout_form.firstname.data} { checkout_form.lastname.data}";
                     user_to_create = User(
-                        name=checkout_form.firstname.data
-                        + ' '
-                        + checkout_form.lastname.data,
+                        name=name,
                         email=checkout_form.email_address.data,
                         activated=False,
                         temp_pass=temp_password
@@ -274,9 +275,11 @@ def patient_checkout():
                     patient_create = Patient(
                         phone=checkout_form.phone.data, users=user_to_create
                     )
-                print(date.strftime('%Y-%m-%d'))
-                print(start_time.strftime('%H:%M:%S'))
-                print(status)
+                    role_to_create = UserRole(
+                        role_id=role, user=user_to_create
+                    )
+                    db.session.add(patient_create)
+                    db.session.add(role_to_create)
                 appointment_create = Appointment(
                     date=date.strftime('%Y-%m-%d'),
                     time=start_time.strftime('%H:%M:%S'),
@@ -289,281 +292,80 @@ def patient_checkout():
                 logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
 
                 message_body = f"""\
-
-
-
                     <html>
-
-
-
                     <head>
-
-
-
                         <style>
-
-
-
                             body {{
-
-
-
                                 font-family: Arial, sans-serif;
-
-
-
                                 font-size: 18px;
-
-
-
                                 margin: 0;
-
-
-
                                 padding: 0;
-
-
-
                                 background-color: #f4f4f4;
-
-
-
                             }}
-
-
-
                             .container {{
-
-
-
                                 width: 80%;
-
-
-
                                 margin: 20px auto;
-
-
-
                                 background-color: #fff;
-
-
-
                                 padding: 20px;
-
-
-
                                 border-radius: 10px;
-
-
-
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-
-
                             }}
-
-
-
                             .header {{
-
-
-
                                 background-color: #007bff;
-
-
-
                                 padding: 10px;
-
-
-
                                 text-align: center;
-
-
-
                                 border-radius: 10px 10px 0 0;
-
-
-
                             }}
-
-
-
                             .logo {{
-
-
-
                                 text-align: center;
-
-
-
                                 margin-bottom: 20px;
-
-
-
                             }}
-
-
-
                             .content {{
-
-
-
                                 padding: 20px;
-
-
-
                             }}
-
-
-
                             .footer {{
-
-
-
                                 text-align: left;
-
-
-
                                 margin-top: 20px;
-
-
-
                                 color: #777;
-
-
-
                             }}
 
                             a {{
-
                                 color: red;
-
                             }}
-
-
-
                         </style>
-
-
-
                     </head>
-
-
-
                     <body>
-
-
-
                         <div class="container">
-
-
-
                             <div class="header">
-
-
-
                                 <h2>Appointment Confirmation</h2>
-
-
-
                             </div>
-
-
-
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
-
-
-
                             </div>
-
-
-
                             <div class="content">
-
-
-
-                                <p>Dear {user_to_create.name},</p>
-
-
-
+                                <p>Dear {name},</p>
                                 <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
-
-
-
                                 <h3>Appointment Details:</h3>
-
-
-
                                 <ul>
-
-
-
                                     <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
-
-
-
                                     <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} for {doctor_data.duration} Min </li>
-
                                     <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
-
                                     <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
-
-
-
                                 </ul>
-
-
-
                                 <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
-
                                 <a>
-
                                 {confirm_message}
-
                                 </a>
-
-
-
                                 <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
-
-
-
                                 <p>We look forward to seeing you and providing the care you need.</p>
-
-
-
                             </div>
-
-
-
                             <div class="footer">
-
-
-
                                 <p>Best regards,</p>
-
-
-
                                 <p>{clinic_data.users.name}</p>
-
-
-
                                 <p>{clinic_data.phone}</p>
-
-
-
                             </div>
-
-
-
                         </div>
-
-
-
                     </body>
-
                     </html>
-
                         """
                 message_create = Message(appointment=appointment_create, status=False)
                 try:
@@ -600,7 +402,7 @@ def patient_checkout():
                     isRead=False,
                     appointment=appointment_create
                 )
-                db.session.add(patient_create)
+
                 db.session.add(appointment_create)
                 db.session.add(message_create)
                 db.session.add(notification_create)
@@ -881,7 +683,7 @@ def sendEmail():
 @app.route('/patient-profile/<string:patient_id>')
 def patient_profile(patient_id):
     patient = Patient.query.get_or_404(patient_id)
-    
+
     return render_template('patient-profile.html')
 
 
@@ -899,10 +701,10 @@ def patient_setting():
             if form.photo.data:
                 photo_filename = secure_filename(form.photo.data.filename)
                 photo_directory = os.path.join('static', 'images', 'patients')
-                
+
                 if not os.path.exists(photo_directory):
                     os.makedirs(photo_directory)
-                    
+
                 photo_path = os.path.join(photo_directory, photo_filename)
                 form.photo.data.save(photo_path)
                 user.photo = photo_path
@@ -936,7 +738,7 @@ def patient_setting():
                 db.session.commit()
                 flash('Your profile has been updated!', 'success')
                 return jsonify({'status': 'success'})
-            
+
             except Exception as e:
                 db.session.rollback()
                 return jsonify({'status': 'error', 'message': 'An error occurred while updating your settings. Please try again.'}), 500
