@@ -9,6 +9,7 @@
         "Dr.": "Dr.",
         "From": "From",
         "To": "To",
+        "Dia Duration": "Dia Duration",
         "Clinic Logo": "Clinic Logo",
         "Add Clinic": "Add Clinic",
         "File size must be less than 2MB.": "File size must be less than 2MB.",
@@ -169,7 +170,7 @@
         "Improve Disease Management Services": "Improve Disease Management Services",
         "Our Specialist Doctor": "Our Specialist Doctor",
         "Availabe Features in Our Clinic": "Available Features in Our Clinic",
-        "Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being": "Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being",       
+        "Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being": "Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being",
         "Patient Ward": "Patient Ward",
         "Test Room": "Test Room",
         "ICU": "ICU",
@@ -291,7 +292,9 @@
         "Jewel clinic": "Jewel clinic",
         "Paid Amount": "Paid Amount",
         "Patient Appoinment": "Patient Appoinment",
-        "appointments": "appointments"
+        "appointments": "appointments",
+        "Select Time": "Select Time"
+
 
     },
 
@@ -586,6 +589,8 @@
         "Jewel clinic": "عيادة جويل",
         "Paid Amount": "المبلغ المدفوع",
         "Patient Appoinment": "مواعيد المرضي",
-        "appointments": "المواعيد"
+        "appointments": "المواعيد",
+        "Dia Duration": "فترة الكشف",
+        "Select Time": "اختيار الوقت"
     }
 }
