@@ -380,10 +380,7 @@
           <div class="section-header text-center">
             <h2>{{ translate('Clinic and Specialities') }}</h2>
             <p class="sub-title">
-              {{ translate('We offer a wide range of specialties to meet the
-              diverse healthcare needs of our patients. Our dedicated team of
-              professionals provides expert care in areas such as
-              cardiology,orthopedics, neurology, and pediatrics.') }}
+              {{ translate('We offer a wide range of specialties to meet the diverse healthcare needs of our patients. Our dedicated team of professionals provides expert care in areas such as cardiology,orthopedics, neurology, and pediatrics.') }}
             </p>
           </div>
           <div class="row justify-content-center">
@@ -434,10 +431,7 @@
                 {{ translate('Health Clinic With Quality For You') }}
               </h2>
               <p class="text-muted">
-                {{ translate('IDOC Group facilitates seamless appointment
-                booking services for patients, connecting them with healthcare
-                professionals across various clinics. We streamline the process,
-                ensuring convenient access to quality medical care.') }}
+                {{ translate('IDOC Group facilitates seamless appointment booking services for patients, connecting them with healthcare professionals across various clinics. We streamline the process, ensuring convenient access to quality medical care.') }}
               </p>
               <ul class="p-0">
                 <li class="d-flex align-items-top my-3">
@@ -492,16 +486,20 @@
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
-                        <a href="#">{{ translate('Dr.') }}{{ translate(doctor.name) }}</a>
+                        <a href="#"
+                          >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
+                        >
                         <i class="fas fa-check-circle verified"></i>
                       </h3>
                       <p class="speciality">
-                        {{ translate(doctor.specialization.specialization_name) }}
+                        {{ translate(doctor.specialization.specialization_name)
+                        }}
                       </p>
                       <ul class="available-info">
                         <li>
                           <i class="fas fa-map-marker-alt"></i>
-                          {{ translate(doctor.clinic.address) }}
+                          {{ doctor.clinic.name}} {{
+                          translate(doctor.clinic.address) }}, Egypt
                         </li>
                         <li>
                           <i class="far fa-money-bill-alt"></i> {{doctor.price}}
@@ -551,11 +549,8 @@
                   {{ translate('Availabe Features in Our Clinic') }}
                 </h2>
                 <div class="section-header text-md-left text-sm-center">
-                  <h2 class="mt-2">Availabe Features in Our Clinic</h2>
                   <p>
-                    {{ translate('Discover a wealth of services and amenities at
-                    our clinic, tailored to meet your needs and ensure your
-                    well-being') }}
+                    {{ translate('Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being') }}
                   </p>
                 </div>
                 <div class="features-slider slider">
