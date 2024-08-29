@@ -2,8 +2,6 @@ from app import app, db, principal
 from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
-from app.views.forms.addClinic_form import ClinicForm
-from app.views.forms.addDoctor_form import DoctorForm
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -11,141 +9,9 @@ from email.mime.image import MIMEImage
 import os
 from datetime import datetime
 from flask import session
-from werkzeug.utils import secure_filename
-import uuid
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from app import socketio
 
 clinic_rooms = {}
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route('/add_clinic', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_clinic')
-def add_clinic():
-    add_clinic_form = ClinicForm()
-    govs = Governorate.query.filter().all()
-    add_clinic_form.gov_id.choices = [('', 'Select a governorate')] + [
-        (gov.id, gov.governorate_name) for gov in govs
-    ]
-    if request.method == 'POST':
-        try:
-            clinic = Clinic.query.filter_by(
-                name=add_clinic_form.clinicName.data
-            ).first()
-            if clinic:
-                flash('clinic already exists!')
-            else:
-                if add_clinic_form.validate_on_submit():
-                    from_hour = add_clinic_form.fromHour.data.strftime('%H:%M %p')
-                    to_hour = add_clinic_form.toHour.data.strftime('%H:%M %p')
-                    Clinic_create = Clinic(
-                        name=add_clinic_form.clinicName.data,
-                        phone=add_clinic_form.phone.data,
-                        email=add_clinic_form.email_address.data,
-                        address=add_clinic_form.clinicAddress.data,
-                        working_hours=f'from {from_hour} to {to_hour}',
-                        governorate_id=add_clinic_form.gov_id.data
-                    )
-
-                    if 'logo' not in request.files:
-                        flash('No file part')
-                        return redirect(request.url)
-                    file = request.files['logo']
-                    if file.filename == '':
-                        flash('No selected file')
-                        return redirect(request.url)
-                    unique_str = str(uuid.uuid4())[:8]
-                    original_filename, extension = os.path.splitext(file.filename)
-                    new_filename = (
-                        f"{unique_str}_{add_clinic_form.clinicName.data}{extension}"
-                    )
-                    Clinic_create.photo = new_filename
-                    if file and allowed_file(file.filename):
-                        filename = secure_filename(new_filename)
-                        file.save(
-                            os.path.join(app.config['UPLOAD_FOLDER'], 'clinic', filename)
-                        )
-                    db.session.add(Clinic_create)
-                    db.session.commit()
-                    return redirect(url_for('admin_dash'))
-                if add_clinic_form.errors != {}:
-                    for err_msg in add_clinic_form.errors.values():
-                        flash(
-                            f'there was an error with creating a user: {err_msg}',
-                            category='danger'
-                        )
-        except Exception as e:
-            flash(f'something wrong', category='danger')
-            print(str(e))
-    return render_template('add-clinic.html', form=add_clinic_form)
-
-
-@app.route('/add_doctor', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_doctor')
-def add_doctor():
-    add_doctor_form = DoctorForm()
-    clinics = Clinic.query.filter().all()
-    specializations = Specialization.query.filter().all()
-    add_doctor_form.clinic_id.choices = [('', 'Select a clinic')] + [
-        (clinic.id, clinic.name) for clinic in clinics
-    ]
-    add_doctor_form.specialization_id.choices = [('', 'Select a specialization')] + [
-        (specialization.id, specialization.specialization_name)
-        for specialization in specializations
-    ]
-    if request.method == 'POST':
-        if add_doctor_form.validate_on_submit():
-            doctor_name = add_doctor_form.firstname.data + ' ' + add_doctor_form.lastname.data,
-            doctor = Doctor.query.filter_by(
-                name=doctor_name, clinic_id =add_doctor_form.clinic_id.data
-            ).first()
-
-            if doctor:
-                flash('doctor already exists!')
-            else:
-                try:
-                    clinic = Clinic.query.get(add_doctor_form.clinic_id.data).name
-                    Doctor_create = Doctor(
-                    name = doctor_name,
-                    phone = add_doctor_form.phone.data,
-                    email = add_doctor_form.email_address.data,
-                    price = add_doctor_form.price.data,
-                    specialization_id = add_doctor_form.specialization_id.data,
-                    clinic_id = add_doctor_form.clinic_id.data
-                    )
-                    if 'photo' not in request.files:
-                        flash('No file part')
-                        return redirect(request.url)
-                    file = request.files['photo']
-                    if file.filename == '':
-                        flash('No selected file')
-                        return redirect(request.url)
-                    unique_str = str(uuid.uuid4())[:8]
-                    original_filename, extension = os.path.splitext(file.filename)
-                    new_filename = (
-                        f"{unique_str}_{clinic}_{doctor_name.strip()}{extension}"
-                    )
-                    Doctor_create.photo = new_filename
-                    if file and allowed_file(file.filename):
-                        filename = secure_filename(new_filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], "doctors", filename))
-                    db.session.add(Doctor_create)
-                    db.session.commit()
-                    return redirect(url_for('admin_dash'))
-                except Exception as e:
-                    flash(f'something wrong', category='danger')
-                    print(str(e))
-        if add_doctor_form.errors != {}:
-            for err_msg in add_doctor_form.errors.values():
-                flash(
-                    f'there was an error with adding doctor: {err_msg}',
-                    category='danger'
-                )
-    return render_template('add-doctor.html', form=add_doctor_form)
 
 
 
@@ -795,24 +661,11 @@ def patient_checkout():
         date=date.strftime('%d %b %Y'),
         form=checkout_form
     )
-    
 
-@socketio.on('connect')
-def handle_connect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        clinic_rooms[clinic_id] = request.sid
-        join_room(clinic_rooms[clinic_id])
-        emit('connected', {'message': f'Clinic {clinic_id} connected.'})
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id and clinic_id in clinic_rooms:
-        leave_room(clinic_rooms[clinic_id])
-        del clinic_rooms[clinic_id]
-        emit('disconnected', {'message': f'Clinic {clinic_id} disconnected.'})
-
-@app.route('/clinic_dash', methods=['GET'])
-def clinic_dash():
-    return render_template('clinic.html')
+# todo special page
+@app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
+def specialities():
+    return render_template(
+        'specialities.html'
+    )

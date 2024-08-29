@@ -1,0 +1,50 @@
+<div class="profile-sidebar">
+    <div class="widget-profile pro-widget-content">
+        <div class="profile-info-widget">
+            <a href="#" class="booking-doc-img">
+                <img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
+            </a>
+            <div class="profile-det-info">
+                <h3>{{current_user.name}}</h3>
+                
+            </div>
+        </div>
+    </div>
+    <div class="dashboard-widget">
+        <nav class="dashboard-menu">
+            <ul>
+                <li class="{{ 'active' if request.endpoint == 'dashboard' else '' }}">
+
+                    <a href="{{ url_for('add_clinic') }}">
+                        <i class="fas fa-columns"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'add_clinic' else '' }}">
+                    <a href="{{ url_for('add_clinic') }}">
+                        <i class="fas fa-clinic-medical"></i>
+                        <span>Add Clinic</span>
+                    </a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'add_doctor' else '' }}">
+                    <a href="{{ url_for('add_doctor') }}">
+                        <i class="fas fa-user-nurse"></i>
+                        <span>ADD Doctor</span>
+                    </a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
+                    <a href="doctor-change-password.html">
+                        <i class="fas fa-lock"></i>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
+                    <a href="{{ url_for('logout_page') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

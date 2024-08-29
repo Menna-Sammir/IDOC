@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% block title %} Booking Success {% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+{% block title %} Booking Success {% endblock %}
+{%block body %}
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
@@ -30,11 +31,11 @@ block content %}
               <i class="fas fa-check"></i>
               <h3>Appointment booked Successfully!</h3>
               <p>
-                Appointment booked with <strong>Dr. Darren Elder</strong><br />
-                on <strong>12 Nov 2019 5:00PM to 6:00PM</strong>
+                Appointment booked with <strong>{{doctor}}</strong><br />
+                on <strong>{{date}} {{time}}</strong>
               </p>
-              <a href="invoice-view.html" class="btn btn-primary view-inv-btn"
-                >View Invoice</a
+              <a href="{{ url_for('home_page') }}" class="btn btn-primary view-inv-btn"
+                >Back to Home</a
               >
             </div>
           </div>
