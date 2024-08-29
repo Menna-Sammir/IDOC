@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, and_
 from app import translate, get_locale
 import json
-from flask_babel import lazy_gettext as _
+from flask_babel import lazy_gettext as _, format_decimal
 from app import load_translations, translations
 
 
@@ -112,7 +112,8 @@ def search_doctor():
         governorates = Governorate.query.all()
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
-
+    total_matches = format_decimal(pagination.total)
+    translated_matches = translate('matches found', total_matches, 'decimal')
     return render_template(
         'search.html',
         doctors=doctors,
@@ -123,7 +124,8 @@ def search_doctor():
         else [],
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
-        form=form
+        form=form,
+        total_matches=translated_matches
     )
 
 
