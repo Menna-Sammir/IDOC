@@ -15,19 +15,15 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, and_
 
 
-
-
 def convert_to_24_hour(time_str):
     return datetime.strptime(time_str, '%I%p').time()
-
-
 
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
     form = SearchForm()
-    form.specialization.choices =  [('', 'Select a specialization')] + [
+    form.specialization.choices = [('', 'Select a specialization')] + [
         (s.id, s.specialization_name) for s in Specialization.query.all()
     ]
     form.governorate.choices = [('', 'Select a governorate')] + [
@@ -42,15 +38,13 @@ def home():
             session['doctor_name'] = form.doctor_name.data
             return redirect(url_for('search_doctor'))
     if form.errors != {}:
-            for err_msg in form.errors.values():
-                flash(
-                    f'there was an error with creating a user: {err_msg}',
-                    category='danger'
-                )
-    return render_template('index.html', form=form, specialties= specialties, doctors=doctor)
-
-
-
+        for err_msg in form.errors.values():
+            flash(
+                f'there was an error with creating a user: {err_msg}', category='danger'
+            )
+    return render_template(
+        'index.html', form=form, specialties=specialties, doctors=doctor
+    )
 
 
 # doctor search page
@@ -81,7 +75,6 @@ def search_doctor():
             query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
     else:
         query = query.filter().all()
-
     specializations = Specialization.query.all()
 
     selected_specializations = []
@@ -129,12 +122,21 @@ def doctor_appointments():
     doctor = Doctor.query.get_or_404(doctor_id)
     clinic = doctor.clinic
     specialization_name = doctor.specialization.specialization_name
+    other_doctors = (
+        Doctor.query.filter(
+            Doctor.specialization_id == doctor.specialization_id, Doctor.id != doctor_id
+        )
+        .limit(3)
+        .all()
+    )
+
     dates = []
 
-    for i in range(6):
+    for i in range(9):
         date = datetime.now() + timedelta(days=i)
-        dates.append((date.strftime('%Y-%m-%d'), date.strftime('%A')))
-
+        dates.append(
+            (date.strftime('%Y-%m-%d'), date.strftime('%a'), date.strftime('%d'))
+        )
     timeslots_by_date = {}
 
     for date in dates:
@@ -151,10 +153,19 @@ def doctor_appointments():
                 start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
                 end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
                 timeslot = f"{date[0]} {start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
-                daily_timeslots.append((timeslot, f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"))
-
-        existing_appointments = Appointment.query.filter_by(doctor_id=doctor.id, date=date[0]).all()
-        booked_timeslots = [f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(datetime.combine(datetime.min, a.time) + timedelta(hours=1)).strftime('%H:%M')}" for a in existing_appointments]
+                daily_timeslots.append(
+                    (
+                        timeslot,
+                        f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+                    )
+                )
+        existing_appointments = Appointment.query.filter_by(
+            doctor_id=doctor.id, date=date[0]
+        ).all()
+        booked_timeslots = [
+            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-{(a.time + timedelta(hours=1)).strftime('%H:%M')}"
+            for a in existing_appointments
+        ]
 
         available_timeslots = []
         for timeslot in daily_timeslots:
@@ -163,21 +174,27 @@ def doctor_appointments():
             else:
                 available_timeslots.append((timeslot[0], timeslot[1], True))
         timeslots_by_date[date[0]] = available_timeslots
-
     if request.method == 'POST':
+        print(request.form)
         selected_timeslot = request.form['timeslot']
+        doctor_id = request.form['doctor_id']
+
         date_str, time_range = selected_timeslot.split()
         start_time_str, end_time_str = time_range.split('-')
-        session['doctor_id'] = doctor_id
-        session['date'] = date_str
-        session['start_time'] = start_time_str
-        session['end_time'] = end_time_str
-        return redirect(url_for('patient_checkout'))
+        print(
+            f"Doctor ID: {doctor_id}, Date: {date_str}, Start Time: {start_time_str}, End Time: {end_time_str}"
+        )
 
-    return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name)
-
-
-
+    return render_template(
+        'booking.html',
+        form=form,
+        doctor=doctor,
+        dates=dates,
+        timeslots_by_date=timeslots_by_date,
+        clinic=clinic,
+        specialization_name=specialization_name,
+        other_doctors=other_doctors
+    )
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
@@ -203,7 +220,9 @@ def patient_checkout():
                 patient_create = patient
             else:
                 patient_create = Patient(
-                    name=checkout_form.firstname.data + ' ' + checkout_form.lastname.data,
+                    name=checkout_form.firstname.data
+                    + ' '
+                    + checkout_form.lastname.data,
                     phone=checkout_form.phone.data,
                     email=checkout_form.email_address.data
                 )
@@ -226,7 +245,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
         <html>
+
+
+
+
+
+
+
+
 
 
 
@@ -242,7 +277,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
             <style>
+
+
+
+
+
+
+
+
 
 
 
@@ -258,11 +309,31 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     font-family: Arial, sans-serif;
 
 
 
+
+
+
+
                     font-size: 18px;
+
+
+
+
+
+
+
+
 
 
 
@@ -278,7 +349,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     padding: 0;
+
+
+
+
+
+
+
+
 
 
 
@@ -294,7 +381,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -310,7 +413,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     width: 80%;
+
+
+
+
+
+
+
+
 
 
 
@@ -326,6 +445,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     background-color: #fff;
 
 
@@ -334,7 +461,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     padding: 20px;
+
+
+
+
+
+
+
+
 
 
 
@@ -350,6 +493,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
@@ -358,7 +509,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -374,7 +541,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     background-color: #007bff;
+
+
+
+
+
+
+
+
 
 
 
@@ -390,6 +573,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     padding: 10px;
 
 
@@ -398,7 +589,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     text-align: center;
+
+
+
+
+
+
+
+
 
 
 
@@ -414,7 +621,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -430,7 +653,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     text-align: center;
+
+
+
+
+
+
+
+
 
 
 
@@ -446,7 +685,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -462,6 +717,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     padding: 20px;
 
 
@@ -470,7 +733,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -486,7 +765,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     text-align: left;
+
+
+
+
+
+
+
+
 
 
 
@@ -502,7 +797,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     color: #777;
+
+
+
+
+
+
+
+
 
 
 
@@ -518,7 +829,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
             </style>
+
+
+
+
+
+
+
+
 
 
 
@@ -534,7 +861,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
         <body>
+
+
+
+
+
+
+
+
 
 
 
@@ -550,7 +893,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 <div class="header">
+
+
+
+
+
+
+
+
 
 
 
@@ -566,7 +925,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -578,11 +953,27 @@ def patient_checkout():
 
 
 
+
+
+
+
                     <img src="cid:logo_image" alt="Your Logo" width="200">
 
 
 
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -598,7 +989,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     <p>Dear {patient_create.name},</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -614,7 +1021,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     <h3>Appointment Details:</h3>
+
+
+
+
+
+
+
+
 
 
 
@@ -630,7 +1053,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                         <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
+
+
+
+
+
+
 
 
 
@@ -646,7 +1085,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                         <li><strong>Doctor:</strong> {doctor_data.name}</li>
+
+
+
+
+
+
+
+
 
 
 
@@ -662,7 +1117,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     </ul>
+
+
+
+
+
+
+
+
 
 
 
@@ -678,7 +1149,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -694,7 +1181,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -710,7 +1213,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     <p>Best regards,</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -726,7 +1245,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                     <p>{clinic_data.phone}</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -742,7 +1277,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -758,7 +1309,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
         </html>
+
+
+
+
+
+
+
+
 
 
 
@@ -805,13 +1372,13 @@ def patient_checkout():
     else:
         flash(f'no doctor data found', category='danger')
     return render_template(
-            'checkout.html',
-            doctor=doctor_data,
-            clinic=clinic_data,
-            gov=gov,
-            date=date.strftime('%d %b %Y'),
-            form=checkout_form
-        )
+        'checkout.html',
+        doctor=doctor_data,
+        clinic=clinic_data,
+        gov=gov,
+        date=date.strftime('%d %b %Y'),
+        form=checkout_form
+    )
 
 
 @app.route('/checkout-success', methods=['GET'], strict_slashes=False)
@@ -822,16 +1389,19 @@ def checkout_success():
     clinic_id = session.get('clinic_id', None)
 
     if clinic_id:
-        socketio.emit('appointment_notification', {
-            'doctor': doctor,
-            'date': date,
-            'time': start_time
-        }, room=clinic_id, namespace='/')
-
+        socketio.emit(
+            'appointment_notification',
+            {'doctor': doctor, 'date': date, 'time': start_time},
+            room=clinic_id,
+            namespace='/'
+        )
     session.pop('doctor', None)
     session.pop('date', None)
     session.pop('start_time', None)
-    return render_template('booking-success.html', doctor=doctor, date=date, time=start_time)
+    return render_template(
+        'booking-success.html', doctor=doctor, date=date, time=start_time
+    )
+
 
 @socketio.on('connect')
 def handle_connect():
@@ -840,12 +1410,14 @@ def handle_connect():
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
 
+
 # # @socketio.on('disconnect')
 # # def handle_disconnect():
 # #     clinic_id = request.args.get('clinic_id')
 # #     if clinic_id:
 # #         leave_room(clinic_id)
 # #         emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
+
 
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
