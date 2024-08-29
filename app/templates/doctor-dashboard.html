@@ -1,113 +1,103 @@
-{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }} {% endblock %} {%
-  block body %}
+{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
+{% endblock %} {% block body %}
 
-  <!-- Breadcrumb -->
-  <div class="breadcrumb-bar">
-    <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col-md-12 col-12">
-          <nav aria-label="breadcrumb" class="page-breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                {{ translate('Dashboard') }}
-              </li>
-            </ol>
-          </nav>
-          <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
-        </div>
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Dashboard') }}
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
       </div>
     </div>
   </div>
-  <!-- /Breadcrumb -->
+</div>
+<!-- /Breadcrumb -->
 
-  <!-- Page Content -->
-  <div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-          <!-- Profile Sidebar -->
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
 
-          {% block sidebar %} {% include 'base-doctor-side.html' %} {% endblock %}
-          <!-- /Profile Sidebar -->
-        </div>
+        {% block sidebar %} {% include 'base-doctor-side.html' %} {% endblock %}
+        <!-- /Profile Sidebar -->
+      </div>
 
-        <div class="col-md-7 col-lg-8 col-xl-9">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card dash-card">
-                <div class="card-body">
-                  <div class="row justify-content-around align-items-top">
-                    <div class="col-md-12 col-lg-7 row justify-content-around">
-                      <div
-                        class="card col-md-3 d-flex justify-content-center doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div
-                              class="doctordash-back">
-                              <i
-                                class="fas fa-user-injured fa-2x text-cyan"></i>
-                            </div>
-                          </div>
-                          <div
-                            class="d-block mt-3 mb-1 doctor-title">
-                            <span>{{ translate('patient') }}</span>
-                          </div>
-                          <div class="d-block text-muted">
-                            {{ patient_count }}
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card dash-card">
+              <div class="card-body">
+                <div class="row justify-content-around align-items-top">
+                  <div class="col-md-12 col-lg-7 row justify-content-around">
+                    <div
+                      class="card col-md-3 d-flex justify-content-center doctor-card"
+                    >
+                      <div class="card-body text-center px-0">
+                        <div class="d-block">
+                          <div class="doctordash-back">
+                            <i class="fas fa-user-injured fa-2x text-cyan"></i>
                           </div>
                         </div>
-                      </div>
-                      <div
-                        class="card col-md-3 doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div
-                              class="admin doctordash-back">
-                              <i
-                                class="fas fa-dollar-sign fa-2x text-cyan"></i>
-                            </div>
-                          </div>
-                          <div
-                            class="d-block mt-3 doctor-title">
-                            <span>{{ translate('Earning') }}</span>
-                          </div>
-                          <div class="d-block text-muted">
-                            {{ doctor.total_earnings() }}$
-                          </div>
+                        <div class="d-block mt-3 mb-1 doctor-title">
+                          <span>{{ translate('patient') }}</span>
                         </div>
-                      </div>
-                      <div
-                        class="card col-md-3 doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div
-                              class="doctordash-back">
-                              <i
-                                class="far fa-calendar-alt fa-2x text-cyan"></i>
-                            </div>
-                          </div>
-                          <div
-                            class="d-block mt-3 mb-1 doctor-title">
-                            <span>{{ translate('Appointments') }}</span>
-                          </div>
-                          <div class="d-block text-muted">
-                            {{ monthAppointments }}
-                          </div>
+                        <div class="d-block text-muted">
+                          {{ patient_count }}
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-12 col-lg-5">
-                      <div
-                        class="card doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div id="clock" class="light">
-                            <div class="display">
-                              <div class="weekdays"></div>
-                              <div class="ampm"></div>
-                              <div class="alarm"></div>
-                              <div class="digits"></div>
-                            </div>
+                    <div class="card col-md-3 doctor-card">
+                      <div class="card-body text-center px-0">
+                        <div class="d-block">
+                          <div class="admin doctordash-back">
+                            <i class="fas fa-dollar-sign fa-2x text-cyan"></i>
+                          </div>
+                        </div>
+                        <div class="d-block mt-3 doctor-title">
+                          <span>{{ translate('Earning') }}</span>
+                        </div>
+                        <div class="d-block text-muted">
+                          {{ doctor.total_earnings() }}$
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card col-md-3 doctor-card">
+                      <div class="card-body text-center px-0">
+                        <div class="d-block">
+                          <div class="doctordash-back">
+                            <i class="far fa-calendar-alt fa-2x text-cyan"></i>
+                          </div>
+                        </div>
+                        <div class="d-block mt-3 mb-1 doctor-title">
+                          <span>{{ translate('Appointments') }}</span>
+                        </div>
+                        <div class="d-block text-muted">
+                          {{ monthAppointments }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 col-lg-5">
+                    <div class="card doctor-card">
+                      <div class="card-body text-center px-0">
+                        <div id="clock" class="light">
+                          <div class="display">
+                            <div class="weekdays"></div>
+                            <div class="ampm"></div>
+                            <div class="alarm"></div>
+                            <div class="digits"></div>
                           </div>
                         </div>
                       </div>
@@ -117,100 +107,103 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <h4 class="mb-4">{{ translate('Patient Appoinment') }}</h4>
-              <div class="appointment-tab">
-                <!-- Appointment Tab -->
-                <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
-                  <li class="nav-item">
-                    <a
-                      class="nav-link active"
-                      href="#Today-appointments"
-                      data-toggle="tab"
-                      >{{ translate('Today') }}</a
-                    >
-                  </li>
-                </ul>
-                <!-- /Appointment Tab -->
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h4 class="mb-4">{{ translate('Patient Appoinment') }}</h4>
+            <div class="appointment-tab">
+              <!-- Appointment Tab -->
+              <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    href="#Today-appointments"
+                    data-toggle="tab"
+                    >{{ translate('Today') }}</a
+                  >
+                </li>
+              </ul>
+              <!-- /Appointment Tab -->
 
+              <div class="tab-content">
+                <!-- Today Appointment Tab -->
                 <div class="tab-content">
                   <!-- Today Appointment Tab -->
-                  <div class="tab-content">
-                    <!-- Today Appointment Tab -->
-                    <div class="tab-pane show active" id="upcoming-appointments">
-                      <div class="card card-table mb-0">
-                        <div class="card-body">
-                          <div class="table-responsive">
-                            <table class="table table-hover table-center mb-0">
-                              <thead>
-                                <tr>
-                                  <th>{{ translate('Patient Name') }}</th>
-                                  <th>{{ translate('Appt Date') }}</th>
-                                  <th>{{ translate('Phone') }}</th>
-                                  <th>{{ translate('Status') }}</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {% for appointment in appointments %}
-                                <tr>
-                                  <td>
-                                    {% if nextAppt == appointment.id%}
-                                    <i class="far fa-hand-point-right text-danger"></i>
+                  <div class="tab-pane show active" id="upcoming-appointments">
+                    <div class="card card-table mb-0">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                            <thead>
+                              <tr>
+                                <th>{{ translate('Patient Name') }}</th>
+                                <th>{{ translate('Appt Date') }}</th>
+                                <th>{{ translate('Phone') }}</th>
+                                <th>{{ translate('Status') }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for appointment in appointments %}
+                              <tr>
+                                <td>
+                                  {% if nextAppt == appointment.id%}
+                                  <i
+                                    class="far fa-hand-point-right text-danger"
+                                  ></i>
 
-                                      {%endif%}
-                                    <h2 class="table-avatar">
-                                      <a href="#"
-                                        >{{ appointment.patient.name }}
-                                        <span
-                                          >{{ appointment.appointment_id }}</span
-                                        ></a
-                                      >
-                                    </h2>
-                                  </td>
-                                  <td>
-                                    {{ appointment.date }}
-                                    <span class="d-block text-info"
-                                      >{{ appointment.time.strftime('%I:%M %p') }}</span
+                                  {%endif%}
+                                  <h2 class="table-avatar">
+                                    <a href="#"
+                                      >{{ appointment.patient.name }}
+                                      <span
+                                        >{{ appointment.appointment_id }}</span
+                                      ></a
                                     >
-                                  </td>
-                                  <td>{{ appointment.patient.phone }}</td>
-                                  <td class="text-centre">
-                                    <div class="table-action">
-                                      {% if not appointment.seen %}
-                                      <form
-                                        action="/doctor_dashboard"
-                                        method="POST"
+                                  </h2>
+                                </td>
+                                <td>
+                                  {{ appointment.date }}
+                                  <span class="d-block text-info"
+                                    >{{ appointment.time.strftime('%I:%M %p')
+                                    }}</span
+                                  >
+                                </td>
+                                <td>{{ appointment.patient.phone }}</td>
+                                <td class="text-centre">
+                                  <div class="table-action">
+                                    {% if not appointment.seen %}
+                                    <form
+                                      action="/doctor_dashboard"
+                                      method="POST"
+                                    >
+                                      {{ form.hidden_tag() }} {{ form.csrf_token
+                                      }}
+                                      <input
+                                        type="hidden"
+                                        name="appointment_id"
+                                        value="{{ appointment.id }}"
+                                      />
+                                      <button
+                                        type="submit"
+                                        name="seen"
+                                        class="btn btn-sm bg-success-light"
                                       >
-                                      {{ form.hidden_tag() }}
-                                      {{ form.csrf_token }}
-                                        <input
-                                          type="hidden"
-                                          name="appointment_id"
-                                          value="{{ appointment.id }}"
-                                        />
-                                        <button
-                                          type="submit"
-                                          name="seen"
-                                          class="btn btn-sm bg-success-light"
-                                        >
-                                        <i class="far fa-eye"></i>  {{ translate('Seen') }}
-                                        </button>
-                                      </form>
-                                      {% endif %}
-                                    </div>
-                                  </td>
-
-                                </tr>
-                                {% endfor %}
-                              </tbody>
-                            </table>
-                          </div>
+                                        <i class="far fa-eye"></i> {{
+                                        translate('Seen') }}
+                                      </button>
+                                    </form>
+                                    {% endif %}
+                                  </div>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </div>
-                    <!-- /Today Appointment Tab -->
                   </div>
+                  <!-- /Today Appointment Tab -->
                 </div>
               </div>
             </div>
@@ -219,6 +212,7 @@
       </div>
     </div>
   </div>
-  <!-- /Page Content -->
+</div>
+<!-- /Page Content -->
 
-  {% endblock %}
+{% endblock %}
