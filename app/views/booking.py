@@ -5,3 +5,4 @@ from wtforms.validators import DataRequired
 class AppointmentForm(FlaskForm):
     timeslots = RadioField('Available Timeslots', choices=[], validators=[DataRequired()])
     submit = SubmitField('Book Appointment')
+    

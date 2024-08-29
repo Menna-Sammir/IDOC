@@ -136,7 +136,7 @@ def login_page():
                     f'Success! You are logged in as: {attempted_user.name}',
                     category='success'
                 )
-                return redirect(url_for('home_page'))
+                return redirect(url_for('home'))
             else:
                 flash('user name and password are not match', category='danger')
         if form.errors != {}:
@@ -153,7 +153,7 @@ def logout_page():
     logout_user()
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     flash('You have been logged out!', category='info')
-    return redirect(url_for('home_page'))
+    return redirect(url_for('home'))
 
 @app.errorhandler(403)
 def permission_denied(e):
