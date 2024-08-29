@@ -106,6 +106,15 @@
 
     <div class="row col-lg-8 col-md-12 px-2 card ">
       <div class="card-body p-1 ">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alert alert-primary alert-primary-formbook mt-2">
+            {% for category, message in messages %}
+              <p class="m-auto">{{ message }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% endwith %}
         <form method="post" class="col-md-12 justify-content-center row"
         >
           {{ form.hidden_tag() }}
@@ -144,7 +153,7 @@
           {% endfor %}
         </div>
         <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
-          <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
+          <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;" id="continue-button">
             Continue <i class="fas fa-caret-right"></i>
        </button>
         </div>
