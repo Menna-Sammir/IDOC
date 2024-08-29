@@ -271,10 +271,6 @@
         src="/static/sounds/bell-congratulations-epic-stock-media-1-00-01.mp3"
         type="audio/mp3"
       />
-      <source
-        src="/static/sounds/bell-congratulations-epic-stock-media-1-00-01.ogg"
-        type="audio/ogg"
-      />
     </audio>
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -293,32 +289,22 @@
 
         var socket = io.connect('http://localhost:5000', {
           query: 'clinic_id=' + clinic_id,
-          transports: ['websocket', 'polling'],
         });
 
         socket.on('connected', function (msg) {
           console.log(msg.message);
         });
 
+        var isNewNotification = true;
+
         socket.on('appointment_notification', function (data) {
           console.log('Appointment notification:', data);
-          addNotification(data, true);
+          addNotification(data);
         });
 
         socket.on('disconnected', function (msg) {
           console.log(msg.message);
         });
-
-        function playNotificationSound() {
-          var audio = document.getElementById('notification-sound');
-          if (audio) {
-            audio.play().catch((error) => {
-              console.error('Error playing audio:', error);
-            });
-          } else {
-            console.error('Audio element not found');
-          }
-        }
 
         function addNotification(data, store = false) {
           var notificationList = document.getElementById('notification-list');
@@ -360,7 +346,11 @@
 
           var currentCount = parseInt(notificationCount.textContent);
           notificationCount.textContent = currentCount + 1;
-          playNotificationSound();
+
+          if (isNewNotification) {
+            playNotificationSound();
+            isNewNotification = false;
+          }
 
           if (store) {
             storeNotification(data);
