@@ -30,19 +30,19 @@
         <li class="active">
           <a href="{{ url_for('clinic_dash') }}">
             <i class="fas fa-columns"></i>
-            <span>Dashboard</span>
+            <span>{{ translate('Dashboard') }}</span>
           </a>
         </li>
         <li>
           <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>
-            <span>Change Password</span>
+            <span>{{ translate('Change Password') }}</span>
           </a>
         </li>
         <li>
           <a href="{{ url_for('logout_page') }}">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
+            <span>{{ translate('Logout') }}</span>
           </a>
         </li>
       </ul>
