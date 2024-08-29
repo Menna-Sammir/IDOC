@@ -155,22 +155,30 @@ def doctor_appointments():
             end_hour_24 = convert_to_24_hour(end_hour)
             start_hour_int = start_hour_24.hour
             end_hour_int = end_hour_24.hour
+
+            if start_hour_int > end_hour_int:
+                end_hour_int += 24  
+
             for hour in range(start_hour_int, end_hour_int):
-                start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
-                end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
-                timeslot = f"{date[0]} {start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+                start_time = datetime.strptime(f"{hour % 24}:00", '%H:%M').time()
+                end_time = datetime.strptime(f"{(hour + 1) % 24}:00", '%H:%M').time()
+
+                if start_time.strftime('%p') == 'AM' and hour >= 24:
+                    break  
+
+                timeslot = f"{date[0]} {start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
                 daily_timeslots.append(
                     (
                         timeslot,
-                        f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+                        f"{start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
                     )
                 )
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date[0]
         ).all()
         booked_timeslots = [
-            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-"
-            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%H:%M')}"
+            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%I:%M %p')}-"
+            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%I:%M %p')}"
             for a in existing_appointments
         ]
         available_timeslots = []
@@ -185,16 +193,25 @@ def doctor_appointments():
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
-        date_str, time_range = selected_timeslot.split()
-        start_time_str, end_time_str = time_range.split('-')
+        
+        try:
+            date_str, time_range = selected_timeslot.split(' ', 1)
+            start_time_str, end_time_str = time_range.split('-')
+            start_time_str = start_time_str.strip()
+            end_time_str = end_time_str.strip()
+            start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
+            end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
+        except ValueError:
+            flash('Invalid time slot format. Please try again.', 'danger')
+            return redirect(request.url)
         print(selected_timeslot)
         print(date_str)
-        print(start_time_str)
-        print(end_time_str)
+        print(start_time)
+        print(end_time)
         session['doctor_id'] = doctor_id
         session['date'] = date_str
         session['start_time'] = start_time_str
-        session['end_time'] = end_time_str
+        session['end_time'] = start_time_str
         return redirect(url_for('patient_checkout'))
     return render_template(
         'booking.html',
@@ -216,8 +233,9 @@ def patient_checkout():
     start_time_str = session.get('start_time', None)
     end_time_str = session.get('end_time', None)
     date = datetime.strptime(date_str, '%Y-%m-%d')
-    start_time = datetime.strptime(start_time_str, '%H:%M').time()
-    end_time = datetime.strptime(end_time_str, '%H:%M').time()
+    start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
+    end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
+
 
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()
     if doctor_data:
@@ -425,8 +443,6 @@ def patient_checkout():
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
-                print(f"hooooooooooooooooooooooooooof{clinic_data.id}")
-
                 socketio.emit(
                     'appointment_notification',
                     {
@@ -473,7 +489,7 @@ def send_appointment_notification(clinic_id, data):
     
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = request.args.get('clinic_id')
+    clinic_id = session.get('clinic_id')
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
@@ -481,7 +497,7 @@ def handle_connect():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    clinic_id = request.args.get('clinic_id')
+    clinic_id = session.get('clinic_id')
     if clinic_id:
         leave_room(clinic_id)
 

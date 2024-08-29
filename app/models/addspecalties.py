@@ -28,7 +28,7 @@ def create_specialties():
         ('Radiology', 'static/img/specialities/radiology.png'),
         ('Rheumatology', 'static/img/specialities/rheumatology.png'),
         ('Surgery', 'static/img/specialities/surgery.png'),
-        ('Emergency Medicin', 'static/img/specialities/emergency-medicin.png'),
+        ('Emergency Medicin', 'static/img/specialities/emergency-medicine.png'),
         ('Urology', 'static/img/specialities/urology.png')
     ]
 

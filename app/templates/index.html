@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="{{ get_locale() }}">
   <head>
@@ -717,3 +718,722 @@
     <script src="{{ url_for('static', filename='../static/js/index.js') + '?' + cache_id }}"></script>
   </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <title>IDOC</title>
+
+    {% block head %} {% include 'base-css.html' %} {% endblock %}
+  </head>
+  <body class="text-main">
+    {% block alert %} {% include 'base-alert.html' %} {% endblock %}
+    <!-- Main Wrapper -->
+    <div class="loader">
+      {% block loading %} {% include 'base-loading.html' %} {% endblock %}
+    </div>
+    <div class="main-wrapper">
+      <button id="backToTop" title="Go to top"><i class="fas fa-angle-double-up"></i></button>
+      <!-- Home Banner -->
+      <section class="w-full">
+        <!-- <section class="section section-search"> -->
+        <!-- start header -->
+        <header
+          class="position-absolute top-0 left-0 w-100 header"
+          style="z-index: 50"
+        >
+          <nav
+            class="navbar navbar-expand-lg navbar-light topnavbar justify-content-between"
+          >
+            <a class="navbar-brand col-sm-2 col-md-2 d-block" href="#">
+              <svg
+                style="width: 8rem"
+                version="1.0"
+                id="svg4171"
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:svg="http://www.w3.org/2000/svg"
+                xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+                xmlns:cc="http://creativecommons.org/ns#"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+                xmlns:dc="http://purl.org/dc/elements/1.1/"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 161.1 56.5"
+                style="enable-background: new 0 0 161.1 56.5"
+                xml:space="preserve"
+              >
+                <path
+                  class="st0"
+                  d="M53.4,55.7c-3.3-8.1-9.2-14.2-16.3-16.8c-0.6-0.6-1.3-1.2-2.2-1.7c3-2.1,5.8-5.7,7.4-10.1
+                c1.6-0.2,2.9-1.6,2.9-3.2c0-1.3-0.8-2.4-1.8-2.9c0-0.1,0-0.1,0-0.2c0-9.9-1.2-17.4-13.3-17.4c-12.2,0-13.4,7.6-13.4,17.4
+                c0,0.1,0,0.2,0,0.2c-1,0.5-1.8,1.6-1.8,2.9c0,1.7,1.3,3.1,2.9,3.2c1.6,4.4,4.5,8,7.4,10.1c-0.8,0.5-1.6,1-2.2,1.6
+                c-7.2,2.4-13.2,8.7-16.6,16.9"
+                />
+                <sodipodi:namedview
+                  bordercolor="#666666"
+                  borderopacity="1.0"
+                  id="base"
+                  inkscape:current-layer="layer1"
+                  inkscape:cx="53.065646"
+                  inkscape:cy="31.888793"
+                  inkscape:document-units="px"
+                  inkscape:pageopacity="0.0"
+                  inkscape:pageshadow="2"
+                  inkscape:window-height="865"
+                  inkscape:window-maximized="0"
+                  inkscape:window-width="1577"
+                  inkscape:window-x="359"
+                  inkscape:window-y="740"
+                  inkscape:zoom="7.9195959"
+                  pagecolor="#ffffff"
+                  showgrid="false"
+                  units="px"
+                >
+                </sodipodi:namedview>
+                <g
+                  id="layer1"
+                  transform="translate(0,-992.36217)"
+                  inkscape:groupmode="layer"
+                  inkscape:label="Layer 1"
+                >
+                  <path
+                    id="path16"
+                    inkscape:connector-curvature="0"
+                    class="st1"
+                    d="M51.5,1048.1h1.9c-3.3-8.1-9.2-14.2-16.3-16.8
+                  c-0.6-0.6-1.3-1.2-2.2-1.7c3-2.1,5.8-5.7,7.4-10.1c1.6-0.2,2.9-1.6,2.9-3.2c0-1.3-0.8-2.4-1.8-2.9c0-0.1,0-0.1,0-0.2
+                  c0-9.9-1.2-17.4-13.3-17.4c-12.2,0-13.4,7.6-13.4,17.4c0,0.1,0,0.2,0,0.2c-1,0.5-1.8,1.6-1.8,2.9c0,1.7,1.3,3.1,2.9,3.2
+                  c1.6,4.4,4.5,8,7.4,10.1c-0.8,0.5-1.6,1-2.2,1.6c-7.2,2.4-13.2,8.7-16.6,16.9h1.9c2.8-6.4,7.2-11.5,12.7-14.2
+                  c-0.4,0.7-0.7,1.5-0.9,2.2c-1,3.3-0.5,6.3-0.4,6.4v0.1c-1.1,0.6-1.8,1.8-1.5,3.1c0.2,1.4,1.5,2.4,2.9,2.4c0.2,0,0.3,0,0.5,0
+                  c1.6-0.3,2.6-1.8,2.4-3.4c-0.2-1.3-1.3-2.2-2.5-2.4v-0.1c0,0-0.5-2.7,0.4-5.6c0.5-1.5,1.2-2.8,2.2-3.9c0.3-0.1,0.6-0.2,0.9-0.3
+                  l-0.5,1.7c-0.2,0.4-0.3,0.8-0.3,1.2c-0.1,0.3-0.1,0.7-0.1,1c0,3.3,2.7,6,6,6s6-2.7,6-6c0-0.4,0-0.7-0.1-1c-0.1-0.5-0.2-1-0.4-1.4
+                  l-0.4-1.4c0.3,0.1,0.7,0.2,1,0.3c1.3,1.4,2,3,2.3,4.5c-0.4,0.2-0.8,0.4-1.2,0.6c-1.1,0.8-1.9,2-2.1,3.4l-0.5,2.8
+                  c-0.6,0.2-1,0.7-1.1,1.3c-0.1,0.5,0,0.9,0.3,1.3s0.7,0.6,1.1,0.7c0.1,0,0.2,0,0.3,0c0.8,0,1.6-0.6,1.7-1.4c0.1-0.5,0-0.9-0.3-1.3
+                  c-0.1-0.1-0.2-0.2-0.3-0.3l0.5-2.8c0.2-0.9,0.7-1.7,1.4-2.2c0.2-0.1,0.3-0.2,0.5-0.3c0.5-0.3,1.1-0.4,1.7-0.3c0.1,0,0.3,0,0.4,0
+                  c0.9,0.2,1.7,0.7,2.2,1.4c0.5,0.8,0.7,1.7,0.6,2.6l-0.5,2.8c-0.6,0.2-1,0.7-1.1,1.3c-0.1,0.4,0,0.8,0.2,1.2
+                  c0.2,0.4,0.7,0.8,1.2,0.8c0.1,0,0.2,0,0.3,0c0.6,0,1.2-0.3,1.5-0.9c0.1-0.2,0.2-0.4,0.2-0.6c0.1-0.6-0.1-1.2-0.6-1.6l0.5-2.8
+                  c0.2-1.4-0.1-2.7-0.9-3.9c-0.8-1.1-2-1.9-3.4-2.1c-0.3-0.1-0.7-0.1-1-0.1c-0.1-0.3-0.1-0.6-0.2-0.9c-0.2-0.6-0.5-1.3-0.8-2
+                  C44.4,1036.8,48.8,1041.8,51.5,1048.1L51.5,1048.1z M43.4,1014.8c0.4,0.4,0.7,0.9,0.7,1.5c0,0.9-0.5,1.6-1.3,1.9
+                  C43.1,1017.1,43.3,1016,43.4,1014.8z M16.2,1016.3c0-0.6,0.2-1.1,0.6-1.4c0,0,0,0,0,0.1c0.1,1.1,0.3,2.2,0.6,3.2
+                  C16.7,1017.9,16.2,1017.1,16.2,1016.3L16.2,1016.3z M22.3,1045c0.1,0.3,0,0.6-0.2,0.9s-0.4,0.4-0.8,0.5c-0.1,0-0.1,0-0.2,0
+                  c-0.6,0-1-0.4-1.1-1s0.3-1.2,0.9-1.3c0.1,0,0.1,0,0.2,0C21.7,1044,22.2,1044.4,22.3,1045L22.3,1045z M30.1,1040.6
+                  c-2.4,0-4.3-1.9-4.3-4.3c0-0.2,0-0.4,0.1-0.7l0.3-1.1l0.7-2.5l0.4-1.3c1,0.5,2,0.7,2.8,0.7c0.9,0,1.8-0.2,2.8-0.6l0.4,1.2l0.7,2.3
+                  l0.4,1.3c0,0.2,0,0.4,0,0.6C34.4,1038.7,32.4,1040.6,30.1,1040.6L30.1,1040.6z M30.1,1029.8H30c-0.7,0-1.4-0.3-2.3-0.7
+                  c-0.2-0.1-0.4-0.2-0.6-0.3c-0.3-0.2-0.6-0.4-1-0.6c-2.5-1.8-5.1-5-6.6-8.9c-0.1-0.4-0.3-0.8-0.4-1.2c-0.3-1-0.5-2.1-0.7-3.2
+                  c0.1-0.2,0.2-0.3,0.3-0.5c0.3-0.4,0.5-0.7,0.8-1c2.2-2.3,5.3-2.8,8.8-3.4c1.3-0.2,2.7-0.5,4.1-0.8c1.8-0.4,3.1-1.4,3.9-2.8
+                  c1.6-2.8,0.5-6.6,0.5-6.7c-0.1-0.5-0.6-0.7-1.1-0.6c-0.5,0.1-0.7,0.6-0.6,1.1c0,0,0.9,3.2-0.3,5.4c-0.6,1-1.5,1.6-2.8,2
+                  c-1.3,0.3-2.7,0.6-4,0.8c-3.7,0.6-7.2,1.2-9.8,3.9c0.1-10.1,2-14.7,11.6-14.7c6.5,0,8.7,2.4,9.7,4.1c1.5,2.7,1.9,6.5,1.9,11.4v0.1
+                  c0,0.4,0,0.7,0,1.1c-0.1,1.3-0.3,2.5-0.7,3.7c-0.1,0.4-0.2,0.8-0.4,1.2c-1.4,4-4.1,7.3-6.7,9.1c-0.3,0.2-0.5,0.3-0.7,0.5
+                  c-0.3,0.2-0.5,0.3-0.8,0.4C31.3,1029.5,30.6,1029.7,30.1,1029.8C30.2,1029.7,30.1,1029.7,30.1,1029.8L30.1,1029.8z"
+                  />
+                </g>
+                <g class="st2">
+                  <path
+                    class="st3"
+                    d="M62.7,10.1c2.2,0,3.8,1.6,3.8,3.6c0,1.9-1.7,3.5-3.8,3.5c-2.1,0-3.8-1.6-3.8-3.5
+                  C58.9,11.7,60.6,10.1,62.7,10.1z M59.6,42V20.7h6.2V42H59.6z"
+                  />
+                  <path
+                    class="st3"
+                    d="M73,42V11.3h11.9c9.5,0,16.4,5.7,16.4,15.4c0,9.7-7,15.3-16.4,15.3H73z M84.6,36.4c5.4,0,10-3.1,10-9.8
+                  c0-6.7-4.5-9.8-9.9-9.8h-5.2v19.6H84.6z"
+                  />
+                  <path
+                    class="st3"
+                    d="M128.9,31.3c0,6.5-5.2,11.3-12.1,11.3c-6.9,0-12.1-4.8-12.1-11.3c0-6.6,5.2-11.3,12.1-11.3
+                  C123.7,20,128.9,24.7,128.9,31.3z M122.7,31.3c0-4-2.8-6.1-5.8-6.1s-5.8,2-5.8,6.1c0,4,2.8,6.1,5.8,6.1S122.7,35.3,122.7,31.3z"
+                  />
+                  <path
+                    class="st3"
+                    d="M138.3,31.3c0,3.9,2.7,6,5.9,6c3.2,0,4.8-2,5.3-3.6l5.5,1.7c-1,3.6-4.6,7.2-10.8,7.2
+                  c-6.8,0-12.1-4.8-12.1-11.3c0-6.6,5.2-11.3,11.9-11.3c6.3,0,9.8,3.6,10.8,7.2l-5.6,1.7c-0.6-1.8-2-3.6-5.1-3.6
+                  C141,25.3,138.3,27.5,138.3,31.3z"
+                  />
+                </g>
+                <g></g>
+              </svg>
+            </a>
+            <div class="col-md-9 mr-5 form-inline my-2 my-lg-0">
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div
+                class="collapse navbar-collapse justify-content-end"
+                id="navbarNavDropdown"
+              >
+                <ul class="navbar-nav align-items-center list-unstyled">
+                  <li class="nav-item mr-3" >
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#home"
+                      >{{ translate('Home') }}</a
+                    >
+                  </li>
+                  <li class="nav-item mr-3" >
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#aboutus"
+                      >{{ translate('About Us') }}
+                    </a>
+                  </li>
+                  <li class="nav-item mr-3">
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#service"
+                      >{{ translate('service') }}</a
+                    >
+                  </li>
+
+                  <li class="nav-item mr-3">
+                    <a
+                      class="py-2 d-inline-block font-weight-semibold text-white px-2 nav-link"
+                      href="#contactus"
+                      >{{ translate('Contact Us') }}</a
+                    >
+                  </li>
+                  {% if current_user.is_authenticated %}
+                  <li class="nav-item mr-3 dropdown has-arrow logged-item">
+                    <a
+                      class="dropdown-toggle"
+                      href="#"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    >
+                      <span class="user-img">
+                        <img
+                          class="rounded-circle"
+                          src="{{current_user.photo}}"
+                          width="31"
+                          alt="user image"
+                        />
+                      </span>
+                    </a>
+                    <div
+                      class="dropdown-menu user-dropmenu dropdown-menu-right"
+                    >
+                      <div class="user-header align-items-center">
+                        <div class="avatar avatar-sm">
+                          <img
+                            src="{{base_path ~ current_user.photo}}"
+                            alt="User Image"
+                            class="avatar-img rounded-circle"
+                          />
+                        </div>
+                        <div class="user-text">
+                          <h6>{{ current_user.name }}</h6>
+                          <p class="text-muted mb-0">
+                            {{ current_user.roles.role_name }}
+                          </p>
+                        </div>
+                      </div>
+                      {% if current_user.roles.role_name == 'Admin' %}
+                      <a class="dropdown-item" href="{{ url_for('dashboard') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% elif current_user.roles.role_name == 'doctor' %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('doctor_dash') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% elif current_user.roles.role_name == 'clinic' %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('clinic_dash') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% endif %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('logout_page') }}"
+                        >{{ translate('Logout') }}</a
+                      >
+                    </div>
+                  </li>
+                  {% else %}
+                  <li class="nav-item mx-4">
+                    <a
+                      class="d-inline-block font-weight-semibold text-white px-4 home-login nav-link"
+                      href="{{ url_for('login_page') }}"
+                      >{{ translate('Login') }}</a
+                    >
+                  </li>
+                  {% endif %}
+
+                  <li class="nav-item">
+                    <div class="language-select dropdown" id="language-select">
+                      <a
+                        class="dropdown-toggle"
+                        href="#"
+                        data-toggle="dropdown"
+                        id="language"
+                        aria-haspopup="true"
+                        aria-expanded="true"
+                      >
+                        {% if get_locale() == 'en' %}
+                        <img
+                          class="img-fluid"
+                          src="../static/img/en.png"
+                          alt="English"
+                        />
+                        {% elif get_locale() == 'ar' %}
+                        <img
+                          class="img-fluid"
+                          src="../static/img/ar.png"
+                          alt="Arabic"
+                        />
+                        {% endif %}
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="language">
+                        <div class="dropdown-item" data-lang="en">
+                          <img
+                            class="img-fluid"
+                            src="../static/img/en.png"
+                            alt="English"
+                          />
+                        </div>
+                        <div class="dropdown-item" data-lang="ar">
+                          <img
+                            class="img-fluid"
+                            src="../static/img/ar.png"
+                            alt="Arabic"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </header>
+        <!-- end header -->
+      </section>
+      <!-- /Home Banner -->
+      <section class="cover head-cover position-relative" id="home">
+        <div
+          class="position-absolute top-0 left-0 w-100 h-100 bg-blue-teal-gradient cover"
+          style="opacity: 0.7"
+        ></div>
+
+        <div
+          class="w-100 h-100 position-absolute z-index-1 d-flex justify-content-center align-items-center"
+        >
+          <div class="card w-75 bg-none border-0 mt-md-0 mt-sm-5">
+            <div class="card-header d-flex align-items-center" data-aos="fade-right" data-aos-duration="3000">
+              <i class="far fa-calendar-alt fa-2x text-home"></i>
+              <div class="ml-2">
+                <p
+                  class="mb-0 text-home"
+                  style="
+                    font-size: 16px;
+                    font-weight: bold;
+                    padding-bottom: 1px;
+                  "
+                >
+                  {{ translate('Search for a doctor') }}
+                </p>
+                <p
+                  class="mb-0 text-home"
+                  style="font-size: 12px; padding-bottom: 1px"
+                >
+                  {{ translate('Examination or procedure') }}
+                </p>
+              </div>
+            </div>
+            <div class="card mt-4 bg-none border-0" data-aos="fade-right" data-aos-delay="100">
+              <div class="card-header p-0 border-0">
+                <form
+                  method="POST"
+                  action="{{ url_for('home') }}"
+                  class="row m-0 justify-content-md-between justify-content-sm-center overflow-hidden align-items-center rounded-sm"
+                >
+                  {{ form.hidden_tag() }} {{ form.csrf_token }}
+                  <p
+                    class="col-md-3 col-sm-8 p-0 pl-1 my-4 d-flex border-right"
+                  >
+                    {{ form.specialization(class="doctor-select2 floating w-75
+                    border-0 bg-transparent") }}
+                  </p>
+                  <p class="col-md-3 col-sm-8 p-0 my-4 d-flex border-right">
+                    {{ form.governorate (class="location-select2 floating w-75
+                    border-0 bg-transparent") }}
+                  </p>
+                  <p
+                    class="col-md-4 col-sm-8 p-0 my-4 form-focus form-group"
+                    placeholder="Doctor Name "
+                  >
+                    {{ form.doctor_name.label(class="focus-label") }} {{
+                    form.doctor_name( class="form-control border-0 p-1
+                    floating")}}
+                  </p>
+                  <div class="col-md-1"></div>
+                  <p class="col-md-1 col-sm-4 mt-1 mb-1 p-0 pr-4 text-right">
+                    <button type="submit" class="btn btn-info search-btn">
+                      <i class="fas fa-search"></i> {{ form.submit.label.text}}
+                    </button>
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- end hero -->
+      <!-- Clinic and Specialities -->
+      <section class="section section-specialities" id="service" >
+        <div class="container-fluid">
+          <div class="section-header text-center" data-aos="fade-left"  data-aos-duration="2000">
+            <h2>{{ translate('Clinic and Specialities') }}</h2>
+            <p class="sub-title">
+              {{ translate('We offer a wide range of specialties to meet the diverse healthcare needs of our patients. Our dedicated team of professionals provides expert care in areas such as cardiology,orthopedics, neurology, and pediatrics.') }}
+            </p>
+          </div>
+          <div class="row justify-content-center" data-aos="fade-right"  data-aos-duration="2000">
+            <div class="col-md-9">
+              <!-- Slider -->
+              <div class="specialities-slider slider">
+                <!-- Slider Item -->
+                {% for special in specialties %}
+                <div class="speicality-item text-center">
+                  <div class="speicality-img">
+                    <img
+                      src="{{special.photo}}"
+                      class="img-fluid"
+                      alt="Speciality"
+                    />
+                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
+                  </div>
+                  <p class="text-wrap">
+                    {{ translate(special.specialization_name) }}
+                  </p>
+                </div>
+                <!-- /Slider Item -->
+                {% endfor %}
+              </div>
+              <!-- /Slider -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Clinic and Specialities -->
+
+      <section class="section section-about mt-5" id="aboutus">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-2 col-sm-2 col-md-12 container" data-aos="fade-right"  data-aos-duration="2000">
+              <div class="circle large">
+                <img src="../static/img/doctors/doctor-02.jpg" alt="Doctor" />
+              </div>
+              <div class="circle small">
+                <img src="../static/img/doctors/doctor-03.jpg" alt="Patient" />
+              </div>
+              <div class="circle background-large"></div>
+              <div class="circle background background-small"></div>
+            </div>
+            <div class="col-lg-5 col-md-12" data-aos="fade-left"  data-aos-duration="2000">
+              <h3 class="text-muted">{{ translate('ABOUT US') }}</h3>
+              <h2 class="mr-5 pr-5">
+                {{ translate('Health Clinic With Quality For You') }}
+              </h2>
+              <p class="text-muted">
+                {{ translate('IDOC Group facilitates seamless appointment booking services for patients, connecting them with healthcare professionals across various clinics. We streamline the process, ensuring convenient access to quality medical care.') }}
+              </p>
+              <ul class="p-0">
+                <li class="d-flex align-items-top my-3">
+                  <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
+                  ><span
+                    >{{ translate('Enhance Preventive Healthcare Access')
+                    }}</span
+                  >
+                </li>
+                <li class="d-flex align-items-top my-3">
+                  <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
+                  ><span
+                    >{{ translate('Optimize Wellness Consultations') }}</span
+                  >
+                </li>
+                <li class="d-flex align-items-top my-3">
+                  <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
+                  ><span
+                    >{{ translate('Improve Disease Management Services')
+                    }}</span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-1"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Popular Section -->
+      <section class="section section-doctor">
+        <div class="container-fluid">
+          <div class="section-header text-center">
+            <h2>{{ translate('Our Specialist Doctor') }}</h2>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="doctor-slider slider">
+                <!-- Doctor Widget -->
+                {% for doctor in doctors %}
+                <div class="card">
+                  <div class="profile-widget card-body">
+                    <div class="doc-img">
+                      <a href="#">
+                        {% set base_path = 'static/images/doctors/' %}
+                        <img
+                          class="img-fluid"
+                          alt="User Image"
+                          src="{{base_path ~ doctor.photo}}"
+                        />
+                      </a>
+                    </div>
+                    <div class="pro-content">
+                      <h3 class="title">
+                        <a href="#"
+                          >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
+                        >
+                        <i class="fas fa-check-circle verified"></i>
+                      </h3>
+                      <p class="speciality">
+                        {{ translate(doctor.specialization.specialization_name)
+                        }}
+                      </p>
+                      <ul class="available-info">
+                        <li>
+                          <i class="fas fa-map-marker-alt"></i>
+                          {{ doctor.clinic.name}} {{
+                          translate(doctor.clinic.address) }}, Egypt
+                        </li>
+                        <li>
+                          <i class="far fa-money-bill-alt"></i> {{doctor.price}}
+                          $
+                          <i
+                            class="fas fa-info-circle"
+                            data-toggle="tooltip"
+                            title="Lorem Ipsum"
+                          ></i>
+                        </li>
+                      </ul>
+                      <div class="row row-sm">
+                        <div class="col-6">
+                          <a
+                            href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
+                            class="btn book-btn"
+                            >{{ translate('Book Now') }}</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /Doctor Widget -->
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /Popular Section -->
+
+      <!-- Availabe Features -->
+      <section class="section section-features">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-5 features-img d-sm-none d-md-flex">
+              <img
+                src="static/img/features/feature.png"
+                class="img-fluid"
+                alt="Feature"
+              />
+            </div>
+            <div class="col-md-7">
+              <div class="section-header">
+                <h2 class="mt-2">
+                  {{ translate('Availabe Features in Our APP') }}
+                </h2>
+                <div class="section-header text-md-left text-sm-center">
+                  <p>
+                    {{ translate('Discover a wealth of services and amenities at our clinic, tailored to meet your needs and ensure your well-being') }}
+                  </p>
+                </div>
+                <div class="features-slider slider">
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-01.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Patient Ward') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
+
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-02.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Test Room') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
+
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-03.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('ICU') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
+
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-04.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Laboratory') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
+
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-05.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Operation') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
+
+                  <!-- Slider Item -->
+                  <div class="feature-item text-center">
+                    <img
+                      src="static/img/features/feature-06.jpg"
+                      class="img-fluid"
+                      alt="Feature"
+                    />
+                    <p>{{ translate('Medical') }}</p>
+                  </div>
+                  <!-- /Slider Item -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Availabe Features -->
+
+      <section class="section section-contact bg-white" id="contactus">
+        <div class="container-fluid">
+          <div class="section-header text-center">
+            <h2>{{ translate('CONTACT US') }}</h2>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-9 row justify-content-between">
+              <div class="contact-card col-md-4 d-md-block d-sm-none" data-aos="fade-right"  data-aos-duration="2000">
+                <span class="head-contact"
+                  >{{ translate('Contact Information') }}</span
+                >
+                <p class="mb-4">
+                  {{ translate('We will create high quality link able content')
+                  }}
+                </p>
+                <div class="contact-info">
+                  <p class="mb-4">
+                    <i class="fas fa-phone-alt mr-2"></i> +20 012 10 10 100
+                  </p>
+                  <p class="mb-4">
+                    <i class="far fa-envelope mr-2"></i>info@IDOC.com
+                  </p>
+                  <p class="mb-4">
+                    <i class="fas fa-map-marker-alt mr-2"></i> {{ translate('El
+                    Tayaran Street, Cairo, EGYPT') }}
+                  </p>
+                </div>
+                <div class="circle-contact"></div>
+              </div>
+              <div class="col-md-8 p-5" data-aos="fade-left"  data-aos-duration="2000">
+                <form
+                  class="row"
+                  action="{{ url_for('sendEmail') }}"
+                  method="POST"
+                >
+                  {{ E_form.hidden_tag() }}
+                  <div class="col-md-6">
+                    <div class="form-group form-focus">
+                      {{ translate(E_form.name.label(class="focus-label")) }} {{
+                      E_form.name(class="form-control floating e-form" )}}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group form-focus">
+                      {{ E_form.email_address.label(class="focus-label") }} {{
+                      E_form.email_address(class="form-control floating e-form"
+                      )}}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group form-focus">
+                      {{ E_form.subject.label(class="focus-label") }} {{
+                      E_form.subject(class="form-control floating e-form" )}}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group form-focus">
+                      {{ E_form.message.label(class="focus-label") }} {{
+                      E_form.message(class="form-control floating e-form" )}}
+                    </div>
+                  </div>
+                  {{ E_form.submit(class="btn btn-secondary ml-3") }}
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section row">
+        <div class="col-md-12">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.6118501812!2d31.176061991860156!305961134357755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!41!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2sCairo%2C%20Cairo%20Governorate!5e0!3m2!1sen!2seg!4v171741894!5m2!1sen!2seg"
+            height="400"
+            style="border: 0; width: 100%"
+            allowfullscreen=""
+            loading=""
+            lareferrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </section>
+      {% block footer %} {% include 'base-footer.html' %} {% endblock %}
+    </div>
+    <!-- /Main Wrapper -->
+    {% block js %} {% include 'base-js.html' %} {% endblock %}
+    <script src="{{ url_for('static', filename='/js/index.js') + '?' + cache_id }}"></script>
+  </body>
+</html>
+>>>>>>> 4f6d89feda066583d35bf8305790cbdb73319944
