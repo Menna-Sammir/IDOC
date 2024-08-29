@@ -272,7 +272,6 @@
         type="audio/mp3"
       />
     </audio>
-
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', (event) => {
@@ -284,7 +283,6 @@
           );
           return;
         }
-
         console.log('Connecting with clinic_id:', clinic_id);
 
         var socket = io.connect('http://localhost:5000', {
@@ -295,11 +293,9 @@
           console.log(msg.message);
         });
 
-        var isNewNotification = true;
-
         socket.on('appointment_notification', function (data) {
           console.log('Appointment notification:', data);
-          addNotification(data);
+          addNotification(data, true);
         });
 
         socket.on('disconnected', function (msg) {
@@ -311,34 +307,30 @@
           var notificationCount = document.getElementById('notification-count');
 
           var newNotification = document.createElement('li');
-          newNotification.classList.add(
-            'notification-message',
-            'unread-notification'
-          );
+          newNotification.classList.add('notification-message');
 
           var currentTime = new Date();
           var formattedTime = currentTime.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           });
-
           var notificationContent = `
-            <div class="media">
-              <span class="avatar avatar-sm">
-                <img class="avatar-img rounded-circle" alt="User Image" src="static/images/doctors/${data.photo}">
-              </span>
-              <div class="media-body">
-                <p class="noti-details">
-                  <span class="noti-title">${data.patient}</span>
-                  has booked appointment to
-                  <span class="noti-title">Dr. ${data.doctor}</span> on
-                  <span class="noti-title">${data.date} at ${data.time}</span>
-                </p>
-                <p class="noti-time">
-                  <span class="notification-time">${formattedTime}</span>
-                </p>
+            <a href="#">
+              <div class="media">
+                <span class="avatar avatar-sm">
+                  <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
+                </span>
+                <div class="media-body">
+                  <p class="noti-details">
+                    <span class="noti-title">Dr. ${data.doctor}</span> has a new appointment on
+                    <span class="noti-title">${data.date} at ${data.time}</span>
+                  </p>
+                  <p class="noti-time">
+                    <span class="notification-time">${formattedTime}</span>
+                  </p>
+                </div>
               </div>
-            </div>
+            </a>
           `;
 
           newNotification.innerHTML = notificationContent;
@@ -346,15 +338,24 @@
 
           var currentCount = parseInt(notificationCount.textContent);
           notificationCount.textContent = currentCount + 1;
-
-          if (isNewNotification) {
-            playNotificationSound();
-            isNewNotification = false;
+          playNotificationSound();
+          {
           }
+        }
 
-          if (store) {
-            storeNotification(data);
+        function playNotificationSound() {
+          var audio = document.getElementById('notification-sound');
+          if (audio) {
+            audio.play().catch((error) => {
+              console.error('Error playing audio:', error);
+            });
+          } else {
+            console.error('Audio element not found');
           }
+        }
+
+        if (store) {
+          storeNotification(data);
         }
 
         function storeNotification(data) {
@@ -370,17 +371,6 @@
           notifications.forEach((notification) => {
             addNotification(notification, false);
           });
-        }
-
-        function playNotificationSound() {
-          var audio = document.getElementById('notification-sound');
-          if (audio) {
-            audio.play().catch((error) => {
-              console.error('Error playing audio:', error);
-            });
-          } else {
-            console.error('Audio element not found');
-          }
         }
 
         document
@@ -416,6 +406,9 @@
             localStorage.removeItem('notifications');
           }
         }
+        socket.on('notification_update', function (data) {
+          updateNotificationCount(data.count);
+        });
 
         loadNotifications();
         fetchNotifications();
