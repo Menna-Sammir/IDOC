@@ -16,9 +16,9 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
-@socketio.on('disconnect request')
-def disconnect_request():
-    disconnect()
+# @socketio.on('disconnect request')
+# def disconnect_request():
+#     disconnect()
 
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
@@ -28,7 +28,7 @@ IDOC_DB = os.getenv('IDOC_DB')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
-socketio = SocketIO(app, cors_allowed_origins="*")
+
 
 db = SQLAlchemy(app)
 app.config['CACHE_ID'] = str(uuid.uuid4())
