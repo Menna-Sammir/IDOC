@@ -102,6 +102,7 @@ def add_clinic():
                     return redirect(url_for('dashboard'))
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
+                        print("error", err_msg)
                         flash(
                             f'there was an error with creating a user: {err_msg}',
                             category='danger'
