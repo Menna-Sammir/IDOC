@@ -108,7 +108,7 @@
                 </div>
               </div>
             </li>
-            {% if current_user.is_authenticated and current_user.roles.role_name
+            {% if current_user.is_authenticated and current_user.user_roles.role.role_name
             == 'clinic'%}
             <!-- Notifications -->
             <li class="nav-item dropdown noti-dropdown mr-3">
@@ -219,20 +219,20 @@
                   <div class="user-text">
                     <h6>{{ current_user.name }}</h6>
                     <p class="text-muted mb-0">
-                      {{ current_user.roles.role_name }}
+                      {{ current_user.user_roles.role.role_name }}
                     </p>
                   </div>
                 </div>
 
-                {% if current_user.roles.role_name == 'Admin' %}
+                {% if current_user.user_roles.role.role_name == 'Admin' %}
                 <a class="dropdown-item" href="{{ url_for('dashboard') }}"
                   >{{ translate('Dashboard') }}</a
                 >
-                {% elif current_user.roles.role_name == 'doctor' %}
+                {% elif current_user.user_roles.role.role_name == 'doctor' %}
                 <a class="dropdown-item" href="{{ url_for('doctor_dash') }}"
                   >{{ translate('Dashboard') }}</a
                 >
-                {% elif current_user.roles.role_name == 'clinic' %}
+                {% elif current_user.user_roles.role.role_name == 'clinic' %}
                 <a class="dropdown-item" href="{{ url_for('clinic_dash') }}"
                   >{{ translate('Dashboard') }}</a
                 >
