@@ -488,16 +488,20 @@
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
-                        <a href="#">{{ translate('Dr.') }}{{ translate(doctor.name) }}</a>
+                        <a href="#"
+                          >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
+                        >
                         <i class="fas fa-check-circle verified"></i>
                       </h3>
                       <p class="speciality">
-                        {{ translate(doctor.specialization.specialization_name) }}
+                        {{ translate(doctor.specialization.specialization_name)
+                        }}
                       </p>
                       <ul class="available-info">
                         <li>
                           <i class="fas fa-map-marker-alt"></i>
-                          {{ translate(doctor.clinic.address) }}
+                          {{ doctor.clinic.name}} {{
+                          translate(doctor.clinic.address) }}, Egypt
                         </li>
                         <li>
                           <i class="far fa-money-bill-alt"></i> {{doctor.price}}

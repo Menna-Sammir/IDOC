@@ -348,12 +348,18 @@
     });
   }
 
+
   var currentLang = $("html").attr("lang");
 
   changeFont(currentLang);
   $('#language-select .dropdown-item').on('click', function() {
     var language = $(this).data('lang');
     setLanguage(language);
+    var dir = (language == 'ar') ? 'rtl' : 'ltr';
+    $('#calendar').fullCalendar('option', {
+        locale: language,
+        dir: dir
+    });
   });
 
 
