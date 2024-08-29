@@ -5,9 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from app import bcrypt
 from flask_login import UserMixin
-<<<<<<< HEAD
 from datetime import datetime
-=======
 from flask_principal import RoleNeed, identity_loaded, UserNeed
 from flask_login import current_user
 
@@ -26,7 +24,7 @@ def on_identity_loaded(sender, identity):
     if hasattr(current_user, 'role_name'):
         for role in current_user.roles:
             identity.provides.add(RoleNeed(role))
->>>>>>> 7c647f741b52a88046449759a0bd5e3fa4b0bba0
+
 
 class Specialization(BaseModel):
     __tablename__ = 'specialization'
