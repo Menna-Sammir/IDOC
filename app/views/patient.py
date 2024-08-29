@@ -55,7 +55,7 @@ def send_appointment_notification(clinic_id, data):
 def clinic_dash():
     clinic_id = 'd6ed1f04-9b92-46ec-969c-7441690c348e'
     session['clinic_id'] = clinic_id
-    return render_template('clinic-dashboard.html', clinic_id=clinic_id)
+    return render_template('clinic.html', clinic_id=clinic_id)
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
