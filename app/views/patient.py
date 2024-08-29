@@ -25,6 +25,10 @@ from flask_login import login_required
 from flask import Flask, render_template
 from app.models.models import db, Patient, User
 from enum import Enum
+from uuid import UUID
+from flask_wtf.csrf import CSRFProtect
+
+csrf = CSRFProtect(app)
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
@@ -68,15 +72,16 @@ def patient_dashboard():
 
     # Get next appointment
     next_appointment_query = (
-        db.session.query(Appointment, Doctor, Clinic, Specialization)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .join(Clinic, Doctor.clinic_id == Clinic.id)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.date >= db.func.current_date())
-        .filter(Appointment.seen == False)  # Exclude appointments marked as seen
-        .order_by(Appointment.date.asc(), Appointment.time.asc())
-    )
+    db.session.query(Appointment, Doctor, Clinic, Specialization)
+    .join(Doctor, Appointment.doctor_id == Doctor.id)
+    .join(Clinic, Doctor.clinic_id == Clinic.id)
+    .join(Specialization, Doctor.specialization_id == Specialization.id)
+    .filter(Appointment.patient_id == patient.id)
+    .filter(Appointment.date >= db.func.current_date())
+    .filter(Appointment.seen == False)  # Exclude appointments marked as seen
+    .filter(Appointment.status != AppStatus.Confirmed.value)  # Exclude cancelled appointments
+    .order_by(Appointment.date.asc(), Appointment.time.asc())
+)
     next_appointment = next_appointment_query.first()
 
     if next_appointment:
@@ -117,7 +122,6 @@ def patient_dashboard():
             'doctor_photo': doctor.users.photo,
             'appointment_date': appointment.date.strftime('%A, %d %B'),
             'price': doctor.price,
-            'icon': 'fa-solid fa-calendar-check'
         }
         for appointment, doctor in seen_appointments_query.all()
     ]
@@ -155,7 +159,7 @@ def patient_dashboard():
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
-
+    
     specialties = Specialization.query.all()
     return render_template(
         'patient-dashboard.html',
@@ -178,14 +182,14 @@ def appointment_History():
     if patient is None:
         return translate('User is not a patient'), 403
 
-    # Fetch all past appointments
+    # Fetch all appointments (regardless of status) that have not been seen (seen is False)
     appointments = (
         db.session.query(Appointment, Doctor, Clinic, Specialization)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
         .join(Clinic, Doctor.clinic_id == Clinic.id)
         .join(Specialization, Doctor.specialization_id == Specialization.id)
         .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.date < db.func.current_date())
+        .filter(Appointment.seen == False)  # Filter by unseen appointments
         .order_by(Appointment.date.desc(), Appointment.time.desc())
         .all()
     )
@@ -202,11 +206,13 @@ def appointment_History():
         time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
         duration_str = f"{doctor.duration.minute} min"
         formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
-        
-        status_str = AppStatus(appointment.status).name
-        report_url = getattr(appointment, 'Report', None)  # Assuming 'Report' is the field name for report URL
+
+        status_enum = AppStatus(appointment.status)  # Convert status to enum
+        status_str = status_enum.name
+        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
         
         appointment_data.append({
+            'appointment_id': appointment.id,
             'date': formatted_date,
             'time_range': time_range,
             'duration': duration_str,
@@ -214,9 +220,16 @@ def appointment_History():
             'doctor_name': doctor.users.name,
             'doctor_photo': doctor.users.photo,
             'doctor_specialization': specialization.specialization_name,
+            'price': doctor.price,
             'status': status_str,
-            'report_url': report_url
+            'report_url': report_url,
+            'is_pending': status_enum == AppStatus.Pending,
+            'is_confirmed': status_enum == AppStatus.Confirmed,
+            'is_cancelled': status_enum == AppStatus.Cancelled
         })
+    
+    blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
+    allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
     # Process patient history data
     history_data = []
@@ -236,8 +249,44 @@ def appointment_History():
         patient=patient,
         appointments=appointment_data,
         patient_history=history_data,
+        blood_group=blood_group,
+        allergy=allergy,
         specialties=specialties
     )
+
+
+@app.route('/cancel_appointment', methods=['POST'])
+@login_required
+def cancel_appointment():
+    appointment_id = request.form.get('appointment_id')
+    appointment = Appointment.query.get(appointment_id)
+    
+    if appointment is None:
+        flash('Appointment not found', 'danger')
+        return redirect(url_for('appointment_History'))
+
+    # Debugging outputs
+    print(f"Appointment ID: {appointment.id}, Status: {appointment.status}, Patient ID: {appointment.patient_id}, User ID: {current_user.id}")
+
+    # Check if the current user is the patient who made the appointment
+    if appointment.patient_id == current_user.id:
+        # Debugging status values
+        print(f"Confirmed value: {AppStatus.Confirmed.value}, Appointment status: {appointment.status}")
+
+        # Check if the status is Confirmed
+        if appointment.status == AppStatus.Confirmed.value:
+            # Update status to Cancelled and mark as seen
+            appointment.status = AppStatus.Cancelled.value
+            appointment.seen = True
+            db.session.commit()
+            flash('Appointment cancelled successfully', 'success')
+        else:
+            flash('This appointment cannot be cancelled', 'danger')
+    else:
+        flash('You are not allowed to cancel this appointment', 'danger')
+
+    return redirect(url_for('appointment_History'))
+
 # doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
