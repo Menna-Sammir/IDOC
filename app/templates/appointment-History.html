@@ -74,7 +74,6 @@
                                         <tbody>
                                             {% for appointment in appointments %}
                                             <tr>
-                                                <form action="{{ url_for('cancel_appointment') }}" method="post">
                                                     <td>
                                                         <h2 class="table-avatar">
                                                             <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
@@ -99,19 +98,19 @@
                                                         {% endif %}
                                                     </td>
                                                     <td class="text-right">
+                                                        <form action="{{ url_for('cancel_appointment') }}" method="post">
+
                                                         <div class="table-action">
-                                                            <a href="" class="btn btn-sm bg-primary-light">
-                                                                <i class="fas fa-edit"></i> Edit
-                                                            </a>
                                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                             <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
                                                             <button type="submit" class="btn btn-danger">Cancel</button>
                                                         </div>
+                                                    </form>
+
                                                     </td>
-                                                </form>
                                             </tr>
                                             {% endfor %}
-                                        </tbody>
+                                        </tbody>                                        
                                         
                                         {% with messages = get_flashed_messages(with_categories=True) %}
                                         {% if messages %}
@@ -140,35 +139,21 @@
                                     <table class="table table-hover table-center mb-0">
                                         <thead>
                                             <tr>
-                                                <th>Date </th>
+                                                <th>Days</th>
                                                 <th>Name</th>									
-                                                <th>Created by </th>
-                                                <th></th>
+                                                <th>Quantity</th>
+                                                <th>Time of Day</th>
                                             </tr>     
                                         </thead>
                                         <tbody>
+                                            {% for medicine in medicine_data %}
                                             <tr>
-                                                <td>14 Nov 2019</td>
-                                                <td>Prescription 1</td>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-                                                            <img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-01.jpg" alt="User Image">
-                                                        </a>
-                                                        <a href="doctor-profile.html">Dr. Ruby Perrin <span>Dental</span></a>
-                                                    </h2>
-                                                </td>
-                                                <td class="text-right">
-                                                    <div class="table-action">
-                                                        <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-                                                            <i class="fas fa-print"></i> Print
-                                                        </a>
-                                                        <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-                                                            <i class="far fa-eye"></i> View
-                                                        </a>
-                                                    </div>
-                                                </td>
+                                                <td>{{ medicine.days }}</td>
+                                                <td>{{ medicine.name }}</td>
+                                                <td>{{ medicine.quantity }}</td>
+                                                <td>{{ medicine.time_of_day }}</td>
                                             </tr>
+                                            {% endfor %}
                                         </tbody>	
                                     </table>
                                 </div>
@@ -185,39 +170,43 @@
                                     <table class="table table-hover table-center mb-0">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Date </th>
-                                                <th>Description</th>
-                                                <th>Attachment</th>
-                                                <th>Created</th>
+                                                <th>ID Doctor</th>
+                                                <th>Date</th>
+                                                <th>diagnosis</th>
+                                                <th>date appioment</th>
+                                                <th>Created by</th>
                                                 <th></th>
                                             </tr>     
                                         </thead>
                                         <tbody>
+                                            {% for record in medical_records %}
                                             <tr>
-                                                <td><a href="javascript:void(0);">#MR-0010</a></td>
-                                                <td>14 Nov 2019</td>
-                                                <td>Dental Filling</td>
-                                                <td><a href="#">dental-test.pdf</a></td>
+                                                <td>{{ record.doctor_idnum }}</td>
+                                                <td>{{ record.date }}</td>
+                                                <td>{{ record.diagnosis }}</td>
+                                                <td>{{ record.appointment_date }}</td>
                                                 <td>
                                                     <h2 class="table-avatar">
-                                                        <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-                                                            <img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-01.jpg" alt="User Image">
+                                                        <a href="javascript:void(0);" class="avatar avatar-sm mr-2">
+                                                            <img class="avatar-img rounded-circle" src="{{ record.doctor_photo }}" alt="User Image">
                                                         </a>
-                                                        <a href="doctor-profile.html">Dr. Ruby Perrin <span>Dental</span></a>
+                                                        <a href="doctor-profile.html">{{ record.doctor_name }} <span>{{ record.doctor_specialization }}</span></a>
                                                     </h2>
                                                 </td>
                                                 <td class="text-right">
                                                     <div class="table-action">
-                                                        <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-                                                            <i class="far fa-eye"></i> View
-                                                        </a>
-                                                        <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
+                                                        
+                                                        {% if record.report_url %}
+                                                        <a href="{{ url_for('static', filename='reports/' + record.report_url) }}" class="btn btn-sm bg-primary-light" download>
                                                             <i class="fas fa-print"></i> Print
                                                         </a>
+                                                    {% else %}
+                                                        <span class="text-muted">No Report Available</span>
+                                                    {% endif %}
                                                     </div>
                                                 </td>
                                             </tr>
+                                            {% endfor %}
                                         </tbody>  	
                                     </table>
                                 </div>
