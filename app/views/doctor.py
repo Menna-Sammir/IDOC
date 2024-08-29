@@ -1,46 +1,40 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from datetime import datetime
-from sqlalchemy import func, or_
+from sqlalchemy import func, select
 from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
 
 
 @app.route('/search_doctor', methods=['GET', 'POST'])
 def search_doctor():
-    if request.method == 'GET':
+    query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
+        .join(Specialization, Doctor.specialization_id == Specialization.id) \
+        .join(Clinic, Doctor.clinic_id == Clinic.id) \
+        .join(Governorate, Clinic.governorate_id == Governorate.id)
 
-        query = db.session.query(Doctor, Specialization, Clinic, Governorate) \
-            .join(Specialization, Doctor.specialization_id == Specialization.id) \
-            .join(Clinic, Doctor.clinic_id == Clinic.id) \
-            .join(Governorate, Clinic.governorate_id == Governorate.id)
-
-        doctors = query.all()
-        specializations = Specialization.query.all()
-        governorates = Governorate.query.all()
-
-        return render_template('search.html', doctors=doctors, specializations=specializations, governorates=governorates)
-
-    elif request.method == 'POST':
-        specialization_id = request.form.get('select_specialization')
+    specializations = Specialization.query.all()
+    governorates = Governorate.query.all()
+    
+    if request.method == 'POST':
+        specialization_ids = request.form.getlist('select_specialization')
         date = request.form.get('date')
+        
+        print("Specialization IDs:", specialization_ids)
+        print("Date:", date)
 
-
-        query = db.session.query(Doctor, Clinic, Governorate).join(Clinic).join(Governorate)
-        if specialization_id:
-            query = query.filter(Doctor.specialization_id == specialization_id)
+        if specialization_ids:
+            query = query.filter(Doctor.specialization_id.in_(specialization_ids))
+        
         if date:
+            search_date = datetime.strptime(date, '%d/%m/%Y').date()
+            subquery = db.session.query(Appointment.doctor_id).filter(
+                func.date(Appointment.date) == search_date).group_by(
+                Appointment.doctor_id).having(func.count(Appointment.id) < 5).subquery()
+            query = query.filter(Doctor.id.in_(subquery))
 
-            pass
-
-        filtered_doctors = query.all()
-
-        return jsonify(doctors=[{
-            'name': doctor.name,
-            'clinic_address': clinic.address,
-            'governorate_name': governorate.name,
-            'specialization_name': doctor.specialization.name,
-            'price': doctor.price 
-        } for doctor, clinic, governorate in filtered_doctors])
+    doctors = query.all()
+    print("Doctors:", doctors)  # Debug statement to check the query results
+    return render_template('search.html', doctors=doctors, specializations=specializations, governorates=governorates)
 
 
 # @app.route('/search_doctor', methods=['GET', 'POST'])
