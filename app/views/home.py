@@ -52,13 +52,11 @@ def doctor_signup_page():
                     f'there was an error with creating a user: {err_msg}',
                     category='danger'
                 )
-    else:
         return render_template('doctor-signup.html', form=form)
 
 
 @app.route('/register-clinic', methods=['GET', 'POST'])
 def clinic_signup_page():
-
     form = RegisterClinicForm()
     users = (
         User.query.filter(User.clinic_id.isnot(None))
@@ -92,9 +90,8 @@ def clinic_signup_page():
                     f'there was an error with creating a user: {err_msg}',
                     category='danger'
                 )
-    else:
-        return render_template('clinic-signup.html', form=form)
 
+        return render_template('clinic-signup.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -131,14 +128,11 @@ def logout_page():
     return redirect(url_for('home_page'))
 
 
-
-
 @app.route('/doctor-dashboard', methods=['GET', 'POST'])
 def doctor_dashboard():
-    return render_template('doctor-dashboard')
+    return render_template('doctor-dashboard.html')
+
 
 @app.route('/clinic_dashboard', methods=['GET', 'POST'])
 def clinic_dashboard():
-    return render_template('doctor-dashboard')
-
-
+    return render_template('doctor-dashboard.html')
