@@ -38,13 +38,13 @@ def home():
             session['doctor_name'] = form.doctor_name.data
             return redirect(url_for('search_doctor'))
     if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(
-                f'there was an error with creating a user: {err_msg}', category='danger'
-            )
-    return render_template(
-        'index.html', form=form, specialties=specialties, doctors=doctor
-    )
+            for err_msg in form.errors.values():
+                flash(
+                    f'there was an error with creating a user: {err_msg}',
+                    category='danger'
+                )
+    return render_template('index.html', form=form, specialties= specialties, doctors=doctor)
+
 
 
 # doctor search page
@@ -56,31 +56,32 @@ def search_doctor():
 
     page = request.args.get('page', 1, type=int)
     per_page = 10
-    per_page = 10
 
     form = AppointmentForm()
 
     query = (
         db.session.query(Doctor, Specialization, Clinic, Governorate)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .join(Clinic, Doctor.clinic_id == Clinic.id)
-        .join(Governorate, Clinic.governorate_id == Governorate.id)
+        .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
+        .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
+        .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
     )
-    if specialization_id and governorate_id:
+
+    if request.method == 'GET':
         if specialization_id:
             query = query.filter(Doctor.specialization_id == specialization_id)
         if governorate_id:
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
             query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
+
+        specializations = Specialization.query.all()
+        governorates = Governorate.query.all()
+
+        session.pop('specialization_id', None)
+        session.pop('governorate_id', None)
+        session.pop('doctor_name', None)
+
     else:
-        query = query.filter().all()
-    specializations = Specialization.query.all()
-
-    selected_specializations = []
-    selected_date = None
-
-    if request.method == 'POST':
         selected_specializations = request.form.getlist('select_specialization')
         selected_date = request.form.get('date')
 
@@ -99,8 +100,11 @@ def search_doctor():
                 )
                 .filter(Appointment.id == None)
             )
-
             query = query.filter(Doctor.id.in_(subquery))
+
+        specializations = Specialization.query.all()
+        governorates = Governorate.query.all()
+
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
 
@@ -108,11 +112,13 @@ def search_doctor():
         'search.html',
         doctors=doctors,
         specializations=specializations,
-        selected_specializations=selected_specializations,
-        selected_date=selected_date,
+        governorates=governorates,
+        selected_specializations=selected_specializations if request.method == 'POST' else [],
+        selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
+
 
 
 @app.route('/book', methods=['GET', 'POST'])
