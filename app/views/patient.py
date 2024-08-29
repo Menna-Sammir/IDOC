@@ -194,16 +194,24 @@ def doctor_appointments():
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
         
-        date_str, time_range = selected_timeslot.split()
-        start_time_str, end_time_str = time_range.split('-')
+        try:
+            date_str, time_range = selected_timeslot.split(' ', 1)
+            start_time_str, end_time_str = time_range.split('-')
+            start_time_str = start_time_str.strip()
+            end_time_str = end_time_str.strip()
+            start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
+            end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
+        except ValueError:
+            flash('Invalid time slot format. Please try again.', 'danger')
+            return redirect(request.url)
         print(selected_timeslot)
         print(date_str)
-        print(start_time_str)
-        print(end_time_str)
+        print(start_time)
+        print(end_time)
         session['doctor_id'] = doctor_id
         session['date'] = date_str
         session['start_time'] = start_time_str
-        session['end_time'] = end_time_str
+        session['end_time'] = start_time_str
         return redirect(url_for('patient_checkout'))
     return render_template(
         'booking.html',
@@ -225,8 +233,9 @@ def patient_checkout():
     start_time_str = session.get('start_time', None)
     end_time_str = session.get('end_time', None)
     date = datetime.strptime(date_str, '%Y-%m-%d')
-    start_time = datetime.strptime(start_time_str, '%H:%M').time()
-    end_time = datetime.strptime(end_time_str, '%H:%M').time()
+    start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
+    end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
+
 
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()
     if doctor_data:
