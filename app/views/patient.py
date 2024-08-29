@@ -18,6 +18,7 @@ from app import translate, get_locale
 import json
 from flask_babel import lazy_gettext as _, format_decimal
 from app import load_translations, translations
+import secrets
 
 
 @app.route('/')
@@ -121,6 +122,7 @@ def search_doctor():
         form=form
     )
 
+
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
@@ -152,12 +154,17 @@ def doctor_appointments():
 
     for date, _, _ in dates:
         daily_timeslots = []
-        start_time = datetime.combine(datetime.strptime(date, '%Y-%m-%d').date(), doctor.From_working_hours)
-        end_time = datetime.combine(datetime.strptime(date, '%Y-%m-%d').date(), doctor.To_working_hours)
+        start_time = datetime.combine(
+            datetime.strptime(date, '%Y-%m-%d').date(), doctor.From_working_hours
+        )
+        end_time = datetime.combine(
+            datetime.strptime(date, '%Y-%m-%d').date(), doctor.To_working_hours
+        )
 
         if start_time > end_time:
-            end_time += timedelta(days=1)  # Handle cases where end time is on the next day
-
+            end_time += timedelta(
+                days=1
+            )  # Handle cases where end time is on the next day
         current_time = start_time
 
         # Generate timeslots
@@ -165,7 +172,6 @@ def doctor_appointments():
             timeslot = f"{current_time.strftime('%I:%M %p')}"
             daily_timeslots.append((timeslot, timeslot))  # Only include start time
             current_time += duration
-
         # Filter out booked timeslots
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date
@@ -181,19 +187,16 @@ def doctor_appointments():
         for timeslot in daily_timeslots:
             is_available = timeslot[0] not in booked_timeslots
             available_timeslots.append((timeslot[0], timeslot[1], is_available))
-
         timeslots_by_date[date] = available_timeslots
-
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
         # Print form data to terminal
-        print("Form Data:", request.form)
-        print("Selected Timeslot:", selected_timeslot)
+        print('Form Data:', request.form)
+        print('Selected Timeslot:', selected_timeslot)
 
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
-
         # Extract date and time from selected_timeslot
         try:
             date_str, start_time_str = selected_timeslot.split(' ', 1)
@@ -207,7 +210,6 @@ def doctor_appointments():
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
             return redirect(request.url)
-
     return render_template(
         'booking.html',
         form=form,
@@ -219,190 +221,348 @@ def doctor_appointments():
     )
 
 
-
-
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
     doctor_id = session.get('doctor_id', None)
     date_str = session.get('date', None)
-    start_time_str = session.get('start_time', None)
-    end_time_str = session.get('end_time', None)
     date = datetime.strptime(date_str, '%Y-%m-%d')
-    start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
-    end_time = datetime.strptime(end_time_str, '%I:%M %p').time()
-
+    start_time = session.get('start_time', None)
+    start_time = datetime.strptime(start_time, '%I:%M %p').time()
 
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()
     if doctor_data:
         clinic_data = doctor_data.clinic
         gov = clinic_data.governorate
         if request.method == 'POST':
+            confirm_message = ''
+            status = AppStatus.Confirmed
             if checkout_form.validate_on_submit():
+                temp_password = secrets.token_urlsafe(8)
                 patient = Patient.query.filter_by(
                     email=checkout_form.email_address.data
                 ).first()
+                # role = Role.query.filter_by(role_name='patient').first().id
+                # patient = (
+                #     User.query.filter_by(email=checkout_form.email_address.data)
+                #     .join(UserRole)
+                #     .filter(UserRole.role_id == role)
+                #     .first()
+                # )
                 if patient:
                     patient_create = patient
+                    reset_link = url_for(
+                        'reset_password',
+                        email=checkout_form.email_address.data,
+                        _external=True
+                    )
+                    confirm_message = f"To confirm your appointment please login temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
+                    print('ccccccccccccccccccccccccccc', confirm_message)
+                    status = AppStatus.Pending
                 else:
-                    patient_create = Patient(
+                    user_to_create = User(
                         name=checkout_form.firstname.data
                         + ' '
                         + checkout_form.lastname.data,
-                        phone=checkout_form.phone.data,
-                        email=checkout_form.email_address.data
+                        email=checkout_form.email_address.data,
+                        activated=False,
+                        temp_pass=temp_password
                     )
+                    patient_create = Patient(
+                        phone=checkout_form.phone.data, users=user_to_create
+                    )
+                print(date.strftime('%Y-%m-%d'))
+                print(start_time.strftime('%H:%M:%S'))
+                print(status)
                 appointment_create = Appointment(
                     date=date.strftime('%Y-%m-%d'),
                     time=start_time.strftime('%H:%M:%S'),
-                    status=True,
                     seen=False,
                     clinic_id=clinic_data.id,
                     patient=patient_create,
-                    doctor_id=doctor_id
+                    doctor_id=doctor_id,
+                    status=status
                 )
                 logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
-                message_create = Message(
-                    message_body=f"""\
 
-            <html>
+                message_body = f"""\
 
-            <head>
 
-                <style>
 
-                    body {{
+                    <html>
 
-                        font-family: Arial, sans-serif;
 
-                        font-size: 18px;
 
-                        margin: 0;
+                    <head>
 
-                        padding: 0;
 
-                        background-color: #f4f4f4;
 
-                    }}
+                        <style>
 
-                    .container {{
 
-                        width: 80%;
 
-                        margin: 20px auto;
+                            body {{
 
-                        background-color: #fff;
 
-                        padding: 20px;
 
-                        border-radius: 10px;
+                                font-family: Arial, sans-serif;
 
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-                    }}
 
-                    .header {{
+                                font-size: 18px;
 
-                        background-color: #007bff;
 
-                        padding: 10px;
 
-                        text-align: center;
+                                margin: 0;
 
-                        border-radius: 10px 10px 0 0;
 
-                    }}
 
-                    .logo {{
+                                padding: 0;
 
-                        text-align: center;
 
-                        margin-bottom: 20px;
 
-                    }}
+                                background-color: #f4f4f4;
 
-                    .content {{
 
-                        padding: 20px;
 
-                    }}
+                            }}
 
-                    .footer {{
 
-                        text-align: left;
 
-                        margin-top: 20px;
+                            .container {{
 
-                        color: #777;
 
-                    }}
 
-                </style>
+                                width: 80%;
 
-            </head>
 
-            <body>
 
-                <div class="container">
+                                margin: 20px auto;
 
-                    <div class="header">
 
-                        <h2>Appointment Confirmation</h2>
 
-                    </div>
+                                background-color: #fff;
 
-                        <img src="cid:logo_image" alt="Your Logo" width="200">
 
-                    </div>
 
-                    <div class="content">
+                                padding: 20px;
 
-                        <p>Dear {patient_create.name},</p>
 
-                        <p>We are writing to confirm your upcoming appointment at {clinic_data.name}.</p>
 
-                        <h3>Appointment Details:</h3>
+                                border-radius: 10px;
 
-                        <ul>
 
-                            <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
 
-                            <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} to {end_time.strftime("%H:%M:%S")}</li>
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-                            <li><strong>Doctor:</strong> {doctor_data.name}</li>
 
-                            <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
 
-                        </ul>
+                            }}
 
-                        <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
 
-                        <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
 
-                        <p>We look forward to seeing you and providing the care you need.</p>
+                            .header {{
 
-                    </div>
 
-                    <div class="footer">
 
-                        <p>Best regards,</p>
+                                background-color: #007bff;
 
-                        <p>{clinic_data.name}</p>
 
-                        <p>{clinic_data.phone}</p>
 
-                    </div>
+                                padding: 10px;
 
-                </div>
 
-            </body>
 
-            </html>
+                                text-align: center;
 
-            """,
-                    appointment=appointment_create,
-                    status=False
-                )
+
+
+                                border-radius: 10px 10px 0 0;
+
+
+
+                            }}
+
+
+
+                            .logo {{
+
+
+
+                                text-align: center;
+
+
+
+                                margin-bottom: 20px;
+
+
+
+                            }}
+
+
+
+                            .content {{
+
+
+
+                                padding: 20px;
+
+
+
+                            }}
+
+
+
+                            .footer {{
+
+
+
+                                text-align: left;
+
+
+
+                                margin-top: 20px;
+
+
+
+                                color: #777;
+
+
+
+                            }}
+
+                            a {{
+
+                                color: red;
+
+                            }}
+
+
+
+                        </style>
+
+
+
+                    </head>
+
+
+
+                    <body>
+
+
+
+                        <div class="container">
+
+
+
+                            <div class="header">
+
+
+
+                                <h2>Appointment Confirmation</h2>
+
+
+
+                            </div>
+
+
+
+                                <img src="cid:logo_image" alt="Your Logo" width="200">
+
+
+
+                            </div>
+
+
+
+                            <div class="content">
+
+
+
+                                <p>Dear {user_to_create.name},</p>
+
+
+
+                                <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
+
+
+
+                                <h3>Appointment Details:</h3>
+
+
+
+                                <ul>
+
+
+
+                                    <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
+
+                                    <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} for {doctor_data.duration} Min </li>
+
+                                    <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
+
+                                    <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
+
+
+
+                                </ul>
+
+
+
+                                <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
+
+                                <a>
+
+                                {confirm_message}
+
+                                </a>
+
+
+
+                                <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
+
+
+
+                                <p>We look forward to seeing you and providing the care you need.</p>
+
+
+
+                            </div>
+
+
+
+                            <div class="footer">
+
+
+
+                                <p>Best regards,</p>
+
+
+
+                                <p>{clinic_data.users.name}</p>
+
+
+
+                                <p>{clinic_data.phone}</p>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </body>
+
+                    </html>
+
+                        """
+                message_create = Message(appointment=appointment_create, status=False)
                 try:
                     server = smtplib.SMTP('smtp.gmail.com', 587)
                     server.starttls()
@@ -412,8 +572,10 @@ def patient_checkout():
                     msg = MIMEMultipart()
                     msg['From'] = email_address
                     msg['To'] = checkout_form.email_address.data
-                    msg['Subject'] = f'Appointment Confirmation - {clinic_data.name}'
-                    message = message_create.message_body
+                    msg[
+                        'Subject'
+                    ] = f'Appointment Confirmation - {clinic_data.users.name}'
+                    message = message_body
                     msg.attach(MIMEText(message, 'html'))
                     with open(logo_path, 'rb') as f:
                         logo_data = f.read()
@@ -424,8 +586,9 @@ def patient_checkout():
                     server.quit()
                     message_create.status = True
                 except Exception as e:
+                    db.session.rollback()
                     flash(f'something wrong', category='danger')
-                    print(str(e))
+                    print('dddddddddddd', str(e))
                 notification_create = Notification(
                     clinic_id=clinic_data.id,
                     date=date.strftime('%Y-%m-%d'),
@@ -442,16 +605,16 @@ def patient_checkout():
                 socketio.emit(
                     'appointment_notification',
                     {
-                        'doctor': doctor_data.name,
+                        'doctor': doctor_data.users.name,
                         'date': date.strftime('%d %b %Y'),
                         'time': start_time.strftime('%H:%M:%S'),
-                        'patient': patient_create.name,
-                        'photo': doctor_data.photo
+                        'patient': patient_create.users.name,
+                        'photo': doctor_data.users.photo
                     },
                     room=clinic_data.id,
                     namespace='/'
                 )
-                session['doctor'] = doctor_data.name
+                session['doctor'] = doctor_data.users.name
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
                 session['clinic_id'] = clinic_data.id
@@ -476,9 +639,9 @@ def patient_checkout():
         gov=gov,
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
-        end_time=end_time.strftime('%H:%M'),
         form=checkout_form
     )
+
 
 @socketio.on('connect')
 def handle_connect():
@@ -526,85 +689,167 @@ def sendEmail():
                 msg['Subject'] = form.subject.data
                 message_body = f"""\
 
+
+
                     <html>
+
+
 
                     <head>
 
+
+
                         <style>
+
+
 
                             body {{
 
+
+
                                 font-family: Arial, sans-serif;
+
+
 
                                 font-size: 18px;
 
+
+
                                 margin: 0;
+
+
 
                                 padding: 0;
 
+
+
                                 background-color: #f4f4f4;
 
+
+
                             }}
+
+
 
                             .container {{
 
+
+
                                 width: 80%;
+
+
 
                                 margin: 20px auto;
 
+
+
                                 background-color: #fff;
 
+
+
                                 padding: 20px;
+
+
 
                                 border-radius: 10px;
 
+
+
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
+
+
                             }}
+
+
 
                             p{{
 
+
+
                                 font-size:16px;
 
+
+
                             }}
+
+
 
                             .logo {{
 
+
+
                                 text-align: center;
+
+
 
                                 margin-bottom: 20px;
 
+
+
                             }}
+
+
 
                             .content {{
 
+
+
                                 padding: 20px;
+
+
 
                             }}
 
+
+
                         </style>
+
+
 
                     </head>
 
+
+
                     <body>
+
+
 
                         <div class="container">
 
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
+
+
                             </div>
+
+
 
                             <div class="content">
 
+
+
                                 <p>{form.message.data}</p>
+
+
 
                             </div>
 
+
+
                         </div>
+
+
 
                     </body>
 
+
+
                     </html>
+
+
 
             """
                 message = message_body
