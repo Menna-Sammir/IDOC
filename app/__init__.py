@@ -5,10 +5,11 @@ import os
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal
-
+from flask_socketio import SocketIO
 
 load_dotenv()
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
@@ -29,3 +30,4 @@ from app.views import main
 from app.views import doctor
 from app.views import admin
 from app.views import auth_form
+from app.views import patient
