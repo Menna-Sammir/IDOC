@@ -19,21 +19,18 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @clinic_permission.require(http_exception=403)
 def clinic_dash():
     user_id = current_user.id
-    user = User.query.filter_by(id=user_id).first()
-    if user is None:
-        return translate('User not found'), 404
-    if not hasattr(user, 'clinic_id'):
+    clinic = Clinic.query.filter_by(user_id=user_id).first()
+    if clinic is None:
         return translate('User is not a clinic'), 403
-    clinic = Clinic.query.get_or_404(user.clinic_id)
     today = datetime.today().date()
     current_time = datetime.now().time()
     today_appointments = (
         db.session.query(Appointment)
-        .filter_by(clinic_id=user.clinic_id, date=today)
+        .filter_by(clinic_id=clinic.id, date=today)
         .count()
     )
     total_appointments = (
-        db.session.query(Appointment).filter_by(clinic_id=user.clinic_id).count()
+        db.session.query(Appointment).filter_by(clinic_id=clinic.id).count()
     )
     today = datetime.today().strftime('%Y-%m-%d')
 
@@ -44,7 +41,7 @@ def clinic_dash():
         db.session.query(Appointment, Patient, Doctor)
         .join(Patient, Appointment.patient_id == Patient.id)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .filter(Appointment.clinic_id == user.clinic_id, Appointment.date >= today)
+        .filter(Appointment.clinic_id == clinic.id, Appointment.date >= today)
         .all()
     )
     return render_template(

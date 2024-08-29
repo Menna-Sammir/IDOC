@@ -1,15 +1,19 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
-from app.models.models import Specialization, Doctor, Clinic, Governorate, Patient
+from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from werkzeug.utils import secure_filename
 import uuid
 from app.views.forms.addClinic_form import ClinicForm
 from app.views.forms.addDoctor_form import DoctorForm
-import os
 from app import translate
-
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import secrets
+import smtplib
+import os
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -61,7 +65,7 @@ def add_clinic():
     ]
     if request.method == 'POST':
         try:
-            clinic = Clinic.query.filter_by(
+            clinic = User.query.filter_by(
                 name=add_clinic_form.clinicName.data
             ).first()
 
@@ -69,14 +73,19 @@ def add_clinic():
                 flash(translate('clinic already exists!'))
             else:
                 if add_clinic_form.validate_on_submit():
-
-                    Clinic_create = Clinic(
-                        name=add_clinic_form.clinicName.data,
-                        phone=add_clinic_form.phone.data,
-                        email=add_clinic_form.email_address.data,
-                        address=add_clinic_form.clinicAddress.data,
-                        governorate_id=add_clinic_form.gov_id.data
+                    user_to_create = User(
+                        name = add_clinic_form.clinicName.data,
+                        email = add_clinic_form.email_address.data,
+                        activated = False
                     )
+                    Clinic_create = Clinic(
+                        phone=add_clinic_form.phone.data,
+                        address=add_clinic_form.clinicAddress.data,
+                        governorate_id=add_clinic_form.gov_id.data,
+                        users = user_to_create
+                    )
+                    clinic_role = Role.query.filter_by(role_name='clinic').first_or_404()
+                    role_to_create = UserRole(role_id=clinic_role.id, user=user_to_create)
 
                     if 'logo' not in request.files:
                         flash(translate('No file part'))
@@ -97,19 +106,58 @@ def add_clinic():
                                 app.config['UPLOAD_FOLDER'], 'clinic', filename
                             )
                         )
+                    temp_password = secrets.token_urlsafe(8)
+                    user_to_create.temp_pass = temp_password
+                    db.session.add(user_to_create)
+                    db.session.add(role_to_create)
                     db.session.add(Clinic_create)
                     db.session.commit()
+                    try:
+                        server = smtplib.SMTP('smtp.gmail.com', 587)
+                        server.starttls()
+                        email_address = os.getenv('EMAIL_ADDRESS')
+                        app_password = os.getenv('APP_PASSWORD')
+                        server.login(email_address, app_password)
+                        logo_path = os.path.join(
+                            app.root_path, 'static', 'img', 'logo.png'
+                        )
+                        msg = MIMEMultipart()
+                        msg['From'] = add_clinic_form.email_address.data
+                        msg['To'] = email_address
+                        msg['Subject'] = "IDOC, Email confirmation"
+                        reset_link = url_for(
+                            'reset_password',
+                            email=add_clinic_form.email_address.data,
+                            _external=True
+                        )
+                        message_body = f"Your temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
+
+                        message = message_body
+                        msg.attach(MIMEText(message, 'html'))
+                        with open(logo_path, 'rb') as f:
+                            logo_data = f.read()
+                        logo_part = MIMEImage(logo_data)
+                        logo_part.add_header('Content-ID', '<logo_image>')
+                        msg.attach(logo_part)
+
+                        server.send_message(msg)
+                        server.quit()
+                        # flash('A temporary password has been sent to your email.', 'success')
+                    except Exception as e:
+                        flash(f'something wrong', category='danger')
+                        print(str(e))
+                    flash(f'added clinic success  ${user_to_create.name}', category='success')
                     return redirect(url_for('dashboard'))
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
-                        print("errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror", err_msg)
+                        print("error",err_msg)
                         flash(
                             f'there was an error with creating a user: {err_msg}',
                             category='danger'
                         )
         except Exception as e:
             flash(f'something wrong', category='danger')
-            print("exxxxxxxxxxxxxxxxxxxxx", str(e))
+            print("Exception", e)
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
@@ -176,6 +224,7 @@ def add_doctor():
                         )
                     db.session.add(Doctor_create)
                     db.session.commit()
+                    flash(f'added Doctor success created with ID ${Doctor_create.iDNum}', category='success')
                     return redirect(url_for('dashboard'))
                 except Exception as e:
                     flash(f'something wrong', category='danger')
