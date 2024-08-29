@@ -5,7 +5,7 @@ python-dotenv==0.19.2
 cryptography==36.0.2
 Werkzeug==2.0.3
 SQLAlchemy==1.4.31
-
+flask_principal
 
 ***** push database migration **********
 # from app import app, db
