@@ -9564,7 +9564,7 @@ body::-webkit-scrollbar-thumb {
 	padding: .25rem .5rem;
 }
 
-.user-menu .dropdown-item {
+.user-dropmenu .dropdown-item {
     border-top: 1px solid #f0f0f0;
     padding: 10px 15px;
 }
