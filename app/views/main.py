@@ -36,6 +36,7 @@ def signup_page():
                 )
                 patient_create = Patient(
                     phone = form.phone.data,
+                    users = user_to_create
                 )
                 patient_role = Role.query.filter_by(role_name='patient').first_or_404()
                 role_to_create = UserRole(role_id=patient_role.id, user=user_to_create)
