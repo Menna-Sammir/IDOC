@@ -19,17 +19,51 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @login_required
 def admin_dash():
     user_id = request.args.get('current_user', None)
+    user = User.query.filter_by(id=user_id).first()
     
-    # user = User.query.filter_by(id=user_id).first()
+    doctors = db.session.query(Doctor).options(
+        joinedload(Doctor.specialization),
+        joinedload(Doctor.clinic)
+    ).all()
 
-    # doctor_id = user.doctor_id
+    doctor_details = []
+    clinic_details = set()
+    for doctor in doctors:
+        appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == doctor.id).scalar() or 0
+        total_earnings = appointment_count * (doctor.price or 0)
 
-    # doctor = Doctor.query.filter_by(id=doctor_id).first()
+        details = {
+            'doctor_name': doctor.name,
+            'specialization': doctor.specialization.specialization_name,
+            'photo': doctor.photo,
+            'price': doctor.price,
+            'clinic_name': doctor.clinic.name,
+            'clinic_phone': doctor.clinic.phone,
+            'clinic_address': doctor.clinic.address,
+            'total_earnings': total_earnings
+        }
+        doctor_details.append(details)
 
- 
-    # if request.method == 'POST':
-    #     return redirect(url_for('logout'))
+        clinic_info = {
+            'clinic_name': doctor.clinic.name,
+            'clinic_phone': doctor.clinic.phone,
+            'clinic_address': doctor.clinic.address
+        }
+        clinic_details.add(frozenset(clinic_info.items()))
 
-    return render_template('admin-dashboard.html')
+    clinic_details = [dict(clinic) for clinic in clinic_details]
+
+    doctor_count = db.session.query(Doctor).count()
+    clinic_count = db.session.query(Clinic).count()
+
+    if request.method == 'POST':
+        return redirect(url_for('logout'))
+    
+    return render_template('admin-dashboard.html', 
+                           current_user=user,
+                           doctor_details=doctor_details,
+                           clinic_details=clinic_details, 
+                           doctor_count=doctor_count,
+                           clinic_count=clinic_count)
 
 
