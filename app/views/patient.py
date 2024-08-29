@@ -679,22 +679,24 @@ def sendEmail():
     return redirect(url_for('home'))
 
 
-### patient profile
-@app.route('/patient-profile/<string:patient_id>')
-def patient_profile(patient_id):
-    patient = Patient.query.get_or_404(patient_id)
-
-    return render_template('patient-profile.html')
-
-
 ### patient setting
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():
-    form = PatientForm()
-
     user = User.query.filter_by(id=current_user.id).first()
     patient = Patient.query.filter_by(user_id=current_user.id).first()
+    
+    form = PatientForm(
+        firstname=user.name.split()[0] if user.name else '',
+        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
+        email=user.email,
+        phone=patient.phone if patient else '',
+        address=patient.address if patient else '',
+        governorate=patient.governorate_id if patient else None,
+        age=patient.age if patient else None,
+        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
+        allergy=patient.allergy.name if patient and patient.allergy else None
+    )
 
     if request.method == 'PUT':
         if form.validate():

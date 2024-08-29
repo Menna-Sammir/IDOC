@@ -689,3 +689,61 @@ $('#patientForm').on('submit', function (event) {
     },
   });
 });
+
+// update appointment status
+$(document).ready(function () {
+  $('.status-dropdown .dropdown-item').click(function () {
+    const newStatus = $(this).data('status');
+    const dropdownButton = $(this)
+      .closest('.status-dropdown')
+      .find('.status-badge');
+    const appointmentId = dropdownButton.data('appointment-id');
+    const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    console.log('Sending AJAX request with:', {
+      appointment_id: appointmentId,
+      new_status: newStatus,
+      csrf_token: csrfToken,
+    });
+
+    $.ajax({
+      url: '/update_appointment_status',
+      method: 'POST',
+      data: {
+        appointment_id: appointmentId,
+        new_status: newStatus,
+        csrf_token: csrfToken,
+      },
+      success: function (response) {
+        if (response.success) {
+          const badge = $(
+            `.status-badge[data-appointment-id="${appointmentId}"]`
+          );
+          badge
+            .text(newStatus)
+            .removeClass('bg-warning-light bg-success-light bg-danger-light')
+            .addClass(`bg-${getStatusColor(newStatus)}-light`);
+        } else {
+          alert('Failed to update status. Please try again.');
+        }
+      },
+      error: function (xhr, status, error) {
+        alert('An error occurred. Please try again.');
+        console.error('Error:', status, error);
+      },
+    });
+  });
+});
+
+function getStatusColor(status) {
+  switch (status) {
+    case 'Pending':
+      return 'warning';
+    case 'Confirmed':
+      return 'success';
+    case 'Cancelled':
+      return 'danger';
+    default:
+      return 'warning';
+  }
+}
