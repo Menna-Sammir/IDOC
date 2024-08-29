@@ -155,9 +155,17 @@ def doctor_appointments():
             end_hour_24 = convert_to_24_hour(end_hour)
             start_hour_int = start_hour_24.hour
             end_hour_int = end_hour_24.hour
+
+            if start_hour_int > end_hour_int:
+                end_hour_int += 24  
+
             for hour in range(start_hour_int, end_hour_int):
-                start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
-                end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
+                start_time = datetime.strptime(f"{hour % 24}:00", '%H:%M').time()
+                end_time = datetime.strptime(f"{(hour + 1) % 24}:00", '%H:%M').time()
+
+                if start_time.strftime('%p') == 'AM' and hour >= 24:
+                    break  
+
                 timeslot = f"{date[0]} {start_time.strftime('%I:%M %p')}-{end_time.strftime('%I:%M %p')}"
                 daily_timeslots.append(
                     (
