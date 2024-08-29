@@ -29,8 +29,7 @@ def on_identity_loaded(sender, identity):
     identity.user = current_user
     if hasattr(current_user, 'id'):
         identity.provides.add(UserNeed(current_user.id))
-    if hasattr(current_user, 'role'):
-        print("ggggggggggggggggggggggggggggggggggggg",current_user.user_roles.role.role_name)
+    if hasattr(current_user, 'user_roles'):
         identity.provides.add(RoleNeed(current_user.user_roles.role.role_name))
 
 
@@ -85,6 +84,7 @@ class Doctor(BaseModel):
     email = db.Column(VARCHAR(100), nullable=False)
     photo = db.Column(VARCHAR(255))
     price = db.Column(INTEGER)
+    duration  = db.Column(TIME)
     iDNum = db.Column(VARCHAR(50), nullable=False)
 
     specialization_id = db.Column(
@@ -93,6 +93,7 @@ class Doctor(BaseModel):
     clinic_id = db.Column(VARCHAR(36), ForeignKey('clinic.id'), nullable=True)
     From_working_hours = db.Column(TIME(), nullable=False)
     To_working_hours = db.Column(TIME(), nullable=False)
+
 
     users = db.relationship('User', backref='doctor', uselist=False)
     specialization = relationship('Specialization', back_populates='doctors')

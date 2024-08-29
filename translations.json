@@ -9,6 +9,7 @@
     "Dr.": "Dr.",
     "From": "From",
     "To": "To",
+    "Dia Duration": "Dia Duration",
     "Clinic Logo": "Clinic Logo",
     "Add Clinic": "Add Clinic",
     "File size must be less than 2MB.": "File size must be less than 2MB.",
@@ -291,7 +292,8 @@
     "Jewel clinic": "Jewel clinic",
     "Paid Amount": "Paid Amount",
     "Patient Appoinment": "Patient Appoinment",
-    "appointments": "appointments"
+    "appointments": "appointments",
+    "Select Time": "Select Time"
   },
 
   "ar": {
@@ -304,7 +306,7 @@
     "Message": "الرسالة",
     "Clinic Logo": "شعار العيادة",
     "Dr.": "د.",
-    "Nora Mohammed": "نورا محمد",
+    "Nora Alsebaai": "نورة السباعي",
     "Eyad Abdallah": "إياد عبدالله",
     "Ahmed Abdallah": "أحمد عبدالله",
     "122 dokki street, cairo": "122 شارع الدقي , القاهرة",
@@ -585,6 +587,8 @@
     "Jewel clinic": "عيادة جويل",
     "Paid Amount": "المبلغ المدفوع",
     "Patient Appoinment": "مواعيد المرضي",
-    "appointments": "المواعيد"
+    "appointments": "المواعيد",
+    "Dia Duration": "فترة الكشف",
+    "Select Time": "اختيار الوقت"
   }
 }

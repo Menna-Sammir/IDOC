@@ -3,7 +3,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from app.models.models import Clinic
-from wtforms_components import TimeField
 from flask_wtf.file import FileField
 from flask_wtf.csrf import CSRFProtect
 from app import translate
@@ -28,8 +27,6 @@ class ClinicForm(FlaskForm):
     email_address = StringField(validators=[Email(), DataRequired(), Length(max=50)])
     gov_id = SelectField(validators=[DataRequired()])
     phone = StringField(validators=[Length(min=0, max=11)])
-    fromHour = TimeField(validators=[DataRequired()])
-    toHour = TimeField(validators=[DataRequired()])
     logo = FileField(validators=[DataRequired(), file_size_check])
     submit = SubmitField()
 
@@ -43,7 +40,5 @@ class ClinicForm(FlaskForm):
         self.email_address.label.text = translate('Email Address')
         self.gov_id.label.text = translate('governorate')
         self.phone.label.text = translate('Phone')
-        self.fromHour.label.text = translate('From')
-        self.toHour.label.text = translate('To')
         self.logo.label.text = translate('Clinic Logo')
         self.submit.label.text = translate('Add Clinic')
