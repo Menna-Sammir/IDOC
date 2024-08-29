@@ -21,7 +21,8 @@ from app import load_translations, translations
 
 
 def convert_to_24_hour(time_str):
-    return datetime.strptime(time_str, '%I:%M %p').time()
+    return datetime.strptime(time_str, '%I%p').time()
+    # return datetime.strptime(time_str, '%I:%M %p').time()
 
 
 @app.route('/')
@@ -426,8 +427,6 @@ def patient_checkout():
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
-                print(f"hooooooooooooooooooooooooooof{clinic_data.id}")
-
                 socketio.emit(
                     'appointment_notification',
                     {
