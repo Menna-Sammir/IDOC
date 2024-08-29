@@ -269,11 +269,17 @@
         "Faiyum": "Faiyum",
         "Matruh": "Matruh",
         "Sohag": "Sohag",
-        "New Valley": "New Valley"
+        "New Valley": "New Valley",
+        ",Egypt": ",Egypt",
+        "122 dokki street, cairo": "122 dokki street, cairo",
+        "134 Almawasi street, port said": "134 Almawasi street, port said",
+        "230 Rasheed street, Almontazah": "230 Rasheed street, Almontazah"
+
 
     },
 
     "ar" : {
+        ",Egypt": ",مصر",
         "Clinic Name": "اسم العيادة",
         "Clinic Address": "عنوان العيادة",
         "governorate": "المحافظة",
@@ -542,8 +548,10 @@
         "Faiyum": "الفيوم",
         "Matruh": "مطروح",
         "Sohag": "سوهاج",
-        "New Valley": "الوادي الجديد"
-        
+        "New Valley": "الوادي الجديد",
+        "122 dokki street, cairo": "122 شارع الدقي, القاهرة",
+        "134 Almawasi street, port said": "134 شارع المواسي, بورسعيد",
+        "230 Rasheed street, Almontazah": "230 شارع رشيد, المنتزه"
 
     }
 }
