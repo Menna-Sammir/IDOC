@@ -8,6 +8,7 @@ import uuid
 from app.views.forms.addClinic_form import ClinicForm
 from app.views.forms.addDoctor_form import DoctorForm
 import os
+from app import translate
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -63,7 +64,7 @@ def add_clinic():
             ).first()
 
             if clinic:
-                flash('clinic already exists!')
+                flash(translate('clinic already exists!'))
             else:
                 if add_clinic_form.validate_on_submit():
                     from_hour = add_clinic_form.fromHour.data.strftime('%H:%M %p')
@@ -78,11 +79,11 @@ def add_clinic():
                     )
 
                     if 'logo' not in request.files:
-                        flash('No file part')
+                        flash(translate('No file part'))
                         return redirect(request.url)
                     file = request.files['logo']
                     if file.filename == '':
-                        flash('No selected file')
+                        flash(translate('No selected file'))
                         return redirect(request.url)
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
@@ -102,11 +103,11 @@ def add_clinic():
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
                         flash(
-                            f'there was an error with creating a user: {err_msg}',
+                            translate('there was an error with creating a user:) {err_msg}').format(err_msg=err_msg),
                             category='danger'
                         )
         except Exception as e:
-            flash(f'something wrong', category='danger')
+            flash(translate('something wrong'), category='danger')
             print(str(e))
     return render_template('add-clinic.html', form=add_clinic_form)
 
@@ -137,7 +138,7 @@ def add_doctor():
             ).first()
 
             if doctor:
-                flash('doctor already exists!')
+                flash(translate('doctor already exists!'))
             else:
                 try:
                     clinic = Clinic.query.get(add_doctor_form.clinic_id.data).name
@@ -150,11 +151,11 @@ def add_doctor():
                         clinic_id=add_doctor_form.clinic_id.data
                     )
                     if 'photo' not in request.files:
-                        flash('No file part')
+                        flash(translate('No file part'))
                         return redirect(request.url)
                     file = request.files['photo']
                     if file.filename == '':
-                        flash('No selected file')
+                        flash(translate('No selected file'))
                         return redirect(request.url)
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
@@ -176,7 +177,7 @@ def add_doctor():
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
-                    f'there was an error with adding doctor: {err_msg}',
+                    translate('there was an error with adding doctor: {err_msg}'.format(err_msg=err_msg)),
                     category='danger'
                 )
     return render_template('add-doctor.html', form=add_doctor_form)

@@ -3,6 +3,7 @@ from flask import render_template
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from flask_login import login_required, current_user
+from app import translate
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -16,9 +17,9 @@ def clinic_dash():
     user_id = current_user.id
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        return 'User not found', 404
+        return translate('User not found'), 404
     if not hasattr(user, 'clinic_id'):
-        return 'User is not a clinic', 403
+        return translate('User is not a clinic'), 403
     clinic = Clinic.query.get_or_404(user.clinic_id)
     today = datetime.today().date()
     current_time = datetime.now().time()
