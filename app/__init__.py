@@ -9,11 +9,9 @@ from flask_socketio import SocketIO
 import uuid
 from flask_wtf.csrf import CSRFProtect
 
-from flask_socketio import SocketIO
 
 load_dotenv()
 app = Flask(__name__)
-socketio = SocketIO(app)
 socketio = SocketIO(app)
 
 IDOC_USER = os.getenv('IDOC_USER')
@@ -54,8 +52,4 @@ principal = Principal(app)
 from app.views import main
 from app.views import doctor
 from app.views import admin
-from app.views import patient
-
-
-from app.views import auth_form
 from app.views import patient
