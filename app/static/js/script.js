@@ -391,17 +391,85 @@ Version      : 1.0
       }
     });
   }
+  $(".nav-link").each(function () {
+    var direction = $("html").attr("lang");
+    if (direction === "en") {
+      var $link = $(this);
+      var text = $link.text();
+      $link.empty();
 
-  $('.nav-link').each(function() {
-    var $link = $(this);
-    var text = $link.text();
-    $link.empty();
-
-    $.each(text.split(''), function(index, char) {
-        var $span = $('<span>').text(char).css('animation-delay', (index * 0.1) + 's');
+      $.each(text.split(""), function (index, char) {
+        var $span = $("<span>")
+          .text(char)
+          .css("animation-delay", index * 0.1 + "s");
         $link.append($span);
+      });
+    }
+  });
+
+  function changeFont(language) {
+    if (language === "en") {
+      $("body").css("font-family", "Poppins, sans-serif");
+      // $("html").css("direction", "ltr");
+    } else if (language === "ar") {
+      $("body").css("font-family", "Cairo, sans-serif");
+      // $("html").css("direction", "rtl");
+    }
+  }
+
+  function setLanguage(language) {
+    $.ajax({
+      url: "/set_language",
+      type: "GET",
+      data: { language: language },
+      success: function () {
+        changeFont(language);
+        location.reload();
+      },
     });
-});
+  }
+
+  var currentLang = $("html").attr("lang");
+  changeFont(currentLang);
+
+  $(".dropdown-item").click(function () {
+    var selectedLanguage = $(this).data("lang");
+    console.log("Selected language:", selectedLanguage);
+    setLanguage(selectedLanguage);
+  });
+
+  // $(".nav-link").each(function () {
+  //   var direction = $("html").attr("lang") ;
+  //   if (direction === "en") {
+  //     var $link = $(this);
+  //     var text = $link.text();
+  //     $link.empty();
+
+  //     $.each(text.split(""), function (index, char) {
+  //       var $span = $("<span>")
+  //         .text(char)
+  //         .css("animation-delay", index * 0.1 + "s");
+  //       $link.append($span);
+  //     });
+  //   }
+  // });
+
+  // function changeFont(language) {
+  //   if (language === "en") {
+  //     $("body").css("font-family", "Poppins, sans-serif");
+  //     $("html").css("direction", "ltr");
+  //   } else if (language === "ar") {
+  //     $("body").css("font-family", "Cairo, sans-serif");
+  //     $("html").css("direction", "rtl");
+  //   }
+  // }
+  // changeFont($("#languageSelect").val());
+
+  // $("#languageSelect").change(function () {
+  //   var selectedLanguage = $(this).val();
+  //   console.log("Selected language:", selectedLanguage);
+  //   changeFont(selectedLanguage);
+  // });
 
   if ($(".circle-bar").length > 0) {
     animateElements();
@@ -576,8 +644,6 @@ timeslots.forEach((slot) => {
   });
 });
 
-
-
 document
   .getElementById("continue-button")
   .addEventListener("click", function (event) {
@@ -591,25 +657,3 @@ document
       document.getElementById("appointment-form").submit();
     }
   });
-
-
-  $(document).ready(function() {
-    function changeFont(language) {
-        console.log('Changing font for language:', language);
-        if (language === 'en') {
-            $('body').css('font-family', "Poppins, sans-serif");
-        } else if (language === 'ar') {
-            $('body').css('font-family', 'Cairo, sans-serif');
-        }
-    }
-    changeFont($('#languageSelect').val());
-
-    $('#languageSelect').change(function() {
-        var selectedLanguage = $(this).val();
-        console.log('Selected language:', selectedLanguage);
-        changeFont(selectedLanguage);
-    });
-});
-
-
-

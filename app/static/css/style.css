@@ -60,7 +60,7 @@ Version      : 1.0
 	font-optical-sizing: auto;
 	font-weight: 400;
 	font-style: normal;
-	font-variation-settings: "slnt" 0;
+	font-variation-settings: "slnt"0;
 }
 
 html {
@@ -9550,4 +9550,21 @@ body::-webkit-scrollbar-thumb {
 		top: -165px;
 		right: 0;
 	}
+}
+
+
+.language-select .dropdown-menu {
+	min-width: 1rem;
+	padding: .5rem 0;
+	background-color: #a8efff3b;
+}
+
+
+.language-select .dropdown-item {
+	padding: .25rem .5rem;
+}
+
+.user-menu .dropdown-item {
+    border-top: 1px solid #f0f0f0;
+    padding: 10px 15px;
 }
