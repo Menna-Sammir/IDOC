@@ -1,0 +1,40 @@
+<div class="profile-sidebar">
+  <div class="widget-profile pro-widget-content">
+    <div class="profile-info-widget">
+      <a href="profile.html" class="booking-doc-img">
+        {% set base_path = 'static/images/doctors/' %}
+        <img
+          class="avatar-img rounded-circle"
+          src="{{base_path ~ current_user.doctor.photo}}"
+          alt="User Image"
+      /></a>
+      <div class="profile-det-info">
+        <h3>Dr. {{ current_user.doctor.name }}</h3>
+
+        <div class="patient-details specialization">
+          <h5 class="mb-0">
+            {{ current_user.doctor.specialization.specialization_name }}
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-widget">
+    <nav class="dashboard-menu">
+      <ul>
+        <li class="active">
+          <a href="doctor-dashboard.html">
+            <i class="fas fa-columns"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
+          <a href="{{ url_for('logout_page') }}">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
