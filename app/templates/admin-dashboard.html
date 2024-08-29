@@ -118,11 +118,11 @@
                                             {% set base_path = 'static/images/doctors/' %}
                                             <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.photo}}" alt="User Image"></a>
 
-                                              <a href="#">{{ doctor.name }}</a>
+                                              <a href="#">Dr. {{ doctor.name }}</a>
                                           </h2>
                                       </td>
                                       <td>{{ doctor.specialization.specialization_name }}</td>
-                                      <td>{{ doctor.total_earnings() }}</td>
+                                      <td>{{ doctor.total_earnings() }} $</td>
                                      
                                   </tr>
                                   {% endfor %}

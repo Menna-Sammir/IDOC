@@ -19,12 +19,10 @@ Version      : 1.0
   }
 
   $(window).on("load", function () {
-    $(".loader").fadeOut("slow");
-    $(".main-wrapper").css("opacity", "1");
-    // setTimeout(function() {
-    //     $(".loader").fadeOut( "slow");
-    //     $(".main-wrapper").css("opacity", "1");
-    // }, 4000);
+    setTimeout(function() {
+        $(".loader").fadeOut( "slow");
+        $(".main-wrapper").css("opacity", "1");
+    }, 2000);
 
     // preview image after upload
     $(".upload").on("change", function (event) {
@@ -265,6 +263,7 @@ Version      : 1.0
     $(".doctor-slider").slick({
       centerMode: true,
       centerPadding: "60px",
+      slidesToShow: 4,
       dots: false,
       autoplay: true,
       infinite: true,

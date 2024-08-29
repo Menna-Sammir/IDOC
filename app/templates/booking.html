@@ -24,7 +24,7 @@
     <div class="row justify-content-between align-items-start">
 
       <div class="col-lg-4 col-md-10">
-        <div class="card mt-1" style="box-shadow: #94dcfe94 0px 25px 50px -12px; background-color: rgb(90 201 208 / 33%);
+        <div class="card mt-1" style="box-shadow: #94dcfe94 0px 25px 50px -12px; background-color: #ade8f49c;
     ">
           <div class="card-body row justify-content-center align-items-center">
 
@@ -106,9 +106,9 @@
 
     <div class="row col-lg-8 col-md-12 px-2 card ">
       <div class="card-body p-1 ">
-        <form method="post" class="col-md-12 justify-content-center row" action="{{ url_for('doctor_appointments') }}">
+        <form method="post" class="col-md-12 justify-content-center row"
+        >
           {{ form.hidden_tag() }}
-          <input type="hidden" name="doctor_id" value="{{ doctor.id }}" />
           <h3 class="col-12 text-muted my-3 text-left">
             Schedules
             </h3>
@@ -134,7 +134,7 @@
                 name="timeslot"
                 id="{{ timeslot[0] }}"
                 value="{{ timeslot[0] }}"
-                class="rounded-sm" {%if not timeslot[2] %}disabled{% endif %} required />
+                class="rounded-sm" {%if not timeslot[2] %}disabled{% endif %} />
               <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %} >
                 {{ timeslot[1] }} {% if not timeslot[2] %}(Booked){% endif %}
                 </label>
@@ -143,13 +143,14 @@
           </div>
           {% endfor %}
         </div>
-        <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center" >
-          <button type="submit" class="btn btn-primary submit-btn" style="border-radius: 10px;">
-             Continue <i class="fas fa-caret-right"></i>
-        </button>
+        <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
+          <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
+            Continue <i class="fas fa-caret-right"></i>
+       </button>
         </div>
         </form>
-      </div></div>
+      </div>
+    </div>
 
     </div>
     </div>
