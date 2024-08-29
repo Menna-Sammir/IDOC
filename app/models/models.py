@@ -74,7 +74,7 @@ class AppStatus(Enum):
     Pending = 0
     Confirmed = 1
     Cancelled = 2
-    Complete = 3
+    Completed = 3
 
 
 class PatientHisType(Enum):
