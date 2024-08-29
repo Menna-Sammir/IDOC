@@ -279,7 +279,7 @@
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', (event) => {
         var clinic_id = '{{ current_user.clinic_id }}';
-
+        console.log('Rendered clinic_id:', clinic_id);
         if (!clinic_id) {
           console.error(
             'Clinic ID is missing. Cannot establish WebSocket connection.'
