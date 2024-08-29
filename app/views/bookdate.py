@@ -26,7 +26,7 @@ def convert_to_24_hour(time_str):
 @app.route('/book', methods=['GET', 'POST'])
 def doctor_appointments():
     form = AppointmentForm()
-    doctor_id = 'doc1'  # يمكنك تعيين ID الدكتور هنا
+    doctor_id = 'doc1'
     doctor = Doctor.query.get_or_404(doctor_id)
     clinic = doctor.clinic
     dates = []
@@ -54,5 +54,22 @@ def doctor_appointments():
                 daily_timeslots.append((timeslot, f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"))
 
         timeslots_by_date[date[0]] = daily_timeslots
+
+    if request.method == 'POST':
+        selected_timeslot = request.form['timeslot']
+        date_str, time_range = selected_timeslot.split()
+        start_time_str, end_time_str = time_range.split('-')
+        date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        start_time = datetime.strptime(start_time_str, '%H:%M').time()
+        end_time = datetime.strptime(end_time_str, '%H:%M').time()
+
+        new_appointment = Appointment(
+            doctor_id=doctor.id,
+            date=date,
+            time=start_time
+        )
+        db.session.add(new_appointment)
+        db.session.commit()
+        return "Appointment booked successfully!"
 
     return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic)
