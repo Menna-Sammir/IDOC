@@ -61,10 +61,10 @@
 								{% for date, day in dates %}
 								  <div class="timeslots">
 									{% for timeslot in timeslots_by_date[date] %}
-									  <div class="timeslot">
-										<input type="radio" name="timeslot" id="{{ timeslot[0] }}" value="{{ timeslot[0] }}" class="rounded-sm">
-										<label for="{{ timeslot[0] }}">{{ timeslot[1] }}</label>
-									  </div>
+									<div class="timeslot">
+										<input type="radio" name="timeslot" id="{{ timeslot[0] }}" value="{{ timeslot[0] }}" class="rounded-sm" {% if not timeslot[2] %}disabled{% endif %} required>
+										<label for="{{ timeslot[0] }}" {% if not timeslot[2] %}style="color: grey;"{% endif %}>{{ timeslot[1] }} {% if not timeslot[2] %}(Booked){% endif %}</label>
+									</div>
 									{% endfor %}
 								  </div>
 								{% endfor %}
