@@ -9099,13 +9099,11 @@ textarea {
 /*-----*/
 
 .outer:active .calendarMain {
-	-webkit-transform: scale(1.8);
 	opacity: 0;
 	visibility: hidden;
 }
 
 .outer:active .clock {
-	-webkit-transform: scale(1.4);
 	opacity: 1;
 	visibility: visible;
 }
