@@ -4190,11 +4190,13 @@ html.menu-opened body {
 	justify-content: center;
 	align-items: center;
 	padding: 5px;
-	margin: 0px 5px;
+	margin: 0px;
 	cursor: pointer;
+	width: 100%;
   }
   .date-item.active {
-	border-color: #000;
+	background-color: #5ac9d0;
+	color: #fff;
   }
   .timeslots {
 	display: none;
@@ -4216,7 +4218,7 @@ html.menu-opened body {
 	display: none;
   }
   .timeslot.active {
-	background-color: #007bff;
+	background-color: #5ac9d0;
 	color: #fff;
 	margin: auto;
 	border-radius: 20px;
@@ -4225,7 +4227,7 @@ html.menu-opened body {
 	margin: auto;
 	}
   .timeslot input[type="radio"]:checked + label {
-	background-color: #007bff;
+	background-color: #5ac9d0;
 	color: #fff;
 	margin: auto;
   }
