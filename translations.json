@@ -288,7 +288,10 @@
         "Doctors": "Doctors",
         "Meswak": "Meswak",
         "Alfarabi": "Alfarabi",
-        "Jewel clinic": "Jewel clinic"
+        "Jewel clinic": "Jewel clinic",
+        "Paid Amount": "Paid Amount",
+        "Patient Appoinment": "Patient Appoinment",
+        "appointments": "appointments"
 
     },
 
@@ -580,6 +583,9 @@
         "Doctors": "الأطباء",
         "Meswak": "مسواك",
         "Alfarabi": "الفارابي",
-        "Jewel clinic": "عيادة جويل"
+        "Jewel clinic": "عيادة جويل",
+        "Paid Amount": "المبلغ المدفوع",
+        "Patient Appoinment": "مواعيد المرضي",
+        "appointments": "المواعيد"
     }
 }
