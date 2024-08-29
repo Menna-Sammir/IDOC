@@ -54,41 +54,45 @@ def book_appointment():
 @app.route('/doctor_dashboard', methods=['GET', 'POST'])
 @login_required
 def doctor_dash():
-    current_user_id = request.args.get('current_user', None)
+    user_id = request.args.get('current_user', None)
     
-    doctor_id = session.get('doctor_id')
-    doctor = db.session.query(Doctor).filter(Doctor.id == doctor_id).first()
+    user = User.query.filter_by(id=user_id).first()
+
+    doctor_id = user.doctor_id
+
+    doctor = Doctor.query.filter_by(id=doctor_id).first()
 
     today = date.today()
     print("Today's date:", today)
+    print("User ID:", user_id)
+    print("Doctor ID:", doctor_id)
+    print("Doctor:", doctor)
 
-    appointments = db.session.query(Appointment)\
+    appointments = db.session.query(Appointment, Doctor.name, Specialization.specialization_name, Patient.name)\
         .join(Doctor, Doctor.id == Appointment.doctor_id)\
-        .join(Patient, Patient.id == Appointment.patient_id)\
         .join(Specialization, Specialization.id == Doctor.specialization_id)\
-        .filter(Doctor.id == doctor_id, Appointment.date == today).all()
-
+        .join(Patient, Patient.id == Appointment.patient_id)\
+        .filter(Appointment.doctor_id == doctor_id, Appointment.date == today).all()
+        
+    specialization = Specialization.query.filter(Specialization.id == doctor.specialization_id).first()
+    
+    
     appointments_list = []
-    for appointment, doctor_name, specialization_name in appointments:
-                appointments_list.append({
-                    'appointment_id': appointment.id,
-                    'appointment_time': appointment.time,
-                    'patient_name': appointment.patient.name,
-                    'doctor_name': doctor_name,
-                    'specialization_name': specialization_name,
-                    'status': appointment.status,
-                    'seen': appointment.seen
-                })
+    for appointment, doctor_name, specialization_name, patient_name in appointments:
+        appointments_list.append({
+            'appointment_id': appointment.id,
+            'appointment_time': appointment.time,
+            'appointment_date': appointment.date,
+            'patient_name': patient_name,
+            'doctor_name': doctor_name,
+            'specialization_name': specialization_name,
+            'status': appointment.status,
+            'seen': appointment.seen
+        })
+        
+    if request.method == 'POST':
+        return redirect(url_for('logout'))
 
-    print("Query Result:", appointments)
-    return render_template('doctor-dashboard.html', current_user=current_user_id, doctor=doctor, appointments=appointments_list)
+    return render_template('doctor-dashboard.html', current_user=user_id, doctor=doctor, appointments=appointments_list, specialization=specialization)
 
-
-
-
-# doctor dashboard page >>> update appointment
-# @app.route('/doctor_dashboard', methods=['PUT'])
-# def doctor_dashboard():
-
-#     return render_template('doctor_dashboard.html')
 

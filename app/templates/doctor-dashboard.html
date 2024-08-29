@@ -40,7 +40,7 @@
                   <h3>{{ doctor.name }}</h3>
   
                   <div class="specialization">
-                    <h5 class="mb-0">{{ doctor.specialization_name }}</h5>
+                    <h5 class="mb-0">{{ specialization.specialization_name }}</h5>
                   </div>
                 </div>
               </div>
@@ -60,8 +60,9 @@
                   </li>
                   <li>
                     <a href="index.html">
-                      <i class="fas fa-sign-out-alt"></i>
-                      <span>Logout</span>
+                      <form action="/logout" method="post">
+                        <input type="submit" value="Logout" class="btn btn-primary" />
+                      </form>
                     </a>
                   </li>
                 </ul>
@@ -168,7 +169,8 @@
                               <tr>
                                 <th>Patient Name</th>
                                 <th>Appt Date</th>
-                                <th></th>
+                                <th>Phone</th>
+                                
                               </tr>
                             </thead>
                             <tbody>
@@ -184,16 +186,14 @@
                                         src="static/img/patients/patient.jpg"
                                         alt="User Image"
                                     /></a>
-                                    {% for patient in patients %}
                                     <a href="patient-profile.html"
-                                      >{{ patient.name }} <span>{{ appointment.appointment_id }}</span></a
+                                      >{{ appointment.patient_name  }} <span>{{ appointment.appointment_id }}</span></a
                                     >
-                                    {% endfor %}
                                   </h2>
                                 </td>
                                 <td>
-                                  {{ appointment.date }}
-                                  <span class="d-block text-info">{{ appointment.time }}</span>
+                                  {{ appointment.appointment_date }}
+                                  <span class="d-block text-info">{{ appointment.appointment_time }}</span>
                                 </td>
                               
                                 <td class="text-right">
@@ -212,12 +212,6 @@
                               {% endfor %}
                               <tr>
                                 <td>
-                                  
-                                  
-                                    </a>
-                                  </div>
-                                </td>
-                              </tr>
                             </tbody>
                           </table>
                         </div>
