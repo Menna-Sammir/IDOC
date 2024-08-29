@@ -48,11 +48,8 @@ def doctor_appointments():
 
     if request.method == 'POST':
         selected_timeslot = request.form['timeslot']
-        date_str, time_range = selected_timeslot.split()
-        start_time_str, end_time_str = time_range.split('-')
-        date = datetime.strptime(date_str, '%Y-%m-%d').date()
-        start_time = datetime.strptime(start_time_str, '%H:%M').time()
-        end_time = datetime.strptime(end_time_str, '%H:%M').time()
+        return redirect(url_for('checkout', doctor_id=doctor.id, timeslot=selected_timeslot))
+
 
         new_appointment = Appointment(
             doctor_id=doctor.id,
