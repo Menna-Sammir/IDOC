@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from datetime import datetime
-from sqlalchemy import func, select
+from sqlalchemy import func, select, and_
 from sqlalchemy.orm import joinedload
 from flask_login import login_required, current_user
 from flask import session
@@ -33,11 +33,13 @@ def search_doctor():
         
         if date:
             search_date = datetime.strptime(date, '%d/%m/%Y').date()
-            subquery = db.session.query(Appointment.doctor_id).filter(
-                func.date(Appointment.date) == search_date).group_by(
-                Appointment.doctor_id).having(func.count(Appointment.id) < 5).subquery()
-            query = query.filter(Doctor.id.in_(select(subquery)))
+            subquery = db.session.query(Doctor.id).outerjoin(Appointment, and_(
+            Doctor.id == Appointment.doctor_id,
+            func.date(Appointment.date) == search_date
+            )).filter(Appointment.id == None)
 
+            query = query.filter(Doctor.id.in_(subquery))
+            
     doctors = query.all()
     return render_template('search.html', doctors=doctors, specializations=specializations, governorates=governorates)
 
