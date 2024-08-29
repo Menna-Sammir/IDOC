@@ -4181,6 +4181,7 @@ html.menu-opened body {
 	justify-content: space-between;
 	margin-bottom: 20px;
 	border: 2px solid #ddd;
+	border-radius: 5px;
   }
   .date-item {
 	flex: 1;

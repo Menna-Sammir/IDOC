@@ -29,6 +29,7 @@ def doctor_appointments():
     doctor_id = 'doc1'
     doctor = Doctor.query.get_or_404(doctor_id)
     clinic = doctor.clinic
+    specialization_name = doctor.specialization.specialization_name
     dates = []
 
     for i in range(6):
@@ -72,4 +73,4 @@ def doctor_appointments():
         db.session.commit()
         return "Appointment booked successfully!"
 
-    return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic)
+    return render_template('booking.html', form=form, doctor=doctor, dates=dates, timeslots_by_date=timeslots_by_date, clinic=clinic, specialization_name=specialization_name)
