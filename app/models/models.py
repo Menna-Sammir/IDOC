@@ -92,14 +92,11 @@ class Specialization(BaseModel):
 class Doctor(BaseModel):
     __tablename__ = 'doctor'
 
-    name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
-    email = db.Column(VARCHAR(100), nullable=False)
-    photo = db.Column(VARCHAR(255))
     price = db.Column(INTEGER)
     duration  = db.Column(TIME)
     isAdv = db.Column(BOOLEAN, nullable=False)
-    iDNum = db.Column(VARCHAR(50), nullable=False)
+    iDNum = db.Column(VARCHAR(50), nullable=False, unique = True)
 
     specialization_id = db.Column(
         VARCHAR(60), ForeignKey('specialization.id'), nullable=False
@@ -128,11 +125,8 @@ class Doctor(BaseModel):
 class Clinic(BaseModel):
     __tablename__ = 'clinic'
 
-    name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
-    email = db.Column(VARCHAR(100), nullable=False)
     address = db.Column(VARCHAR(255), nullable=False)
-    photo = db.Column(VARCHAR(255))
     governorate_id = db.Column(
         VARCHAR(60), ForeignKey('governorate.id'), nullable=False
     )
@@ -179,10 +173,10 @@ class User(BaseModel, UserMixin):
 
     name = db.Column(VARCHAR(100), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
-    password = db.Column(VARCHAR(255), nullable=False)
+    password = db.Column(VARCHAR(255), nullable=True)
     photo = db.Column(VARCHAR(255), nullable=True)
     activated = db.Column(BOOLEAN, nullable=False)
-    temp_password = db.Column(db.String(200), nullable=True)
+    temp_password = db.Column(VARCHAR(200), nullable=True)
 
     doctor = relationship('Doctor', back_populates='users')
     patient = relationship('Patient', back_populates='users')
@@ -203,12 +197,25 @@ class User(BaseModel, UserMixin):
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password, attempted_password)
 
+    @property
+    def temp_pass(self):
+        return self.temp_pass
+
+    @temp_pass.setter
+    def temp_pass(self, plain_text_password):
+        self.temp_password = bcrypt.generate_password_hash(plain_text_password).decode(
+            'utf-8'
+        )
+
+    def temp_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.temp_password, attempted_password)
+
 
 class UserRole(BaseModel):
     __tablename__ = 'user_roles'
 
-    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
-    role_id = db.Column(VARCHAR(60), ForeignKey('roles.id'), nullable=False, unique=True)
+    user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
+    role_id = db.Column(VARCHAR(60), ForeignKey('roles.id'), nullable=False)
 
     user = relationship('User', back_populates='user_roles')
     role = relationship('Role', back_populates='user_roles')
@@ -221,10 +228,7 @@ class Role(BaseModel):
 
 class Patient(BaseModel):
     __tablename__ = 'patient'
-    name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
-    email = db.Column(VARCHAR(100), nullable=False)
-    # photo = db.Column(db.String(255))
 
     user_id = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
     users = relationship('User', back_populates='patient')

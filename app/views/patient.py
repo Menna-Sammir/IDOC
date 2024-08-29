@@ -627,6 +627,3 @@ def sendEmail():
                 f'there was an error with creating a user: {err_msg}', category='danger'
             )
     return redirect(url_for('home'))
-
-
-

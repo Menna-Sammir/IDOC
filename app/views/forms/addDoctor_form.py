@@ -4,7 +4,7 @@ from wtforms.validators import Length, Email, DataRequired, ValidationError
 from flask_wtf.file import FileField
 from wtforms_components import TimeField
 from flask_wtf.csrf import CSRFProtect
-from app.models.models import Doctor
+from app.models.models import User
 from app import translate
 from datetime import datetime, timedelta, time
 
@@ -13,7 +13,7 @@ csrf = CSRFProtect()
 
 class DoctorForm(FlaskForm):
     def validate_email_address(self, email_address_to_check):
-        email_address = Doctor.query.filter_by(email=email_address_to_check.data).first()
+        email_address = User.query.filter_by(email=email_address_to_check.data).first()
         if email_address:
             raise ValidationError(translate('email address already exists!'))
 
@@ -33,7 +33,7 @@ class DoctorForm(FlaskForm):
     email_address = StringField(validators=[Email(), DataRequired(), Length(max=50)])
     phone = StringField(validators=[Length(min=0, max=11)])
     photo = FileField(validators=[DataRequired(), file_size_check])
-    clinic_id = SelectField(validators=[DataRequired()])
+    # clinic_id = SelectField(validators=[DataRequired()])
     specialization_id = SelectField(validators=[DataRequired()])
     fromHour = TimeField(validators=[DataRequired()])
     toHour = TimeField(validators=[DataRequired()])
@@ -58,6 +58,6 @@ class DoctorForm(FlaskForm):
         self.toHour.label.text = translate('To')
         self.photo.label.text = translate('Doctor Image')
         self.IDNum.label.text = translate('ID Num')
-        self.clinic_id.label.text = translate('clinic')
+        # self.clinic_id.label.text = translate('clinic')
         self.specialization_id.label.text = translate('Specialization')
         self.submit.label.text = translate('Add Doctor')
