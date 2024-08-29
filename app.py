@@ -1,4 +1,5 @@
 from app import app
+
 # from cryptography.hazmat.backends import default_backend
 
 if __name__ == '__main__':

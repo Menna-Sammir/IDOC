@@ -123,7 +123,7 @@ def login_page():
                 )
                 
                 if(attempted_user.roles.role_name == 'Admin'):
-                    return redirect(url_for('doctor_dash'), current_user=attempted_user.id)
+                    return redirect(url_for('admin_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'doctor'):
                     return redirect(url_for('doctor_dash', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'clinic'):
