@@ -79,12 +79,12 @@
 										<div class="doc-info-left">
 											<div class="doctor-img">
 												<a href="doctor-profile.html">
-													<img src="static/img/doctors/doctor-thumb-06.jpg" class="img-fluid" alt="User Image">
+													<img src="{{ doctor.photo }}" class="img-fluid" alt="User Image">
 												</a>
 											</div>
 											<div class="doc-info-cont">
 												<h4 class="doc-name"><a href="doctor-profile.html">{{ doctor.name }}</a></h4>
-												<p class="doc-department"><img src="static/img/specialities/specialities-03.png" class="img-fluid" alt="Speciality">{{ specialization.specialization_name }}</p>
+												<p class="doc-department"><img src="{{ specialization.photo }}" class="img-fluid" alt="Speciality">{{ specialization.specialization_name }}</p>
 												<div class="clinic-details">
 													<p class="doc-location"><i class="fas fa-map-marker-alt"></i> {{ doctor.clinic.address }}</p>
 													

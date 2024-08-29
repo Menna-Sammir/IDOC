@@ -9,6 +9,7 @@ from flask import session
 from datetime import date
 from app.models.models import Specialization, User, Doctor,  Patient, Appointment, Clinic, Message,  Governorate, Role
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_loaded, identity_changed
+from app.views import AppointmentForm
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -69,22 +70,15 @@ def book_appointment():
         return redirect(url_for('doctor_appointments'))
 
 
-# @app.route('/book_appointment_form')
-# def book_appointment_form():
-#     doctor_id = session.get('doctor_id', None)
-#     if doctor_id:
-#         return f'Booking appointment with doctor_id={doctor_id}'
-#     else:
-#         return 'No doctor_id found in session.'
-
-
 # doctor dashboard page >>> view appointments today
 @app.route('/doctor_dashboard', methods=['GET', 'POST'])
 @login_required
 @doctor_permission.require(http_exception=403)
 def doctor_dash():
     user_id = request.args.get('current_user', None)
+    print("User ID:", user_id) 
     user = User.query.filter_by(id=user_id).first()
+    print("User:", user)
 
     if user is None:
         return "User not found", 404
@@ -97,6 +91,8 @@ def doctor_dash():
 
     if doctor is None:
         return "Doctor not found", 404
+    form = AppointmentForm()
+
 
     today = date.today()
 
@@ -124,8 +120,13 @@ def doctor_dash():
         })
         
     patient_count = len(appointments_list)
+    csrf_token = request.form.get('csrf_token')
     
-    if request.method == 'POST':
+    if request.method == 'POST': 
+        # if not csrf_token or csrf_token != session.get('_csrf_token'):
+        #     flash('Invalid CSRF token', category='danger')
+        #     return redirect(url_for('doctor_dash'))
+        
         if 'logout' in request.form:
             return redirect(url_for('logout'))
         
@@ -135,7 +136,13 @@ def doctor_dash():
             if appointment:
                 appointment.seen = True
                 db.session.commit()
-            return redirect(url_for('doctor_dash', current_user=user_id))
+                flash('Appointment marked as seen', category='success')
+                return redirect(url_for('doctor_dash', current_user=user_id))
 
-    return render_template('doctor-dashboard.html', current_user=user, doctor=doctor, appointments=appointments_list, specialization=specialization, patient_count=patient_count, today=today)
+    return render_template('doctor-dashboard.html', current_user=user,
+                           doctor=doctor,
+                           appointments=appointments_list,
+                           specialization=specialization,
+                           patient_count=patient_count,
+                           today=today, form=form)
 
