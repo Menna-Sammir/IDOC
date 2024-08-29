@@ -186,11 +186,6 @@ def doctor_appointments():
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
-
-        selected_timeslot = request.form.get('timeslot')
-        if not selected_timeslot:
-            flash('Please select a time slot before continuing.', 'warning')
-            return redirect(request.url)
         
         date_str, time_range = selected_timeslot.split()
         start_time_str, end_time_str = time_range.split('-')
