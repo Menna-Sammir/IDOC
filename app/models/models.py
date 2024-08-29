@@ -105,6 +105,7 @@ class Patient(BaseModel):
     name = db.Column(VARCHAR(100), nullable=False)
     phone = db.Column(VARCHAR(50), nullable=False)
     email = db.Column(VARCHAR(100), nullable=False)
+    photo = db.Column(db.String(255))
 
     appointments = relationship("Appointment", back_populates="patient")
 
