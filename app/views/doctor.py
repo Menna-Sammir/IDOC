@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, asc
 from flask import session
 from datetime import date
 from app.models.models import *
@@ -35,7 +35,8 @@ def doctor_dash():
     if doctor is None:
         return 'Doctor not found', 404
     form = AppointmentForm()
-    appointments = Appointment.query.filter_by(date=date.today(), seen=False)
+    appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(asc(Appointment.time))
+    nextAppt = appointments.order_by(asc(Appointment.time)).first().id
     monthAppointments = Appointment.query.filter(
         func.extract('month', Appointment.date) == datetime.now().month
     ).count()
@@ -56,5 +57,6 @@ def doctor_dash():
         appointments=appointments.all(),
         patient_count=patient_count,
         monthAppointments=monthAppointments,
+        nextAppt = nextAppt,
         form=form
     )
