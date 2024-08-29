@@ -138,7 +138,7 @@
                 type="radio"
                 name="timeslot"
                 id="{{ timeslot[0] }}"
-                value="{{ timeslot[0] }}"
+                value="{{ date }} {{ timeslot[0] }}"
                 class="rounded-sm" {%if not timeslot[2] %}disabled{% endif %} />
               <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %} >
                 {{ translate(timeslot[1]) }} {% if not timeslot[2] %}{{ translate('(Booked)') }}{% endif %}
