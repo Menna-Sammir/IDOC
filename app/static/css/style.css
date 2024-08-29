@@ -4247,11 +4247,11 @@ html.menu-opened body {
 	display: none;
 }
 
-.alert{
+.alert {
 	position: absolute;
-    top: 20px;
+	top: 20px;
 	right: 20px;
-    z-index: 1050;
+	z-index: 1050;
 }
 
 /*-----------------
@@ -9319,7 +9319,7 @@ textarea {
 
 
 /* about us  */
-
+/* Your existing CSS */
 
 .circle {
 	border-radius: 50%;
@@ -9379,34 +9379,8 @@ textarea {
 	left: -20px;
 }
 
-/* Media queries for responsiveness */
-@media (max-width: 992px) {
-	.large {
-		width: 180px;
-		height: 180px;
-	}
-
-	.small {
-		width: 100px;
-		height: 100px;
-		right: -18px;
-		top: 100px;
-	}
-
-	.background-large {
-		width: 60px;
-		height: 60px;
-		right: -20px;
-	}
-
-	.background-small {
-		width: 70px;
-		height: 70px;
-		left: -15px;
-	}
-}
-
-@media (max-width: 768px) {
+/* Media Query for Responsive Design */
+@media screen and (max-width: 768px) {
 	.large {
 		width: 150px;
 		height: 150px;
@@ -9415,48 +9389,24 @@ textarea {
 	.small {
 		width: 80px;
 		height: 80px;
-		right: -15px;
-		top: 80px;
+		right: -10px;
+		top: 70px;
 	}
 
 	.background-large {
-		width: 50px;
-		height: 50px;
-		right: -15px;
+		width: 60px;
+		height: 60px;
+		bottom: 120px;
+		right: -50px;
 	}
 
 	.background-small {
-		width: 60px;
-		height: 60px;
+		width: 70px;
+		height: 70px;
 		left: -10px;
 	}
 }
 
-@media (max-width: 576px) {
-	.large {
-		width: 120px;
-		height: 120px;
-	}
-
-	.small {
-		width: 60px;
-		height: 60px;
-		right: -10px;
-		top: 60px;
-	}
-
-	.background-large {
-		width: 40px;
-		height: 40px;
-		right: -10px;
-	}
-
-	.background-small {
-		width: 50px;
-		height: 50px;
-		left: -5px;
-	}
-}
 
 .img-fluid {
 	max-width: 100%;
@@ -9572,4 +9522,19 @@ body::-webkit-scrollbar-thumb {
 .e-form {
 	border: 0;
 	border-bottom: 1px solid #dcdcdc;
+}
+
+.clinic-dash {
+	position: absolute;
+	top: -50px;
+	right: 0;
+}
+
+/* Media Query for Responsive Design */
+@media screen and (max-width: 768px) {
+	.clinic-dash {
+		position: absolute;
+		top: -165px;
+		right: 0;
+	}
 }
