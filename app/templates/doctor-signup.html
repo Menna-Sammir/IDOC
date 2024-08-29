@@ -39,8 +39,6 @@
                         <a href="register.html">Not a Doctor?</a>
                       </h3>
                     </div>
-					<!-- <input type="password" class="form-control floating" />
-					<label class="focus-label">Password</label> -->
                     <!-- Register Form -->
                     <form method="POST" class="form-register">
                       {{ form.hidden_tag() }}
@@ -64,8 +62,8 @@
                         form.password2(class="form-control floating") }}
                       </div>
                       <div class="form-group form-focus">
-						{{ form.doctor.label(class="focus-label") }} {{
-							form.doctor(class="form-control floating") }}
+						{{ form.doctor_id.label(class="focus-label") }} {{
+							form.doctor_id(class="form-control floating") }}
                       </div>
                       <div class="text-right">
                         <a

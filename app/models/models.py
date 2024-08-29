@@ -3,6 +3,7 @@ from app.models.base import BaseModel
 from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from app import bcrypt
 from flask_login import UserMixin
 
 class Specialization(BaseModel):
