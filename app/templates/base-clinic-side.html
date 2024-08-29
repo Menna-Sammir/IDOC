@@ -1,0 +1,43 @@
+<div class="profile-sidebar">
+  <div class="widget-profile pro-widget-content">
+    <div class="profile-info-widget">
+      <a href="#" class="booking-doc-img">
+        {% set base_path = 'static/images/clinic/' %}
+        <img src="{{base_path ~ current_user.clinic.photo}}" alt="clinic Image" />
+      </a>
+      <div class="profile-det-info">
+        <h3>{{ current_user.clinic.name }}</h3>
+        <div class="patient-details">
+          <h5 class="mb-0">
+            {{ current_user.clinic.address }} <br />
+            {{ current_user.clinic.phone }}
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-widget">
+    <nav class="dashboard-menu">
+      <ul>
+        <li class="active">
+          <a href="{{ url_for('clinic_dash') }}">
+            <i class="fas fa-columns"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{url_for('change_password')}}">
+            <i class="fas fa-lock"></i>
+            <span>Change Password</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('logout_page') }}">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

@@ -2,7 +2,7 @@ from app import app, db, socketio
 from flask import render_template, redirect, url_for, flash, request
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
-from app.views.forms.search import SearchForm
+from app.views.forms.search_form import SearchForm
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText

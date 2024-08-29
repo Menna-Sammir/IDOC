@@ -158,7 +158,7 @@ h6 {
 
 a {
 	color: #15558d;
-	
+
 }
 
 a:hover {
@@ -198,6 +198,13 @@ input[type=password] {
 	-moz-appearance: none;
 	appearance: none;
 }
+
+ol,
+ul,
+li {
+	list-style: none;
+}
+
 
 .btn.focus,
 .btn:focus {
@@ -2773,6 +2780,7 @@ html.menu-opened body {
 .social-login .btn:focus {
 	color: #fff;
 }
+
 /*-----------------
 	15. Home
 -----------------------*/
@@ -4184,8 +4192,9 @@ html.menu-opened body {
 	margin-bottom: 20px;
 	border: 2px solid #ddd;
 	border-radius: 5px;
-  }
-  .date-item {
+}
+
+.date-item {
 	flex: 1;
 	text-align: center;
 	display: flex;
@@ -4195,19 +4204,23 @@ html.menu-opened body {
 	margin: 0px;
 	cursor: pointer;
 	width: 100%;
-  }
-  .date-item.active {
+}
+
+.date-item.active {
 	background-color: #5ac9d0;
 	color: #fff;
-  }
-  .timeslots {
+}
+
+.timeslots {
 	display: none;
-	
-  }
-  .timeslots.active {
+
+}
+
+.timeslots.active {
 	display: block;
-  }
-  .timeslot {
+}
+
+.timeslot {
 	display: inline-block;
 	margin: 5px;
 	padding: 10px;
@@ -4215,24 +4228,28 @@ html.menu-opened body {
 	cursor: pointer;
 	border-radius: 20px;
 
-  }
-  .timeslot input[type="radio"] {
+}
+
+.timeslot input[type="radio"] {
 	display: none;
-  }
-  .timeslot.active {
+}
+
+.timeslot.active {
 	background-color: #5ac9d0;
 	color: #fff;
 	margin: auto;
 	border-radius: 20px;
-  }
- .timeslots label{
+}
+
+.timeslots label {
 	margin: auto;
-	}
-  .timeslot input[type="radio"]:checked + label {
+}
+
+.timeslot input[type="radio"]:checked+label {
 	background-color: #5ac9d0;
 	color: #fff;
 	margin: auto;
-  }
+}
 
 
 .booking-doc-info {
@@ -4920,7 +4937,6 @@ html.menu-opened body {
 	width: 90px !important;
 	height: 90px !important;
 	border-radius: 100%
-
 }
 
 .dash-card .row {
@@ -8269,321 +8285,426 @@ html.menu-opened body {
 
 
 .logout-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
+	background: none;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: inherit;
 }
 
 .logout-btn i {
-    margin-right: 5px;
+	margin-right: 5px;
 }
 
 
 
-  /*-------------------------
+/*-------------------------
     The clocks
   --------------------------*/
 
 
-  #clock{
-    width:350px;
-    padding:10px;
-    position:relative;
-  }
+#clock {
+	width: 350px;
+	padding: 10px;
+	position: relative;
+}
 
-  #clock:after{
-    content:'';
-    position:absolute;
-    width:400px;
-    height:20px;
-    border-radius:100%;
-    left:50%;
-    margin-left:-200px;
-    bottom:2px;
-    z-index:-1;
-  }
-
-
-  #clock .display{
-    text-align:center;
-    padding: 40px 20px 20px;
-    border-radius:6px;
-    position:relative;
-  }
+#clock:after {
+	content: '';
+	position: absolute;
+	width: 400px;
+	height: 20px;
+	border-radius: 100%;
+	left: 50%;
+	margin-left: -200px;
+	bottom: 2px;
+	z-index: -1;
+}
 
 
-  /*-------------------------
+#clock .display {
+	text-align: center;
+	padding: 40px 20px 20px;
+	border-radius: 6px;
+	position: relative;
+}
+
+
+/*-------------------------
     Light color theme
   --------------------------*/
 
-  #clock.light:after{
-    box-shadow:0 4px 10px rgba(0,0,0,0.15);
-  }
+#clock.light:after {
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
 
-  #clock.light .digits div span{
-    background-color:#032e6a;
-    border-color:#032e6a;
-  }
+#clock.light .digits div span {
+	background-color: #032e6a;
+	border-color: #032e6a;
+}
 
-  #clock.light .digits div.dots:before,
-  #clock.light .digits div.dots:after{
-    background-color:#032e6a;
-  }
+#clock.light .digits div.dots:before,
+#clock.light .digits div.dots:after {
+	background-color: #032e6a;
+}
 
-  #clock.light .display{
+#clock.light .display {
 	color: #007bff;
-  }
+}
 
-  /*-------------------------
+/*-------------------------
     The Digits
   --------------------------*/
 
 
-  #clock .digits div{
-    text-align:left;
-    position:relative;
-    width: 28px;
-    height:50px;
-    display:inline-block;
-    margin:0 4px;
-  }
+#clock .digits div {
+	text-align: left;
+	position: relative;
+	width: 28px;
+	height: 50px;
+	display: inline-block;
+	margin: 0 4px;
+}
 
-  #clock .digits div span{
-    opacity:0;
-    position:absolute;
+#clock .digits div span {
+	opacity: 0;
+	position: absolute;
 
-    -webkit-transition:0.25s;
-    -moz-transition:0.25s;
-    transition:0.25s;
-  }
+	-webkit-transition: 0.25s;
+	-moz-transition: 0.25s;
+	transition: 0.25s;
+}
 
-  #clock .digits div span:before,
-  #clock .digits div span:after{
-    content:'';
-    position:absolute;
-    width:0;
-    height:0;
-    border:5px solid transparent;
-  }
+#clock .digits div span:before,
+#clock .digits div span:after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	border: 5px solid transparent;
+}
 
-  #clock .digits .d1{			height:5px;width:16px;top:0;left:6px;}
-  #clock .digits .d1:before{	border-width:0 5px 5px 0;border-right-color:inherit;left:-5px;}
-  #clock .digits .d1:after{	border-width:0 0 5px 5px;border-left-color:inherit;right:-5px;}
+#clock .digits .d1 {
+	height: 5px;
+	width: 16px;
+	top: 0;
+	left: 6px;
+}
 
-  #clock .digits .d2{			height:5px;width:16px;top:24px;left:6px;}
-  #clock .digits .d2:before{	border-width:3px 4px 2px;border-right-color:inherit;left:-8px;}
-  #clock .digits .d2:after{	border-width:3px 4px 2px;border-left-color:inherit;right:-8px;}
+#clock .digits .d1:before {
+	border-width: 0 5px 5px 0;
+	border-right-color: inherit;
+	left: -5px;
+}
 
-  #clock .digits .d3{			height:5px;width:16px;top:48px;left:6px;}
-  #clock .digits .d3:before{	border-width:5px 5px 0 0;border-right-color:inherit;left:-5px;}
-  #clock .digits .d3:after{	border-width:5px 0 0 5px;border-left-color:inherit;right:-5px;}
+#clock .digits .d1:after {
+	border-width: 0 0 5px 5px;
+	border-left-color: inherit;
+	right: -5px;
+}
 
-  #clock .digits .d4{			width:5px;height:14px;top:7px;left:0;}
-  #clock .digits .d4:before{	border-width:0 5px 5px 0;border-bottom-color:inherit;top:-5px;}
-  #clock .digits .d4:after{	border-width:0 0 5px 5px;border-left-color:inherit;bottom:-5px;}
+#clock .digits .d2 {
+	height: 5px;
+	width: 16px;
+	top: 24px;
+	left: 6px;
+}
 
-  #clock .digits .d5{			width:5px;height:14px;top:7px;right:0;}
-  #clock .digits .d5:before{	border-width:0 0 5px 5px;border-bottom-color:inherit;top:-5px;}
-  #clock .digits .d5:after{	border-width:5px 0 0 5px;border-top-color:inherit;bottom:-5px;}
+#clock .digits .d2:before {
+	border-width: 3px 4px 2px;
+	border-right-color: inherit;
+	left: -8px;
+}
 
-  #clock .digits .d6{			width:5px;height:14px;top:32px;left:0;}
-  #clock .digits .d6:before{	border-width:0 5px 5px 0;border-bottom-color:inherit;top:-5px;}
-  #clock .digits .d6:after{	border-width:0 0 5px 5px;border-left-color:inherit;bottom:-5px;}
+#clock .digits .d2:after {
+	border-width: 3px 4px 2px;
+	border-left-color: inherit;
+	right: -8px;
+}
 
-  #clock .digits .d7{			width:5px;height:14px;top:32px;right:0;}
-  #clock .digits .d7:before{	border-width:0 0 5px 5px;border-bottom-color:inherit;top:-5px;}
-  #clock .digits .d7:after{	border-width:5px 0 0 5px;border-top-color:inherit;bottom:-5px;}
+#clock .digits .d3 {
+	height: 5px;
+	width: 16px;
+	top: 48px;
+	left: 6px;
+}
 
+#clock .digits .d3:before {
+	border-width: 5px 5px 0 0;
+	border-right-color: inherit;
+	left: -5px;
+}
 
-  /* 1 */
+#clock .digits .d3:after {
+	border-width: 5px 0 0 5px;
+	border-left-color: inherit;
+	right: -5px;
+}
 
-  #clock .digits div.one .d5,
-  #clock .digits div.one .d7{
-    opacity:1;
-  }
+#clock .digits .d4 {
+	width: 5px;
+	height: 14px;
+	top: 7px;
+	left: 0;
+}
 
-  /* 2 */
+#clock .digits .d4:before {
+	border-width: 0 5px 5px 0;
+	border-bottom-color: inherit;
+	top: -5px;
+}
 
-  #clock .digits div.two .d1,
-  #clock .digits div.two .d5,
-  #clock .digits div.two .d2,
-  #clock .digits div.two .d6,
-  #clock .digits div.two .d3{
-    opacity:1;
-  }
+#clock .digits .d4:after {
+	border-width: 0 0 5px 5px;
+	border-left-color: inherit;
+	bottom: -5px;
+}
 
-  /* 3 */
+#clock .digits .d5 {
+	width: 5px;
+	height: 14px;
+	top: 7px;
+	right: 0;
+}
 
-  #clock .digits div.three .d1,
-  #clock .digits div.three .d5,
-  #clock .digits div.three .d2,
-  #clock .digits div.three .d7,
-  #clock .digits div.three .d3{
-    opacity:1;
-  }
+#clock .digits .d5:before {
+	border-width: 0 0 5px 5px;
+	border-bottom-color: inherit;
+	top: -5px;
+}
 
-  /* 4 */
+#clock .digits .d5:after {
+	border-width: 5px 0 0 5px;
+	border-top-color: inherit;
+	bottom: -5px;
+}
 
-  #clock .digits div.four .d5,
-  #clock .digits div.four .d2,
-  #clock .digits div.four .d4,
-  #clock .digits div.four .d7{
-    opacity:1;
-  }
+#clock .digits .d6 {
+	width: 5px;
+	height: 14px;
+	top: 32px;
+	left: 0;
+}
 
-  /* 5 */
+#clock .digits .d6:before {
+	border-width: 0 5px 5px 0;
+	border-bottom-color: inherit;
+	top: -5px;
+}
 
-  #clock .digits div.five .d1,
-  #clock .digits div.five .d2,
-  #clock .digits div.five .d4,
-  #clock .digits div.five .d3,
-  #clock .digits div.five .d7{
-    opacity:1;
-  }
+#clock .digits .d6:after {
+	border-width: 0 0 5px 5px;
+	border-left-color: inherit;
+	bottom: -5px;
+}
 
-  /* 6 */
+#clock .digits .d7 {
+	width: 5px;
+	height: 14px;
+	top: 32px;
+	right: 0;
+}
 
-  #clock .digits div.six .d1,
-  #clock .digits div.six .d2,
-  #clock .digits div.six .d4,
-  #clock .digits div.six .d3,
-  #clock .digits div.six .d6,
-  #clock .digits div.six .d7{
-    opacity:1;
-  }
+#clock .digits .d7:before {
+	border-width: 0 0 5px 5px;
+	border-bottom-color: inherit;
+	top: -5px;
+}
 
-
-  /* 7 */
-
-  #clock .digits div.seven .d1,
-  #clock .digits div.seven .d5,
-  #clock .digits div.seven .d7{
-    opacity:1;
-  }
-
-  /* 8 */
-
-  #clock .digits div.eight .d1,
-  #clock .digits div.eight .d2,
-  #clock .digits div.eight .d3,
-  #clock .digits div.eight .d4,
-  #clock .digits div.eight .d5,
-  #clock .digits div.eight .d6,
-  #clock .digits div.eight .d7{
-    opacity:1;
-  }
-
-  /* 9 */
-
-  #clock .digits div.nine .d1,
-  #clock .digits div.nine .d2,
-  #clock .digits div.nine .d3,
-  #clock .digits div.nine .d4,
-  #clock .digits div.nine .d5,
-  #clock .digits div.nine .d7{
-    opacity:1;
-  }
-
-  /* 0 */
-
-  #clock .digits div.zero .d1,
-  #clock .digits div.zero .d3,
-  #clock .digits div.zero .d4,
-  #clock .digits div.zero .d5,
-  #clock .digits div.zero .d6,
-  #clock .digits div.zero .d7{
-    opacity:1;
-  }
-
-
-  /* The dots */
-
-  #clock .digits div.dots{
-    width:5px;
-  }
-
-  #clock .digits div.dots:before,
-  #clock .digits div.dots:after{
-    width:5px;
-    height:5px;
-    content:'';
-    position:absolute;
-    left:0;
-    top:14px;
-  }
-
-  #clock .digits div.dots:after{
-    top:34px;
-  }
+#clock .digits .d7:after {
+	border-width: 5px 0 0 5px;
+	border-top-color: inherit;
+	bottom: -5px;
+}
 
 
-  /*-------------------------
+/* 1 */
+
+#clock .digits div.one .d5,
+#clock .digits div.one .d7 {
+	opacity: 1;
+}
+
+/* 2 */
+
+#clock .digits div.two .d1,
+#clock .digits div.two .d5,
+#clock .digits div.two .d2,
+#clock .digits div.two .d6,
+#clock .digits div.two .d3 {
+	opacity: 1;
+}
+
+/* 3 */
+
+#clock .digits div.three .d1,
+#clock .digits div.three .d5,
+#clock .digits div.three .d2,
+#clock .digits div.three .d7,
+#clock .digits div.three .d3 {
+	opacity: 1;
+}
+
+/* 4 */
+
+#clock .digits div.four .d5,
+#clock .digits div.four .d2,
+#clock .digits div.four .d4,
+#clock .digits div.four .d7 {
+	opacity: 1;
+}
+
+/* 5 */
+
+#clock .digits div.five .d1,
+#clock .digits div.five .d2,
+#clock .digits div.five .d4,
+#clock .digits div.five .d3,
+#clock .digits div.five .d7 {
+	opacity: 1;
+}
+
+/* 6 */
+
+#clock .digits div.six .d1,
+#clock .digits div.six .d2,
+#clock .digits div.six .d4,
+#clock .digits div.six .d3,
+#clock .digits div.six .d6,
+#clock .digits div.six .d7 {
+	opacity: 1;
+}
+
+
+/* 7 */
+
+#clock .digits div.seven .d1,
+#clock .digits div.seven .d5,
+#clock .digits div.seven .d7 {
+	opacity: 1;
+}
+
+/* 8 */
+
+#clock .digits div.eight .d1,
+#clock .digits div.eight .d2,
+#clock .digits div.eight .d3,
+#clock .digits div.eight .d4,
+#clock .digits div.eight .d5,
+#clock .digits div.eight .d6,
+#clock .digits div.eight .d7 {
+	opacity: 1;
+}
+
+/* 9 */
+
+#clock .digits div.nine .d1,
+#clock .digits div.nine .d2,
+#clock .digits div.nine .d3,
+#clock .digits div.nine .d4,
+#clock .digits div.nine .d5,
+#clock .digits div.nine .d7 {
+	opacity: 1;
+}
+
+/* 0 */
+
+#clock .digits div.zero .d1,
+#clock .digits div.zero .d3,
+#clock .digits div.zero .d4,
+#clock .digits div.zero .d5,
+#clock .digits div.zero .d6,
+#clock .digits div.zero .d7 {
+	opacity: 1;
+}
+
+
+/* The dots */
+
+#clock .digits div.dots {
+	width: 5px;
+}
+
+#clock .digits div.dots:before,
+#clock .digits div.dots:after {
+	width: 5px;
+	height: 5px;
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 14px;
+}
+
+#clock .digits div.dots:after {
+	top: 34px;
+}
+
+
+/*-------------------------
     The Alarm
   --------------------------*/
 
 
-  #clock .alarm{
-    width:16px;
-    height:16px;
-    bottom:20px;
-    background:url('../img/alarm_light.jpg');
-    position:absolute;
-    opacity:0.2;
-  }
+#clock .alarm {
+	width: 16px;
+	height: 16px;
+	bottom: 20px;
+	background: url('../img/alarm_light.jpg');
+	position: absolute;
+	opacity: 0.2;
+}
 
-  #clock .alarm.active{
-    opacity:1;
-  }
+#clock .alarm.active {
+	opacity: 1;
+}
 
 
-  /*-------------------------
+/*-------------------------
     Weekdays
   --------------------------*/
 
 
-  #clock .weekdays{
-    font-size:12px;
-    position:absolute;
-    width:100%;
-    top:10px;
-    left:0;
-    text-align:center;
-  }
+#clock .weekdays {
+	font-size: 12px;
+	position: absolute;
+	width: 100%;
+	top: 10px;
+	left: 0;
+	text-align: center;
+}
 
 
-  #clock .weekdays span{
-    opacity:0.2;
-    padding:0 10px;
-  }
+#clock .weekdays span {
+	opacity: 0.2;
+	padding: 0 10px;
+}
 
-  #clock .weekdays span.active{
-    opacity:1;
-  }
+#clock .weekdays span.active {
+	opacity: 1;
+}
 
 
-  /*-------------------------
+/*-------------------------
       AM/PM
   --------------------------*/
 
 
-  #clock .ampm{
+#clock .ampm {
 	position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-size: 12px;
-  }
+	bottom: 20px;
+	right: 20px;
+	font-size: 12px;
+}
 
 
 /* loading */
-.main-wrapper{
+.main-wrapper {
 	opacity: 0;
 }
 
-.loader{
+.loader {
 	margin: 0;
 	padding: 0;
 	display: flex;
@@ -8594,6 +8715,7 @@ html.menu-opened body {
 	z-index: 1500;
 	overflow: hidden;
 }
+
 .loader svg {
 	width: 11%;
 }
@@ -8619,7 +8741,7 @@ html.menu-opened body {
 }
 
 textarea {
-    resize: none;
+	resize: none;
 }
 
 
@@ -8635,13 +8757,16 @@ textarea {
 
 .badge {
 	position: absolute;
-	top: -5px; /* Adjusted position */
-	right: -5px; /* Adjusted position */
+	top: -5px;
+	/* Adjusted position */
+	right: -5px;
+	/* Adjusted position */
 	background-color: #15558d;
 	color: white;
 	display: flex;
 	border-radius: 50%;
-	font-size: 10px; /* Smaller font size */
+	font-size: 10px;
+	/* Smaller font size */
 	font-weight: bold;
 }
 
@@ -8651,41 +8776,51 @@ textarea {
 
 /* doctor dashboard */
 
-.doctor-card{
+.doctor-card,
+.clinic-card {
 	box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
-.doctordash-back{
+.doctor-card:hover,
+.clinic-card:hover {
+	transition: all 1s;
+	transform: scale(1.1);
+}
+
+.clinic-card{
+	border: 3px solid #e7fdff;
+}
+.doctordash-back {
 	background-color: #e2f9f8;
 	display: inline-block;
 	border-radius: 10px;
 	padding: 10px;
 }
 
-.text-cyan{
-color: #4cb5ab;
+.text-cyan {
+	color: #4cb5ab;
 }
 
-.doctor-title{
+.doctor-title {
 	font-weight: 500;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
-.circle-border-pink{
+.circle-border-pink {
 	border: 6px solid #da3f81;
-    padding: 10px 10px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
+	padding: 10px 10px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
 }
 
-.circle-border-cyan{
+.circle-border-cyan {
 	border: 6px solid #68DDA9;
-    padding: 20px 5px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
+	padding: 20px 5px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
 }
 
 
@@ -8696,118 +8831,364 @@ color: #4cb5ab;
 .notifications {
 	padding: 0;
 }
+
 .notifications .notification-time {
 	font-size: 12px;
 	line-height: 1.35;
 	color: #bdbdbd;
 }
+
 .notifications .media {
 	margin-top: 0;
 	border-bottom: 1px solid #f5f5f5;
 }
+
 .notifications .media:last-child {
 	border-bottom: none;
 }
+
 .notifications .media a {
 	display: block;
 	padding: 10px 15px;
 	border-radius: 2px;
 }
+
 .notifications .media a:hover {
 	background-color: #fafafa;
 }
-.notifications .media > .avatar {
+
+.notifications .media>.avatar {
 	margin-right: 10px;
 }
+
 .notifications .media-list .media-left {
 	padding-right: 8px;
 }
+
 .topnav-dropdown-header {
 	border-bottom: 1px solid #eee;
 	text-align: center;
 }
+
 .topnav-dropdown-header,
 .topnav-dropdown-footer {
-    font-size: 14px;
-    height: 40px;
-    line-height: 40px;
-    padding-left: 15px;
-    padding-right: 15px;
+	font-size: 14px;
+	height: 40px;
+	line-height: 40px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
+
 .topnav-dropdown-footer {
 	border-top: 1px solid #eee;
 }
+
 .topnav-dropdown-footer a {
 	display: block;
 	text-align: center;
 	color: #333;
 }
-.user-menu.nav > li > a .badge {
+
+.user-menu.nav>li>a .badge {
 	background-color: #1b5a90;
-    display: block;
-    font-size: 10px;
-    font-weight: bold;
-    min-height: 15px;
-    min-width: 15px;
-    position: absolute;
-    right: 3px;
-    color: #fff;
-    top: 6px;
+	display: block;
+	font-size: 10px;
+	font-weight: bold;
+	min-height: 15px;
+	min-width: 15px;
+	position: absolute;
+	right: 3px;
+	color: #fff;
+	top: 6px;
 }
-.user-menu.nav > li > a > i {
+
+.user-menu.nav>li>a>i {
 	font-size: 1.5rem;
 	line-height: 60px;
 }
+
 .noti-details {
 	color: #989c9e;
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
+
 .noti-title {
 	color: #333;
 }
+
 .notifications .noti-content {
 	height: 290px;
 	width: 350px;
 	overflow-y: auto;
 	position: relative;
 }
+
 .notification-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
-.notifications ul.notification-list > li{
+
+.notifications ul.notification-list>li {
 	margin-top: 0;
 	border-bottom: 1px solid #f5f5f5;
 }
-.notifications ul.notification-list > li:last-child {
+
+.notifications ul.notification-list>li:last-child {
 	border-bottom: none;
 }
-.notifications ul.notification-list > li a {
+
+.notifications ul.notification-list>li a {
 	display: block;
 	padding: 10px 15px;
 	border-radius: 2px;
 }
-.notifications ul.notification-list > li a:hover {
+
+.notifications ul.notification-list>li a:hover {
 	background-color: #fafafa;
 }
-.notifications ul.notification-list > li .list-item {
-    border: 0;
-    padding: 0;
-    position: relative;
+
+.notifications ul.notification-list>li .list-item {
+	border: 0;
+	padding: 0;
+	position: relative;
 }
+
 .topnav-dropdown-header .notification-title {
-    color: #333;
-    display: block;
-    float: left;
-    font-size: 14px;
+	color: #333;
+	display: block;
+	float: left;
+	font-size: 14px;
 }
+
 .topnav-dropdown-header .clear-noti {
-    color: #f83f37;
-    float: right;
-    font-size: 12px;
-    text-transform: uppercase;
+	color: #f83f37;
+	float: right;
+	font-size: 12px;
+	text-transform: uppercase;
 }
+
 .noti-time {
-    margin: 0;
+	margin: 0;
+}
+
+/* Clinic dash calender */
+
+
+.signboard {
+	width: 100px;
+	height: 100px;
+	margin: auto;
+	color: #fff;
+	border-radius: 10px;
+}
+
+/*-----*/
+
+.front {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	background: #5ddde5;
+	text-align: center;
+}
+
+.right {
+	position: absolute;
+	right: 0;
+	z-index: 2;
+	-webkit-transform: rotate(-10deg) translate(7px, 8px);
+	-moz-transform: rotate(-10deg) translate(7px, 8px);
+	-ms-transform: rotate(-10deg) translate(7px, 8px);
+	-o-transform: rotate(-10deg) translate(7px, 8px);
+	transform: rotate(-10deg) translate(7px, 8px);
+	background: #fb538c;
+}
+
+.left {
+	position: absolute;
+	left: 0;
+	z-index: 1;
+	-webkit-transform: rotate(5deg) translate(-4px, 4px);
+	-moz-transform: rotate(5deg) translate(-4px, 4px);
+	-ms-transform: rotate(5deg) translate(-4px, 4px);
+	-o-transform: rotate(5deg) translate(-4px, 4px);
+	transform: rotate(5deg) translate(-4px, 4px);
+	background: #3498DB;
+}
+
+/*-----*/
+
+.outer:hover .inner {
+	-webkit-transform: rotate(0) translate(0);
+	-moz-transform: rotate(0) translate(0);
+	-ms-transform: rotate(0) translate(0);
+	-o-transform: rotate(0) translate(0);
+	transform: rotate(0) translate(0);
+}
+
+/*-----*/
+
+.outer:active .inner {
+	-webkit-transform: rotate(0) translate(0) scale(0.9);
+	-moz-transform: rotate(0) translate(0) scale(0.9);
+	-ms-transform: rotate(0) translate(0) scale(0.9);
+	-o-transform: rotate(0) translate(0) scale(0.9);
+	transform: rotate(0) translate(0) scale(0.9);
+}
+
+.outer:active .front .date {
+	-webkit-transform: scale(2);
+}
+
+.outer:active .front .day,
+.outer:active .front .month {
+	visibility: hidden;
+	opacity: 0;
+	-webkit-transform: scale(0);
+	-moz-transform: scale(0);
+	-ms-transform: scale(0);
+	-o-transform: scale(0);
+	transform: scale(0);
+}
+
+.outer:active .right {
+	-webkit-transform: rotate(-5deg) translateX(80px) scale(0.9);
+	-moz-transform: rotate(-5deg) translateX(80px) scale(0.9);
+	-ms-transform: rotate(-5deg) translateX(80px) scale(0.9);
+	-o-transform: rotate(-5deg) translateX(80px) scale(0.9);
+	transform: rotate(-5deg) translateX(80px) scale(0.9);
+}
+
+.outer:active .left {
+	-webkit-transform: rotate(5deg) translateX(-80px) scale(0.9);
+	-moz-transform: rotate(5deg) translateX(-80px) scale(0.9);
+	-ms-transform: rotate(5deg) translateX(-80px) scale(0.9);
+	-o-transform: rotate(5deg) translateX(-80px) scale(0.9);
+	transform: rotate(5deg) translateX(-80px) scale(0.9);
+}
+
+/*-----*/
+
+.outer:active .calendarMain {
+	-webkit-transform: scale(1.8);
+	opacity: 0;
+	visibility: hidden;
+}
+
+.outer:active .clock {
+	-webkit-transform: scale(1.4);
+	opacity: 1;
+	visibility: visible;
+}
+
+.outer:active .calendarNormal {
+	bottom: -30px;
+	opacity: 1;
+	visibility: visible;
+}
+
+.outer:active .year {
+	top: -30px;
+	opacity: 1;
+	visibility: visible;
+	letter-spacing: 3px;
+}
+
+/*-----*/
+
+.calendarMain {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	padding-inline-start: 0px;
+	opacity: 1;
+}
+
+.month,
+.day {
+	font-size: 10px;
+	line-height: 30px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+}
+
+.date {
+	font-size: 40px;
+	line-height: 40px;
+	font-weight: 300;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+}
+
+/*-----*/
+
+.clock {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	font-size: 40px;
+	line-height: 100px;
+	font-weight: 300;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	text-align: center;
+	opacity: 0;
+	visibility: hidden;
+}
+
+/*-----*/
+
+.year {
+	width: 100%;
+	position: absolute;
+	top: 0;
+	font-size: 14px;
+	line-height: 30px;
+	font-weight: 300;
+	text-transform: uppercase;
+	letter-spacing: 0;
+	text-align: center;
+	opacity: 0;
+	visibility: hidden;
+	color: #5ddde5;
+}
+
+.calendarNormal {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	font-size: 14px;
+	line-height: 30px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	text-align: center;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.date2 {
+	color: #5ddde5;
+}
+
+.day2 {
+	color: #3498DB;
+}
+
+.month2 {
+	color: #fb538c;
+}
+
+.text-lightcyan {
+	color: #5adbe7;
+}
+
+.clinicdash-back {
+	background-color: #b8f9ff57;
+	display: inline-block;
+	border-radius: 10px;
+	padding: 10px;
 }
