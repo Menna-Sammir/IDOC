@@ -413,24 +413,22 @@
                 </div>
               </div>
               <div class="card-body">
-                <div class="d-md-flex justify-content-center overflow-hidden">
-                  <form method="POST"  class="doctor-select2 col-md-3 border-rd-r-0">
+                  <form method="POST"  class="d-md-flex justify-content-center overflow-hidden w-100 h-100 border border-3 border-dark align-items-center rounded-sm">
                     {{ form.hidden_tag() }}
-                    <p>
-                        {{ form.specialization.label }}<br>
-                        {{ form.specialization }}
+                    <p class=" col-md-3  h-100 mb-0 d-flex border-dark border-right">
+                      <img src="../static/img/scope.png" class="w-15">
+                        {{ form.specialization(class=" w-75 border-0") }}
                     </p>
-                    <p>
-                        {{ form.governorate.label }}<br>
-                        {{ form.governorate }}
+                    <p class="col-md-3  h-100 mb-0 d-flex border-dark border-right">
+                      <img src="../static/img/location1.png" class="w-15">
+                      
+                        {{ form.governorate (class=" w-75 border-0") }}
                     </p>
-                    <p>
-                        {{ form.doctor_name.label }}<br>
-                        {{ form.doctor_name }}
+                    <p class="col-md-3h-100 mb-0 ml-3" placeholder="Doctor Name">
+                        {{ form.doctor_name( class=" border-0 form-control")}}
                     </p>
-                    <p>{{ form.submit }}</p>
+                    <p class="col-md-3 mb-0 mr-0 p-0">{{ form.submit(class="btn-primary home-sub w-100") }}</p>
                   </form>
-                </div>
               </div>
             </div>
           </div>
