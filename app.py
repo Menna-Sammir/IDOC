@@ -1,5 +1,4 @@
 from app import app, db, socketio
-from flask_session import Session
 from app.models.adminUser import *
 from app.models.addGovs import *
 from app.models.addspecalties import *

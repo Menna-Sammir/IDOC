@@ -1,0 +1,115 @@
+{% extends 'base.html' %} {% block title %} {{ translate('Doctor Dashboard') }}
+{% endblock %} {% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Dashboard') }}
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
+        {% block sidebar %} {% include 'base-clinic-side.html' %} {% endblock %}
+        <!-- /Profile Sidebar -->
+      </div>
+
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card dash-card">
+              <div class="card-body">
+                <div class="row justify-content-between">
+                  <div class="col-md-6 col-lg-4">
+                    <h2>{{ translate('Good Morning ,') }}</h2>
+                    <div>
+                      {% if is_open_today %}
+                      <span class="text-info"
+                        >{{ translate('The clinic in this time open') }}</span
+                      >
+                      {% else %}
+                      <span class="text-danger">
+                        {{ translate('The clinic in this time closed') }} <br />
+                        <i class="far fa-clock text-info"></i>
+                        <span class="text-info"
+                          >{{ translate('Working hours:') }} {{ working_hours
+                          }}.</span
+                        >
+                      </span>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <span class="text-muted"
+                        >{{ translate('have a nice day') }}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4" style="position: relative">
+                    <img
+                      class="clinic-dash"
+                      width="290"
+                      src="../static/img/clinic-dash.png"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-table p-4 mb-0">
+              <div class="card-header border-bottom-0"></div>
+              <div class="card-body">
+                <div id="calendar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+<!-- Add Event Modal -->
+<div id="clinicMeet" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content card card-table mb-0">
+      <div class="modal-header border-0">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="far fa-times-circle text-danger"></i>
+        </button>
+      </div>
+      <div class="modal-body pt-0"></div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
