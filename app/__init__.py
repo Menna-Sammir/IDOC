@@ -8,7 +8,7 @@ from flask_login import LoginManager
 from flask_principal import Principal
 import uuid
 from flask_wtf.csrf import CSRFProtect
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, disconnect
 from flask_cors import CORS
 from flask_babel import Babel, format_number, format_decimal, format_currency, format_percent, format_scientific, format_timedelta
 import json
@@ -20,6 +20,8 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
+
+
 babel = Babel(app)
 
 IDOC_USER = os.getenv('IDOC_USER')
