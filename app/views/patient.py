@@ -30,9 +30,9 @@ def checkout_success():
     session.pop('time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
 
-@app.route('/clinic_dash', methods=['GET'], strict_slashes=False)
-def clinic():
-    return render_template('clinic.html')
+# @app.route('/clinic_dash', methods=['GET'], strict_slashes=False)
+# def clinic():
+#     return render_template('clinic.html')
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
