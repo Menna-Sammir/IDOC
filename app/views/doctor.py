@@ -53,7 +53,7 @@ def doctor_dash():
             if appointment:
                 appointment.seen = True
                 db.session.commit()
-                flash(translate('Appointment marked as seen'), category='success')
+                flash('Appointment marked as seen', category='success')
                 return redirect(url_for('doctor_dash'))
     return render_template(
         'doctor-dashboard.html',
