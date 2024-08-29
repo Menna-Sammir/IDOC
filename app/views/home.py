@@ -3,6 +3,8 @@ from flask import render_template, redirect, url_for, flash, request
 from app.models.models import *
 from app.views.auth_form import RegisterForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
+from sqlalchemy import not_
+
 
 
 
@@ -14,17 +16,21 @@ def home_page():
 
 @app.route('/test')
 def test_page():
-    return render_template('doctor-signup.html')
+    return render_template('search.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def doctor_signup_page():
     form = RegisterForm()
-    subquery = User.query.with_entities(User.doctor_id).subquery()
+    users = User.query.filter(User.doctor_id.isnot(None)).with_entities(User.doctor_id).all()
+    doctors = Doctor.query.filter(not_(Doctor.id.in_(users))).all()
+
     form.doctor.choices = [
         (doctor.id, doctor.name)
-        for doctor in Doctor.query.filter(~Doctor.id.in_(subquery)).all()
+        for doctor in doctors
     ]
+    print(users)
+    print(doctors)
 
     return render_template('doctor-signup.html', form=form)
 
