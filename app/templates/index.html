@@ -202,7 +202,9 @@
                         />
                       </span>
                     </a>
-                    <div class="dropdown-menu user-dropmenu dropdown-menu-right">
+                    <div
+                      class="dropdown-menu user-dropmenu dropdown-menu-right"
+                    >
                       <div class="user-header align-items-center">
                         <div class="avatar avatar-sm">
                           <img
@@ -490,16 +492,16 @@
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
-                        <a href="#">Dr. {{doctor.name}}</a>
+                        <a href="#">{{ translate('Dr.') }}{{ translate(doctor.name) }}</a>
                         <i class="fas fa-check-circle verified"></i>
                       </h3>
                       <p class="speciality">
-                        {{doctor.specialization.specialization_name}}
+                        {{ translate(doctor.specialization.specialization_name) }}
                       </p>
                       <ul class="available-info">
                         <li>
                           <i class="fas fa-map-marker-alt"></i>
-                          {{doctor.clinic.address}}
+                          {{ translate(doctor.clinic.address) }}
                         </li>
                         <li>
                           <i class="far fa-money-bill-alt"></i> {{doctor.price}}

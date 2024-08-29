@@ -1,15 +1,14 @@
-from app import db, login_manager,app
+from app import db, login_manager,app, bcrypt
 from app.models.base import BaseModel
 from sqlalchemy.dialects.mysql import VARCHAR, INTEGER, BOOLEAN, DATE, TIME, TEXT
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import relationship
-from app import bcrypt
-from flask_login import UserMixin
-from datetime import datetime
+from flask_login import UserMixin, current_user
 from flask_principal import RoleNeed, identity_loaded, UserNeed
-from flask_login import current_user
 from sqlalchemy import func
-from datetime import date
+from datetime import date, datetime
+from app.models.notiTime import calculate_time_ago
+from flask import  g
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -26,6 +25,28 @@ def on_identity_loaded(sender, identity):
 @app.context_processor
 def inject_cache_id():
     return {'cache_id': app.config['CACHE_ID']}
+
+@app.before_request
+def load_notification():
+    current_time = datetime.now()
+    if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
+        notification= Notification.query.filter_by(clinic_id=current_user.clinic_id)
+        processed_notifications = [{
+            'doctor': n.appointment.doctor.name,
+            'patient': n.appointment.patient.name,
+            'body': n.noteBody,
+            'isRead': n.isRead,
+            'time': n.time.strftime('%H:%M %p'),
+            'date': n.date.strftime('%d %B'),
+            'photo': n.appointment.doctor.photo,
+            'formatted_time':  calculate_time_ago(current_time, datetime.combine(n.date, n.time)),
+        } for n in notification.all()[:10]]
+        g.notifications = processed_notifications
+        g.notification_count = len(notification.filter_by(isRead=False).all()) | 0
+
+@app.context_processor
+def inject_notification():
+    return dict(notifications=g.get('notifications', ''), notification_count=g.get('notification_count', 0))
 
 
 class Specialization(BaseModel):
@@ -51,7 +72,7 @@ class Doctor(BaseModel):
     specialization = relationship("Specialization", back_populates="doctors")
     clinic = relationship("Clinic", back_populates="doctors")
     appointments = relationship("Appointment", back_populates="doctor")
-    
+
     def total_earnings(self):
         appointment_count = db.session.query(func.count(Appointment.id)).filter(Appointment.doctor_id == self.id).scalar() or 0
         return appointment_count * (self.price or 0)
@@ -71,6 +92,7 @@ class Clinic(BaseModel):
     governorate = relationship("Governorate", back_populates="clinics")
     doctors = relationship("Doctor", back_populates="clinic")
     appointments = relationship("Appointment", back_populates="clinic")
+    notifications = relationship("Notification", back_populates="clinic")
 
     def total_earnings(self):
         today = date.today()
@@ -150,6 +172,7 @@ class Appointment(BaseModel):
     patient = relationship("Patient", back_populates="appointments")
     doctor = relationship("Doctor", back_populates="appointments")
     messages = relationship("Message", uselist=False, back_populates="appointment")
+    notifications = relationship("Notification", uselist=False, back_populates="appointment")
 
 class Message(BaseModel):
     __tablename__ = 'message'
@@ -159,3 +182,16 @@ class Message(BaseModel):
 
     appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
     appointment = relationship("Appointment", back_populates="messages")
+
+class Notification(BaseModel):
+    __tablename__ = 'notification'
+    noteBody = db.Column(TEXT, nullable=False)
+    isRead = db.Column(BOOLEAN, nullable=False)
+    time = db.Column(TIME, nullable=False, default=func.now())
+    date = db.Column(DATE, nullable=False, default=func.now())
+
+    clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
+    appointment_id = db.Column(VARCHAR(60), ForeignKey('appointment.id'), nullable=False, unique=True)
+
+    clinic = relationship("Clinic", back_populates="notifications")
+    appointment = relationship("Appointment", back_populates="notifications")
