@@ -562,3 +562,12 @@ timeslots.forEach((slot) => {
     slot.querySelector("input[type='radio']").checked = true;
   });
 });
+document.getElementById('continue-button').addEventListener('click', function (event) {
+  var selectedTimeslot = document.querySelector('input[name="timeslot"]:checked');
+  if (!selectedTimeslot) {
+      document.getElementById('warning-message').style.display = 'block';
+  } else {
+      document.getElementById('warning-message').style.display = 'none';
+      document.getElementById('appointment-form').submit();
+  }
+});
