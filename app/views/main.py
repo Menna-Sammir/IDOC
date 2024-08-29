@@ -19,9 +19,9 @@ def home_page():
     return render_template('index.html')
 
 
-@app.route('/test')
-def test_page():
-    return render_template('search.html')
+# @app.route('/test')
+# def test_page():
+#     return render_template('search.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 @login_required
@@ -122,11 +122,11 @@ def login_page():
                     category='success'
                 )
                 if(attempted_user.roles.role_name == 'Admin'):
-                    return redirect(url_for('doctor_dashboard'), current_user=attempted_user.id)
+                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'doctor'):
-                    return redirect(url_for('doctor_dashboard'), current_user=attempted_user.id)
+                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
                 elif(attempted_user.roles.role_name == 'clinic'):
-                    return redirect(url_for('doctor_dashboard'), current_user=attempted_user.id)
+                    return redirect(url_for('doctor_dashboard', current_user=attempted_user.id))
                 return redirect(url_for('home_page'))
             else:
                 flash('user name and password are not match', category='danger')
@@ -156,6 +156,9 @@ def permission_denied(e):
 @app.route('/doctor-dashboard', methods=['GET', 'POST'])
 @login_required
 def doctor_dashboard():
+    current_user = request.args.get('current_user',None)
+    print(current_user)
+
     return render_template('doctor-dashboard.html')
 
 
