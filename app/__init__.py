@@ -1,6 +1,5 @@
 from flask import Flask, request
 import sqlalchemy
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
@@ -17,7 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
-    
+
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
 IDOC_HOST = os.getenv('IDOC_HOST')
@@ -57,6 +56,6 @@ from app.views import main
 from app.views import doctor
 from app.views import admin
 from app.views import patient
-from app.views import clinic_dash
-from app.views import bookdate
+from app.views import clinic
+
 
