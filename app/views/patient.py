@@ -9,7 +9,8 @@ from email.mime.image import MIMEImage
 import os
 from datetime import datetime
 from flask import session
-
+from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_login import login_required
 
 
 
@@ -18,21 +19,44 @@ def checkout_success():
     doctor = session.get('doctor', None)
     date = session.get('date', None)
     time = session.get('time', None)
-
-    socketio.emit('appointment_notification', {
-        'doctor': doctor,
-        'date': date,
-        'time': time
-    }, namespace='/')
+    
+    clinic_id = session.get('clinic_id', None)
+    if clinic_id:
+        socketio.emit('appointment_notification', {
+            'doctor': doctor,
+            'date': date,
+            'time': time
+        }, room=clinic_id, namespace='/')
     
     session.pop('doctor', None)
     session.pop('date', None)
     session.pop('time', None)
     return render_template('booking-success.html', doctor=doctor, date=date, time=time)
 
-# @app.route('/clinic_dash', methods=['GET'], strict_slashes=False)
-# def clinic():
-#     return render_template('clinic.html')
+@socketio.on('connect')
+def handle_connect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        join_room(clinic_id)
+        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    clinic_id = request.args.get('clinic_id')
+    if clinic_id:
+        leave_room(clinic_id)
+        emit('disconnected', {'message': 'Disconnected from clinic ' + clinic_id})
+
+def send_appointment_notification(clinic_id, data):
+    socketio.emit('appointment_notification', data, room=clinic_id)
+    
+@app.route('/clinic_dash', methods=['GET', 'POST'], strict_slashes=False)
+@login_required
+def clinic_dash():
+    # clinic_id = 'cl2'  # Get the clinic_id from wherever it's stored
+    # session['clinic_id'] = clinic_id
+    clinic_id = session.get('clinic_id', None)
+    return render_template('clinic-dash.html', clinic_id=clinic_id)
 
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
@@ -649,6 +673,7 @@ def patient_checkout():
         session['doctor'] = doctor_data.name
         session['date'] = date.strftime('%d %b %Y')
         session['time'] = time.strftime('%H:%M:%S')
+        session['clinic_id'] = clinic_data.id
         return redirect(url_for('checkout_success'))
     return render_template(
         'checkout.html',
