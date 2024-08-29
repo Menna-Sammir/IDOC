@@ -349,12 +349,13 @@
   }
 
   var currentLang = $("html").attr("lang");
-  changeFont(currentLang);
 
-  $(".dropdown-item").click(function () {
-    var selectedLanguage = $(this).data("lang");
-    setLanguage(selectedLanguage);
+  changeFont(currentLang);
+  $('#language-select .dropdown-item').on('click', function() {
+    var language = $(this).data('lang');
+    setLanguage(language);
   });
+
 
   $(window).scroll();
   //   $(".alert")
