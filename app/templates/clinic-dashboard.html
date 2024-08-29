@@ -189,7 +189,7 @@ block body %}
                       class="nav-link active"
                       href="#today-appointments"
                       data-toggle="tab"
-                      >appointments</a>
+                      >{{ translate(appointments) }}</a>
                   </li>
                 </ul>
                 <!-- /Appointment Tab -->
@@ -204,7 +204,7 @@ block body %}
                             <thead>
                               <tr>
                                 <th>{{ translate('Patient Name') }}</th>
-                                <th>Appt Date</th>
+                                <th>{{ translate(Appt Date) }}</th>
                                 <th class="text-center">{{ translate('Paid Amount') }}</th>
                                 <th></th>
 
@@ -217,20 +217,20 @@ block body %}
                                 <td>
                                   <h2 class="table-avatar">
                                     <a href="#"
-                                      >{{ patient.name }}<span
-                                        >Dr. {{ doctor.name }}</span
+                                      >{{ translate(patient.name) }}<span
+                                        >{{ translate('Dr.') }} {{ translate(doctor.name) }}</span
                                       ></a
                                     >
                                   </h2>
                                 </td>
                                 <td>
-                                  {{ appointment.date }}
+                                  {{ translate(appointment.date) }}
                                   <span class="d-block text-info"
-                                    >{{ appointment.time }}</span
+                                    >{{ translate(appointment.time) }}</span
                                   >
                                 </td>
                                 <td class="text-center">
-                                  {{ appointment.doctor.price  }}$
+                                  {{ translate(appointment.doctor.price)  }}$
                                 </td>
                                 <td>
                                   {% if appointment.seen == false %}
