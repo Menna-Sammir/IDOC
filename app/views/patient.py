@@ -62,7 +62,7 @@ def clinic_dash():
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     checkout_form = checkoutForm()
-    doctor_id = 'doc2'
+    doctor_id = 'd9f2f180-fa4e-4d20-8898-6c40ed7c75a7'
     date = datetime.now()
     time = datetime.now()
     doctor_data = Doctor.query.filter_by(id=doctor_id).first()
@@ -685,9 +685,9 @@ def patient_checkout():
     )
 
 
-# todo special page
-@app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
-def specialities():
-    return render_template(
-        'specialities.html'
-    )
+
+# @app.route('/specialities', methods=['GET', 'POST'], strict_slashes=False, endpoint='specialities')
+# def specialities():
+#     return render_template(
+#         'specialities.html'
+#     )
