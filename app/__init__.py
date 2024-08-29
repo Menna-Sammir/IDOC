@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+# app = Flask(__name__)
 app = Flask(__name__)
 
 IDOC_USER = os.getenv('IDOC_USER')
@@ -12,7 +13,7 @@ IDOC_HOST = os.getenv('IDOC_HOST')
 IDOC_DB = os.getenv('IDOC_DB')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqldb://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
 
 db = SQLAlchemy(app)
 
