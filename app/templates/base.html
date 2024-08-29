@@ -140,10 +140,12 @@
                 <div class="noti-content">
                   <ul class="notification-list" id="notification-list">
                     {% if notifications %} {% for notification in notifications
-                    %} {% if notification.isRead %}
-                    <li class="notification-message alert-info">{% else %}</li>
-
+                    %}
+                    {% if notification.isRead %}
                     <li class="notification-message">
+                      {% else %}
+                    <li class="notification-message alert-info">
+
                       {% endif %}
                       <a href="{{ url_for('clear_noti') }}">
                         <div class="media">
