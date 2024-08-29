@@ -301,3 +301,89 @@
      {% endblock %}
   </body>
 </html>
+
+
+
+
+
+
+final
+
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', (event) => {
+    var clinic_id = '{{ current_user.clinic_id }}';
+
+    if (!clinic_id) {
+        console.error('Clinic ID is missing. Cannot establish WebSocket connection.');
+        return;
+    }
+
+    console.log('Connecting with clinic_id:', clinic_id);
+
+    var socket = io.connect('http://localhost:5000', {
+    query: 'clinic_id=' + clinic_id,
+    transports: ['websocket', 'polling']
+    });
+
+    socket.on('connected', function(msg) {
+        console.log(msg.message);
+    });
+
+    socket.on('appointment_notification', function(data) {
+        console.log('Appointment notification:', data);
+        addNotification(data);
+    });
+
+    socket.on('disconnected', function(msg) {
+        console.log(msg.message);
+    });
+
+    function addNotification(data) {
+        var notificationList = document.getElementById('notification-list');
+        var notificationCount = document.getElementById('notification-count');
+        
+        var newNotification = document.createElement('li');
+        newNotification.classList.add('notification-message');
+
+        var notificationContent = `
+            <a href="#">
+                <div class="media">
+                    <span class="avatar avatar-sm">
+                        <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
+                    </span>
+                    <div class="media-body">
+                        <p class="noti-details">
+                            <span class="noti-title">Dr. ${data.doctor}</span> has a new appointment on 
+                            <span class="noti-title">${data.date} at ${data.time}</span>
+                        </p>
+                        <p class="noti-time">
+                            <span class="notification-time">Just now</span>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        `;
+
+        newNotification.innerHTML = notificationContent;
+        notificationList.prepend(newNotification);
+
+        var currentCount = parseInt(notificationCount.textContent);
+        notificationCount.textContent = currentCount + 1;
+    }
+
+    document.getElementById('clear-all-notifications').addEventListener('click', function() {
+        clearAllNotifications();
+    });
+
+    function clearAllNotifications() {
+        var notificationList = document.getElementById('notification-list');
+        var notificationCount = document.getElementById('notification-count');
+        if (notificationList && notificationCount) {
+            notificationList.innerHTML = '';
+            notificationCount.textContent = '0';
+        }
+    }
+  });
+</script>
