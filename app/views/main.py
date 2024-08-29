@@ -10,7 +10,6 @@ from app.views.auth_form import LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask import Flask, render_template
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from app.models.models import Specialization, Doctor, Clinic, Governorate, Appointment
 from app.views.search import SearchForm
@@ -163,9 +162,4 @@ def permission_denied(e):
 
 @app.route('/doctor-dashboard', methods=['GET', 'POST'])
 def doctor_dashboard():
-    return render_template('doctor-dashboard.html')
-
-
-@app.route('/clinic_dashboard', methods=['GET', 'POST'])
-def clinic_dashboard():
     return render_template('doctor-dashboard.html')
