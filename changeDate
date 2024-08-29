@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Checkout to the branch you want to modify
+<<<<<<< HEAD
 git checkout MennaEdit
+=======
+# git checkout MennaEdit
+>>>>>>> 8dec8cef8230cc6629b6bd6992c7542cc2364b7b
 
 # Filter the branch and modify the dates
 git filter-branch --env-filter '
@@ -9,8 +13,13 @@ OLD_AUTHOR_DATE=$GIT_AUTHOR_DATE
 OLD_COMMITTER_DATE=$GIT_COMMITTER_DATE
 
 # Add 3 months to each date
+<<<<<<< HEAD
 NEW_AUTHOR_DATE=$(date -d "$GIT_AUTHOR_DATE + 3 months" +"%Y-%m-%dT%H:%M:%S")
 NEW_COMMITTER_DATE=$(date -d "$GIT_COMMITTER_DATE + 3 months" +"%Y-%m-%dT%H:%M:%S")
+=======
+NEW_AUTHOR_DATE=$(date -d "$GIT_AUTHOR_DATE + 3 months" --iso-8601=seconds)
+NEW_COMMITTER_DATE=$(date -d "$GIT_COMMITTER_DATE + 3 months" --iso-8601=seconds)
+>>>>>>> 8dec8cef8230cc6629b6bd6992c7542cc2364b7b
 
 export GIT_AUTHOR_DATE="$NEW_AUTHOR_DATE"
 export GIT_COMMITTER_DATE="$NEW_COMMITTER_DATE"

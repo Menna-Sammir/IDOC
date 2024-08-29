@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from app import app, db
 from flask import render_template, redirect, url_for
 from app.models.models import *
@@ -196,6 +197,8 @@ def delete_notification():
 >>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
 =======
 >>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
+=======
+>>>>>>> 8dec8cef8230cc6629b6bd6992c7542cc2364b7b
 from app import app, db
 from flask import render_template, redirect, url_for
 from app.models.models import *
@@ -388,8 +391,11 @@ def delete_notification():
     return jsonify({'message': 'Notification deleted'})
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
 =======
 >>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
 =======
 >>>>>>> b1ada92490b7c46372fbf52fc152dd4c8744177f
+=======
+>>>>>>> 8dec8cef8230cc6629b6bd6992c7542cc2364b7b

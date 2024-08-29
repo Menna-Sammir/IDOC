@@ -164,7 +164,7 @@ def patient_dashboard():
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
-    
+
     specialties = Specialization.query.all()
     return render_template(
         'patient-dashboard.html',
@@ -198,7 +198,7 @@ def appointment_History():
         if not patient:
             flash('Patient not found', 'danger')
             return redirect(url_for('doctor_dash'))
-        
+
     else:
         flash('Unauthorized access', 'danger')
         return redirect(url_for('index'))
@@ -239,7 +239,7 @@ def appointment_History():
         status_enum = AppStatus(appointment.status)  # Convert status to enum
         status_str = status_enum.name
         report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
-        
+
         appointment_data.append({
             'appointment_id': appointment.id,
             'date': formatted_date,
@@ -256,7 +256,7 @@ def appointment_History():
             'is_confirmed': status_enum == AppStatus.Confirmed,
             'is_cancelled': status_enum == AppStatus.Cancelled
         })
-    
+
     blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
     allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
@@ -327,7 +327,7 @@ def appointment_History():
 def cancel_appointment():
     appointment_id = request.form.get('appointment_id')
     appointment = Appointment.query.get(appointment_id)
-    
+
     if appointment is None:
         flash('Appointment not found', 'danger')
         return redirect(url_for('appointment_History'))
@@ -982,7 +982,7 @@ def sendEmail():
 def patient_setting():
     user = User.query.filter_by(id=current_user.id).first()
     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    
+
     form = PatientForm(
         firstname=user.name.split()[0] if user.name else '',
         lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
