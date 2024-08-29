@@ -152,22 +152,34 @@ def logout_page():
     logout_user()
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     flash('You have been logged out!', category='info')
-    return redirect(url_for('home_page'))
+    return redirect(url_for('login_page'))
 
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/change_password', methods=['GET', 'POST'], strict_slashes=False, endpoint='change_password')
 @login_required
 def change_password():
     form = ChangePasswordForm()
-    if form.validate_on_submit():
-        if current_user.check_password_correction(form.current_password.data):
-            current_user.password_hash = form.new_password.data
-            db.session.commit()
-            flash('Your password has been updated!', 'success')
-            return redirect(url_for('profile'))
-        else:
-            flash('Current password is incorrect.', 'danger')
-    return render_template('change_password.html', form=form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if current_user.check_password_correction(form.current_password.data):
+                current_user.password_hash = form.new_password.data
+                db.session.commit()
+                flash('Your password has been updated!', 'success')
+                if(current_user.roles.role_name == 'Admin'):
+                    return redirect(url_for('dashboard'))
+                elif(current_user.roles.role_name == 'doctor'):
+                    return redirect(url_for('doctor_dash'))
+                elif(current_user.roles.role_name == 'clinic'):
+                    return redirect(url_for('clinic_dash'))
+            else:
+                flash('Current password is incorrect.', 'danger')
+        if form.errors != {}:
+            for err_msg in form.errors.values():
+                flash(
+                    f'there was an error with creating a user: {err_msg}',
+                    category='danger'
+                )
+    return render_template('change-password.html', form=form)
 
 
 @app.errorhandler(403)
