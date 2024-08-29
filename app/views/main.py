@@ -120,7 +120,7 @@ def login_page():
                     category='success'
                 )
                 if attempted_user.roles.role_name == 'Admin':
-                    return redirect(url_for('admin_dash'))
+                    return redirect(url_for('dashboard'))
                 elif attempted_user.roles.role_name == 'doctor':
                     return redirect(url_for('doctor_dash'))
                 elif attempted_user.roles.role_name == 'clinic':
