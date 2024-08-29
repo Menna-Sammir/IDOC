@@ -186,9 +186,22 @@ def patient_dashboard():
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
 def appointment_History():
-    patient = Patient.query.filter_by(user_id=current_user.id).first()
-    if patient is None:
-        return translate('User is not a patient'), 403
+    if current_user.patient:
+        patient = Patient.query.filter_by(user_id=current_user.id).first()
+    elif current_user.doctor:
+        patient_id = request.args.get('patient_id')
+        if not patient_id:
+            flash('Patient ID is missing.', 'danger')
+            return redirect(url_for('doctor_dash'))
+
+        patient = Patient.query.get(patient_id)
+        if not patient:
+            flash('Patient not found', 'danger')
+            return redirect(url_for('doctor_dash'))
+        
+    else:
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('index'))
 
     # Fetch all appointments (regardless of status) that have not been seen (seen is False)
     appointments = (
