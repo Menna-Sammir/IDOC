@@ -1,3 +1,5 @@
+import sqlalchemy
+from flask import Flask
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -51,6 +53,9 @@ principal = Principal(app)
 
 
 from app.views import main
+from app.views import clinic_dash
+from app.views import bookdate
+
 from app.views import doctor
 from app.views import admin
 from app.views import patient
