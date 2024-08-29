@@ -5,6 +5,7 @@ from app.views.forms.auth_form import RegisterDocForm, LoginForm, RegisterClinic
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed
+from app import socketio
 
 
 
@@ -136,13 +137,17 @@ def login_page():
     return render_template('login.html', form=form)
 
 
+
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
+    print(f"User before logout: {current_user}")
     logout_user()
+    print(f"User after logout: {current_user}")
     identity_changed.send(
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
     flash('You have been logged out!', category='info')
+    socketio.emit('disconnect request')
     return redirect(url_for('login_page'))
 
 
