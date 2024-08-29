@@ -8,7 +8,7 @@ block body %}
       <div class="col-md-8 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ translate('Search') }}</li>
           </ol>
         </nav>
@@ -104,19 +104,19 @@ block body %}
                 </div>
                 <div class="doc-info-cont">
                   <h4 class="doc-name">
-                    <a href="doctor-profile.html">Dr. {{ doctor.name }}</a>
+                    <a href="doctor-profile.html">{{ translate('Dr.') }}{{ translate(doctor.name) }}</a>
                   </h4>
                   <p class="doc-department">
                     <img
                       src="{{ specialization.photo }}"
                       class="img-fluid"
                       alt="Speciality"
-                    />{{ specialization.specialization_name }}
+                    />{{ translate(specialization.specialization_name) }}
                   </p>
                   <div class="clinic-details">
                     <p class="doc-location">
                       <i class="fas fa-map-marker-alt"></i> {{
-                      doctor.clinic.address }}
+                      translate(doctor.clinic.address) }}
                     </p>
                   </div>
                   <div class="clinic-services"></div>
@@ -127,7 +127,7 @@ block body %}
                   <ul>
                     <li>
                       <i class="fas fa-map-marker-alt"></i> {{
-                      governorate.governorate_name }}, Egypt
+                      translate(governorate.governorate_name) }}{{ translate(',Egypt') }}
                     </li>
                     <li>
                       <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $

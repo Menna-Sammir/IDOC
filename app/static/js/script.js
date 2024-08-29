@@ -1,8 +1,4 @@
-/*
-Author       : Dreamguys
-Template Name: Doccure - Bootstrap Template
-Version      : 1.0
-*/
+
 
 (function ($) {
   "use strict";
@@ -330,83 +326,6 @@ Version      : 1.0
     });
   })();
 
-  // Circle Progress Bar
-
-  function animateElements() {
-    $(".circle-bar1").each(function () {
-      var elementPos = $(this).offset().top;
-      var topOfWindow = $(window).scrollTop();
-      var percent = $(this).find(".circle-graph1").attr("data-percent");
-      var animate = $(this).data("animate");
-      if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
-        $(this).data("animate", true);
-        $(this)
-          .find(".circle-graph1")
-          .circleProgress({
-            value: percent / 100,
-            size: 400,
-            thickness: 30,
-            fill: {
-              color: "#da3f81",
-            },
-          });
-      }
-    });
-    $(".circle-bar2").each(function () {
-      var elementPos = $(this).offset().top;
-      var topOfWindow = $(window).scrollTop();
-      var percent = $(this).find(".circle-graph2").attr("data-percent");
-      var animate = $(this).data("animate");
-      if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
-        $(this).data("animate", true);
-        $(this)
-          .find(".circle-graph2")
-          .circleProgress({
-            value: percent / 100,
-            size: 400,
-            thickness: 30,
-            fill: {
-              color: "#68dda9",
-            },
-          });
-      }
-    });
-    $(".circle-bar3").each(function () {
-      var elementPos = $(this).offset().top;
-      var topOfWindow = $(window).scrollTop();
-      var percent = $(this).find(".circle-graph3").attr("data-percent");
-      var animate = $(this).data("animate");
-      if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
-        $(this).data("animate", true);
-        $(this)
-          .find(".circle-graph3")
-          .circleProgress({
-            value: percent / 200,
-            size: 400,
-            thickness: 30,
-            fill: {
-              color: "#5ac9d0",
-            },
-          });
-      }
-    });
-  }
-  $(".nav-link").each(function () {
-    var direction = $("html").attr("lang");
-    if (direction === "en") {
-      var $link = $(this);
-      var text = $link.text();
-      $link.empty();
-
-      $.each(text.split(""), function (index, char) {
-        var $span = $("<span>")
-          .text(char)
-          .css("animation-delay", index * 0.1 + "s");
-        $link.append($span);
-      });
-    }
-  });
-
   function changeFont(language) {
     if (language === "en") {
       $("body").css("font-family", "Poppins, sans-serif");
@@ -429,52 +348,22 @@ Version      : 1.0
     });
   }
 
-  var currentLang = $("html").attr("lang");
-  changeFont(currentLang);
 
-  $(".dropdown-item").click(function () {
-    var selectedLanguage = $(this).data("lang");
-    console.log("Selected language:", selectedLanguage);
-    setLanguage(selectedLanguage);
+  var currentLang = $("html").attr("lang");
+
+  changeFont(currentLang);
+  $('#language-select .dropdown-item').on('click', function() {
+    var language = $(this).data('lang');
+    setLanguage(language);
+    var dir = (language == 'ar') ? 'rtl' : 'ltr';
+    $('#calendar').fullCalendar('option', {
+        locale: language,
+        dir: dir
+    });
   });
 
-  // $(".nav-link").each(function () {
-  //   var direction = $("html").attr("lang") ;
-  //   if (direction === "en") {
-  //     var $link = $(this);
-  //     var text = $link.text();
-  //     $link.empty();
 
-  //     $.each(text.split(""), function (index, char) {
-  //       var $span = $("<span>")
-  //         .text(char)
-  //         .css("animation-delay", index * 0.1 + "s");
-  //       $link.append($span);
-  //     });
-  //   }
-  // });
-
-  // function changeFont(language) {
-  //   if (language === "en") {
-  //     $("body").css("font-family", "Poppins, sans-serif");
-  //     $("html").css("direction", "ltr");
-  //   } else if (language === "ar") {
-  //     $("body").css("font-family", "Cairo, sans-serif");
-  //     $("html").css("direction", "rtl");
-  //   }
-  // }
-  // changeFont($("#languageSelect").val());
-
-  // $("#languageSelect").change(function () {
-  //   var selectedLanguage = $(this).val();
-  //   console.log("Selected language:", selectedLanguage);
-  //   changeFont(selectedLanguage);
-  // });
-
-  if ($(".circle-bar").length > 0) {
-    animateElements();
-  }
-  $(window).scroll(animateElements);
+  $(window).scroll();
   //   $(".alert")
   //     .fadeTo(2000, 500)
   //     .slideUp(1000, function () {
