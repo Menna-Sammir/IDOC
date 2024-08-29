@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect, url_for, session
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -10,15 +10,15 @@ import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO, disconnect
 from flask_cors import CORS
+from flask_babel import Babel
+import json
 
 
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
-# @socketio.on('disconnect request')
-# def disconnect_request():
-#     disconnect()
+babel = Babel(app)
 
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
@@ -28,6 +28,39 @@ IDOC_DB = os.getenv('IDOC_DB')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'ar']
+
+def load_translations(translations):
+    try:
+        with open(translations, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: File '{translations}' not found.")
+        return {}
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON in file '{translations}': {e}")
+        return {}
+
+translations = load_translations('translations.json')
+
+def get_locale():
+    return session.get('lang', request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']))
+
+def translate(key):
+    lang = get_locale()
+    return translations.get(lang, {}).get(key, key)
+
+@app.route('/set_language')
+def set_language():
+    language = request.args.get('language', 'en')
+    if language in ['en', 'ar']:
+        session['lang'] = language
+    return redirect(request.referrer or url_for('index'))
+
+@app.context_processor
+def inject_translations():
+    return dict(get_locale=get_locale, translate=translate)
 
 
 db = SQLAlchemy(app)

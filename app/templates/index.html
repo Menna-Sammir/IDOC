@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -147,19 +147,23 @@
             <div class="col-md-5 form-inline my-2 my-lg-0">
               <ul class="d-flex align-items-center list-unstyled">
                 <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none d-lg-block" href="#home">Home</a>
+                    <a class="py-2 d-inline-block font-weight-semibold text-white d-none d-lg-block" href="#home">{{ translate('Home') }}</a>
                 </li>
                 <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#aboutus">About Us</a>
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#aboutus">{{ translate('About Us') }}</a>
                 </li>
                 <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#service">service</a>
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#service">{{ translate('service') }}</a>
                 </li>
                 <li class="mr-3">
-                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#">Contact Us</a>
+                    <a class="py-2 d-inline-block font-weight-semibold text-white px-2" href="#">{{ translate('Contact Us') }}</a>
                 </li>
-            </ul>
-
+              </ul>
+              <select id="languageSelect" onchange="location.href = '/set_language?language=' + this.value;" class="rounded border appearance-none py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full">
+                <option value="en" {{ 'selected' if get_locale() == 'en' else '' }}>English</option>
+                <option value="ar" {{ 'selected' if get_locale() == 'ar' else '' }}>العربية</option>
+            </select>
+          </div>
             </div>
           </div>
         </nav>
@@ -193,7 +197,7 @@
                       padding-bottom: 1px;
                     "
                   >
-                    Search for a doctor
+                  {{ translate('Search for a doctor') }}
                   </p>
                   <p
                     class="mb-0 text-home"
@@ -202,7 +206,7 @@
                       padding-bottom: 1px;
                     "
                   >
-                    Examination or procedure
+                  {{ translate('Examination or procedure') }}
                   </p>
                 </div>
               </div>
@@ -252,12 +256,12 @@
       <section class="section section-specialities" id="service">
         <div class="container-fluid">
           <div class="section-header text-center">
-            <h2>Clinic and Specialities</h2>
+            <h2>{{ translate('Clinic and Specialities') }}</h2>
             <p class="sub-title">
-              We offer a wide range of specialties to meet the diverse
+              {{ translate('We offer a wide range of specialties to meet the diverse
               healthcare needs of our patients. Our dedicated team of
               professionals provides expert care in areas such as cardiology,
-              orthopedics, neurology, and pediatrics.
+              orthopedics, neurology, and pediatrics.') }}
             </p>
           </div>
           <div class="row justify-content-center">
@@ -301,34 +305,34 @@
               <div class="circle background background-small"></div>
             </div>
             <div class="col-lg-5 col-md-12">
-              <h3 class="text-muted">ABOUT US</h3>
-              <h2 class="mr-5 pr-5">Health Clinic With Quality For You</h2>
+              <h3 class="text-muted">{{ translate('ABOUT US') }}</h3>
+              <h2 class="mr-5 pr-5">{{ translate('Health Clinic With Quality For You') }}</h2>
               <p class="text-muted">
-                Doctime Group is a health insurance company that also provides
+                {{ translate('Doctime Group is a health insurance company that also provides
                 data analytics and consulting services to healthcare providers,
-                as well as pharmacy care services.
+                as well as pharmacy care services.') }}
               </p>
               <ul class="p-0">
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of females who get screened for
-                    breast cancer-C-05</span
+                    >{{ translate('Increase the proportion of females who get screened for
+                    breast cancer-C-05') }}</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of adults with arthritis who get
-                    counseling for physical activity - A-04</span
+                    >{{ translate('Increase the proportion of adults with arthritis who get
+                    counseling for physical activity - A-04') }}</span
                   >
                 </li>
                 <li class="d-flex align-items-top my-3">
                   <i class="far fa-check-circle fa-2x mr-2 text-secondary"></i
                   ><span
-                    >Increase the proportion of people with sickle cell disease
+                    >{{ translate('Increase the proportion of people with sickle cell disease
                     on Medicare who received disease-modifying therapies -
-                    BDBS-02</span
+                    BDBS-02') }}</span
                   >
                 </li>
               </ul>
@@ -342,7 +346,7 @@
       <section class="section section-doctor">
         <div class="container-fluid">
           <div class="section-header text-center">
-            <h2>Our Specialist Doctor</h2>
+            <h2>{{ translate('Our Specialist Doctor') }}</h2>
           </div>
           <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -389,7 +393,7 @@
                           <a
                             href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                             class="btn book-btn"
-                            >Book Now</a
+                            >{{ translate('Book Now') }}</a
                           >
                         </div>
                       </div>
@@ -418,10 +422,9 @@
             </div>
             <div class="col-md-7">
               <div class="section-header">
-                <h2 class="mt-2">Availabe Features in Our Clinic</h2>
+                <h2 class="mt-2">{{ translate('Availabe Features in Our Clinic') }}</h2>
                 <p>
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
+                  {{ translate('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.') }}
                 </p>
               </div>
               <div class="features-slider slider">
@@ -432,7 +435,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Patient Ward</p>
+                  <p>{{ translate('Patient Ward') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -443,7 +446,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Test Room</p>
+                  <p>{{ translate('Test Room') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -454,7 +457,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>ICU</p>
+                  <p>{{ translate('ICU') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -465,7 +468,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Laboratory</p>
+                  <p>{{ translate('Laboratory') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -476,7 +479,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Operation</p>
+                  <p>{{ translate('Operation') }}</p>
                 </div>
                 <!-- /Slider Item -->
 
@@ -487,7 +490,7 @@
                     class="img-fluid"
                     alt="Feature"
                   />
-                  <p>Medical</p>
+                  <p>{{ translate('Medical') }}</p>
                 </div>
                 <!-- /Slider Item -->
               </div>
