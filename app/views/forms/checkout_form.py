@@ -15,4 +15,8 @@ class checkoutForm(FlaskForm):
     lastname =StringField(label='Last Name', validators=[Length(min=2,max=70), DataRequired()])
     email_address = StringField(label='Email Address', validators=[Email(), DataRequired()])
     phone = StringField(label='Phone', validators=[Length(min=11, max=11)])
+<<<<<<< HEAD
     submit = SubmitField(label='Confirm Book')
+=======
+    submit = SubmitField(label='Confirm Book')
+>>>>>>> 7af7b32b47e5e71ee9efd83e617a0680a8819b9e
