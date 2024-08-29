@@ -352,18 +352,18 @@
         }
 
         document
-          .getElementById("clear-all-notifications")
-          .addEventListener("click", function () {
-            clearAllNotifications();
-          });
+      .getElementById("clear-all-notifications")
+      .addEventListener("click", function () {
+        clearAllNotifications();
+      });
 
-        function clearAllNotifications() {
-          var notificationList = document.getElementById("notification-list");
-          var notificationCount = document.getElementById("notification-count");
-          if (notificationList && notificationCount) {
-            notificationList.innerHTML = "";
-            notificationCount.textContent = "0";
-            localStorage.removeItem("notifications");
+    function clearAllNotifications() {
+      var notificationList = document.getElementById("notification-list");
+      var notificationCount = document.getElementById("notification-count");
+      if (notificationList && notificationCount) {
+        notificationList.innerHTML = "";
+        notificationCount.textContent = "0";
+        localStorage.removeItem("notifications");
           }
         }
 
