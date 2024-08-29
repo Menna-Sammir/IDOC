@@ -94,10 +94,10 @@
                 />
               </a>
               <div class="booking-info">
-                <h4><a href="#">Dr. {{doctor.name}}</a></h4>
+                <h4><a href="#">{{ translate('Dr.') }} {{ translate(doctor.name) }}</a></h4>
                 <div class="clinic-details">
                   <p class="doc-location">
-                    <i class="fas fa-map-marker-alt"></i> {{clinic.address}}, {{gov.governorate_name}}, Egypt
+                    <i class="fas fa-map-marker-alt"></i> {{ translate(clinic.address) }}, {{ translate(gov.governorate_name) }}, Egypt
                   </p>
                 </div>
               </div>
@@ -107,17 +107,17 @@
             <div class="booking-summary">
               <div class="booking-item-wrap">
                 <ul class="booking-date mt-3">
-                  <li>{{ translate('Date') }} <span>{{date}}</span></li>
-                  <li>{{ translate('Time') }} <span>{{ translate('from') }} {{start_time}} {{ translate('to') }} {{end_time}}</span></li>
+                  <li>{{ translate('Date') }} <span>{{ translate(date) }}</span></li>
+                  <li>{{ translate('Time') }} <span>{{ translate('from') }} {{ translate(start_time) }} {{ translate('to') }} {{ translate(end_time) }}</span></li>
                 </ul>
                 <ul class="booking-fee">
-                  <li>{{ translate('Consulting Fee') }} <span>${{doctor.price}}</span></li>
+                  <li>{{ translate('Consulting Fee') }} <span>${{ translate(doctor.price) }}</span></li>
                 </ul>
                 <div class="booking-total">
                   <ul class="booking-total-list">
                     <li>
                       <span>{{ translate('Total') }}</span>
-                      <span class="total-cost">${{doctor.price}}</span>
+                      <span class="total-cost">${{ translate(doctor.price) }}</span>
                     </li>
                   </ul>
                 </div>
