@@ -500,8 +500,9 @@
                       <ul class="available-info">
                         <li>
                           <i class="fas fa-map-marker-alt"></i>
-                          {{ doctor.clinic.name}} {{
-                          translate(doctor.clinic.address) }}, Egypt
+                          {{ translate(doctor.clinic.address) }}, Egypt<br>
+                          {{ translate(doctor.clinic.name) }}
+                          
                         </li>
                         <li>
                           <i class="far fa-money-bill-alt"></i> {{doctor.price}}
