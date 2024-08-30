@@ -7,7 +7,6 @@ from app.models.models import MedicineTime
 class MedicineForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     quantity = IntegerField('Quantity', validators=[DataRequired()])
-    Days = IntegerField('Days', validators=[DataRequired()])
     time_of_day = SelectMultipleField(
         'Time',
         choices=[(time.name, time.value) for time in MedicineTime],

@@ -15,7 +15,7 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin, current_user
 from flask_principal import RoleNeed, identity_loaded, UserNeed
 from sqlalchemy import func
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from app.models.notiTime import calculate_time_ago
 from flask import g
 from enum import Enum
@@ -152,7 +152,7 @@ class Doctor(BaseModel):
     user_id = db.Column(
         VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True
     )
-    users = relationship('User', back_populates='doctor')
+    users = relationship('User', back_populates='doctor', lazy='joined')
 
     specialization = relationship('Specialization', back_populates='doctors')
     clinic = relationship('Clinic', back_populates='doctors')
@@ -231,6 +231,7 @@ class User(BaseModel, UserMixin):
     clinic = relationship('Clinic', back_populates='users')
     user_roles = relationship('UserRole', uselist=False, back_populates='user')
     patient_history = relationship('PatientHistory', back_populates='user')
+    patient_medicine = relationship('PatientMedicine', back_populates='user')
 
     @property
     def password_hash(self):
@@ -312,10 +313,13 @@ class PatientMedicine(BaseModel):
 
     medName = db.Column(VARCHAR(255), nullable=False)
     Quantity = db.Column(VARCHAR(255), nullable=False)
-    Days = db.Column(VARCHAR(100), nullable=False)
+    Date = db.Column(DATE, nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
-
+    Added_By = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
+    
+    user = db.relationship('User', back_populates='patient_medicine')
     medicine_times = relationship("MedicineTimes", back_populates='patient_medicine', uselist=True)
+
 
 
 
@@ -348,11 +352,39 @@ class Appointment(BaseModel):
     doctor_id = db.Column(VARCHAR(60), ForeignKey('doctor.id'), nullable=False)
     clinic = relationship('Clinic', back_populates='appointments')
     patient = relationship('Patient', back_populates='appointments')
-    doctor = relationship('Doctor', back_populates='appointments')
+    doctor = relationship('Doctor', back_populates='appointments', lazy='joined')
     messages = relationship('Message', uselist=False, back_populates='appointment')
     notifications = relationship(
         'Notification', uselist=False, back_populates='appointment'
     )
+    @property
+    def time_range(self):
+        appointment_end_time = (datetime.combine(date.today(), self.time) + timedelta(hours=1)).time()
+        return f"{self.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+
+    @property
+    def formatted_date(self):
+        return self.date.strftime('%A, %d %B').capitalize()
+
+    @property
+    def followup_date(self):
+        if self.follow_up:
+            return self.follow_up.strftime('%A, %d %B').capitalize()
+        else:
+            return "N/A"
+
+
+    def status_bg(self):
+        if self.status == AppStatus.Pending.value:
+            return "bg-info"
+        elif self.status == AppStatus.Confirmed.value:
+            return "bg-success"
+        elif self.status == AppStatus.Cancelled.value:
+            return "bg-danger"
+        elif self.status == AppStatus.Completed.value:
+            return "bg-secondary"
+        else:
+            return "bg-secondary"
 
 
 class Message(BaseModel):

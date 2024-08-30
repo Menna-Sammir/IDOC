@@ -143,7 +143,7 @@ def doctor_profile():
 # @doctor_permission.require(http_exception=403)
 def add_prescription():
     form = AddMedicineForm()
-    patient_id = "800b065d-945d-4ba0-bb20-10c1d480d352"
+    patient_id = "ee57d6e4-1d31-4b8d-a615-55b4391ef8db"
     # patient_id = request.args.get("patient_id")
     if form.validate_on_submit():
         try:
@@ -154,8 +154,9 @@ def add_prescription():
                     Patient_Medicine = PatientMedicine(
                         medName=item.form.name.data,
                         Quantity=item.form.quantity.data,
-                        Days=item.form.Days.data,
-                        patient_id=patient_id
+                        Date=datetime.now().strftime('%Y-%m-%d'),
+                        patient_id=patient_id,
+                        Added_By = current_user.id
                     )
                     db.session.add(Patient_Medicine)
                     current_medicine = Patient_Medicine
