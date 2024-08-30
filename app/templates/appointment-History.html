@@ -88,7 +88,36 @@
                                                   {% else %}
                                                       No Follow-Up
                                                   {% endif %}
+                                                  {% if current_user.patient %}
+                                                  <td>       
+                                                <span
+                                                  class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline"
+                                                  >{{appointment.status.name}}</span
+                                                >
                                               </td>
+                                              <td class="text-right">
+                                                <form
+                                                  action="{{ url_for('cancel_appointment') }}"
+                                                  method="post"
+                                                >
+                                                  <div class="table-action">
+                                                    <input
+                                                      type="hidden"
+                                                      name="csrf_token"
+                                                      value="{{ csrf_token() }}"
+                                                    />
+                                                    <input
+                                                      type="hidden"
+                                                      name="appointment_id"
+                                                      value="{{ appointment.id }}"
+                                                    />
+                                                    <button type="submit" class="btn btn-danger">
+                                                      Cancel
+                                                    </button>
+                                                  </div>
+                                                </form>
+                                              </td>
+                                              {% endif %}
                                                   {% if current_user.doctor %}
                                                   <td>
                                                     {% set status_class = { 'Pending':
