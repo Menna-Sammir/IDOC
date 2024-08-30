@@ -399,7 +399,7 @@ def cancel_appointment():
 
     return redirect(url_for('appointment_History'))
 
-# doctor search page
+#### doctor search page ####
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
     specialization_id = session.get('specialization_id', None)
@@ -412,19 +412,19 @@ def search_doctor():
     form = AppointmentForm()
 
     query = (
-        db.session.query(Doctor, Specialization, Clinic, Governorate)
+        db.session.query(Doctor, Specialization, Clinic, Governorate, User)
         .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
         .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
         .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
+        .outerjoin(User, Doctor.user_id == User.id)
     )
-
     if request.method == 'GET':
         if specialization_id:
             query = query.filter(Doctor.specialization_id == specialization_id)
         if governorate_id:
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
-            query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
+            query = query.filter(User.name.ilike(f'%{doctor_name}%'))
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -736,6 +736,7 @@ def patient_checkout():
                 except Exception as e:
                     db.session.rollback()
                     flash(f'something wrong', category='danger')
+                    
                 notification_create = Notification(
                     clinic_id=clinic_data.id,
                     date=date.strftime('%Y-%m-%d'),
@@ -749,6 +750,7 @@ def patient_checkout():
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
+                
                 socketio.emit(
                     'appointment_notification',
                     {
@@ -765,6 +767,7 @@ def patient_checkout():
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
                 session['clinic_id'] = clinic_data.id
+                print(f"Clinic ID stored in session: {session['clinic_id']}")
 
                 return redirect(url_for('checkout_success'))
             if checkout_form.errors != {}:
@@ -789,14 +792,19 @@ def patient_checkout():
         form=checkout_form
     )
 
-
+def send_appointment_notification(clinic_id, data):
+    socketio.emit('appointment_notification', data, room=clinic_id)
+    
+    
 @socketio.on('connect')
 def handle_connect():
     clinic_id = session.get('clinic_id')
+    print(f"Clinic ID in session during connect: {clinic_id}")
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
-
+    else:
+        print("Clinic ID missing during WebSocket connection.")
 
 @socketio.on('disconnect')
 def handle_disconnect():

@@ -275,7 +275,7 @@
       />
     </audio>
 
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', (event) => {
         var clinic_id = '{{ current_user.clinic_id }}';
@@ -288,7 +288,7 @@
         }
         console.log('Connecting with clinic_id:', clinic_id);
 
-        var socket = io.connect('http://localhost:5000', {
+        var socket = io.connect('http://127.0.0.1:5000', {
           query: 'clinic_id=' + clinic_id,
         });
 
@@ -342,23 +342,21 @@
           var currentCount = parseInt(notificationCount.textContent);
           notificationCount.textContent = currentCount + 1;
           playNotificationSound();
-          {
-          }
-        }
 
-        function playNotificationSound() {
-          var audio = document.getElementById('notification-sound');
-          if (audio) {
-            audio.play().catch((error) => {
-              console.error('Error playing audio:', error);
-            });
-          } else {
-            console.error('Audio element not found');
+          function playNotificationSound() {
+            var audio = document.getElementById('notification-sound');
+            if (audio) {
+              audio.play().catch((error) => {
+                console.error('Error playing audio:', error);
+              });
+            } else {
+              console.error('Audio element not found');
+            }
           }
-        }
 
-        if (store) {
-          storeNotification(data);
+          if (store) {
+            storeNotification(data);
+          }
         }
 
         function storeNotification(data) {

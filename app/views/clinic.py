@@ -169,7 +169,6 @@ def mark_as_read():
     notification.isRead = True
     db.session.commit()
 
-
     return jsonify({'message': 'Notification marked as read'})
 
 
