@@ -4,6 +4,9 @@ from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
 from app.views.forms.search_form import SearchForm
 from app.views.forms.email_form import EmailForm
+from app.views.forms.Prescription_form import AddMedicineForm
+from sqlalchemy.orm import joinedload
+
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -29,6 +32,7 @@ from uuid import UUID
 from flask_wtf.csrf import CSRFProtect
 
 csrf = CSRFProtect(app)
+
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
@@ -69,7 +73,6 @@ def patient_dashboard():
     patient = Patient.query.filter_by(user_id=current_user.id).first()
     if patient is None:
         return translate('User is not a patient'), 403
-
     # Get next appointment
     next_appointment_query = (
         db.session.query(Appointment, Doctor, Clinic, Specialization)
@@ -88,7 +91,9 @@ def patient_dashboard():
         appointment, doctor, clinic, specialization = next_appointment
 
         appointment_start_time = datetime.combine(appointment.date, appointment.time)
-        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
+        duration_delta = timedelta(
+            hours=doctor.duration.hour, minutes=doctor.duration.minute
+        )
         appointment_end_time = (appointment_start_time + duration_delta).time()
 
         time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
@@ -106,7 +111,6 @@ def patient_dashboard():
         }
     else:
         appointment_data = None
-
     # Get seen appointments
     seen_appointments_query = (
         db.session.query(Appointment, Doctor)
@@ -128,24 +132,21 @@ def patient_dashboard():
     ]
 
     # Get monthly appointment count
-    month_appointments_count = (
-        Appointment.query.filter(
-            func.extract('month', Appointment.date) == datetime.now().month,
-            Appointment.patient_id == patient.id
-        ).count()
-    )
+    month_appointments_count = Appointment.query.filter(
+        func.extract('month', Appointment.date) == datetime.now().month,
+        Appointment.patient_id == patient.id
+    ).count()
 
     # Get the number of upcoming appointments
     upcoming_appointments_count = next_appointment_query.count()
 
     # Blood group and allergy info
-    blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
-    allergy = patient.allergy.name if patient.allergy else "Not Provided"
+    blood_group = patient.blood_group.name if patient.blood_group else 'Not Provided'
+    allergy = patient.allergy.name if patient.allergy else 'Not Provided'
 
     # Fetch prescriptions
-    prescriptions_query = (
-        db.session.query(PatientMedicine)
-        .filter(PatientMedicine.patient_id == patient.id)
+    prescriptions_query = db.session.query(PatientMedicine).filter(
+        PatientMedicine.patient_id == patient.id
     )
     all_prescriptions = [
         {
@@ -164,7 +165,6 @@ def patient_dashboard():
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
-
     specialties = Specialization.query.all()
     return render_template(
         'patient-dashboard.html',
@@ -186,141 +186,131 @@ def patient_dashboard():
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
 def appointment_History():
-    if current_user.patient:
-        patient = Patient.query.filter_by(user_id=current_user.id).first()
-    elif current_user.doctor:
-        patient_id = request.args.get('patient_id')
-        if not patient_id:
-            flash('Patient ID is missing.', 'danger')
-            return redirect(url_for('doctor_dash'))
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    patient_id = patient.id
+    # if current_user.patient:
+    #     patient = Patient.query.filter_by(user_id=current_user.id).first()
+    # elif current_user.doctor:
+    #     patient_id = request.args.get('patient_id')
+    #     if not patient_id:
+    #         flash('Patient ID is missing.', 'danger')
+    #         return redirect(url_for('doctor_dash'))
 
-        patient = Patient.query.get(patient_id)
-        if not patient:
-            flash('Patient not found', 'danger')
-            return redirect(url_for('doctor_dash'))
+    #     patient = Patient.query.get(patient_id)
+    #     if not patient:
+    #         flash('Patient not found', 'danger')
+    #         return redirect(url_for('doctor_dash'))
 
-    else:
-        flash('Unauthorized access', 'danger')
-        return redirect(url_for('index'))
+    # else:
+    #     flash('Unauthorized access', 'danger')
+    #     return redirect(url_for('index'))
+
+    appointments = (
+        db.session.query(Appointment)
+        .join(Appointment.doctor)
+        .join(Doctor.users)
+        .options(joinedload(Appointment.doctor).joinedload(Doctor.users))
+        .filter(Appointment.patient_id == patient_id)
+        .all()
+    )
+    patient_medicines = PatientMedicine.query.filter_by(patient_id=patient_id).all()
+
+    # appointments = Appointment.query.filter_by(patient_id=patient_id, seen =False).order_by(Appointment.date.desc(), Appointment.time.desc()).all()
 
     # Fetch all appointments (regardless of status) that have not been seen (seen is False)
-    appointments = (
-        db.session.query(Appointment, Doctor, Clinic, Specialization)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .join(Clinic, Doctor.clinic_id == Clinic.id)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == False)
-        .order_by(Appointment.date.desc(), Appointment.time.desc())
-        .all()
-    )
+    # appointments = (
+    #     db.session.query(Appointment, Doctor, Clinic, Specialization)
+    #     .join(Doctor, Appointment.doctor_id == Doctor.id)
+    #     .join(Clinic, Doctor.clinic_id == Clinic.id)
+    #     .join(Specialization, Doctor.specialization_id == Specialization.id)
+    #     .filter(Appointment.patient_id == patient.id)
+    #     .filter(Appointment.seen == False)
+    #     .order_by(Appointment.date.desc(), Appointment.time.desc())
+    #     .all()
+    # )
+
+    # patient_history = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
 
     # Fetch patient history
-    patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
+    # patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
 
     # Fetch patient medicines
-    patient_medicines = (
-        db.session.query(PatientMedicine, MedicineTimes)
-        .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
-        .filter(PatientMedicine.patient_id == patient.id)
-        .all()
-    )
+    # patient_medicines = (
+    #     db.session.query(PatientMedicine, MedicineTimes)
+    #     .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
+    #     .filter(PatientMedicine.patient_id == patient.id)
+    #     .all()
+    # )
 
-    # Process appointment data
-    appointment_data = []
-    for appointment, doctor, clinic, specialization in appointments:
-        appointment_start_time = datetime.combine(appointment.date, appointment.time)
-        duration_delta = timedelta(hours=doctor.duration.hour, minutes=doctor.duration.minute)
-        appointment_end_time = (appointment_start_time + duration_delta).time()
-        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
-        duration_str = f"{doctor.duration.minute} min"
-        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
 
-        status_enum = AppStatus(appointment.status)  # Convert status to enum
-        status_str = status_enum.name
-        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+    # blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
+    # allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
-        appointment_data.append({
-            'appointment_id': appointment.id,
-            'date': formatted_date,
-            'time_range': time_range,
-            'duration': duration_str,
-            'clinic_address': clinic.address,
-            'doctor_name': doctor.users.name,
-            'doctor_photo': doctor.users.photo,
-            'doctor_specialization': specialization.specialization_name,
-            'price': doctor.price,
-            'status': status_str,
-            'report_url': report_url,
-            'is_pending': status_enum == AppStatus.Pending,
-            'is_confirmed': status_enum == AppStatus.Confirmed,
-            'is_cancelled': status_enum == AppStatus.Cancelled
-        })
-
-    blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
-    allergy = patient.allergy.name if patient.allergy else "Not Provided"
-
-    # Process patient history data
-    history_data = []
-    for history in patient_histories:
-        added_by_user = User.query.get(history.addedBy)
-        history_data.append({
-            'details': history.details,
-            'type': PatientHisType(history.type).name,
-            'added_by': added_by_user.name if added_by_user else 'Unknown'
-        })
+    # # Process patient history data
+    # history_data = []
+    # for history in patient_histories:
+    #     added_by_user = User.query.get(history.addedBy)
+    #     history_data.append({
+    #         'details': history.details,
+    #         'type': PatientHisType(history.type).name,
+    #         'added_by': added_by_user.name if added_by_user else 'Unknown'
+    #     })
 
     # Process patient medicine data
-    medicine_data = []
-    for medicine, medicine_time in patient_medicines:
-        medicine_data.append({
-            'days': medicine.Days,
-            'name': medicine.medName,
-            'quantity': medicine.Quantity,
-            'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
-        })
+    # medicine_data = []
+    # for medicine, medicine_time in patient_medicines:
+    #     medicine_data.append({
+    #         'days': medicine.Days,
+    #         'name': medicine.medName,
+    #         'quantity': medicine.Quantity,
+    #         'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
+    #     })
 
-    records = (
-        db.session.query(Appointment, Doctor, Specialization)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.seen == True)
-        .order_by(Appointment.date.desc(), Appointment.time.desc())
-        .all()
-    )
+    # records = (
+    #     db.session.query(Appointment, Doctor, Specialization)
+    #     .join(Doctor, Appointment.doctor_id == Doctor.id)
+    #     .join(Specialization, Doctor.specialization_id == Specialization.id)
+    #     .filter(Appointment.patient_id == patient.id)
+    #     .filter(Appointment.seen == True)
+    #     .order_by(Appointment.date.desc(), Appointment.time.desc())
+    #     .all()
+    # )
 
     # Process records data
-    medical_records_data = []
-    for appointment, doctor, specialization in records:
-        formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
-        diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
-        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+    # medical_records_data = []
+    # for appointment, doctor, specialization in records:
+    #     formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
+    #     diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
+    #     report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
 
-        medical_records_data.append({
-            'doctor_idnum': doctor.iDNum,
-            'booking_time': formatted_booking_time,  # Use the formatted time instead of date
-            'diagnosis': diagnosis,
-            'appointment_date': appointment.date,
-            'doctor_name': doctor.users.name,
-            'doctor_specialization': specialization.specialization_name,
-            'report_url': report_url
-        })
+    #     medical_records_data.append({
+    #         'doctor_idnum': doctor.iDNum,
+    #         'booking_time': formatted_booking_time,  # Use the formatted time instead of date
+    #         'diagnosis': diagnosis,
+    #         'appointment_date': appointment.date,
+    #         'doctor_name': doctor.users.name,
+    #         'doctor_specialization': specialization.specialization_name,
+    #         'report_url': report_url
+    #     })
 
-    specialties = Specialization.query.all()
+    form = AddMedicineForm()
 
     return render_template(
         'appointment-History.html',
         user_name=current_user.name,
         patient=patient,
-        appointments=appointment_data,
-        patient_history=history_data,
-        blood_group=blood_group,
-        allergy=allergy,
-        specialties=specialties,
-        medicine_data=medicine_data,
-        medical_records=medical_records_data
+        appointments=appointments,
+        patient_medicines=patient_medicines,
+        # appointments=appointment_data,
+        # patient_history=history_data,
+        # blood_group=blood_group,
+        # allergy=allergy,
+        # medicine_data=medicine_data,
+        # medical_records=medical_records_data,
+        form=form
     )
+
 
 @app.route('/cancel_appointment', methods=['POST'])
 @login_required
@@ -331,13 +321,11 @@ def cancel_appointment():
     if appointment is None:
         flash('Appointment not found', 'danger')
         return redirect(url_for('appointment_History'))
-
     # Check if the current user is the patient who made the appointment
     patient = Patient.query.filter_by(user_id=current_user.id).first()
     if patient is None:
         flash('Patient record not found', 'danger')
         return redirect(url_for('appointment_History'))
-
     # Update status to Cancelled and mark as seen
     appointment.status = AppStatus.Cancelled.name  # Use Enum name
     appointment.seen = True
@@ -374,7 +362,6 @@ def search_doctor():
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
             query = query.filter(User.name.ilike(f'%{doctor_name}%'))
-
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -403,11 +390,9 @@ def search_doctor():
                 )
                 query = query.filter(Doctor.id.in_(subquery))
             except ValueError:
-                flash("Invalid date format", "error")
-
+                flash('Invalid date format', 'error')
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
-
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
 
@@ -416,12 +401,13 @@ def search_doctor():
         doctors=doctors,
         specializations=specializations,
         governorates=governorates,
-        selected_specializations=selected_specializations if request.method == 'POST' else [],
+        selected_specializations=selected_specializations
+        if request.method == 'POST'
+        else [],
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
-
 
 
 @app.route('/book', methods=['GET', 'POST'])
@@ -538,7 +524,7 @@ def patient_checkout():
         if request.method == 'POST':
             confirm_message = ''
             user_to_create = None
-            name = ""
+            name = ''
             status = AppStatus.Pending
             if checkout_form.validate_on_submit():
                 temp_password = secrets.token_urlsafe(8)
@@ -554,7 +540,9 @@ def patient_checkout():
                 )
                 if patient_user:
                     name = patient_user.name
-                    patient_create = Patient.query.filter_by(user_id = patient_user.id).first()
+                    patient_create = Patient.query.filter_by(
+                        user_id=patient_user.id
+                    ).first()
                     status = AppStatus.Confirmed
                 else:
                     reset_link = url_for(
@@ -563,7 +551,9 @@ def patient_checkout():
                         _external=True
                     )
                     confirm_message = f"To confirm your appointment please login temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
-                    name=f"{checkout_form.firstname.data} { checkout_form.lastname.data}";
+                    name = (
+                        f"{checkout_form.firstname.data} { checkout_form.lastname.data}"
+                    )
                     user_to_create = User(
                         name=name,
                         email=checkout_form.email_address.data,
@@ -573,9 +563,7 @@ def patient_checkout():
                     patient_create = Patient(
                         phone=checkout_form.phone.data, users=user_to_create
                     )
-                    role_to_create = UserRole(
-                        role_id=role, user=user_to_create
-                    )
+                    role_to_create = UserRole(role_id=role, user=user_to_create)
                     db.session.add(patient_create)
                     db.session.add(role_to_create)
                 appointment_create = Appointment(
@@ -590,80 +578,155 @@ def patient_checkout():
                 logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
 
                 message_body = f"""\
+
                     <html>
+
                     <head>
+
                         <style>
+
                             body {{
+
                                 font-family: Arial, sans-serif;
+
                                 font-size: 18px;
+
                                 margin: 0;
+
                                 padding: 0;
+
                                 background-color: #f4f4f4;
-                            }}
-                            .container {{
-                                width: 80%;
-                                margin: 20px auto;
-                                background-color: #fff;
-                                padding: 20px;
-                                border-radius: 10px;
-                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                            }}
-                            .header {{
-                                background-color: #007bff;
-                                padding: 10px;
-                                text-align: center;
-                                border-radius: 10px 10px 0 0;
-                            }}
-                            .logo {{
-                                text-align: center;
-                                margin-bottom: 20px;
-                            }}
-                            .content {{
-                                padding: 20px;
-                            }}
-                            .footer {{
-                                text-align: left;
-                                margin-top: 20px;
-                                color: #777;
+
                             }}
 
-                            a {{
-                                color: red;
+                            .container {{
+
+                                width: 80%;
+
+                                margin: 20px auto;
+
+                                background-color: #fff;
+
+                                padding: 20px;
+
+                                border-radius: 10px;
+
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
                             }}
+
+                            .header {{
+
+                                background-color: #007bff;
+
+                                padding: 10px;
+
+                                text-align: center;
+
+                                border-radius: 10px 10px 0 0;
+
+                            }}
+
+                            .logo {{
+
+                                text-align: center;
+
+                                margin-bottom: 20px;
+
+                            }}
+
+                            .content {{
+
+                                padding: 20px;
+
+                            }}
+
+                            .footer {{
+
+                                text-align: left;
+
+                                margin-top: 20px;
+
+                                color: #777;
+
+                            }}
+
+
+
+                            a {{
+
+                                color: red;
+
+                            }}
+
                         </style>
+
                     </head>
+
                     <body>
+
                         <div class="container">
+
                             <div class="header">
+
                                 <h2>Appointment Confirmation</h2>
+
                             </div>
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
+
                             </div>
+
                             <div class="content">
+
                                 <p>Dear {name},</p>
+
                                 <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
+
                                 <h3>Appointment Details:</h3>
+
                                 <ul>
+
                                     <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
                                     <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} for {doctor_data.duration} Min </li>
+
                                     <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
+
                                     <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
+
                                 </ul>
+
                                 <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
+
                                 <a>
+
                                 {confirm_message}
+
                                 </a>
+
                                 <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
+
                                 <p>We look forward to seeing you and providing the care you need.</p>
+
                             </div>
+
                             <div class="footer">
+
                                 <p>Best regards,</p>
+
                                 <p>{clinic_data.users.name}</p>
+
                                 <p>{clinic_data.phone}</p>
+
                             </div>
+
                         </div>
+
                     </body>
+
                     </html>
+
                         """
                 message_create = Message(appointment=appointment_create, status=False)
                 try:
@@ -793,7 +856,15 @@ def sendEmail():
 
 
 
+
+
+
+
                     <html>
+
+
+
+
 
 
 
@@ -801,7 +872,15 @@ def sendEmail():
 
 
 
+
+
+
+
                         <style>
+
+
+
+
 
 
 
@@ -809,7 +888,15 @@ def sendEmail():
 
 
 
+
+
+
+
                                 font-family: Arial, sans-serif;
+
+
+
+
 
 
 
@@ -817,7 +904,15 @@ def sendEmail():
 
 
 
+
+
+
+
                                 margin: 0;
+
+
+
+
 
 
 
@@ -825,11 +920,23 @@ def sendEmail():
 
 
 
+
+
+
+
                                 background-color: #f4f4f4;
 
 
 
+
+
+
+
                             }}
+
+
+
+
 
 
 
@@ -837,7 +944,15 @@ def sendEmail():
 
 
 
+
+
+
+
                                 width: 80%;
+
+
+
+
 
 
 
@@ -845,11 +960,23 @@ def sendEmail():
 
 
 
+
+
+
+
                                 background-color: #fff;
 
 
 
+
+
+
+
                                 padding: 20px;
+
+
+
+
 
 
 
@@ -857,11 +984,23 @@ def sendEmail():
 
 
 
+
+
+
+
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
 
+
+
+
+
                             }}
+
+
+
+
 
 
 
@@ -869,11 +1008,23 @@ def sendEmail():
 
 
 
+
+
+
+
                                 font-size:16px;
 
 
 
+
+
+
+
                             }}
+
+
+
+
 
 
 
@@ -881,7 +1032,15 @@ def sendEmail():
 
 
 
+
+
+
+
                                 text-align: center;
+
+
+
+
 
 
 
@@ -889,7 +1048,15 @@ def sendEmail():
 
 
 
+
+
+
+
                             }}
+
+
+
+
 
 
 
@@ -897,7 +1064,15 @@ def sendEmail():
 
 
 
+
+
+
+
                                 padding: 20px;
+
+
+
+
 
 
 
@@ -905,7 +1080,15 @@ def sendEmail():
 
 
 
+
+
+
+
                         </style>
+
+
+
+
 
 
 
@@ -913,7 +1096,15 @@ def sendEmail():
 
 
 
+
+
+
+
                     <body>
+
+
+
+
 
 
 
@@ -921,11 +1112,23 @@ def sendEmail():
 
 
 
+
+
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
 
 
+
+
+
+
                             </div>
+
+
+
+
 
 
 
@@ -933,7 +1136,15 @@ def sendEmail():
 
 
 
+
+
+
+
                                 <p>{form.message.data}</p>
+
+
+
+
 
 
 
@@ -941,7 +1152,15 @@ def sendEmail():
 
 
 
+
+
+
+
                         </div>
+
+
+
+
 
 
 
@@ -949,7 +1168,15 @@ def sendEmail():
 
 
 
+
+
+
+
                     </html>
+
+
+
+
 
 
 
@@ -985,13 +1212,17 @@ def patient_setting():
 
     form = PatientForm(
         firstname=user.name.split()[0] if user.name else '',
-        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
+        lastname=user.name.split()[1]
+        if user.name and len(user.name.split()) > 1
+        else '',
         email=user.email,
         phone=patient.phone if patient else '',
         address=patient.address if patient else '',
         governorate=patient.governorate_id if patient else None,
         age=patient.age if patient else None,
-        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
+        blood_group=patient.blood_group.name
+        if patient and patient.blood_group
+        else None,
         allergy=patient.allergy.name if patient and patient.allergy else None
     )
 
@@ -1003,21 +1234,23 @@ def patient_setting():
 
                 if not os.path.exists(photo_directory):
                     os.makedirs(photo_directory)
-
                 photo_path = os.path.join(photo_directory, photo_filename)
                 form.photo.data.save(photo_path)
                 user.photo = photo_path
             else:
                 photo_path = user.photo if user else None
-
-
-            email_exists = User.query.filter(User.email == form.email.data, User.id != user.id).first()
+            email_exists = User.query.filter(
+                User.email == form.email.data, User.id != user.id
+            ).first()
             if email_exists:
-                return jsonify({'status': 'error', 'message': 'Email address already exists!'}), 400
-
+                return (
+                    jsonify(
+                        {'status': 'error', 'message': 'Email address already exists!'}
+                    ),
+                    400
+                )
             if not patient:
                 patient = Patient(user_id=current_user.id)
-
             patient.firstname = form.firstname.data
             patient.lastname = form.lastname.data
             patient.email_address = form.email.data
@@ -1037,12 +1270,17 @@ def patient_setting():
                 db.session.commit()
                 flash('Your profile has been updated!', 'success')
                 return jsonify({'status': 'success'})
-
             except Exception as e:
                 db.session.rollback()
-                return jsonify({'status': 'error', 'message': 'An error occurred while updating your settings. Please try again.'}), 500
-
+                return (
+                    jsonify(
+                        {
+                            'status': 'error',
+                            'message': 'An error occurred while updating your settings. Please try again.'
+                        }
+                    ),
+                    500
+                )
         errors = {field: errors[0] for field, errors in form.errors.items()}
         return jsonify({'status': 'error', 'errors': errors}), 400
-
     return render_template('patient-setting.html', form=form, patient=patient)

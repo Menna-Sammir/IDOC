@@ -68,7 +68,6 @@
                           <tr>
                             <th style="min-width: 200px">Name</th>
                             <th style="min-width: 100px">Quantity</th>
-                            <th style="min-width: 100px">Days</th>
                             <th style="min-width: 100px">Time</th>
                             <th style="min-width: 80px"></th>
                           </tr>
@@ -84,9 +83,7 @@
                               {{ item.form.quantity(class_="form-control") }}
                             </td>
                             </td>
-                            <td>
-                              {{ item.form.Days(class_="form-control") }}
-                            </td>
+
                             <td>
                               {% for subfield in item.form.time_of_day %}
                               <div class="form-check form-check-inline">
