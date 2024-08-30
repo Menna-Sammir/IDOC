@@ -55,8 +55,9 @@ def doctor_dash():
             appointment = Appointment.query.get(appointment_id)
             if appointment:
                 appointment.seen = True
+                appointment.status = AppStatus.Completed.value
                 db.session.commit()
-                flash('Appointment marked as seen', category='success')
+                flash('Appointment marked as seen and status updated to Completed', category='success')
                 return redirect(url_for('doctor_dash'))
 
     return render_template(
