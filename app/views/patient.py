@@ -383,6 +383,37 @@ def update_follow_up():
         return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
 
 
+@app.route('/update_appointment_status', methods=['POST'])
+@login_required
+def update_appointment_status():
+    appointment_id = request.form.get('appointment_id')
+    new_status = request.form.get('new_status')
+
+    print(f"Received appointment_id: {appointment_id}, new_status: {new_status}")
+
+    if not appointment_id or not new_status:
+        return jsonify({'success': False, 'error': 'Missing appointment_id or new_status'}), 400
+
+    try:
+        new_status_enum = AppStatus[new_status]
+
+        appointment = Appointment.query.get(appointment_id)
+        if appointment:
+            appointment.status = new_status_enum
+            db.session.commit()
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Appointment not found'}), 404
+
+    except KeyError:
+        print(f"Error: Invalid status received: {new_status}")
+        return jsonify({'success': False, 'error': 'Invalid status'}), 400
+    except Exception as e:
+        print(f"Error: {e}")
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 #### doctor search page ####
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
