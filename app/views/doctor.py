@@ -195,10 +195,12 @@ def patient_list():
     doctor = Doctor.query.filter_by(user_id=current_user.id).first()
     if doctor is None:
         return translate('User is not a doctor'), 403
+
     appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
-    patients = [appointment.patient for appointment in appointments]
-
-
+    patient_ids = set(appointment.patient_id for appointment in appointments)
+    
+    patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
+    
     for patient in patients:
         user = User.query.filter_by(id=patient.user_id).first()
         patient.user_name = user.name if user else 'Unknown'
