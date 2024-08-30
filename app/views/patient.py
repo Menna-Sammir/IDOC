@@ -1180,7 +1180,7 @@ def patient_dashboard():
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
-    
+
     specialties = Specialization.query.all()
     return render_template(
         'patient-dashboard.html',
@@ -1204,8 +1204,20 @@ def patient_dashboard():
 def appointment_History():
     if current_user.patient:
         patient = Patient.query.filter_by(user_id=current_user.id).first()
-        if patient is None:
-            return translate('User is not a patient'), 403
+    elif current_user.doctor:
+        patient_id = request.args.get('patient_id')
+        if not patient_id:
+            flash('Patient ID is missing.', 'danger')
+            return redirect(url_for('doctor_dash'))
+
+        patient = Patient.query.get(patient_id)
+        if not patient:
+            flash('Patient not found', 'danger')
+            return redirect(url_for('doctor_dash'))
+
+    else:
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('index'))
 
     # Fetch all appointments (regardless of status) that have not been seen (seen is False)
         appointments = (
@@ -1240,29 +1252,29 @@ def appointment_History():
             duration_str = f"{doctor.duration.minute} min"
             formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
 
-            status_enum = AppStatus(appointment.status)  # Convert status to enum
-            status_str = status_enum.name
-            report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
-            
-            appointment_data.append({
-                'appointment_id': appointment.id,
-                'date': formatted_date,
-                'time_range': time_range,
-                'duration': duration_str,
-                'clinic_address': clinic.address,
-                'doctor_name': doctor.users.name,
-                'doctor_photo': doctor.users.photo,
-                'doctor_specialization': specialization.specialization_name,
-                'price': doctor.price,
-                'status': status_str,
-                'report_url': report_url,
-                'is_pending': status_enum == AppStatus.Pending,
-                'is_confirmed': status_enum == AppStatus.Confirmed,
-                'is_cancelled': status_enum == AppStatus.Cancelled
-            })
-        
-        blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
-        allergy = patient.allergy.name if patient.allergy else "Not Provided"
+        status_enum = AppStatus(appointment.status)  # Convert status to enum
+        status_str = status_enum.name
+        report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
+
+        appointment_data.append({
+            'appointment_id': appointment.id,
+            'date': formatted_date,
+            'time_range': time_range,
+            'duration': duration_str,
+            'clinic_address': clinic.address,
+            'doctor_name': doctor.users.name,
+            'doctor_photo': doctor.users.photo,
+            'doctor_specialization': specialization.specialization_name,
+            'price': doctor.price,
+            'status': status_str,
+            'report_url': report_url,
+            'is_pending': status_enum == AppStatus.Pending,
+            'is_confirmed': status_enum == AppStatus.Confirmed,
+            'is_cancelled': status_enum == AppStatus.Cancelled
+        })
+
+    blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
+    allergy = patient.allergy.name if patient.allergy else "Not Provided"
 
         # Process patient history data
         history_data = []
@@ -1393,7 +1405,7 @@ def update_follow_up():
 def cancel_appointment():
     appointment_id = request.form.get('appointment_id')
     appointment = Appointment.query.get(appointment_id)
-    
+
     if appointment is None:
         flash('Appointment not found', 'danger')
         return redirect(url_for('appointment_History'))
@@ -1412,7 +1424,8 @@ def cancel_appointment():
 
     return redirect(url_for('appointment_History'))
 
-#### doctor search page ####
+
+# doctor search page
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
     specialization_id = session.get('specialization_id', None)
@@ -1438,6 +1451,7 @@ def search_doctor():
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
             query = query.filter(User.name.ilike(f'%{doctor_name}%'))
+
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -1451,35 +1465,40 @@ def search_doctor():
         if selected_specializations:
             query = query.filter(Doctor.specialization_id.in_(selected_specializations))
         if selected_date:
-            search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
-            subquery = (
-                db.session.query(Doctor.id)
-                .outerjoin(
-                    Appointment,
-                    and_(
-                        Doctor.id == Appointment.doctor_id,
-                        func.date(Appointment.date) == search_date
+            try:
+                search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
+                subquery = (
+                    db.session.query(Doctor.id)
+                    .outerjoin(
+                        Appointment,
+                        and_(
+                            Doctor.id == Appointment.doctor_id,
+                            func.date(Appointment.date) == search_date
+                        )
                     )
+                    .filter(Appointment.id == None)
                 )
-                .filter(Appointment.id == None)
-            )
-            query = query.filter(Doctor.id.in_(subquery))
+                query = query.filter(Doctor.id.in_(subquery))
+            except ValueError:
+                flash("Invalid date format", "error")
+
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
+
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     doctors = pagination.items
+
     return render_template(
         'search.html',
         doctors=doctors,
         specializations=specializations,
         governorates=governorates,
-        selected_specializations=selected_specializations
-        if request.method == 'POST'
-        else [],
+        selected_specializations=selected_specializations if request.method == 'POST' else [],
         selected_date=selected_date if request.method == 'POST' else None,
         pagination=pagination,
         form=form
     )
+
 
 
 @app.route('/book', methods=['GET', 'POST'])
@@ -2046,10 +2065,20 @@ def sendEmail():
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():
-    form = PatientForm()
-
     user = User.query.filter_by(id=current_user.id).first()
     patient = Patient.query.filter_by(user_id=current_user.id).first()
+
+    form = PatientForm(
+        firstname=user.name.split()[0] if user.name else '',
+        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
+        email=user.email,
+        phone=patient.phone if patient else '',
+        address=patient.address if patient else '',
+        governorate=patient.governorate_id if patient else None,
+        age=patient.age if patient else None,
+        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
+        allergy=patient.allergy.name if patient and patient.allergy else None
+    )
 
     if request.method == 'PUT':
         if form.validate():

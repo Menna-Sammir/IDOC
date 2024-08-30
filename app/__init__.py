@@ -1,10 +1,10 @@
-from flask import Flask, request, redirect, url_for, session
+from flask import Flask, request, redirect, url_for, session, flash, render_template
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required
 from flask_principal import Principal
 import uuid
 from flask_wtf.csrf import CSRFProtect
@@ -13,8 +13,6 @@ from flask_cors import CORS
 from flask_babel import Babel, format_number, format_decimal, format_currency, format_percent, format_scientific, format_timedelta
 import json
 from datetime import timedelta
-
-
 
 load_dotenv()
 app = Flask(__name__)
@@ -104,6 +102,7 @@ def inject_translations():
     }
 
 
+
 db = SQLAlchemy(app)
 app.config['CACHE_ID'] = str(uuid.uuid4())
 
@@ -120,6 +119,13 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 directory = 'app/static/images/'
 os.chmod(directory, 0o755)
+
+
+app.config['PDF_UPLOAD_FOLDER'] = os.path.join('app', 'static', 'pdfs')
+os.makedirs(app.config['PDF_UPLOAD_FOLDER'], exist_ok=True)
+
+pdf_directory = 'app/static/pdfs/'
+os.chmod(pdf_directory, 0o755)
 
 
 csrf = CSRFProtect(app)

@@ -140,7 +140,7 @@ def doctor_profile():
 
 @app.route('/Prescription', methods=['GET', 'POST'])
 @login_required
-@doctor_permission.require(http_exception=403)
+# @doctor_permission.require(http_exception=403)
 def add_prescription():
     form = AddMedicineForm()
     patient_id = "800b065d-945d-4ba0-bb20-10c1d480d352"
@@ -186,6 +186,7 @@ def add_prescription():
     return render_template('prescription.html', form=form)
 
 
+
 ### patient list
 @app.route('/doctor_dashboard/patient_list', methods=['GET', 'POST'])
 @login_required
@@ -194,18 +195,15 @@ def patient_list():
     doctor = Doctor.query.filter_by(user_id=current_user.id).first()
     if doctor is None:
         return translate('User is not a doctor'), 403
-
     appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
-    patient_ids = set(appointment.patient_id for appointment in appointments)
-    
-    patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
-    
+    patients = [appointment.patient for appointment in appointments]
+
+
     for patient in patients:
         user = User.query.filter_by(id=patient.user_id).first()
         patient.user_name = user.name if user else 'Unknown'
 
     return render_template('patient-list.html', doctor=doctor, patients=patients)
-
 
 
 # @app.route('/patient_dashboard', methods=['GET', 'POST'])
@@ -215,7 +213,7 @@ def patient_list():
 #         patient = Patient.query.filter_by(user_id=current_user.id).first()
 #         appointments = Appointment.query.filter_by(patient_id=patient.id).all()
 #         return render_template('patient-dashboard.html', patient=patient, appointments=appointments)
-    
+
 #     elif current_user.doctor:
 #         patient_id = request.args.get('patient_id')
 #         if not patient_id:
@@ -226,7 +224,7 @@ def patient_list():
 #         if not patient:
 #             flash('Patient not found', 'danger')
 #             return redirect(url_for('doctor_dash'))
-        
+
 #         appointments = Appointment.query.filter_by(patient_id=patient.id).all()
 #         return render_template('patient-dashboard.html', patient=patient,
 #                                appointments=appointments,

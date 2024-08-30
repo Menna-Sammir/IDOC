@@ -199,4 +199,205 @@
 </div>
 <!-- /Page Content -->
 
+{% endblock %} {% extends 'base.html' %} {% block title %} {{ translate('search
+Dashboard') }} {% endblock %} {% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-8 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Search') }}
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">
+          {{ pagination.total }} {{ translate('matches found') }}
+        </h2>
+      </div>
+      <div class="col-md-4 col-12 d-md-block d-none"></div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Search Filter -->
+        <div class="card search-filter">
+          <div class="card-header">
+            <h4 class="card-title mb-0">{{ translate('Search Filter') }}</h4>
+          </div>
+          <div class="card-body">
+            <form
+              action="{{ url_for('search_doctor') }}"
+              method="POST"
+              id="search-form"
+            >
+              {{ form.hidden_tag() }} {{ form.csrf_token }}
+              <div class="filter-widget">
+                <div class="cal-icon">
+                  <input
+                    type="text"
+                    class="form-control datetimepicker"
+                    placeholder="Select Date"
+                    name="date"
+                    value="{{ selected_date }}"
+                  />
+                </div>
+              </div>
+              <div class="filter-widget"></div>
+              <div class="filter-widget">
+                <h4>{{ translate('Select specialization') }}</h4>
+                <div class="search_filter">
+                  {% for specialization in specializations %}
+                  <div>
+                    <label class="custom_check">
+                      <input
+                        type="checkbox"
+                        name="select_specialization"
+                        value="{{ specialization.id}}"
+                        class="Specialization"
+                        {%
+                        if
+                        specialization.id
+                        in
+                        selected_specializations
+                        %}
+                        checked
+                        {%
+                        endif
+                        %}
+                      />
+                      <span class="checkmark"></span> {{
+                      translate(specialization.specialization_name) }}
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="btn-search">
+                <button type="submit" class="btn btn-block">
+                  {{ translate('Search') }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- /Search Filter -->
+      </div>
+
+      <div class="col-md-12 col-lg-8 col-xl-9">
+        <!-- Doctor Widget -->
+        {% for doctor, specialization, clinic, governorate, user in
+        pagination.items %}
+
+        <div class="card">
+          <div class="card-body">
+            <div class="doctor-widget">
+              <div class="doc-info-left">
+                <div class="doctor-img">
+                  {% set base_path = 'static/images/doctors/' %}
+                  <img
+                    src="{{base_path ~ doctor.photo}}"
+                    alt="User Image"
+                    class="img-fluid"
+                    height="150"
+                  />
+                </div>
+                <div class="doc-info-cont">
+                  <h4 class="doc-name">
+                    <a href="#"
+                      >{{ translate('Dr.') }}{{ translate(user.name) }}</a
+                    >
+                  </h4>
+                  <h5 class="text-muted">
+                    {{ translate(doctor.clinic.name) }}
+                  </h5>
+                  <p class="doc-department mt-2">
+                    <img
+                      src="{{ specialization.photo }}"
+                      class="img-fluid"
+                      alt="Speciality"
+                    />{{ translate(specialization.specialization_name) }}
+                  </p>
+                  <div class="clinic-details">
+                    <p class="doc-location">
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{ translate(doctor.clinic.address) }}
+                    </p>
+                  </div>
+                  <div class="clinic-services"></div>
+                </div>
+              </div>
+              <div class="doc-info-right">
+                <div class="clini-infos">
+                  <ul>
+                    <li>
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{ translate(governorate.governorate_name) }}{{
+                      translate(',Egypt') }}
+                    </li>
+                    <li>
+                      <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $
+                    </li>
+                    <li>
+                      <i class="far fa-clock"></i> {{
+                      doctor.clinic.working_hours }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="clinic-booking">
+                  <a
+                    href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
+                    class="apt-btn"
+                    ><i class="far fa-calendar-alt"></i> {{ translate('Book
+                    Appointment') }}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <!-- /Doctor Widget -->
+        {% if pagination.has_next %}
+        <div class="load-more text-center">
+          <form action="{{ url_for('search_doctor') }}" method="get">
+            <input
+              type="hidden"
+              name="page"
+              value="{{ pagination.next_num }}"
+            />
+            {% for spec in selected_specializations %}
+            <input
+              type="hidden"
+              name="select_specialization"
+              value="{{ spec }}"
+            />
+            {% endfor %} {% if selected_date %}
+            <input type="hidden" name="date" value="{{ selected_date }}" />
+            {% endif %}
+            <button class="btn btn-primary btn-sm" type="submit">
+              {{ translate('Load More') }}
+            </button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+
 {% endblock %}
