@@ -1286,7 +1286,7 @@ def sendEmail():
     return redirect(url_for('home'))
 
 
-### patient setting
+### patient setting to edit patient profile ###
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():
