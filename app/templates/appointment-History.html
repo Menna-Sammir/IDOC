@@ -173,7 +173,7 @@
                   >
                 </div>
                 <div
-                  class="modal fade modal"
+                  class="modal fade custom-modal"
                   id="prescription_modal"
                   tabindex="-1"
                   role="dialog"
@@ -181,116 +181,109 @@
                   aria-hidden="true"
                 >
                   <div
-                    class="modal-dialog modal-dialog-centered"
+                    class="modal-dialog modal-dialog-centered modal-lg"
                     role="document"
-                    style="max-width: 80%"
+                    style="min-width: 80%"
                   >
-                    <div class="modal-content mb-0">
-                      <div class="modal-body card">
-                        <div class="card-body p-0">
-                          <div class="row">
-                            <!-- Add Item -->
-                            <button
-                              class="border-0 bg-transparent add-more-item text-right"
-                              id="add-more-item"
-                            >
+                    <div class="modal-content mb-0" style="min-width: inherit">
+                      <div class="modal-header">
+                        <h3 class="modal-title">Medical Records</h3>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+
+                        <div class="modal-body">
+                          <!-- Add Item -->
+                          <div class="add-more-item text-right">
+                            <a href="#" id="add-more-item">
                               <i class="fas fa-plus-circle"></i> Add Item
-                            </button>
-                            <!-- /Add Item -->
-
+                            </a>
+                          </div>
+                          <!-- /Add Item -->
+                          <div class="row justify-content-center">
                             <!-- Prescription Item -->
-                            <div class="card card-table">
-                              <div class="card-body">
-                                <div class="table-responsive">
-                                  <form method="POST">
-                                    {{ form.hidden_tag() }} {{ form.csrf_token
-                                    }} {{ form.patient_id }}
-                                    <table
-                                      class="table table-hover table-center"
-                                    >
-                                      <thead>
-                                        <tr>
-                                          <th style="min-width: 200px">Name</th>
-                                          <th style="min-width: 100px">
-                                            Quantity
-                                          </th>
-                                          <th style="min-width: 100px">Time</th>
-                                          <th style="min-width: 80px"></th>
-                                        </tr>
-                                      </thead>
-                                      <tbody id="items-container">
-                                        {% for item in form.items %}
-                                        <tr>
-                                          <td>
-                                            {{
-                                            item.form.name(class_="form-control")
-                                            }}
-                                          </td>
-                                          <td>
-                                            {{
-                                            item.form.quantity(class_="form-control")
-                                            }}
-                                          </td>
-                                          <td>
-                                            {% for subfield in
-                                            item.form.time_of_day %}
-                                            <div
-                                              class="form-check form-check-inline"
-                                            >
-                                              <label class="form-check-label">
-                                                {{
-                                                subfield(class_="form-check-input")
-                                                }} {{ subfield.label }}
-                                              </label>
-                                            </div>
-                                            {% endfor %}
-                                          </td>
-                                          <td>
-                                            <a
-                                              href="#"
-                                              class="btn bg-danger-light trash"
-                                              ><i class="far fa-trash-alt"></i
-                                            ></a>
-                                          </td>
-                                        </tr>
-                                        {% endfor %}
-                                      </tbody>
-                                      <!-- Submit Section -->
 
-                                      <tfoot>
-                                        <tr>
-                                          <td>
-                                            <div class="row">
-                                              <div class="col-md-12">
-                                                <div class="submit-section">
-                                                  <button
-                                                    type="submit"
-                                                    class="btn btn-primary submit-btn"
-                                                  >
-                                                    Save
-                                                  </button>
-                                                  <button
-                                                    type="reset"
-                                                    class="btn btn-secondary submit-btn"
-                                                  >
-                                                    Clear
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      </tfoot>
-                                      <!-- /Submit Section -->
-                                    </table>
-                                  </form>
+                            <div class="table-responsive p-2">
+                              <form method="POST">
+                                {{ form.hidden_tag() }} {{ form.csrf_token }} {{
+                                form.patient_id }}
+                              <table class="table table-hover table-center">
+                                <thead>
+                                  <tr>
+                                    <th style="min-width: 200px">Name</th>
+                                    <th style="min-width: 100px">Quantity</th>
+                                    <th style="min-width: 100px">Time</th>
+                                    <th style="min-width: 80px"></th>
+                                  </tr>
+                                </thead>
+                                <tbody id="items-container">
+                                  {% for item in form.items %}
+                                  <tr>
+                                    <td>
+                                      {{ item.form.name(class_="form-control")
+                                      }}
+                                    </td>
+                                    <td>
+                                      {{
+                                      item.form.quantity(class_="form-control")
+                                      }}
+                                    </td>
+                                    <td>
+                                      {% for subfield in item.form.time_of_day
+                                      %}
+                                      <div class="form-check form-check-inline">
+
+                                          {{ subfield(class_="form-check-input")
+                                          }} {{ subfield.label }}
+
+                                      </div>
+                                      {% endfor %}
+                                    </td>
+                                    <td>
+                                      <a
+                                        href="#"
+                                        class="btn bg-danger-light trash"
+                                        ><i class="far fa-trash-alt"></i
+                                      ></a>
+                                    </td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+
+                              <div class="col-md-6">
+                                <div class="submit-section">
+                                  <button
+                                    type="submit"
+                                    class="btn btn-primary submit-btn"
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    type="reset"
+                                    class="btn btn-secondary submit-btn"
+                                  >
+                                    Clear
+                                  </button>
                                 </div>
                               </div>
+                              </form>
                             </div>
+                            <!-- Submit Section -->
+
+
+
+                            <!-- /Submit Section -->
                             <!-- /Prescription Item -->
                           </div>
                         </div>
-                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -314,7 +307,10 @@
                             <td>{{ medicine.Date }}</td>
                             <td>{{ medicine.medName }}</td>
                             <td>{{ medicine.Quantity }}</td>
-                            <td>{% for time in medicine.medicine_times %}{{ time.time_of_day.name }} | {% endfor %}</td>
+                            <td>
+                              {% for time in medicine.medicine_times %}{{
+                              time.time_of_day.name }} | {% endfor %}
+                            </td>
                             <td>{{ medicine.user.name }}</td>
                           </tr>
                           {% endfor %}

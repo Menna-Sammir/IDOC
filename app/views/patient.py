@@ -295,6 +295,45 @@ def appointment_History():
     #     })
 
     form = AddMedicineForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                for item in form.items:
+                    med_exist = PatientMedicine.query.filter_by(medName=item.form.name.data).first()
+                    if not med_exist:
+                        Patient_Medicine = PatientMedicine(
+                            medName=item.form.name.data,
+                            Quantity=item.form.quantity.data,
+                            Date=datetime.now().strftime('%Y-%m-%d'),
+                            patient_id=patient_id,
+                            Added_By = current_user.id
+                        )
+                        db.session.add(Patient_Medicine)
+                        current_medicine = Patient_Medicine
+                        flash('Medicine added successfully', category='success')
+
+                    else:
+                        med_exist.Quantity = item.form.quantity.data
+                        med_exist.Date=datetime.now().strftime('%Y-%m-%d'),
+                        med_exist.Added_By = current_user.id,
+                        current_medicine = med_exist
+                        MedicineTimes.query.filter_by(patient_medicine=med_exist).delete()
+                        flash('Medicine updated successfully', category='success')
+                    for time_of_day in item.form.time_of_day.data:
+                        Medicine_Times = MedicineTimes(
+                            patient_medicine=current_medicine,
+                            time_of_day=time_of_day
+                        )
+                        db.session.add(Medicine_Times)
+                db.session.commit()
+                return redirect(url_for('appointment_History'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f'There was an error: {e}', category='danger')
+
+        if form.errors != {}:
+            for err_msg in form.errors.values():
+                flash(f'There was an error with adding medicine: {err_msg}', category='danger')
 
     return render_template(
         'appointment-History.html',

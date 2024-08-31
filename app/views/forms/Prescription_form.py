@@ -15,7 +15,6 @@ class MedicineForm(FlaskForm):
     )
 
 
-
 class AddMedicineForm(FlaskForm):
     items = FieldList(FormField(MedicineForm), min_entries=1, max_entries=10)
     patient_id = HiddenField("patient_id")
