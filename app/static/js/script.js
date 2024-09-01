@@ -786,12 +786,14 @@ $(document).ready(function () {
 
 function getStatusColor(status) {
   switch (status) {
-    case "Pending":
-      return "warning";
-    case "Confirmed":
-      return "success";
-    case "Cancelled":
-      return "danger";
+    case 'Pending':
+      return 'warning';
+    case 'Confirmed':
+      return 'success';
+    case 'Cancelled':
+      return 'danger';
+    case 'Completed':
+      return 'primary';
     default:
       return "warning";
   }

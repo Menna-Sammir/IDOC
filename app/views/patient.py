@@ -30,8 +30,10 @@ from app.models.models import db, Patient, User
 from enum import Enum
 from uuid import UUID
 from flask_wtf.csrf import CSRFProtect
+from flask_principal import Permission, RoleNeed
 
 csrf = CSRFProtect(app)
+doctor_permission = Permission(RoleNeed('doctor'))
 
 
 @app.route('/')
@@ -186,24 +188,25 @@ def patient_dashboard():
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
 @login_required
 def appointment_History():
-    patient = Patient.query.filter_by(user_id=current_user.id).first()
-    patient_id = patient.id
-    # if current_user.patient:
-    #     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    # elif current_user.doctor:
-    #     patient_id = request.args.get('patient_id')
-    #     if not patient_id:
-    #         flash('Patient ID is missing.', 'danger')
-    #         return redirect(url_for('doctor_dash'))
+    if current_user.patient:
+        patient = Patient.query.filter_by(user_id=current_user.id).first()
+        if not patient:
+            flash('Patient not found', 'danger')
+            return redirect(url_for('patient_dashboard'))
+        patient_id = patient.id
+    elif current_user.doctor:
+        patient_id = request.args.get('patient_id')
+        if not patient_id:
+            flash('Patient ID is missing.', 'danger')
+            return redirect(url_for('doctor_dash'))
 
-    #     patient = Patient.query.get(patient_id)
-    #     if not patient:
-    #         flash('Patient not found', 'danger')
-    #         return redirect(url_for('doctor_dash'))
-
-    # else:
-    #     flash('Unauthorized access', 'danger')
-    #     return redirect(url_for('index'))
+        patient = Patient.query.get(patient_id)
+        if not patient:
+            flash('Patient not found', 'danger')
+            return redirect(url_for('doctor_dash'))
+    else:
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('home'))
 
     appointments = (
         db.session.query(Appointment)
@@ -374,7 +377,83 @@ def cancel_appointment():
     return redirect(url_for('appointment_History'))
 
 
-# doctor search page
+@app.route('/update_follow_up', methods=['POST'])
+@login_required
+@doctor_permission.require(http_exception=403)
+def update_follow_up():
+    appointment_id = request.form.get('appointment_id')
+    follow_up_date_str = request.form.get('follow_up_date')
+    follow_up_time_str = request.form.get('follow_up_time')
+
+    appointment = Appointment.query.get_or_404(appointment_id)
+
+    try:
+        if follow_up_date_str and follow_up_time_str:
+            follow_up_date_time_str = f"{follow_up_date_str} {follow_up_time_str}"
+            follow_up_date = datetime.strptime(follow_up_date_time_str, '%Y-%m-%d %H:%M')
+        else:
+            follow_up_date = None
+
+        if appointment.status.name != 'Completed':
+            flash('Follow-up can only be added or updated for completed appointments.', 'danger')
+            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+        
+        appointment_date = appointment.date
+        if isinstance(appointment_date, datetime):
+            appointment_date = appointment_date
+        else:
+            appointment_date = datetime.combine(appointment_date, datetime.min.time())
+
+        if follow_up_date and follow_up_date <= appointment_date:
+            flash('Follow-up date must be after the appointment date.', 'danger')
+            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+
+        appointment.follow_up = follow_up_date
+        db.session.commit()
+        flash('Follow-up date updated successfully', 'success')
+
+        if current_user.doctor:
+            return redirect(url_for('doctor_dash'))
+        else:
+            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+
+    except ValueError:
+        flash('Invalid date format. Please try again.', 'danger')
+        return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+
+
+@app.route('/update_appointment_status', methods=['POST'])
+@login_required
+def update_appointment_status():
+    appointment_id = request.form.get('appointment_id')
+    new_status = request.form.get('new_status')
+
+    print(f"Received appointment_id: {appointment_id}, new_status: {new_status}")
+
+    if not appointment_id or not new_status:
+        return jsonify({'success': False, 'error': 'Missing appointment_id or new_status'}), 400
+
+    try:
+        new_status_enum = AppStatus[new_status]
+
+        appointment = Appointment.query.get(appointment_id)
+        if appointment:
+            appointment.status = new_status_enum
+            db.session.commit()
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Appointment not found'}), 404
+
+    except KeyError:
+        print(f"Error: Invalid status received: {new_status}")
+        return jsonify({'success': False, 'error': 'Invalid status'}), 400
+    except Exception as e:
+        print(f"Error: {e}")
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+#### doctor search page ####
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
     specialization_id = session.get('specialization_id', None)
@@ -806,6 +885,7 @@ def patient_checkout():
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
+                current_user = clinic_data.users
                 socketio.emit(
                     'appointment_notification',
                     {
@@ -822,6 +902,7 @@ def patient_checkout():
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
                 session['clinic_id'] = clinic_data.id
+                print('clinic_id', clinic_data.id)
 
                 return redirect(url_for('checkout_success'))
             if checkout_form.errors != {}:
@@ -844,12 +925,14 @@ def patient_checkout():
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
         form=checkout_form
-    )
+        )
 
+def appointment_notification(data):
+    emit('appointment_notification', data, room=data['clinic_id'])
 
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = session.get('clinic_id')
+    clinic_id = current_user.get('clinic_id')
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
@@ -1242,7 +1325,7 @@ def sendEmail():
     return redirect(url_for('home'))
 
 
-### patient setting
+### patient setting to edit patient profile ###
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():

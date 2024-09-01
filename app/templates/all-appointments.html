@@ -1,0 +1,108 @@
+{% extends 'base.html' %} {% block title %} Doctor {{ translate('Patient List')
+}} {% endblock %} {% block body %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              My Patients
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">My Patients</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
+        {% block sidebar %} {% include 'base-admin-side.html' %} {% endblock %}
+
+        <!-- /Profile Sidebar -->
+      </div>
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="card">
+            <div class="card-body pt-0">
+            
+                <!-- Tab Menu -->
+                <nav class="user-tabs mb-4">
+                    <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#pat_appointments" data-toggle="tab">Appointments</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- /Tab Menu -->
+                
+                <!-- Tab Content -->
+                <div class="tab-content pt-0">
+                    
+                    <!-- Appointment Tab -->
+                    <div id="pat_appointments" class="tab-pane fade show active">
+                        <div class="card card-table mb-0">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Clinic</th>
+                                                <th>Doctor</th>
+                                                <th>Patient</th>
+                                                <th>Price</th>
+                                                <th>Specialization</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for appointment in appointments %}
+                                            <tr>
+                                              <td>{{ appointment.clinic_name }}</td>
+                                              <td>{{ appointment.doctor_name }}</td>
+                                              <td>{{ appointment.patient_name }}</td>
+                                              <td>${{ appointment.price }}</td>
+                                              <td>{{ appointment.specialization }}</td>
+                                              <td>
+                                                  {% if appointment.status == 'Cancelled' %}
+                                                      <span class="badge badge-pill bg-danger position-relative d-inline">Cancelled</span>
+                                                  {% elif appointment.status == 'Pending' %}
+                                                      <span class="badge badge-pill bg-info position-relative d-inline">Pending</span>
+                                                  {% elif appointment.status == 'Confirmed' %}
+                                                      <span class="badge badge-pill bg-success position-relative d-inline">Confirmed</span>
+                                                  {% else %}
+                                                      <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status }}</span>
+                                                  {% endif %}
+                                              </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>                                        
+                                        </table>
+                                        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Appointment Tab -->
+                    
+                </div>
+                <!-- Tab Content -->
+                
+            </div>
+        </div>
+    </div>
+    
+    </div>
+    <!-- /Page Content -->
+    {% endblock %}
+  </div>
+</div>
