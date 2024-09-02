@@ -689,30 +689,45 @@ $('#patientForm').on('submit', function (event) {
     },
   });
 });
+
 $(document).ready(function () {
-  $('#add-more-item').click(function () {
-    // Clone the last row
-    var newRow = $('#items-container tr:last').clone();
+  $('#add-more-item').click(function (e) {
+    e.preventDefault();
 
-    // Clear the values of all input elements in the cloned row
-    newRow.find('input').val('');
+    // Get the number of existing items
+    var count = $('#items-container tr').length;
 
-    // Clear the values of any select elements if they exist
-    newRow.find('select').val('');
+    // Clone the last item row
+    var newItem = $('#items-container tr:last').clone();
 
-    // Update the names of the input elements in the cloned row
-    newRow.find('input, select').each(function () {
-      var currentName = $(this).attr('name');
-      var newName = currentName.replace(/items-\d+-/g, function (match) {
-        var index = parseInt(match.match(/\d+/)) + 1;
-        return 'items-' + index + '-';
-      });
-      $(this).attr('name', newName);
+    // Clear input values in the cloned row
+    newItem.find('input:not([type="checkbox"])').val('');
+
+    newItem.find('input[type="checkbox"]').prop('checked', false);
+
+    // Update the name and id attributes for each form element in the new item row
+    newItem.find('input, select, label').each(function () {
+      var name = $(this).attr('name');
+      if (name) {
+        var newName = name.replace(/\d+/, count);
+        $(this).attr('name', newName);
+      }
+
+      var id = $(this).attr('id');
+      if (id) {
+        var newId = id.replace(/\d+/, count);
+        $(this).attr('id', newId);
+      }
+
+      var forAttr = $(this).attr('for');
+      if (forAttr) {
+        var newFor = forAttr.replace(/\d+/, count);
+        $(this).attr('for', newFor);
+      }
     });
 
-    // Append the cloned row to the container
-    console.log(newRow);
-    $('#items-container').append(newRow);
+    // Append the new item row to the items container
+    $('#items-container').append(newItem);
   });
 
   // Remove a row when the trash button is clicked

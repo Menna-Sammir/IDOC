@@ -315,8 +315,8 @@ class PatientMedicine(BaseModel):
     Quantity = db.Column(VARCHAR(255), nullable=False)
     Date = db.Column(DATE, nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
-    Added_By = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
-    
+    Added_By = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
+
     user = db.relationship('User', back_populates='patient_medicine')
     medicine_times = relationship("MedicineTimes", back_populates='patient_medicine', uselist=True)
 
