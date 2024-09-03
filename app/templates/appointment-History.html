@@ -8,7 +8,7 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">
               Dashboard
             </li>
@@ -27,394 +27,576 @@
     <div class="row">
       <!-- Profile Sidebar -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
+        %}
       </div>
       <!-- / Profile Sidebar -->
-      <div class="col-md-7 col-lg-8 col-xl-9 dct-appoinment">
+
+      <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="card">
-            <div class="card-body pt-0">
-                <div class="user-tabs">
-                    <ul class="nav nav-tabs nav-tabs-bottom nav-justified flex-wrap">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#pat_appointments" data-toggle="tab">Appointments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#pres" data-toggle="tab"><span>Prescription</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#medical" data-toggle="tab"><span class="med-records">Medical Records</span></a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content">
+          <div class="card-body pt-0">
+            <!-- Tab Menu -->
+            <nav class="user-tabs mb-4">
+              <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    href="#pat_appointments"
+                    data-toggle="tab"
+                    >Appointments</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    href="#pat_prescriptions"
+                    data-toggle="tab"
+                    >Prescriptions</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    href="#pat_medical_records"
+                    data-toggle="tab"
+                    ><span class="med-records">Medical Records</span></a
+                  >
+                </li>
+              </ul>
+            </nav>
+            <!-- /Tab Menu -->
 
-                    <!-- Appointment Tab -->
-                    <div id="pat_appointments" class="tab-pane fade show active">
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Doctor</th>
-                                                <th>Appt Date</th>
-                                                <th>Amount</th>
-                                                <th>Follow Up</th>
-                                                <th>Status</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for appointment in appointments %}
-                                            <tr>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="#" class="avatar avatar-sm mr-2">
-                                                            <img class="avatar-img rounded-circle" src="{{ appointment.doctor_photo }}" alt="User Image">
-                                                        </a>
-                                                        <a href="#">{{ appointment.doctor.users.name }} <span>{{ appointment.doctor.specialization.specialization_name }}</span></a>
-                                                    </h2>
-                                                </td>
-                                                <td>{{ appointment.date }} <span class="d-block text-info">{{ appointment.time_range }}</span></td>
-                                                <td>${{ appointment.doctor.price }}</td>
-                                                <td>
-                                                  {% if current_user.doctor or (current_user.patient and appointment.status.name == 'Completed') %}
-                                                      {% if appointment.follow_up %}
-                                                          {{ appointment.follow_up.strftime('%d %b %Y') }}<br />
-                                                          {{ appointment.follow_up.strftime('%I:%M %p') }}
-                                                      {% else %}
-                                                          No Follow-Up
-                                                      {% endif %}
-                                                  {% else %}
-                                                      No Follow-Up
-                                                  {% endif %}
-                                                  {% if current_user.patient %}
-                                                  <td>
-                                                <span
-                                                  class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline"
-                                                  >{{appointment.status.name}}</span
-                                                >
-                                              </td>
-                                              <td class="text-right">
-                                                <form
-                                                  action="{{ url_for('cancel_appointment') }}"
-                                                  method="post"
-                                                >
-                                                  <div class="table-action">
-                                                    <input
-                                                      type="hidden"
-                                                      name="csrf_token"
-                                                      value="{{ csrf_token() }}"
-                                                    />
-                                                    <input
-                                                      type="hidden"
-                                                      name="appointment_id"
-                                                      value="{{ appointment.id }}"
-                                                    />
-                                                    <button type="submit" class="btn btn-danger">
-                                                      Cancel
-                                                    </button>
-                                                  </div>
-                                                </form>
-                                              </td>
-                                              {% endif %}
-                                                  {% if current_user.doctor %}
-                                                  <td>
-                                                    {% set status_class = { 'Pending':
-                                                    'bg-warning-light', 'Confirmed':
-                                                    'bg-success-light', 'Cancelled': 'bg-danger-light', 'Completed': 'bg-primary-light'
-                                                    }[appointment.status.name] %}
+            <!-- Tab Content -->
+            <div class="tab-content pt-0">
+              <!-- Appointment Tab -->
+              <div id="pat_appointments" class="tab-pane fade show active">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Doctor</th>
+                            <th>Appt Date</th>
+                            <th>Amount</th>
+                            <th>Follow Up</th>
+                            <th>Status</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for appointment in appointments %}
+                          <tr>
+                            <td>
+                              <h2 class="table-avatar">
+                                <a
+                                  href="doctor-profile.html"
+                                  class="avatar avatar-sm mr-2"
+                                >
+                                  <img
+                                    class="avatar-img rounded-circle"
+                                    src="{{ appointment.doctor_photo }}"
+                                    alt="User Image"
+                                  />
+                                </a>
+                                <a href="doctor-profile.html"
+                                  >{{ appointment.doctor.users.name }}
+                                  <span
+                                    >{{
+                                    appointment.doctor.specialization.specialization_name
+                                    }}</span
+                                  ></a
+                                >
+                              </h2>
+                            </td>
+                            <td>
+                              {{ appointment.date }}
+                              <span class="d-block text-info"
+                                >{{ appointment.time_range }}</span
+                              >
+                            </td>
+                            <td>${{ appointment.doctor.price }}</td>
+                            <td>
+                              {% if current_user.doctor or (current_user.patient
+                              and appointment.status.name == 'Completed') %} {%
+                              if appointment.follow_up %} {{
+                              appointment.follow_up.strftime('%d %b %Y') }}<br />
+                              {{ appointment.follow_up.strftime('%I:%M %p') }}
+                              {% else %} No Follow-Up {% endif %} {% else %} No
+                              Follow-Up {% endif %} {% if current_user.patient
+                              %}
+                            </td>
 
-                                                    <div class="status-dropdown">
-                                                      <button
-                                                        class="btn dropdown-toggle badge badge-pill {{ status_class }} status-badge"
-                                                        type="button"
-                                                        id="dropdownMenuButton"
-                                                        data-toggle="dropdown"
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        data-appointment-id="{{ appointment.id }}"
-                                                      >
-                                                        {{ translate(appointment.status.name) }}
-                                                      </button>
-                                                      <div
-                                                        class="dropdown-menu"
-                                                        aria-labelledby="dropdownMenuButton"
-                                                      >
-                                                        <button
-                                                          class="dropdown-item"
-                                                          data-status="Pending"
-                                                          style="
-                                                            background-color: rgba(255, 193, 7, 0.1);
-                                                            color: #ffc107;
-                                                          "
-                                                        >
-                                                          Pending
-                                                        </button>
-                                                        <button
-                                                          class="dropdown-item"
-                                                          data-status="Confirmed"
-                                                          style="
-                                                            background-color: rgba(40, 167, 69, 0.1);
-                                                            color: #28a745;
-                                                          "
-                                                        >
-                                                          Confirmed
-                                                        </button>
-                                                        <button
-                                                          class="dropdown-item"
-                                                          data-status="Cancelled"
-                                                          style="
-                                                            background-color: rgba(220, 53, 69, 0.1);
-                                                            color: #dc3545;
-                                                          "
-                                                        >
-                                                          Cancelled
-                                                        </button>
-                                                        <button
-                                                        class="dropdown-item"
-                                                        data-status="Completed"
-                                                        style="background-color: rgba(108, 117, 125, 0.1); color: #6c757d;"
-                                                      >
-                                                        Completed
-                                                      </button>
-                                                      </div>
-                                                    </div>
-                                                  <td class="text-right">
-                                                    <div class="table-action">
-                                                      <a
-                                                        href="javascript:void(0);"
-                                                        class="btn btn-sm bg-primary-light"
-                                                      >
-                                                        <i class="fas fa-print"></i> Print
-                                                      </a>
-                                                      <a
-                                                        href="javascript:void(0);"
-                                                        class="btn btn-sm bg-info-light"
-                                                      >
-                                                        <i class="far fa-eye"></i> View
-                                                      </a>
-                                                      <a
-                                                        href="javascript:void(0);"
-                                                        class="btn btn-sm bg-primary-light"
-                                                        onclick="showEditForm('{{ appointment.id }}')"
-                                                      >
-                                                        <i class="far fa-edit"></i> Edit
-                                                      </a>
-                                                    </div>
-                                                    <div
-                                                      id="overlay"
-                                                      class="overlay"
-                                                      style="display: none"
-                                                    ></div>
+                            <td>
+                              <span
+                                class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline"
+                                >{{appointment.status.name}}</span
+                              >
+                            </td>
+                            <td class="text-right">
+                              <form
+                                action="{{ url_for('cancel_appointment') }}"
+                                method="post"
+                              >
+                                <div class="table-action">
+                                  <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="appointment_id"
+                                    value="{{ appointment.id }}"
+                                  />
+                                  <button type="submit" class="btn btn-danger">
+                                    Cancel
+                                  </button>
+                                </div>
+                              </form>
+                            </td>
+                            {% endif %} {% if current_user.doctor %}
+                            <td>
+                              {% set status_class = { 'Pending':
+                              'bg-warning-light', 'Confirmed':
+                              'bg-success-light', 'Cancelled':
+                              'bg-danger-light', 'Completed': 'bg-primary-light'
+                              }[appointment.status.name] %}
 
-                                                    <!-- Add Follow-Up -->
-                                                    <div
-                                                      id="editFollowUpModal"
-                                                      class="modal"
-                                                      tabindex="-1"
-                                                      role="dialog"
-                                                      style="display: none"
-                                                    >
-                                                      <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                          <div class="modal-header">
-                                                            <h5 class="modal-title">
-                                                              Edit Follow-Up
-                                                            </h5>
-                                                            <button
-                                                              type="button"
-                                                              class="close"
-                                                              aria-label="Close"
-                                                              onclick="hideEditForm()"
-                                                            >
-                                                              <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                          </div>
-                                                          <div class="modal-body">
-                                                            <form
-                                                              method="POST"
-                                                              action="{{ url_for('update_follow_up') }}"
-                                                            >
-                                                              <input
-                                                                type="hidden"
-                                                                id="appointment_id"
-                                                                name="appointment_id"
-                                                              />
-                                                              <input
-                                                                type="hidden"
-                                                                name="csrf_token"
-                                                                value="{{ csrf_token() }}"
-                                                              />
-                                                              <input
-                                                                type="hidden"
-                                                                name="patient_id"
-                                                                value="{{ patient.id }}"
-                                                              />
+                              <div class="status-dropdown">
+                                <button
+                                  class="btn dropdown-toggle badge badge-pill {{ status_class }} status-badge"
+                                  type="button"
+                                  id="dropdownMenuButton"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                                  data-appointment-id="{{ appointment.id }}"
+                                >
+                                  {{ translate(appointment.status.name) }}
+                                </button>
+                                <div
+                                  class="dropdown-menu"
+                                  aria-labelledby="dropdownMenuButton"
+                                >
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Pending"
+                                    style="
+                                      background-color: rgba(255, 193, 7, 0.1);
+                                      color: #ffc107;
+                                    "
+                                  >
+                                    Pending
+                                  </button>
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Confirmed"
+                                    style="
+                                      background-color: rgba(40, 167, 69, 0.1);
+                                      color: #28a745;
+                                    "
+                                  >
+                                    Confirmed
+                                  </button>
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Cancelled"
+                                    style="
+                                      background-color: rgba(220, 53, 69, 0.1);
+                                      color: #dc3545;
+                                    "
+                                  >
+                                    Cancelled
+                                  </button>
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Completed"
+                                    style="
+                                      background-color: rgba(
+                                        108,
+                                        117,
+                                        125,
+                                        0.1
+                                      );
+                                      color: #6c757d;
+                                    "
+                                  >
+                                    Completed
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
 
-                                                              <div class="form-group">
-                                                                <label for="follow_up_date"
-                                                                  >Date</label
-                                                                >
-                                                                <input
-                                                                  type="date"
-                                                                  id="follow_up_date"
-                                                                  name="follow_up_date"
-                                                                  class="form-control"
-                                                                />
-                                                              </div>
-                                                              <div class="form-group">
-                                                                <label for="follow_up_time"
-                                                                  >Time</label
-                                                                >
-                                                                <input
-                                                                  type="time"
-                                                                  id="follow_up_time"
-                                                                  name="follow_up_time"
-                                                                  class="form-control"
-                                                                />
-                                                              </div>
-                                                              <div class="modal-footer">
-                                                                <button
-                                                                  type="submit"
-                                                                  class="btn btn-primary"
-                                                                >
-                                                                  Save Follow-Up
-                                                                </button>
-                                                                <button
-                                                                  type="button"
-                                                                  class="btn btn-secondary"
-                                                                  onclick="hideEditForm()"
-                                                                >
-                                                                  Cancel
-                                                                </button>
-                                                              </div>
-                                                            </form>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                      <div
-                                                        class="modal-overlay"
-                                                        onclick="hideEditForm()"
-                                                      ></div>
-                                                    </div>
-                                                  </td>
-                                                  {% endif %}
+                            <td class="text-right">
+                              <div class="table-action">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="btn btn-sm bg-primary-light"
+                                >
+                                  <i class="fas fa-print"></i> Print
+                                </a>
+                                <a
+                                  href="javascript:void(0);"
+                                  class="btn btn-sm bg-info-light"
+                                >
+                                  <i class="far fa-eye"></i> View
+                                </a>
+                                <a
+                                  href="javascript:void(0);"
+                                  class="btn btn-sm bg-primary-light"
+                                  onclick="showEditForm('{{ appointment.id }}')"
+                                >
+                                  <i class="far fa-edit"></i> Edit
+                                </a>
+                              </div>
+                              <div
+                                id="overlay"
+                                class="overlay"
+                                style="display: none"
+                              ></div>
 
-                                                </tr>
-                                                {% endfor %}
-                                              </tbody>
-                                            </table>
-                                          </div>
-                                        </div>
-                                      </div>
+                              <!-- Add Follow-Up -->
+                              <div
+                                id="editFollowUpModal"
+                                class="modal"
+                                tabindex="-1"
+                                role="dialog"
+                                style="display: none"
+                              >
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">
+                                        Edit Follow-Up
+                                      </h5>
+                                      <button
+                                        type="button"
+                                        class="close"
+                                        aria-label="Close"
+                                        onclick="hideEditForm()"
+                                      >
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
                                     </div>
-                                    <!-- /Appointment Tab -->
+                                    <div class="modal-body">
+                                      <form
+                                        method="POST"
+                                        action="{{ url_for('update_follow_up') }}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          id="appointment_id"
+                                          name="appointment_id"
+                                        />
+                                        <input
+                                          type="hidden"
+                                          name="csrf_token"
+                                          value="{{ csrf_token() }}"
+                                        />
+                                        <input
+                                          type="hidden"
+                                          name="patient_id"
+                                          value="{{ patient.id }}"
+                                        />
 
-                    <!-- Prescription Tab -->
-                    <div class="tab-pane fade" id="pres">
-                        <div class="text-right">
-                            <a href="add-prescription.html" class="add-new-btn">Add Prescription</a>
-                        </div>
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Days </th>
-                                                <th>Name</th>
-                                                <th>Quantity</th>
-                                                <th>Time of Day</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for medicine in medicine_data %}
-                                            <tr>
-                                                <td>{{ medicine.days }}</td>
-                                                <td>{{ medicine.name }}</td>
-                                                <td>{{ medicine.quantity }}</td>
-                                                <td>{{ medicine.time_of_day }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                        <div class="form-group">
+                                          <label for="follow_up_date"
+                                            >Date</label
+                                          >
+                                          <input
+                                            type="date"
+                                            id="follow_up_date"
+                                            name="follow_up_date"
+                                            class="form-control"
+                                          />
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="follow_up_time"
+                                            >Time</label
+                                          >
+                                          <input
+                                            type="time"
+                                            id="follow_up_time"
+                                            name="follow_up_time"
+                                            class="form-control"
+                                          />
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                          >
+                                            Save Follow-Up
+                                          </button>
+                                          <button
+                                            type="button"
+                                            class="btn btn-secondary"
+                                            onclick="hideEditForm()"
+                                          >
+                                            Cancel
+                                          </button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  </div>
                                 </div>
-                            </div>
-                        </div>
+                                <div
+                                  class="modal-overlay"
+                                  onclick="hideEditForm()"
+                                ></div>
+                              </div>
+                            </td>
+                            {% endif %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
-                    <!-- /Prescription Tab -->
-
-                    <!-- Medical Records Tab -->
-                    <div class="tab-pane fade" id="medical">
-                        <div class="text-right">
-                            <a href="#" class="add-new-btn" data-toggle="modal" data-target="#add_medical_records">Add Medical Records</a>
-                        </div>
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>ID Doctor</th>
-                                                <th>Time </th>
-                                                <th>diagnosis</th>
-                                                <th>date appioment</th>
-                                                <th>Created by</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                {% for record in medical_records %}
-													<tr>
-														<td>#{{ record.doctor_idnum }}</td>
-														<td>{{ record.booking_time }}</td>
-														<td>{{ record.diagnosis }}</td>
-														<td>{{ record.appointment_date }}</td>
-														<td>
-															<h2 class="table-avatar">
-																<a href="javascript:void(0);" class="avatar avatar-sm mr-2">
-																	<img class="avatar-img rounded-circle" src="{{ record.doctor_photo }}" alt="User Image">
-																</a>
-																<a href="doctor-profile.html">{{ record.doctor_name }} <span>{{ record.doctor_specialization }}</span></a>
-															</h2>
-														</td>
-														<td class="text-right">
-															<div class="table-action">
-
-																{% if record.report_url %}
-																<a href="{{ url_for('static', filename='reports/' + record.report_url) }}" class="btn btn-sm bg-primary-light" download>
-																	<i class="fas fa-print"></i> Print
-																</a>
-															{% else %}
-																<span class="text-muted">No Report Available</span>
-															{% endif %}
-															</div>
-														</td>
-													</tr>
-													{% endfor %}
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Medical Records Tab -->
+                  </div>
                 </div>
+              </div>
+              <!-- /Appointment Tab -->
+
+              <!-- Prescription Tab -->
+              <div class="tab-pane fade" id="pat_prescriptions">
+                <div class="text-right">
+                  <a
+                    href="#"
+                    class="add-new-btn"
+                    data-toggle="modal"
+                    data-target="#prescription_modal"
+                    >Add Prescription</a
+                  >
+                </div>
+                <div
+                  class="modal fade custom-modal"
+                  id="prescription_modal"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true"
+                >
+                  <div
+                    class="modal-dialog modal-dialog-centered modal-lg"
+                    role="document"
+                    style="min-width: 80%"
+                  >
+                    <div class="modal-content mb-0" style="min-width: inherit">
+                      <div class="modal-header">
+                        <h3 class="modal-title">Medical Records</h3>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+
+                      <div class="modal-body">
+                        <!-- Add Item -->
+                        <div class="add-more-item text-right">
+                          <a href="#" id="add-more-item">
+                            <i class="fas fa-plus-circle"></i> Add Item
+                          </a>
+                        </div>
+                        <!-- /Add Item -->
+                        <div class="row justify-content-center">
+                          <!-- Prescription Item -->
+
+                          <div class="table-responsive p-2">
+                            <form method="POST">
+                              {{ form.hidden_tag() }} {{ form.csrf_token }} {{
+                              form.patient_id }}
+                              <table class="table table-hover table-center">
+                                <thead>
+                                  <tr>
+                                    <th style="min-width: 200px">Name</th>
+                                    <th style="min-width: 100px">Quantity</th>
+                                    <th style="min-width: 100px">Time</th>
+                                    <th style="min-width: 80px"></th>
+                                  </tr>
+                                </thead>
+                                <tbody id="items-container">
+                                  {% for item in form.items %}
+                                  <tr>
+                                    <td>
+                                      {{ item.form.name(class_="form-control")
+                                      }}
+                                    </td>
+                                    <td>
+                                      {{
+                                      item.form.quantity(class_="form-control")
+                                      }}
+                                    </td>
+                                    <td>
+                                      {% for subfield in item.form.time_of_day
+                                      %}
+                                      <div class="form-check form-check-inline">
+                                        {{ subfield(class_="form-check-input")
+                                        }} {{ subfield.label }}
+                                      </div>
+                                      {% endfor %}
+                                    </td>
+                                    <td>
+                                      <a
+                                        href="#"
+                                        class="btn bg-danger-light trash"
+                                        ><i class="far fa-trash-alt"></i
+                                      ></a>
+                                    </td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+
+                              <div class="col-md-6">
+                                <div class="submit-section">
+                                  <button
+                                    type="submit"
+                                    class="btn btn-primary submit-btn"
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    type="reset"
+                                    class="btn btn-secondary submit-btn"
+                                  >
+                                    Clear
+                                  </button>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                          <!-- Submit Section -->
+
+                          <!-- /Submit Section -->
+                          <!-- /Prescription Item -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Time of Day</th>
+                            <th>Created by</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for medicine in patient_medicines %}
+                          <tr>
+                            <td>{{ medicine.Date }}</td>
+                            <td>{{ medicine.medName }}</td>
+                            <td>{{ medicine.Quantity }}</td>
+                            <td>
+                              {% for time in medicine.medicine_times %}{{
+                              time.time_of_day.name }} | {% endfor %}
+                            </td>
+                            <td>{{ medicine.user.name }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Prescription Tab -->
+
+              <!-- Medical Records Tab -->
+              <div id="pat_medical_records" class="tab-pane fade">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>diagnosis</th>
+                            <th>date appioment</th>
+                            <th>Created by</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for record in patient_history %}
+                          <tr>
+                            <td>{{ record.Diagnosis }}</td>
+                            <td>{{ record.formatted_date }}</td>
+                            <td>
+                              <h2 class="table-avatar">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="avatar avatar-sm mr-2"
+                                >
+                                  <img
+                                    class="avatar-img rounded-circle"
+                                    src="{{ record.doctor.users.photo }}"
+                                    alt="User Image"
+                                  />
+                                </a>
+                                <a href="#"
+                                  >{{ record.users.name }}
+                                  <span
+                                    >{{
+                                    record.doctor.specialization.specialization_name
+                                    }}</span
+                                  ></a
+                                >
+                              </h2>
+                            </td>
+                            <td class="text-right">
+                              <div class="table-action">
+                                {% if record.Report %}
+                                <a
+                                  href="{{ url_for('static', filename='reports/' + record.Report) }}"
+                                  class="btn btn-sm bg-primary-light"
+                                  download
+                                >
+                                  <i class="fas fa-print"></i> Print
+                                </a>
+                                {% else %}
+                                <span class="text-muted"
+                                  >No Report Available</span
+                                >
+                                {% endif %}
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Medical Records Tab -->
             </div>
+            <!-- Tab Content -->
+          </div>
         </div>
     </div>
 
+      </div>
     </div>
   </div>
 </div>
 <!-- Modal for rescheduling appointments -->
-<div id="reschedule-modal" style="display:none;">
-    <!-- Modal content will be loaded dynamically -->
+<div id="reschedule-modal" style="display: none">
+  <!-- Modal content will be loaded dynamically -->
 </div>
 
+<!-- /Page Content -->
 <script>
   function showEditForm(appointmentId, followUpDateTime) {
     const [date, time] = followUpDateTime
@@ -440,5 +622,4 @@
     }
   };
 </script>
-<!-- /Page Content -->
 {% endblock %}
