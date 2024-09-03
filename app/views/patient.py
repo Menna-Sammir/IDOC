@@ -217,86 +217,6 @@ def appointment_History():
         .all()
     )
     patient_medicines = PatientMedicine.query.filter_by(patient_id=patient_id).all()
-
-    # appointments = Appointment.query.filter_by(patient_id=patient_id, seen =False).order_by(Appointment.date.desc(), Appointment.time.desc()).all()
-
-    # Fetch all appointments (regardless of status) that have not been seen (seen is False)
-    # appointments = (
-    #     db.session.query(Appointment, Doctor, Clinic, Specialization)
-    #     .join(Doctor, Appointment.doctor_id == Doctor.id)
-    #     .join(Clinic, Doctor.clinic_id == Clinic.id)
-    #     .join(Specialization, Doctor.specialization_id == Specialization.id)
-    #     .filter(Appointment.patient_id == patient.id)
-    #     .filter(Appointment.seen == False)
-    #     .order_by(Appointment.date.desc(), Appointment.time.desc())
-    #     .all()
-    # )
-
-    # patient_history = PatientHistory.query.filter_by(patient_id=patient_id).all()
-
-
-    # Fetch patient history
-    # patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
-
-    # Fetch patient medicines
-    # patient_medicines = (
-    #     db.session.query(PatientMedicine, MedicineTimes)
-    #     .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
-    #     .filter(PatientMedicine.patient_id == patient.id)
-    #     .all()
-    # )
-
-
-    # blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
-    # allergy = patient.allergy.name if patient.allergy else "Not Provided"
-
-    # # Process patient history data
-    # history_data = []
-    # for history in patient_histories:
-    #     added_by_user = User.query.get(history.addedBy)
-    #     history_data.append({
-    #         'details': history.details,
-    #         'type': PatientHisType(history.type).name,
-    #         'added_by': added_by_user.name if added_by_user else 'Unknown'
-    #     })
-
-    # Process patient medicine data
-    # medicine_data = []
-    # for medicine, medicine_time in patient_medicines:
-    #     medicine_data.append({
-    #         'days': medicine.Days,
-    #         'name': medicine.medName,
-    #         'quantity': medicine.Quantity,
-    #         'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
-    #     })
-
-    # records = (
-    #     db.session.query(Appointment, Doctor, Specialization)
-    #     .join(Doctor, Appointment.doctor_id == Doctor.id)
-    #     .join(Specialization, Doctor.specialization_id == Specialization.id)
-    #     .filter(Appointment.patient_id == patient.id)
-    #     .filter(Appointment.seen == True)
-    #     .order_by(Appointment.date.desc(), Appointment.time.desc())
-    #     .all()
-    # )
-
-    # Process records data
-    # medical_records_data = []
-    # for appointment, doctor, specialization in records:
-    #     formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
-    #     diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
-    #     report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
-
-    #     medical_records_data.append({
-    #         'doctor_idnum': doctor.iDNum,
-    #         'booking_time': formatted_booking_time,  # Use the formatted time instead of date
-    #         'diagnosis': diagnosis,
-    #         'appointment_date': appointment.date,
-    #         'doctor_name': doctor.users.name,
-    #         'doctor_specialization': specialization.specialization_name,
-    #         'report_url': report_url
-    #     })
-
     form = AddMedicineForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -340,16 +260,8 @@ def appointment_History():
 
     return render_template(
         'appointment-History.html',
-        user_name=current_user.name,
-        patient=patient,
         appointments=appointments,
         patient_medicines=patient_medicines,
-        # appointments=appointment_data,
-        # patient_history=history_data,
-        # blood_group=blood_group,
-        # allergy=allergy,
-        # medicine_data=medicine_data,
-        # medical_records=medical_records_data,
         form=form
     )
 
@@ -397,7 +309,7 @@ def update_follow_up():
         if appointment.status.name != 'Completed':
             flash('Follow-up can only be added or updated for completed appointments.', 'danger')
             return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
-        
+
         appointment_date = appointment.date
         if isinstance(appointment_date, datetime):
             appointment_date = appointment_date
