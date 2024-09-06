@@ -42,10 +42,12 @@
                         <p><i class="far fa-clock"></i> {{ appointment.time_range }} - {{ appointment.duration }}</p>
                         <p><i class="fas fa-map-marker-alt"></i> {{ appointment.clinic_address }}</p>
                         <div class="d-flex">
-                            <img class="bor" src="{{ appointment.doctor_photo }}" alt="Doctor Photo" width="100">
+                           <div class="booking-doc-img">
+                            <img class="bor avatar-img rounded-circl" src="{{base_path ~ current_user.doctor.photo}}" alt="" width="100">
+                           </div>
                             <div>
                                 <p>{{ appointment.doctor_name }}</p>
-                                <p>{{ appointment.doctor_specialization }}</p>
+                                <p class="text-muted">{{ appointment.doctor_specialization }}</p>
                             </div>
                         </div>
                         {% else %}
@@ -56,20 +58,26 @@
             </div>
             <div class="col-md-6 col-lg-6 col-xl-6">
               <h3>Prescription Details</h3>
-              <div class="Next-appointment-card">
+              <div class="Prescription-appointment-card overflow-auto">
                   {% if prescriptions %}
-                  <ul>
-                      {% for prescription in prescriptions %}
-                      <li>
-                          <strong>{{ prescription.name }}</strong><br>
-                          Quantity: {{ prescription.quantity }}<br>
-                          Days: {{ prescription.days }}<br>
-                          Times of Day: {{ prescription.times_of_day | join(', ') }}
-                      </li>
-                      {% endfor %}
-                  </ul>
+                  {% for prescription in prescriptions %}
+                  <div class="pt-3 border-bottom d-flex align-items-center ml-2 mr-2">
+                    
+                    <div>
+                      <i class="fas fa-capsules h1"></i>
+                    </div>
+                    <div class="ml-3">
+                      <h5>{{ prescription.name }}</h5>
+                      <p class="d-block text-muted">{{ prescription.quantity }} |
+                        {{ prescription.times_of_day | join(', ') }}
+                      </p>
+                    </div>
+
+                     
+                  </div>
+                  {% endfor %}
                   {% if show_more_button %}
-                  <a href="{{ url_for('patient_history') }}" class="btn btn-primary">Show More</a>
+                  <a href="{{ url_for('appointment_History') }}" class="btn btn-primary w-100 text-center">Show More</a>
                   {% endif %}
                   {% else %}
                   <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
@@ -102,35 +110,65 @@
                                 <th>Appt Date</th>
                                 <th>Amount</th>
                                 <th>Status</th>
-                                <th class="text-center">Edit</th>
+                                <th class="text-center">Cancelled</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {% for appointment in all_appointments %}
-                              <tr>
-                                <td>
-                                  <h2 class="table-avatar">
-                                    <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-                                      <img class="avatar-img rounded-circle" src="{{ appointment.doctor_photo }}" alt="User Image">
-                                    </a>
-                                    <a href="doctor-profile.html">{{ appointment.doctor_name }} <span>{{ appointment.specialization }}</span></a>
-                                  </h2>
-                                </td>
-                                <td>{{ appointment.date }} <span class="d-block text-info">{{ appointment.time }}</span></td>
-                                <td>$350</td>
-                                <td><span class="badge badge-pill bg-warning-light position-relative d-inline">{{ appointment.status }}</span></td>
-                                <td class="text-center">
-                                  <div class="table-action">
-                                    <a href="edit-prescription.html" class="btn btn-sm bg-success-light">
-                                      <i class="far fa-edit"></i> Edit
-                                    </a>
-                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-                                      <i class="far fa-trash-alt"></i> Cancel
-                                    </a>
-                                  </div>
-                                </td>
-                              </tr>
-                              {% endfor %}
+                                {% set confirmed_appointments = [] %} <!-- Initialize an empty list -->
+                                {% for appointment in appointments %}
+                                    {% if appointment.status.name == 'Confirmed' and not appointment.seen %}
+                                    {% set confirmed_appointments = confirmed_appointments + [appointment] %} <!-- Add appointment to the list if confirmed and unseen -->
+                                    <tr>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
+                                                    <img class="avatar-img rounded-circle" src="{{ appointment.doctor.users.photo }}" alt="User Image" />
+                                                </a>
+                                                <a href="doctor-profile.html">{{ appointment.doctor.users.name }}
+                                                    <span>{{ appointment.doctor.specialization.specialization_name }}</span>
+                                                </a>
+                                            </h2>
+                                        </td>
+                                        <td>
+                                            {{ appointment.date }}
+                                            <span class="d-block text-info">{{ appointment.time_range }}</span>
+                                        </td>
+                                        <td>${{ appointment.doctor.price }}</td>
+                                        <td>
+                                            <span class="badge badge-pill bg-success-light position-relative d-inline">{{ appointment.status.name }}</span>
+                                        </td>
+                                        <td class="text-right">
+                                          <form
+                                            action="{{ url_for('cancel_appointment') }}"
+                                            method="post"
+                                          >
+                                            <div class="table-action">
+                                              <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                              />
+                                              <input
+                                                type="hidden"
+                                                name="appointment_id"
+                                                value="{{ appointment.id }}"
+                                              />
+                                              <button type="submit" class="btn btn-danger">
+                                                Cancel
+                                              </button>
+                                            </div>
+                                          </form>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                  
+                                <!-- Only show "No upcoming appointments." if confirmed_appointments is empty -->
+                                {% if confirmed_appointments|length == 1 %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No upcoming appointments.</td>
+                                </tr>
+                                {% endif %}
                             </tbody>
                           </table>
                         </div>
