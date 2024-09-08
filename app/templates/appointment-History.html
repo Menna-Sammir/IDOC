@@ -86,6 +86,7 @@
                         </thead>
                         <tbody>
                           {% for appointment in appointments %}
+                          {% if appointment.status.name == 'Completed' %}
                           <tr>
                             <td>
                               <h2 class="table-avatar">
@@ -133,28 +134,7 @@
                                 >{{appointment.status.name}}</span
                               >
                             </td>
-                            <td class="text-right">
-                              <form
-                                action="{{ url_for('cancel_appointment') }}"
-                                method="post"
-                              >
-                                <div class="table-action">
-                                  <input
-                                    type="hidden"
-                                    name="csrf_token"
-                                    value="{{ csrf_token() }}"
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="appointment_id"
-                                    value="{{ appointment.id }}"
-                                  />
-                                  <button type="submit" class="btn btn-danger">
-                                    Cancel
-                                  </button>
-                                </div>
-                              </form>
-                            </td>
+                            
                             {% endif %} {% if current_user.doctor %}
                             <td>
                               {% set status_class = { 'Pending':
@@ -349,6 +329,7 @@
                             </td>
                             {% endif %}
                           </tr>
+                          {% endif %}
                           {% endfor %}
                         </tbody>
                       </table>
