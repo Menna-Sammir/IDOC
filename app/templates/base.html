@@ -278,7 +278,7 @@
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', (event) => {
-        var clinic_id = '{{ current_user.clinic_id }}';
+        var clinic_id = '{{ clinic_id }}';
         console.log('Rendered clinic_id:', clinic_id);
         if (!clinic_id) {
           console.error(
@@ -288,7 +288,7 @@
         }
         console.log('Connecting with clinic_id:', clinic_id);
 
-        var socket = io.connect('http://127.0.0.1:5000', {
+        var socket = io.connect('http://localhost:5000', {
           query: 'clinic_id=' + clinic_id,
         });
 
@@ -370,7 +370,7 @@
           var notifications =
             JSON.parse(localStorage.getItem('notifications')) || [];
           notifications.forEach((notification) => {
-            addNotification(notification, false);
+            addNotification(notification, true);
           });
         }
 
@@ -415,7 +415,6 @@
         fetchNotifications();
       });
     </script>
-
     {% endblock %}
   </body>
 </html>

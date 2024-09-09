@@ -116,12 +116,6 @@ def login_page():
     return render_template('login.html', form=form)
 
 
-@socketio.on('disconnect request')
-def handle_disconnect_request():
-    session_id = request.sid
-    disconnect(sid=session_id)
-
-
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
     print(f"User before logout: {current_user}")

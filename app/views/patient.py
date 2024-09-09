@@ -208,6 +208,8 @@ def appointment_History():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('home'))
 
+    patient_histories = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
     appointments = (
         db.session.query(Appointment)
         .join(Appointment.doctor)
@@ -216,86 +218,9 @@ def appointment_History():
         .filter(Appointment.patient_id == patient_id)
         .all()
     )
+    patient_histories = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
     patient_medicines = PatientMedicine.query.filter_by(patient_id=patient_id).all()
-
-    # appointments = Appointment.query.filter_by(patient_id=patient_id, seen =False).order_by(Appointment.date.desc(), Appointment.time.desc()).all()
-
-    # Fetch all appointments (regardless of status) that have not been seen (seen is False)
-    # appointments = (
-    #     db.session.query(Appointment, Doctor, Clinic, Specialization)
-    #     .join(Doctor, Appointment.doctor_id == Doctor.id)
-    #     .join(Clinic, Doctor.clinic_id == Clinic.id)
-    #     .join(Specialization, Doctor.specialization_id == Specialization.id)
-    #     .filter(Appointment.patient_id == patient.id)
-    #     .filter(Appointment.seen == False)
-    #     .order_by(Appointment.date.desc(), Appointment.time.desc())
-    #     .all()
-    # )
-
-    # patient_history = PatientHistory.query.filter_by(patient_id=patient_id).all()
-
-
-    # Fetch patient history
-    # patient_histories = PatientHistory.query.filter_by(patient_id=patient.id).all()
-
-    # Fetch patient medicines
-    # patient_medicines = (
-    #     db.session.query(PatientMedicine, MedicineTimes)
-    #     .join(MedicineTimes, PatientMedicine.id == MedicineTimes.medicine_id)
-    #     .filter(PatientMedicine.patient_id == patient.id)
-    #     .all()
-    # )
-
-
-    # blood_group = patient.blood_group.name if patient.blood_group else "Not Provided"
-    # allergy = patient.allergy.name if patient.allergy else "Not Provided"
-
-    # # Process patient history data
-    # history_data = []
-    # for history in patient_histories:
-    #     added_by_user = User.query.get(history.addedBy)
-    #     history_data.append({
-    #         'details': history.details,
-    #         'type': PatientHisType(history.type).name,
-    #         'added_by': added_by_user.name if added_by_user else 'Unknown'
-    #     })
-
-    # Process patient medicine data
-    # medicine_data = []
-    # for medicine, medicine_time in patient_medicines:
-    #     medicine_data.append({
-    #         'days': medicine.Days,
-    #         'name': medicine.medName,
-    #         'quantity': medicine.Quantity,
-    #         'time_of_day': medicine_time.time_of_day.name  # Assuming MedicineTime is an Enum
-    #     })
-
-    # records = (
-    #     db.session.query(Appointment, Doctor, Specialization)
-    #     .join(Doctor, Appointment.doctor_id == Doctor.id)
-    #     .join(Specialization, Doctor.specialization_id == Specialization.id)
-    #     .filter(Appointment.patient_id == patient.id)
-    #     .filter(Appointment.seen == True)
-    #     .order_by(Appointment.date.desc(), Appointment.time.desc())
-    #     .all()
-    # )
-
-    # Process records data
-    # medical_records_data = []
-    # for appointment, doctor, specialization in records:
-    #     formatted_booking_time = appointment.time.strftime('%I:%M %p')  # Format the time
-    #     diagnosis = appointment.Diagnosis  # Assuming 'Diagnosis' is a field in the Appointment table
-    #     report_url = appointment.Report  # Assuming 'Report' is the field name for report URL
-
-    #     medical_records_data.append({
-    #         'doctor_idnum': doctor.iDNum,
-    #         'booking_time': formatted_booking_time,  # Use the formatted time instead of date
-    #         'diagnosis': diagnosis,
-    #         'appointment_date': appointment.date,
-    #         'doctor_name': doctor.users.name,
-    #         'doctor_specialization': specialization.specialization_name,
-    #         'report_url': report_url
-    #     })
 
     form = AddMedicineForm()
     if request.method == 'POST':
@@ -350,8 +275,72 @@ def appointment_History():
         # allergy=allergy,
         # medicine_data=medicine_data,
         # medical_records=medical_records_data,
+        patient_histories=patient_histories,
         form=form
-    )
+        )
+
+MAX_FILE_SIZE = 10 * 1024 * 1024
+ALLOWED_EXTENSIONS = {'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_report', methods=['POST'])
+def upload_report():
+    patient_id = request.form.get('patient_id')
+    appointment_id = request.form.get('appointment_id')
+    diagnosis = request.form.get('diagnosis')
+    report_file = request.files.get('file')
+
+    print(f"Patient ID: {patient_id}")
+    print(f"Appointment ID: {appointment_id}")
+
+    if not patient_id:
+        flash('Patient ID is missing.')
+        return redirect(request.url)
+
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    
+    if file and allowed_file(file.filename):
+        if file.content_length > MAX_FILE_SIZE:
+            flash('File exceeds maximum allowed size of 10MB', 'danger')
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join('app/static/pdfs', filename)
+
+        try:
+            file.save(filepath)
+        except Exception as e:
+            flash(f'Error saving file: {str(e)}')
+            return redirect(request.url)
+        
+        appointment_id = request.form.get('appointment_id')
+        diagnosis = request.form.get('diagnosis')
+
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            flash('Appointment not found')
+            return redirect(request.url)
+        
+        appointment.Report = filename
+        appointment.Diagnosis = diagnosis
+
+        db.session.commit()
+
+        flash('Report uploaded successfully', "success")
+        return redirect(url_for('appointment_History'))
+
+    flash('Invalid file type. Only PDF files are allowed.')
+    return redirect(request.url)
+
 
 
 @app.route('/cancel_appointment', methods=['POST'])
@@ -451,6 +440,7 @@ def update_appointment_status():
         print(f"Error: {e}")
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 #### doctor search page ####
@@ -880,29 +870,27 @@ def patient_checkout():
                     isRead=False,
                     appointment=appointment_create
                 )
-
+                db.session.add(patient_create)
                 db.session.add(appointment_create)
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
-                current_user = clinic_data.users
                 socketio.emit(
                     'appointment_notification',
                     {
-                        'doctor': doctor_data.users.name,
+                        'doctor': doctor_data.name,
                         'date': date.strftime('%d %b %Y'),
                         'time': start_time.strftime('%H:%M:%S'),
-                        'patient': patient_create.users.name,
-                        'photo': doctor_data.users.photo
+                        'patient': patient_create.name,
+                        'photo': doctor_data.photo
                     },
                     room=clinic_data.id,
                     namespace='/'
                 )
-                session['doctor'] = doctor_data.users.name
+                session['doctor'] = doctor_data.name
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
                 session['clinic_id'] = clinic_data.id
-                print('clinic_id', clinic_data.id)
 
                 return redirect(url_for('checkout_success'))
             if checkout_form.errors != {}:
@@ -924,15 +912,17 @@ def patient_checkout():
         gov=gov,
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
+        end_time=end_time.strftime('%H:%M'),
         form=checkout_form
-        )
-
-def appointment_notification(data):
-    emit('appointment_notification', data, room=data['clinic_id'])
-
+    )
+def send_appointment_notification(clinic_id, data):
+    socketio.emit('appointment_notification', data, room=clinic_id)
+    
+    
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = current_user.get('clinic_id')
+    clinic_id = getattr(current_user, 'clinic_id', None)
+    print(f"Clinic ID: {clinic_id}")
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
@@ -940,7 +930,7 @@ def handle_connect():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    clinic_id = session.get('clinic_id')
+    clinic_id = getattr(current_user, 'clinic_id', None)
     if clinic_id:
         leave_room(clinic_id)
 
