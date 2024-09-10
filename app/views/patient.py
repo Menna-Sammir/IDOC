@@ -200,7 +200,7 @@ def appointment_History():
     elif current_user.doctor:
         patient_id = request.args.get('patient_id')
         if not patient_id:
-            flash('Patient ID is missing.', 'danger')
+            flash('Patient ID is missing', 'danger')
             return redirect(url_for('doctor_dash'))
 
         patient = Patient.query.get(patient_id)
@@ -277,6 +277,7 @@ def appointment_History():
         # medicine_data=medicine_data,
         # medical_records=medical_records_data,
         patient_histories=patient_histories,
+        patient=patient,
         form=form
         )
 
@@ -287,6 +288,8 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/upload_report', methods=['POST'])
+@login_required
+@doctor_permission.require(http_exception=403)
 def upload_report():
     patient_id = request.form.get('patient_id')
     appointment_id = request.form.get('appointment_id')
@@ -297,7 +300,7 @@ def upload_report():
     print(f"Appointment ID: {appointment_id}")
 
     if not patient_id:
-        flash('Patient ID is missing.')
+        flash('Patient ID is missing')
         return redirect(request.url)
 
     if 'file' not in request.files:
@@ -337,7 +340,7 @@ def upload_report():
         db.session.commit()
 
         flash('Report uploaded successfully', "success")
-        return redirect(url_for('appointment_History'))
+        return redirect(url_for('appointment_History', patient_id=patient_id))
 
     flash('Invalid file type. Only PDF files are allowed.')
     return redirect(request.url)
@@ -1347,8 +1350,7 @@ def patient_setting():
         if form.validate():
             if form.photo.data:
                 photo_filename = secure_filename(form.photo.data.filename)
-                photo_directory = os.path.join('static', 'images', 'patients')
-
+                photo_directory = os.path.join(app.config['UPLOAD_FOLDER'], 'patients', photo_filename)
                 if not os.path.exists(photo_directory):
                     os.makedirs(photo_directory)
                 photo_path = os.path.join(photo_directory, photo_filename)

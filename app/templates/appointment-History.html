@@ -86,7 +86,6 @@
                         </thead>
                         <tbody>
                           {% for appointment in appointments %}
-                          {% if appointment.status.name == 'Completed' %}
                           <tr>
                             <td>
                               <h2 class="table-avatar">
@@ -329,7 +328,6 @@
                             </td>
                             {% endif %}
                           </tr>
-                          {% endif %}
                           {% endfor %}
                         </tbody>
                       </table>
@@ -521,7 +519,7 @@
               <td>{{ appointment.Diagnosis }}</td>
               <td>
                 {% if appointment.Report %}
-                <a href="{{ url_for('static', filename='pdfs/' ~ appointment.report) }}" target="_blank">
+                <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" target="_blank">
                   {{ appointment.Report }}
                 </a>
                 {% else %} No attachment {% endif %}
@@ -546,17 +544,34 @@
               
               <td class="text-right">
                 <div class="table-action">
-                  <a href="javascript:void(0);" class="btn btn-sm bg-primary-light print-btn" data-report-url="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}">
+                  <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')">
                     <i class="fas fa-print"></i> Print
                   </a>
+
+                  <iframe id="pdfIframe" style="display:none;" frameborder="0"></iframe>
+
+                  <script>
+                    function printPDF(pdfUrl) {
+                      var iframe = document.getElementById('pdfIframe');
+                      
+                      iframe.src = pdfUrl;
+
+                      iframe.onload = function () {
+                        iframe.focus();
+                        iframe.contentWindow.print();
+                      };
+                    }
+                      </script>
+
+                  
                   <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank">
                     <i class="far fa-eye"></i> View
                   </a>
                   <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" 
-                     data-toggle="modal" 
-                     data-target="#add_medical_reports" 
-                     data-appointment-id="{{ appointment.id }}" 
-                     data-patient-id="{{ appointment.patient_id }}">
+                  data-toggle="modal" 
+                  data-target="#add_medical_reports" 
+                  data-appointment-id="{{ appointment.id }}" 
+                  data-patient-id="{{ patient.id }}">
                     <i class="fas fa-upload"></i> Report
                   </a>
                 </div>

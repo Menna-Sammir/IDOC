@@ -205,4 +205,4 @@ def patient_list():
         user = User.query.filter_by(id=patient.user_id).first()
         patient.user_name = user.name if user else 'Unknown'
 
-    return render_template('patient-list.html', doctor=doctor, patients=patients)
+    return render_template('patient-list.html', doctor=doctor, patients=patients, appointments=appointments)
