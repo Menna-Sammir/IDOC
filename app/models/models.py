@@ -20,7 +20,6 @@ from app.models.notiTime import calculate_time_ago
 from flask import g
 from enum import Enum
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)

@@ -31,6 +31,13 @@ from enum import Enum
 from uuid import UUID
 from flask_wtf.csrf import CSRFProtect
 from flask_principal import Permission, RoleNeed
+from sqlalchemy.orm import joinedload
+from wtforms import SelectField, SubmitField
+from flask_wtf.file import FileField, FileRequired
+from wtforms.validators import DataRequired
+from flask_wtf import FlaskForm
+from app.views.forms.add_patient_history import PatientHistoryForm
+import uuid 
 
 csrf = CSRFProtect(app)
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -167,10 +174,44 @@ def patient_dashboard():
         .filter(Appointment.patient_id == patient_id)
         .all()
     )
+    form = PatientHistoryForm()
+    if form.validate_on_submit(): 
+        if form.details.data:
+            file = form.details.data
+            unique_str = str(uuid.uuid4())[:8]
+            original_filename, extension = os.path.splitext(file.filename)
+            new_filename = f"{unique_str}_{secure_filename(original_filename)}{extension}"
+
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename))
+
+            new_history = PatientHistory(
+                details=new_filename,
+                type=form.type.data,
+                addedBy=current_user.id,
+                patient_id=patient_id
+            )
+            db.session.add(new_history)
+            db.session.commit()
+            flash('History record added successfully', 'success')
+            return redirect(url_for('patient_dashboard', patient_id=patient_id))
+
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
     specialties = Specialization.query.all()
+    # Fetch patient history with file paths
+    patient_history_query = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
+    # Organize patient history data
+    patient_history = [
+        {
+            'details': history.details,  
+            'type': history.type.value if history.type else 'Not Provided',  
+            'added_by': history.user.name,
+            'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
+        }
+        for history in patient_history_query
+    ]
     return render_template(
         'patient-dashboard.html',
         user_name=current_user.name,
@@ -184,8 +225,11 @@ def patient_dashboard():
         specialties=specialties,
         prescriptions=limited_prescriptions,
         show_more_button=show_more_button,
+        patient_history=patient_history,
+        form=form,
         AppStatus=AppStatus
     )
+
 
 
 @app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
