@@ -6477,6 +6477,47 @@ div.date-item > h6.active {
   height: 100% !important;
   padding: 18px !important;
 }
+.Next-appointment-card {
+  background-color: #f8f9fa; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding: 20px; 
+}
+
+
+.Next-appointment-card h4 {
+  font-size: 1.5rem; 
+  color: #007bff; 
+}
+
+.Next-appointment-card p {
+  font-size: 1rem; 
+  margin-bottom: 10px; 
+}
+
+.Next-appointment-card .booking-doc-img img {
+  border: 2px solid #007bff; 
+  border-radius: 50%; 
+}
+
+.Next-appointment-card .booking-doc-img {
+  margin-right: 15px; 
+}
+
+.Next-appointment-card .font-weight-bold {
+  font-size: 1.1rem;
+}
+
+.Next-appointment-card .text-muted {
+  font-size: 0.9rem;
+}
+.Next-appointment-card i {
+  margin-right: 5px;
+}
+
+
+
+
 .Report-appointment-card {
   width: 25%;
   height: 248px !important;
@@ -6485,14 +6526,82 @@ div.date-item > h6.active {
 }
 .fa-vial,
 .fa-pills,
-.fa-x-ray {
-  font-size: 50px !important;
+.fa-x-ray,
+.fa-file-medical-alt {
+  font-size: 25px !important;
   margin-bottom: 8px !important;
-  color: #0077b6;
+  margin-top: 5px;
 }
 .fa-calendar-check {
   color: green;
 }
+.prescription-card h5, 
+.prescription-card p {
+    word-wrap: break-word;
+    white-space: normal;   
+    overflow: hidden;      
+    text-overflow: ellipsis; 
+}
+div.prescription-card {
+  height: 106px !important;
+}
+div.prescription-card > div > p {
+  font-size: x-small;
+  }
+
+.prescription-card a h5, 
+.prescription-card a p {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.prescription-card a {
+    display: block;
+    height: 106px !important;
+    text-decoration: none; 
+    color: inherit;
+    text-decoration: none;
+}
+div.prescription-card > a > div > p {
+  font-size: x-small;
+  }
+  
+  
+  .prescription-card {
+    flex-basis: 29%; 
+    max-width: 100%; 
+    min-width: 83px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: auto; 
+  }
+  
+  .prescription-card p {
+    font-size: 14px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .prescription-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .Prescription-appointment-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; 
+  }
+  .prescription-card p, .prescription-card a p {
+    word-wrap: break-word; 
+    white-space: normal;
+    overflow-wrap: break-word; 
+    text-align: center; 
+  }
 /*-----------------
 	30. Profile Settings
 -----------------------*/
