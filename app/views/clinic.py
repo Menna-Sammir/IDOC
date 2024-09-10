@@ -95,12 +95,12 @@ def clinic_cal():
     )
     appointment_events = [
         {
-            'doctor': f'{" ".join(appointment.Doctor.name.split()[:2])}',
-            'title': f'{" ".join(appointment.Doctor.name.split()[:2])}',
-            'patient': f'{" ".join(appointment.Patient.name.split()[:2])}',
+            'doctor': f'{" ".join(appointment.Doctor.users.name.split()[:2])}',
+            'title': f'{" ".join(appointment.Doctor.users.name.split()[:2])}',
+            'patient': f'{" ".join(appointment.Patient.users.name.split()[:2])}',
             'start': f'{appointment.Appointment.date}T{appointment.Appointment.time}',
             'end': f'{appointment.Appointment.date}T{appointment.Appointment.time}',
-            'img': f'../static/images/doctors/{appointment.Doctor.photo}',
+            'img': f'../static/images/doctors/{appointment.Doctor.users.photo}',
             'cost': f'{appointment.Doctor.price}'
         }
         for appointment in appointments
@@ -117,6 +117,9 @@ def clear_noti():
     rows_changed = Notification.query.filter_by(clinic_id=clinic_id).update(dict(isRead=True))
     db.session.commit()
     return redirect(url_for('clinic_calender'))
+
+
+
 
 
 ### view all notifications page ###

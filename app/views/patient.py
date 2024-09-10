@@ -303,12 +303,12 @@ def upload_report():
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
-    
+
     file = request.files['file']
     if file.filename == '':
         flash('No selected file')
         return redirect(request.url)
-    
+
     if file and allowed_file(file.filename):
         if file.content_length > MAX_FILE_SIZE:
             flash('File exceeds maximum allowed size of 10MB', 'danger')
@@ -322,7 +322,7 @@ def upload_report():
         except Exception as e:
             flash(f'Error saving file: {str(e)}')
             return redirect(request.url)
-        
+
         appointment_id = request.form.get('appointment_id')
         diagnosis = request.form.get('diagnosis')
 
@@ -330,7 +330,7 @@ def upload_report():
         if not appointment:
             flash('Appointment not found')
             return redirect(request.url)
-        
+
         appointment.Report = filename
         appointment.Diagnosis = diagnosis
 
@@ -875,6 +875,7 @@ def patient_checkout():
                     db.session.add(message_create)
                     db.session.add(notification_create)
                     db.session.commit()
+                    print("dddddddddddddddddddddddddddddddddddd",clinic_data.id )
                     socketio.emit(
                         'appointment_notification',
                         {
@@ -891,7 +892,7 @@ def patient_checkout():
                     session['date'] = date.strftime('%d %b %Y')
                     session['start_time'] = start_time.strftime('%H:%M:%S')
                     session['clinic_id'] = clinic_data.id
-                    print('clinic_id', clinic_data.id)
+                    print('clinic_iddddddddddddddddddddddddddddddddddddd', clinic_data.id)
 
                     return redirect(url_for('checkout_success'))
                 if checkout_form.errors != {}:
@@ -922,11 +923,11 @@ def patient_checkout():
 
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
-    
-    
+
+
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = getattr(current_user, 'clinic_id', None)
+    clinic_id = request.args.get('clinic_id')
     print(f"Clinic ID: {clinic_id}")
     if clinic_id:
         join_room(clinic_id)
@@ -935,7 +936,7 @@ def handle_connect():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    clinic_id = getattr(current_user, 'clinic_id', None)
+    clinic_id = getattr(current_user.clinic, 'id', None)
     if clinic_id:
         leave_room(clinic_id)
 

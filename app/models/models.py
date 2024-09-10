@@ -43,17 +43,17 @@ def inject_cache_id():
 @app.before_request
 def load_notification():
     current_time = datetime.now()
-    if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
-        notification = Notification.query.filter_by(clinic_id=current_user.clinic_id)
+    if current_user.is_authenticated and hasattr(current_user.clinic, 'id'):
+        notification = Notification.query.filter_by(clinic_id=current_user.clinic.id)
         processed_notifications = [
             {
-                'doctor': n.appointment.doctor.name,
-                'patient': n.appointment.patient.name,
+                # 'doctor': n.appointment.doctor.name,
+                # 'patient': n.appointment.patient.name,
                 'body': n.noteBody,
                 'isRead': n.isRead,
                 'time': n.time.strftime('%H:%M %p'),
                 'date': n.date.strftime('%d %B'),
-                'photo': n.appointment.doctor.photo,
+                # 'photo': n.appointment.doctor.photo,
                 'formatted_time': calculate_time_ago(current_time, n.notDate)
             }
             for n in notification.all()[:10]
@@ -229,7 +229,7 @@ class User(BaseModel, UserMixin):
 
     doctor = relationship('Doctor', back_populates='users')
     patient = relationship('Patient', back_populates='users')
-    clinic = relationship('Clinic', back_populates='users')
+    clinic = relationship('Clinic', back_populates='users', uselist=False)
     user_roles = relationship('UserRole', uselist=False, back_populates='user')
     patient_history = relationship('PatientHistory', back_populates='user')
     patient_medicine = relationship('PatientMedicine', back_populates='user')
