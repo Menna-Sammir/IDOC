@@ -45,6 +45,12 @@
             <span>Profile Settings</span>
           </a>
         </li>
+        <li class="{{ 'active' if request.endpoint == 'add_doctor' else '' }}"></li>
+          <a href="{{ url_for('add_doctor') }}">
+            <i class="fas fa-user-nurse"></i>
+            <span>{{ translate('ADD Doctor') }}</span>
+          </a>
+        </li>
         <li>
           <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>

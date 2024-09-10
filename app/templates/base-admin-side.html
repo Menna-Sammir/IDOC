@@ -24,12 +24,7 @@
             <span>{{ translate('Add Clinic') }}</span>
           </a>
         </li>
-        <li class="{{ 'active' if request.endpoint == 'add_doctor' else '' }}">
-          <a href="{{ url_for('add_doctor') }}">
-            <i class="fas fa-user-nurse"></i>
-            <span>{{ translate('ADD Doctor') }}</span>
-          </a>
-        </li>
+        
         <li
           class="{{ 'active' if request.endpoint == 'all_patients' else '' }}"
         >
