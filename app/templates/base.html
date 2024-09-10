@@ -195,6 +195,7 @@
             </li>
             <!-- /Notifications -->
             {% endif %}
+
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item mr-3">
@@ -206,11 +207,20 @@
                 aria-expanded="true"
               >
                 <span class="user-img">
+                {% if current_user.user_roles.role.role_name == 'Admin' %}
+                {% set base_path = 'static/images/Admin/' %}
+                {% elif current_user.user_roles.role.role_name == 'doctor' %}
+                {% set base_path = 'static/images/doctors/' %}
+                {% elif current_user.user_roles.role.role_name == 'clinic' %}
+                {% set base_path = 'static/images/clinic/' %}
+                {% elif current_user.user_roles.role.role_name == 'patient' %}
+                {% set base_path = 'static/images/patient/' %}
+                {% endif %}
+
                   <img
-                    class="rounded-circle"
-                    src="{{current_user.photo}}"
-                    width="31"
-                    alt="user image"
+                    class="avatar-img rounded-circle"
+                    src="{{base_path ~ current_user.photo}}"
+                    alt="User Image"
                   />
                 </span>
               </a>
@@ -241,6 +251,12 @@
                 >
                 {% elif current_user.user_roles.role.role_name == 'clinic' %}
                 <a class="dropdown-item" href="{{ url_for('clinic_dash') }}"
+                  >{{ translate('Dashboard') }}</a
+                >
+                {% elif current_user.user_roles.role.role_name == 'patient' %}
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('patient_dashboard') }}"
                   >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
@@ -277,45 +293,45 @@
 
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', (event) => {
-        var clinic_id = '{{ current_user.clinic_id }}';
-        console.log('Rendered clinic_id:', clinic_id);
+      document.addEventListener("DOMContentLoaded", (event) => {
+        var clinic_id = "{{ current_user.clinic_id }}";
+        console.log("Rendered clinic_id:", clinic_id);
         if (!clinic_id) {
           console.error(
-            'Clinic ID is missing. Cannot establish WebSocket connection.'
+            "Clinic ID is missing. Cannot establish WebSocket connection."
           );
           return;
         }
-        console.log('Connecting with clinic_id:', clinic_id);
+        console.log("Connecting with clinic_id:", clinic_id);
 
-        var socket = io.connect('http://127.0.0.1:5000', {
-          query: 'clinic_id=' + clinic_id,
+        var socket = io.connect("http://127.0.0.1:5000", {
+          query: "clinic_id=" + clinic_id,
         });
 
-        socket.on('connected', function (msg) {
+        socket.on("connected", function (msg) {
           console.log(msg.message);
         });
 
-        socket.on('appointment_notification', function (data) {
-          console.log('Appointment notification:', data);
+        socket.on("appointment_notification", function (data) {
+          console.log("Appointment notification:", data);
           addNotification(data, true);
         });
 
-        socket.on('disconnected', function (msg) {
+        socket.on("disconnected", function (msg) {
           console.log(msg.message);
         });
 
         function addNotification(data, store = false) {
-          var notificationList = document.getElementById('notification-list');
-          var notificationCount = document.getElementById('notification-count');
+          var notificationList = document.getElementById("notification-list");
+          var notificationCount = document.getElementById("notification-count");
 
-          var newNotification = document.createElement('li');
-          newNotification.classList.add('notification-message');
+          var newNotification = document.createElement("li");
+          newNotification.classList.add("notification-message");
 
           var currentTime = new Date();
           var formattedTime = currentTime.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
+            hour: "2-digit",
+            minute: "2-digit",
           });
           var notificationContent = `
             <a href="#">
@@ -344,13 +360,13 @@
           playNotificationSound();
 
           function playNotificationSound() {
-            var audio = document.getElementById('notification-sound');
+            var audio = document.getElementById("notification-sound");
             if (audio) {
               audio.play().catch((error) => {
-                console.error('Error playing audio:', error);
+                console.error("Error playing audio:", error);
               });
             } else {
-              console.error('Audio element not found');
+              console.error("Audio element not found");
             }
           }
 
@@ -361,22 +377,22 @@
 
         function storeNotification(data) {
           var notifications =
-            JSON.parse(localStorage.getItem('notifications')) || [];
+            JSON.parse(localStorage.getItem("notifications")) || [];
           notifications.unshift(data);
-          localStorage.setItem('notifications', JSON.stringify(notifications));
+          localStorage.setItem("notifications", JSON.stringify(notifications));
         }
 
         function loadNotifications() {
           var notifications =
-            JSON.parse(localStorage.getItem('notifications')) || [];
+            JSON.parse(localStorage.getItem("notifications")) || [];
           notifications.forEach((notification) => {
             addNotification(notification, false);
           });
         }
 
         document
-          .getElementById('clear-all-notifications')
-          .addEventListener('click', function () {
+          .getElementById("clear-all-notifications")
+          .addEventListener("click", function () {
             clearAllNotifications();
           });
 
@@ -384,7 +400,7 @@
           fetch(`/notifications?clinic_id=${clinic_id}`)
             .then((response) => {
               if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error("Network response was not ok");
               }
               return response.json();
             })
@@ -394,20 +410,20 @@
               );
             })
             .catch((error) =>
-              console.error('Error fetching notifications:', error)
+              console.error("Error fetching notifications:", error)
             );
         }
 
         function clearAllNotifications() {
-          var notificationList = document.getElementById('notification-list');
-          var notificationCount = document.getElementById('notification-count');
+          var notificationList = document.getElementById("notification-list");
+          var notificationCount = document.getElementById("notification-count");
           if (notificationList && notificationCount) {
-            notificationList.innerHTML = '';
-            notificationCount.textContent = '0';
-            localStorage.removeItem('notifications');
+            notificationList.innerHTML = "";
+            notificationCount.textContent = "0";
+            localStorage.removeItem("notifications");
           }
         }
-        socket.on('notification_update', function (data) {
+        socket.on("notification_update", function (data) {
           updateNotificationCount(data.count);
         });
 

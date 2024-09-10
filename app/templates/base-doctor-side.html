@@ -26,29 +26,10 @@
             <span>{{ translate('Dashboard') }}</span>
           </a>
         </li>
-        <li>
-          <a href="appointments.html">
-            <i class="fas fa-calendar-check"></i>
-            <span>Appointments</span>
-          </a>
-        </li>
         <li class="active">
           <a href="{{ url_for('patient_list') }}">
             <i class="fas fa-user-injured"></i>
             <span>My Patients</span>
-          </a>
-        </li>
-        <li>
-          <a href="reviews.html">
-            <i class="fas fa-star"></i>
-            <span>Reviews</span>
-          </a>
-        </li>
-        <li>
-          <a href="chat-doctor.html">
-            <i class="fas fa-comments"></i>
-            <span>Message</span>
-            <small class="unread-msg">23</small>
           </a>
         </li>
         <li>
@@ -58,7 +39,7 @@
           </a>
         </li>
         <li>
-          <a href="doctor-change-password.html">
+          <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>
             <span>Change Password</span>
           </a>

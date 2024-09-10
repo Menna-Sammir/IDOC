@@ -188,7 +188,7 @@ def add_prescription():
 
 
 ### patient list
-@app.route('/doctor_dashboard/patient_list', methods=['GET', 'POST'])
+@app.route('/patient_list', methods=['GET', 'POST'])
 @login_required
 @doctor_permission.require(http_exception=403)
 def patient_list():
