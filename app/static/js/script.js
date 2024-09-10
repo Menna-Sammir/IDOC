@@ -796,3 +796,41 @@ function getStatusColor(status) {
       return 'warning';
   }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  $('#add_medical_reports').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var appointmentId = button.data('appointment-id');
+    var patientId = button.data('patient-id');
+    var diagnosis = button.data('diagnosis');
+
+    var modal = $(this);
+    modal.find('#appointment_id').val(appointmentId);
+    modal.find('#patient_id').val(patientId);
+    modal.find('#modal_diagnosis').val(diagnosis);
+  });
+});
+
+$(document).ready(function () {
+  $('.print-btn').on('click', function () {
+    var reportUrl = $(this).data('report-url');
+    if (reportUrl) {
+      var printWindow = window.open(reportUrl, '_blank');
+      printWindow.onload = function () {
+        printWindow.focus();
+        printWindow.print();
+      };
+    } else {
+      alert('No report available to print.');
+    }
+  });
+
+  $('.view-btn').on('click', function () {
+    var reportUrl = $(this).data('report-url');
+    if (reportUrl) {
+      window.open(reportUrl, '_blank');
+    } else {
+      alert('No report available to view.');
+    }
+  });
+});

@@ -78,7 +78,8 @@ class AppStatus(Enum):
 
 class PatientHisType(Enum):
     Lab = "Lab"
-    medicine = "medicine"
+    X_ray = "X-ray"
+
 
 class MedicineTime(Enum):
     MORNING = "Morning"

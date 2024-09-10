@@ -54,7 +54,8 @@ def clinic_dash():
         clinic=clinic,
         today_appointments=today_appointments,
         total_appointments=total_appointments,
-        appointments=appointments
+        appointments=appointments,
+        clinic_id=clinic.id
     )
 
 @app.route('/calender', methods=['GET'], strict_slashes=False)

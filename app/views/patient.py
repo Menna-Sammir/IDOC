@@ -255,6 +255,8 @@ def appointment_History():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('home'))
 
+    patient_histories = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
     appointments = (
         db.session.query(Appointment)
         .join(Appointment.doctor)
@@ -263,7 +265,10 @@ def appointment_History():
         .filter(Appointment.patient_id == patient_id)
         .all()
     )
+    patient_histories = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
     patient_medicines = PatientMedicine.query.filter_by(patient_id=patient_id).all()
+
     form = AddMedicineForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -310,8 +315,78 @@ def appointment_History():
         appointments=appointments,
         patient=patient,
         patient_medicines=patient_medicines,
+        # appointments=appointment_data,
+        # patient_history=history_data,
+        # blood_group=blood_group,
+        # allergy=allergy,
+        # medicine_data=medicine_data,
+        # medical_records=medical_records_data,
+        patient_histories=patient_histories,
         form=form
-    )
+        )
+
+MAX_FILE_SIZE = 10 * 1024 * 1024
+ALLOWED_EXTENSIONS = {'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_report', methods=['POST'])
+def upload_report():
+    patient_id = request.form.get('patient_id')
+    appointment_id = request.form.get('appointment_id')
+    diagnosis = request.form.get('diagnosis')
+    report_file = request.files.get('file')
+
+    print(f"Patient ID: {patient_id}")
+    print(f"Appointment ID: {appointment_id}")
+
+    if not patient_id:
+        flash('Patient ID is missing.')
+        return redirect(request.url)
+
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    
+    if file and allowed_file(file.filename):
+        if file.content_length > MAX_FILE_SIZE:
+            flash('File exceeds maximum allowed size of 10MB', 'danger')
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join('app/static/pdfs', filename)
+
+        try:
+            file.save(filepath)
+        except Exception as e:
+            flash(f'Error saving file: {str(e)}')
+            return redirect(request.url)
+        
+        appointment_id = request.form.get('appointment_id')
+        diagnosis = request.form.get('diagnosis')
+
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            flash('Appointment not found')
+            return redirect(request.url)
+        
+        appointment.Report = filename
+        appointment.Diagnosis = diagnosis
+
+        db.session.commit()
+
+        flash('Report uploaded successfully', "success")
+        return redirect(url_for('appointment_History'))
+
+    flash('Invalid file type. Only PDF files are allowed.')
+    return redirect(request.url)
+
 
 
 @app.route('/cancel_appointment', methods=['POST'])
@@ -411,6 +486,7 @@ def update_appointment_status():
         print(f"Error: {e}")
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 #### doctor search page ####
@@ -889,12 +965,14 @@ def patient_checkout():
         form=checkout_form
         )
 
-def appointment_notification(data):
-    emit('appointment_notification', data, room=data['clinic_id'])
-
+def send_appointment_notification(clinic_id, data):
+    socketio.emit('appointment_notification', data, room=clinic_id)
+    
+    
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = current_user.get('clinic_id')
+    clinic_id = getattr(current_user, 'clinic_id', None)
+    print(f"Clinic ID: {clinic_id}")
     if clinic_id:
         join_room(clinic_id)
         emit('connected', {'message': 'Connected to clinic ' + clinic_id})
@@ -902,7 +980,7 @@ def handle_connect():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    clinic_id = session.get('clinic_id')
+    clinic_id = getattr(current_user, 'clinic_id', None)
     if clinic_id:
         leave_room(clinic_id)
 
