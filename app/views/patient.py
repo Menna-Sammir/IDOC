@@ -310,6 +310,38 @@ def appointment_History():
             for err_msg in form.errors.values():
                 flash(f'There was an error with adding medicine: {err_msg}', category='danger')
 
+    form = PatientHistoryForm()
+    if form.validate_on_submit(): 
+        if form.details.data:
+            file = form.details.data
+            unique_str = str(uuid.uuid4())[:8]
+            original_filename, extension = os.path.splitext(file.filename)
+            new_filename = f"{unique_str}_{secure_filename(original_filename)}{extension}"
+            print(f"Saving file to: {new_filename}")
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename))
+
+            new_history = PatientHistory(
+                details=new_filename,
+                type=form.type.data,
+                addedBy=current_user.id,
+                patient_id=patient_id
+            )
+            db.session.add(new_history)
+            db.session.commit()
+            flash('History record added successfully', 'success')
+            return redirect(url_for('appointment_History', patient_id=patient_id))
+    patient_history_query = PatientHistory.query.filter_by(patient_id=patient_id).all()
+
+    # Organize patient history data
+    patient_history = [
+        {
+            'details': history.details,  
+            'type': history.type.value if history.type else 'Not Provided',  
+            'added_by': history.user.name,
+            'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
+        }
+        for history in patient_history_query
+    ]
     return render_template(
         'appointment-History.html',
         appointments=appointments,
@@ -321,6 +353,7 @@ def appointment_History():
         # allergy=allergy,
         # medicine_data=medicine_data,
         # medical_records=medical_records_data,
+        patient_history=patient_history,
         patient_histories=patient_histories,
         form=form
         )
@@ -680,7 +713,7 @@ def patient_checkout():
                 confirm_message = ''
                 user_to_create = None
                 name = ''
-                status = AppStatus.Pending
+                status = AppStatus.Confirmed
                 if checkout_form.validate_on_submit():
                     temp_password = secrets.token_urlsafe(8)
                     # patient = Patient.query.filter_by(

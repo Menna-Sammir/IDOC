@@ -327,8 +327,8 @@ class PatientHistory(BaseModel):
     __tablename__ = 'PatientHistory'
     details = db.Column(VARCHAR(255), nullable=False)
     type =  db.Column(SQLAlchemyEnum(PatientHisType), nullable=True)
-    addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
-    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), unique=True)
+    addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
+    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'))
 
     user = db.relationship('User', back_populates='patient_history')
 
