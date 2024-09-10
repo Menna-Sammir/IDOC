@@ -871,27 +871,29 @@ def patient_checkout():
                     isRead=False,
                     appointment=appointment_create
                 )
-                db.session.add(patient_create)
+
                 db.session.add(appointment_create)
                 db.session.add(message_create)
                 db.session.add(notification_create)
                 db.session.commit()
+                current_user = clinic_data.users
                 socketio.emit(
                     'appointment_notification',
                     {
-                        'doctor': doctor_data.name,
+                        'doctor': doctor_data.users.name,
                         'date': date.strftime('%d %b %Y'),
                         'time': start_time.strftime('%H:%M:%S'),
-                        'patient': patient_create.name,
-                        'photo': doctor_data.photo
+                        'patient': patient_create.users.name,
+                        'photo': doctor_data.users.photo
                     },
                     room=clinic_data.id,
                     namespace='/'
                 )
-                session['doctor'] = doctor_data.name
+                session['doctor'] = doctor_data.users.name
                 session['date'] = date.strftime('%d %b %Y')
                 session['start_time'] = start_time.strftime('%H:%M:%S')
                 session['clinic_id'] = clinic_data.id
+                print('clinic_id', clinic_data.id)
 
                 return redirect(url_for('checkout_success'))
             if checkout_form.errors != {}:
@@ -913,9 +915,9 @@ def patient_checkout():
         gov=gov,
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
-        end_time=end_time.strftime('%H:%M'),
         form=checkout_form
-    )
+        )
+
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
     
