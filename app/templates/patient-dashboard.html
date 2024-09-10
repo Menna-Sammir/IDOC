@@ -33,59 +33,123 @@
 
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6">
-                <h3>Next appointment</h3>
-                <div class="Next-appointment-card">
-                    <div>
-                        {% if appointment %}
-                        <h2>{{ appointment.date }}</h2>
-                        <p><i class="far fa-clock"></i> {{ appointment.time_range }} - {{ appointment.duration }}</p>
-                        <p><i class="fas fa-map-marker-alt"></i> {{ appointment.clinic_address }}</p>
-                        <div class="d-flex">
-                           <div class="booking-doc-img">
-                            <img class="bor avatar-img rounded-circl" src="{{base_path ~ current_user.doctor.photo}}" alt="" width="100">
-                           </div>
-                            <div>
-                                <p>{{ appointment.doctor_name }}</p>
-                                <p class="text-muted">{{ appointment.doctor_specialization }}</p>
-                            </div>
-                        </div>
-                        {% else %}
-                        <p class="w-100 h-100 d-flex justify-content-center align-items-center">No upcoming appointments.</p>
-                        {% endif %}
-                    </div>
+          <div class="col-md-4 col-lg-4 col-xl-4">
+            <h3 class="mb-3"><i class="fas fa-hand-point-right"></i> Next appointment</h3>
+            
+            <div class="Next-appointment-card card shadow-sm p-4">
+              <div>
+                {% if appointment %}
+                <h4 class="text-primary">{{ appointment.date }}</h4>
+                <p class="mb-2">
+                  <i class="far fa-clock"></i> {{ appointment.time_range }} - {{ appointment.duration }}
+                </p>
+                <p class="mb-2">
+                  <i class="fas fa-map-marker-alt"></i> {{ appointment.clinic_address }}
+                </p>
+                <div class="d-flex align-items-center mt-3">
+                  <div class="booking-doc-img">
+                    <img class="rounded-circle" src="{{base_path ~ current_user.doctor.photo}}" alt="Doctor's photo" width="80" height="80">
+                  </div>
+                  <div class="ml-3">
+                    <p class="font-weight-bold mb-1">{{ appointment.doctor_name }}</p>
+                    <p class="text-muted">{{ appointment.doctor_specialization }}</p>
+                  </div>
                 </div>
+                {% else %}
+                <p class="w-100 h-100 d-flex justify-content-center align-items-center text-muted">No upcoming appointments.</p>
+                {% endif %}
+              </div>
             </div>
-            <div class="col-md-6 col-lg-6 col-xl-6">
-              <h3>Prescription Details</h3>
+          </div>
+          
+            <div class="col-md-4 col-lg-4 col-xl-4">
+              <h3 class="mb-3"> <i class="fas fa-mortar-pestle"></i> Prescription Details</h3>
               <div class="Prescription-appointment-card overflow-auto">
-                  {% if prescriptions %}
+                {% if prescriptions %}
+                <div class="d-flex flex-wrap justify-content-start">
                   {% for prescription in prescriptions %}
-                  <div class="pt-3 border-bottom d-flex align-items-center ml-2 mr-2">
-                    
-                    <div>
-                      <i class="fas fa-capsules h1"></i>
+                  <div class="prescription-card shadow-sm rounded m-2 bg-white border"> 
+                    <div class="text-center">
+                      <i class="fas fa-pills h1 text-primary mb-2"></i>
+                      <p class="text-dark font-weight-bold mb-1">{{ prescription.name }}</p>
+                      <p class="text-muted mb-1"><i class="fas fa-history mr-1"></i> {{ prescription.quantity }}</p>
+                      <p class="text-muted mb-0"><i class="fas fa-calendar-day mr-1"></i> {{ prescription.times_of_day | join(', ') }}</p>
                     </div>
-                    <div class="ml-3">
-                      <h5>{{ prescription.name }}</h5>
-                      <p class="d-block text-muted">{{ prescription.quantity }} |
-                        {{ prescription.times_of_day | join(', ') }}
-                      </p>
-                    </div>
-
-                     
                   </div>
                   {% endfor %}
-                  {% if show_more_button %}
-                  <a href="{{ url_for('appointment_History') }}" class="btn btn-primary w-100 text-center">Show More</a>
-                  {% endif %}
-                  {% else %}
-                  <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
-                  {% endif %}
+                </div>
+                {% if show_more_button %}
+                <a href="{{ url_for('appointment_History') }}" class="btn btn-info w-100 text-center mt-3">Show More</a>
+                {% endif %}
+                {% else %}
+                <p class="w-100 h-100 d-flex justify-content-center align-items-center">No Prescription Details</p>
+                {% endif %}
               </div>
+            </div>
+            <div class="col-md-4 col-lg-4 col-xl-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3><i class="fas fa-file d-inline"></i> Patient files </h3>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                </button>
+              </div>
+              
+              <div class="Prescription-appointment-card d-flex flex-wrap justify-content-start overflow-auto">
+                {% if patient_history %}
+                  {% for history in patient_history %}
+                    {% if history.file_link %}
+                    <div class="prescription-card shadow-sm rounded bg-light border text-center  m-2">
+                      <a href="{{ history.file_link }}" download class="text-decoration-none text-black">
+                        <div class="text-center mb-2">
+                          <i class="fas fa-file-medical-alt h1 text-primary"></i>
+                        </div>
+                        <p class="text-dark font-weight-bold mb-1"><i class="fas fa-location-arrow"></i> {{ history.type }}</p>
+                        <p class="text-muted mb-0 "><i class="fas fa-user-plus"></i> {{ history.added_by }}</p>
+                      </a>
+                    </div>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                <p class="w-100 h-100 d-flex justify-content-center align-items-center">No file attached.</p>
+                {% endif %}
+              </div>
+            </div>
+            
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">add attached</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data">
+                  {{ form.hidden_tag() }}
+                  
+                  <div class="form-group">
+                    <label for="details">{{ form.details.label }}</label>
+                    {{ form.details(class="form-control") }}
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="type">{{ form.type.label }}</label>
+                    {{ form.type(class="form-control") }}
+                  </div>
+              
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                </form>
+              </div>
+              
+            </div>
           </div>
         </div>
-    
         <div class="col-md-12 col-lg-12 col-xl-12 mt-5">
             <div class="card">
               <div class="card-body pt-0">

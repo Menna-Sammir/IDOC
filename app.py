@@ -16,9 +16,6 @@ def initialize_app():
         create_specialties()
 
 
-
-
-
 if __name__ == '__main__':
     initialize_app()
     port = int(os.environ.get("PORT", 5000))
