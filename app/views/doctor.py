@@ -92,7 +92,7 @@ def doctor_profile():
             try:
                 doctor_form.populate_obj(doctor)
                 user_form.populate_obj(user)
-                user.name = (user_form.firstname.data + ' ' + user_form.lastname.data)
+                user.name = (doctor_form.firstname.data + ' ' + doctor_form.lastname.data)
                 doc_dur = int(doctor_form.duration.data) if doctor_form.duration.data is not None else 0
                 doctor.duration = str(doc_dur * 100)
                 file = request.files['photo']
@@ -130,8 +130,8 @@ def doctor_profile():
                 )
         return redirect(url_for('doctor_profile'))
     name_split = current_user.name.split()
-    user_form.firstname.data = name_split[0]
-    user_form.lastname.data = ' '.join(name_split[1:])
+    doctor_form.firstname.data = name_split[0]
+    doctor_form.lastname.data = ' '.join(name_split[1:])
     minutes = doctor.duration.hour * 60 + doctor.duration.minute
     doctor_form.duration.data = str(minutes)
     return render_template(
@@ -187,9 +187,8 @@ def add_prescription():
     return render_template('prescription.html', form=form)
 
 
-
 ### patient list
-@app.route('/doctor_dashboard/patient_list', methods=['GET', 'POST'])
+@app.route('/patient_list', methods=['GET', 'POST'])
 @login_required
 @doctor_permission.require(http_exception=403)
 def patient_list():
@@ -199,9 +198,9 @@ def patient_list():
 
     appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
     patient_ids = set(appointment.patient_id for appointment in appointments)
-    
+
     patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
-    
+
     for patient in patients:
         user = User.query.filter_by(id=patient.user_id).first()
         patient.user_name = user.name if user else 'Unknown'

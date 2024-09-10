@@ -9,7 +9,14 @@ from app import translate
 
 csrf = CSRFProtect()
 
+def file_size_check(self, logo):
+        if logo.data:
+            if len(logo.data.read()) > 2 * 1024 * 1024:
+                raise ValidationError(translate('File size must be less than 2MB.'))
+            logo.data.seek(0)
+
 class ClinicForm(FlaskForm):
+
 
     def validate_email_address(self, email_address_to_check):
         email_address = User.query.filter_by(email=email_address_to_check.data).first()
@@ -41,4 +48,23 @@ class ClinicForm(FlaskForm):
         self.gov_id.label.text = translate('governorate')
         self.phone.label.text = translate('Phone')
         self.logo.label.text = translate('Clinic Logo')
+        self.submit.label.text = translate('Add Clinic')
+
+class EditClinicForm(FlaskForm):
+
+    name = StringField(validators=[Length(min=2, max=30), DataRequired()])
+    address = TextAreaField(validators=[Length(min=2, max=90), DataRequired()])
+    phone = StringField(validators=[Length(min=0, max=11)])
+    gov_id = SelectField(validators=[DataRequired()])
+    submit = SubmitField()
+
+    def __init__(self, *args, **kwargs):
+        super(EditClinicForm, self).__init__(*args, **kwargs)
+        self.translate()
+
+    def translate(self):
+        self.name.label.text = translate('Clinic Name')
+        self.address.label.text = translate('Clinic Address')
+        self.phone.label.text = translate('phone number')
+        self.gov_id.label.text = translate('governorate')
         self.submit.label.text = translate('Add Clinic')

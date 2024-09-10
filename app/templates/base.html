@@ -195,6 +195,7 @@
             </li>
             <!-- /Notifications -->
             {% endif %}
+
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item mr-3">
@@ -206,11 +207,19 @@
                 aria-expanded="true"
               >
                 <span class="user-img">
+                  {% if current_user.user_roles.role.role_name == 'Admin' %} {%
+                  set base_path = 'static/images/Admin/' %} {% elif
+                  current_user.user_roles.role.role_name == 'doctor' %} {% set
+                  base_path = 'static/images/doctors/' %} {% elif
+                  current_user.user_roles.role.role_name == 'clinic' %} {% set
+                  base_path = 'static/images/clinic/' %} {% elif
+                  current_user.user_roles.role.role_name == 'patient' %} {% set
+                  base_path = 'static/images/patient/' %} {% endif %}
+
                   <img
-                    class="rounded-circle"
-                    src="{{current_user.photo}}"
-                    width="31"
-                    alt="user image"
+                    class="avatar-img rounded-circle"
+                    src="{{base_path ~ current_user.photo}}"
+                    alt="User Image"
                   />
                 </span>
               </a>
@@ -241,6 +250,12 @@
                 >
                 {% elif current_user.user_roles.role.role_name == 'clinic' %}
                 <a class="dropdown-item" href="{{ url_for('clinic_dash') }}"
+                  >{{ translate('Dashboard') }}</a
+                >
+                {% elif current_user.user_roles.role.role_name == 'patient' %}
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('patient_dashboard') }}"
                   >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
@@ -278,7 +293,7 @@
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', (event) => {
-        var clinic_id = '{{ clinic_id }}';
+        var clinic_id = '{{ current_user.clinic_id }}';
         console.log('Rendered clinic_id:', clinic_id);
         if (!clinic_id) {
           console.error(
