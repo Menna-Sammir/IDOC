@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from flask_login import login_required, current_user
@@ -8,6 +8,12 @@ from datetime import datetime
 from flask import jsonify, request
 from sqlalchemy.orm import joinedload
 from flask_socketio import emit
+from app.views.forms.auth_form import EditUserForm
+from app.views.forms.addClinic_form import EditClinicForm
+import os
+from werkzeug.utils import secure_filename
+import uuid
+
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -112,8 +118,6 @@ def clear_noti():
     return redirect(url_for('clinic_calender'))
 
 
-
-
 ### view all notifications page ###
 @app.route('/view_all', methods=['GET'], strict_slashes=False)
 def view_notifi():
@@ -190,3 +194,67 @@ def delete_notification():
     db.session.commit()
 
     return jsonify({'message': 'Notification deleted'})
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/clinic_profile', methods=['GET', 'POST'])
+@login_required
+@clinic_permission.require(http_exception=403)
+def clinic_profile():
+    clinic = Clinic.query.filter_by(user_id=current_user.id).first_or_404()
+    user = User.query.filter_by(id=current_user.id).first_or_404()
+    govs = Governorate.query.filter().all()
+    clinic_form = EditClinicForm(obj=clinic)
+    user_form = EditUserForm(obj=user)
+    clinic_form.gov_id.choices = [
+        ('', translate('Select a governorate'))
+    ] + [
+        (gov.id, translate(gov.governorate_name))
+        for gov in govs
+    ]
+    if request.method == 'POST':
+        if clinic_form.validate_on_submit():
+            try:
+                clinic_form.populate_obj(clinic)
+                user_form.populate_obj(user)
+                user.name = clinic_form.name.data
+                file = request.files['photo']
+                if file.filename:
+                    #check from js code
+                    if 'photo' in request.files:
+                        unique_str = str(uuid.uuid4())[:8]
+                        original_filename, extension = os.path.splitext(file.filename)
+                        new_filename = f"{unique_str}_{user.name.replace(' ', '_')}{extension}"
+                        user.photo = new_filename
+                        if file and allowed_file(file.filename):
+                            filename = secure_filename(new_filename)
+                            file.save(
+                                os.path.join(
+                                    app.config['UPLOAD_FOLDER'], 'clinic', filename
+                                )
+                            )
+                db.session.commit()
+                flash('Data update successfully', category='success')
+                return redirect(url_for('clinic_profile'))
+            except Exception as e:
+                flash(f'something wrong', category='danger')
+                print(str(e))
+        if clinic_form.errors != {}:
+            for field_name, error_messages in clinic_form.errors.items():
+                for err_msg in error_messages:
+                    flash(f"Error in {clinic_form[field_name].label.text}: {err_msg}", category='danger')
+        elif user_form.errors != {}:
+            for field_name, error_messages in user_form.errors.items():
+                for err_msg in error_messages:
+                    flash(f"Error in {user_form[field_name].label.text}: {err_msg}", category='danger')
+
+        return redirect(url_for('clinic_profile'))
+    clinic_form.gov_id.data = clinic.governorate_id
+    clinic_form.name.data = user.name
+
+    return render_template(
+        'clinic-profile-settings.html', user_form=user_form, clinic_form=clinic_form
+    )

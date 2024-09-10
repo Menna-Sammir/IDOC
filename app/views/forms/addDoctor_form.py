@@ -65,6 +65,8 @@ class DoctorForm(FlaskForm):
 
 
 class EditDoctorForm(FlaskForm):
+    firstname = StringField(validators=[Length(min=2, max=30), DataRequired()])
+    lastname = StringField(validators=[Length(min=2, max=70), DataRequired()])
     price = StringField(validators=[Length(min=2, max=90), DataRequired()])
     phone = StringField(validators=[Length(min=0, max=11)])
     specialization_id = SelectField(validators=[DataRequired()])
