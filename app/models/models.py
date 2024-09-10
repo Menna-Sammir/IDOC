@@ -46,13 +46,13 @@ def load_notification():
         notification = Notification.query.filter_by(clinic_id=current_user.clinic.id)
         processed_notifications = [
             {
-                # 'doctor': n.appointment.doctor.name,
-                # 'patient': n.appointment.patient.name,
+                'doctor': n.appointment.doctor.user.name,
+                'patient': n.appointment.patient.users.name,
                 'body': n.noteBody,
                 'isRead': n.isRead,
                 'time': n.time.strftime('%H:%M %p'),
                 'date': n.date.strftime('%d %B'),
-                # 'photo': n.appointment.doctor.photo,
+                'photo': n.appointment.doctor.user.photo,
                 'formatted_time': calculate_time_ago(current_time, n.notDate)
             }
             for n in notification.all()[:10]
