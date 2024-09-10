@@ -6481,7 +6481,9 @@ div.date-item > h6.active {
   background-color: #f8f9fa; 
   border-radius: 10px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding: 20px; 
 }
+
 
 .Next-appointment-card h4 {
   font-size: 1.5rem; 
@@ -6493,21 +6495,27 @@ div.date-item > h6.active {
   margin-bottom: 10px; 
 }
 
-.booking-doc-img img {
-  border: 2px solid #007bff;
+.Next-appointment-card .booking-doc-img img {
+  border: 2px solid #007bff; 
+  border-radius: 50%; 
 }
 
-.booking-doc-img {
-  margin-right: 15px;
+.Next-appointment-card .booking-doc-img {
+  margin-right: 15px; 
 }
 
-.font-weight-bold {
+.Next-appointment-card .font-weight-bold {
   font-size: 1.1rem;
 }
 
-.text-muted {
+.Next-appointment-card .text-muted {
   font-size: 0.9rem;
 }
+.Next-appointment-card i {
+  margin-right: 5px;
+}
+
+
 
 
 .Report-appointment-card {

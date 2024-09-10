@@ -308,6 +308,7 @@ def appointment_History():
     return render_template(
         'appointment-History.html',
         appointments=appointments,
+        patient=patient,
         patient_medicines=patient_medicines,
         form=form
     )
