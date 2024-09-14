@@ -26,43 +26,44 @@
   <div class="dashboard-widget">
     <nav class="dashboard-menu">
       <ul>
+        {% if current_user.role =='doctor' and current_user.role == 'clinic' %}
         <li class="active">
           <a href="{{ url_for('patient_dashboard') }}">
             <i class="fas fa-columns"></i>
             <span>Dashboard</span>
           </a>
         </li>
+        {% endif %}
         <li>
           <a href="{{ url_for('appointment_History') }}">
             <i class="fas fa-bookmark"></i>
             <span>appointment History</span>
           </a>
         </li>
-        <li>
-          <a href="chat.html">
-            <i class="fas fa-comments"></i>
-            <span>Message</span>
-            <small class="unread-msg">23</small>
-          </a>
-        </li>
+        {% if current_user.role =='doctor' and current_user.role == 'clinic' %}
         <li>
           <a href="{{ url_for('patient_setting') }}">
             <i class="fas fa-user-cog"></i>
             <span>Profile Settings</span>
           </a>
         </li>
+        {% endif %}
+        {% if current_user.role =='doctor' and current_user.role == 'clinic' %}
         <li>
           <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>
             <span>{{ translate('Change Password') }}</span>
           </a>
         </li>
+        {% endif %}
+        {% if current_user.role =='doctor' and current_user.role == 'clinic' %}
         <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
           <a href="{{ url_for('logout_page') }}">
             <i class="fas fa-sign-out-alt"></i>
             <span>{{ translate('Logout') }}</span>
           </a>
         </li>
+        {% endif %}
       </ul>
     </nav>
   </div>

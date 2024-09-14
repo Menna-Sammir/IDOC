@@ -310,9 +310,9 @@ def all_patients():
         confirmed_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='confirmed').count()
         canceled_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='cancelled').count()
 
-        # Extract the desired parts of blood group and allergy using .value
-        blood_group = patient.blood_group.value.replace('_positive', ' +').replace('_negative', ' -')
-        allergy = patient.allergy.value.replace('_', ' ')
+        # Use .value to extract the value from Enum fields
+        blood_group = patient.blood_group.value if patient.blood_group else 'Unknown'
+        allergy = patient.allergy.value.replace('_', ' ') if patient.allergy else 'No Allergy'
 
         # Add patient details and appointment counts to the list
         patient_data.append({
