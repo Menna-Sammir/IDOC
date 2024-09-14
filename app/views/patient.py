@@ -354,10 +354,13 @@ def appointment_History():
         )
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_file_EXTENSIONS = {'pdf'}
+def allowed_file_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_file_EXTENSIONS
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ALLOWED_photo_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def allowed_photo_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_photo_EXTENSIONS
 
 @app.route('/upload_report', methods=['POST'])
 @login_required
@@ -384,7 +387,7 @@ def upload_report():
         flash('No selected file')
         return redirect(request.url)
 
-    if file and allowed_file(file.filename):
+    if file and allowed_file_file(file.filename):
         if file.content_length > MAX_FILE_SIZE:
             flash('File exceeds maximum allowed size of 10MB', 'danger')
             return redirect(request.url)
@@ -1416,21 +1419,31 @@ def patient_setting():
     )
 
     if request.method == 'PUT':
-        if 'photo' in request.files:
-            file = request.files['photo']
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                unique_str = str(uuid.uuid4())[:8]
-                original_filename, extension = os.path.splitext(file.filename)
-                new_filename = f"{unique_str}_{secure_filename(current_user.name.replace(' ', '_'))}{extension}"
-                user.photo = new_filename
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'patients', new_filename))
-        else:
-            user.photo = user.photo if user else None
-
-        if form.validate_on_submit():
+        if form.validate():
+            if form.photo.data:
+                file = request.files['photo']
+                print(file)
+                if 'photo' in request.files:
+                    unique_str = str(uuid.uuid4())[:8]
+                    original_filename, extension = os.path.splitext(file.filename)
+                    new_filename = f"{unique_str}_{current_user.name.replace(' ', '_')}{extension}"
+                    user.photo = new_filename
+                    if file and allowed_photo_file(file.filename):
+                        filename = secure_filename(new_filename)
+                        file.save(
+                            os.path.join(
+                                app.config['UPLOAD_FOLDER'], 'patients', filename
+                            )
+                        )
+                # photo_filename = secure_filename(form.photo.data.filename)
+                # photo_directory = os.path.join(app.config['UPLOAD_FOLDER'], 'patients', photo_filename)
+                # if not os.path.exists(photo_directory):
+                #     os.makedirs(photo_directory)
+                # photo_path = os.path.join(photo_directory, photo_filename)
+                # form.photo.data.save(photo_path)
+                # user.photo = photo_path
+            # else:
+            #     photo_path = user.photo if user else None
             email_exists = User.query.filter(
                 User.email == form.email.data, User.id != user.id
             ).first()
@@ -1442,7 +1455,7 @@ def patient_setting():
 
             patient.firstname = form.firstname.data
             patient.lastname = form.lastname.data
-            patient.email_address = form.email.data
+            user.email = form.email.data
             patient.phone = form.phone.data
             patient.address = form.address.data
             patient.governorate_id = form.governorate.data
