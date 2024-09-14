@@ -187,7 +187,7 @@
                   </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
-                  <a href="{{ url_for('view_notifi') }}"
+                  <a href="{{ url_for('all_notifications') }}"
                     >{{ translate('View all Notifications') }}</a
                   >
                 </div>
@@ -396,24 +396,23 @@
             clearAllNotifications();
           });
 
-        //   function fetchNotifications() {
-        //    const data_url = {{ url_for("view_notifi", clinic_id=current_user.clinic.id)|tojson }}
-        //   fetch(data_url)
-        //    .then((response) => {
-        //      if (!response.ok) {
-        //throw new Error('Network response was not ok');
-        //      }
+        //  function fetchNotifications() {
+        //   fetch(`/notifications?clinic_id=${clinic_id}`)
+        //     .then((response) => {
+        //       if (!response.ok) {
+        //         throw new Error('Network response was not ok');
+        //       }
         //       return response.json();
-        //       })
-        //      .then((data) => {
-        //        data.notifications.forEach((notification) =>
+        //     })
+        //     .then((data) => {
+        //       data.forEach((notification) =>
         //         addNotification(notification, false)
-        //       );
-        //    })
-        //    .catch((error) =>
-        //    console.error('Error fetching notifications:', error)
-        // );
-        //}
+        //        );
+        //     })
+        //     .catch((error) =>
+        //       console.error('Error fetching notifications:', error)
+        //     );
+        // }
 
         function clearAllNotifications() {
           var notificationList = document.getElementById('notification-list');
@@ -429,7 +428,7 @@
         });
 
         loadNotifications();
-        // fetchNotifications();
+        //fetchNotifications();
       });
     </script>
     {% endblock %}

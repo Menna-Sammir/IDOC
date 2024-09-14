@@ -563,100 +563,67 @@ if (timeslots) {
 }
 
 // view all notifications (delete and mark as read) to be continued...
-$(document).ready(function () {
-  let unreadCount = parseInt($('#notification-count').text(), 10);
+// $(document).ready(function () {
+//   let unreadCount = parseInt($('#notification-count').text(), 10);
 
-  $('.mark-read-btn').on('click', function () {
-    const notificationId = $(this).data('id');
-    console.log('Notification ID:', notificationId);
-    $.ajax({
-      type: 'POST',
-      url: '/mark_as_read',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),
-      },
-      data: {
-        notification_id: notificationId,
-      },
-      success: function (data) {
-        console.log('AJAX request successful', data);
+//   $('.mark-read-btn').on('click', function () {
+//     const notificationId = $(this).data('id');
+//     console.log('Notification ID:', notificationId);
+//     $.ajax({
+//       type: 'POST',
+//       url: '/all_notifications',
+//       headers: {
+//         'Content-Type': 'application/x-www-form-urlencoded',
+//         'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),
+//       },
+//       data: {
+//         notification_id: notificationId,
+//       },
+//       success: function (data) {
+//         console.log('AJAX request successful', data);
 
-        if (data.message === 'Notification marked as read') {
-          const notificationRow = $(this).closest('tr');
-          if (notificationRow.length) {
-            notificationRow.removeClass('unread-notification');
-            $('#read-notifications-body').append(notificationRow);
-            notificationRow.find('.mark-read-btn').remove();
-            notificationRow
-              .find('.delete-btn')
-              .removeClass('bg-success-light')
-              .addClass('bg-danger-light');
-            notificationRow
-              .find('.delete-btn i')
-              .removeClass('fa-check')
-              .addClass('fa-times');
-            notificationRow
-              .find('.delete-btn')
-              .html('<i class="fas fa-times"></i> Delete');
+//         if (data.message === 'Notification marked as read') {
+//           const notificationRow = $(this).closest('tr');
+//           if (notificationRow.length) {
+//             notificationRow.removeClass('unread-notification');
+//             $('#read-notifications-body').append(notificationRow);
+//             notificationRow.find('.mark-read-btn').remove();
+//             notificationRow
+//               .find('.delete-btn')
+//               .removeClass('bg-success-light')
+//               .addClass('bg-danger-light');
+//             notificationRow
+//               .find('.delete-btn i')
+//               .removeClass('fa-check')
+//               .addClass('fa-times');
+//             notificationRow
+//               .find('.delete-btn')
+//               .html('<i class="fas fa-times"></i> Delete');
 
-            unreadCount -= 1;
-            updateNotificationCount();
-          } else {
-            console.error('Notification row not found.');
-          }
-        } else {
-          console.error('Error marking notification as read:', data.message);
-        }
-      }.bind(this),
-      error: function (xhr, status, error) {
-        console.error('AJAX request failed with status:', status);
-        console.error('Response text:', xhr.responseText);
-        console.error('Error:', error);
-      },
-    });
-  });
+//             unreadCount -= 1;
+//             updateNotificationCount();
+//           } else {
+//             console.error('Notification row not found.');
+//           }
+//         } else {
+//           console.error('Error marking notification as read:', data.message);
+//         }
+//       }.bind(this),
+//       error: function (xhr, status, error) {
+//         console.error('AJAX request failed with status:', status);
+//         console.error('Response text:', xhr.responseText);
+//         console.error('Error:', error);
+//       },
+//     });
+//   });
 
-  $('.delete-btn').on('click', function () {
-    const notificationId = $(this).data('id');
-    console.log('Notification ID:', notificationId);
-    $.ajax({
-      type: 'POST',
-      url: '/delete_notification',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),
-      },
-      data: {
-        notification_id: notificationId,
-      },
-      success: function (data) {
-        if (data.message === 'Notification deleted') {
-          const notificationRow = $(this).closest('tr');
-          if (notificationRow.hasClass('unread-notification')) {
-            unreadCount -= 1;
-            updateNotificationCount();
-          }
-          notificationRow.remove();
-        } else {
-          console.error('Error deleting notification:', data.message);
-        }
-      }.bind(this),
-      error: function (xhr, status, error) {
-        console.error('AJAX request failed with status:', status);
-        console.error('Response text:', xhr.responseText);
-        console.error('Error:', error);
-      },
-    });
-  });
-
-  function updateNotificationCount() {
-    $('#notification-count').text(unreadCount);
-    if (unreadCount === 0) {
-      $('#notification-count').css('display', 'inline').text('0');
-    }
-  }
-});
+//   function updateNotificationCount() {
+//     $('#notification-count').text(unreadCount);
+//     if (unreadCount === 0) {
+//       $('#notification-count').css('display', 'inline').text('0');
+//     }
+//   }
+// });
 
 // update patient profile
 $('#patientForm').on('submit', function (event) {

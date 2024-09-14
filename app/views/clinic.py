@@ -120,83 +120,42 @@ def clear_noti():
     return redirect(url_for('clinic_calender'))
 
 
-### view all notifications page ###
-@app.route('/view_all', methods=['GET', 'POST'], strict_slashes=False)
-def view_notifi():
-    current_time = datetime.now()
-    if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
-        notifications = (
-            db.session.query(Notification)
-            .join(Appointment)
-            .join(Doctor, Appointment.doctor_id == Doctor.id)
-            .join(Patient, Appointment.patient_id == Patient.id)
-            .filter(Notification.clinic_id == current_user.clinic_id)
-            .options(
-                joinedload(Notification.appointment).joinedload(Appointment.doctor),
-                joinedload(Notification.appointment).joinedload(Appointment.patient)
-            )
-            .all()
-        )
+# ### view all notifications page ###
+@app.route('/all_notifications', methods=['GET', 'POST'], strict_slashes=False)
+def all_notifications():
+    
+    load_notification()
 
-        processed_notifications = [
-            {
-                'id': n.id,
-                'doctor': n.appointment.doctor.name if n.appointment and n.appointment.doctor else 'Unknown',
-                'patient': n.appointment.patient.name if n.appointment and n.appointment.patient else 'Unknown',
-                'body': n.noteBody,
-                'isRead': n.isRead,
-                'time': n.time.strftime('%H:%M %p'),
-                'date': n.date.strftime('%d %B'),
-                'photo': n.appointment.doctor.photo if n.appointment and n.appointment.doctor else None,
-                'formatted_time': calculate_time_ago(current_time, n.notDate)
-            }
-            for n in notifications[:10]
-        ]
-        g.notifications = processed_notifications
-        g.notification_count = len(
-            db.session.query(Notification).filter(
-                Notification.clinic_id == current_user.clinic_id,
-                Notification.isRead == False
-            ).all()
-        ) or 0
+    return render_template('all_notifications.html', notifications=g.get('notifications', []), notification_count=g.get('notification_count', 0))
 
-    return render_template('view_notification.html', notifications=g.get('notifications', []))
 
 
 @app.route('/mark_as_read', methods=['POST'])
-@login_required
 def mark_as_read():
     notification_id = request.form.get('notification_id')
+    
     if not notification_id:
-        return jsonify({'message': 'Notification ID is missing'}), 400
-
-    notification = Notification.query.get(notification_id)
-    if not notification:
-        return jsonify({'message': 'Notification not found'}), 404
-
-    notification.isRead = True
-    db.session.commit()
-
-    return jsonify({'message': 'Notification marked as read'})
-
-
-@app.route('/delete_notification', methods=['POST'])
-@login_required
-def delete_notification():
-    notification_id = request.form.get('notification_id')
-    if not notification_id:
-        return jsonify({'message': 'Notification ID is missing'}), 400
-
-    notification = Notification.query.get(notification_id)
-    if not notification:
-        return jsonify({'message': 'Notification not found'}), 404
-
-    db.session.delete(notification)
-    db.session.commit()
-
-    return jsonify({'message': 'Notification deleted'})
-
-
+        flash('Notification ID is required.')
+        return redirect(url_for('all_notifications'))
+    
+    try:
+        load_notification()
+        
+        notification = db.session.query(Notification).filter_by(id=notification_id).first()
+        
+        if notification is None:
+            flash('Notification not found.')
+            return redirect(url_for('all_notifications'))
+        
+        notification.isRead = True
+        db.session.commit()
+        
+        flash('Notification marked as read.')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'An error occurred: {e}')
+    
+    return redirect(url_for('all_notifications'))
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
