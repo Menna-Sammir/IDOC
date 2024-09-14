@@ -101,61 +101,59 @@
           </div>
         </div>
 
-    <div class="row col-lg-8 col-md-12 px-2 card ">
-      <div class="card-body p-1 ">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="alert alert-primary alert-primary-formbook mt-2">
-            {% for category, message in messages %}
-              <p class="m-auto">{{ message }}</p>
-            {% endfor %}
+        <div class="row col-lg-8 col-md-12 px-2 card">
+          <div class="card-body p-1">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="alert alert-primary alert-primary-formbook mt-2">
+                {% for category, message in messages %}
+                  <p class="m-auto">{{ message }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% endwith %}
+            <form method="post" class="col-md-12 justify-content-center row">
+              {{ form.hidden_tag() }}
+              <h3 class="col-12 text-muted my-3 text-left">{{ translate('Schedules') }}</h3>
+              <div class="date-container col-md-12">
+                {% for date, day, day_only in dates %}
+                <div class="date-item slot-date">
+                  <h6 class="m-auto bg-white shadow-sm align-items-center d-flex">
+                    {{ translate(day) }}<br />{{ translate(day_only) }}
+                  </h6>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="col-md-12">
+                {% for date, day, day_only in dates %}
+                <div class="timeslots">
+                  <h3 class="col-12 text-muted my-3 text-left">{{ translate('Time') }}</h3>
+                  {% for timeslot in timeslots_by_date[date] %}
+                  <div class="timeslot">
+                    <input
+                      type="radio"
+                      name="timeslot"
+                      id="{{ timeslot[0] }}"
+                      value="{{ date }} {{ timeslot[0] }}"
+                      class="rounded-sm" {% if not timeslot[2] %}disabled{% endif %}
+                    />
+                    <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %}>
+                      {{ translate(timeslot[1]) }} {% if not timeslot[2] %}{{ translate('booked') }}{% endif %}
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endfor %}
+              </div>
+              <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
+                <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
+                  {{ translate('Continue') }} <i class="fas fa-caret-right"></i>
+                </button>
+              </div>
+            </form>
           </div>
-        {% endif %}
-        {% endwith %}
-        <form method="post" class="col-md-12 justify-content-center row">
-          {{ form.hidden_tag() }}
-          <h3 class="col-12 text-muted my-3 text-left">
-            {{ translate('Schedules') }}
-            </h3>
-          <div class="date-container col-md-12">
-            {% for date, day, day_only in dates %}
-            <div class="date-item slot-date">
-              <h6 class="m-auto bg-white shadow-sm align-items-center d-flex">
-                {{ translate(day) }}<br />{{ translate(day_only) }}
-              </h6>
-            </div>
-            {% endfor %}
-          </div>
-          <div class=" col-md-12">
-          {% for date, day, day_only in dates %}
-          <div class="timeslots ">
-            <h3 class="col-12 text-muted my-3 text-left">
-              {{ translate('Time') }}
-              </h3>
-            {% for timeslot in timeslots_by_date[date] %}
-            <div class="timeslot">
-              <input
-                type="radio"
-                name="timeslot"
-                id="{{ timeslot[0] }}"
-                value="{{ date }} {{ timeslot[0] }}"
-                class="rounded-sm" {%if not timeslot[2] %}disabled{% endif %} />
-              <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %} >
-                {{ translate(timeslot[1]) }} {% if not timeslot[2] %}{{ translate('(Booked)') }}{% endif %}
-                </label>
-            </div>
-            {% endfor %}
-          </div>
-          {% endfor %}
         </div>
-        <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
-          <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
-            {{ translate('Continue') }} <i class="fas fa-caret-right"></i>
-       </button>
-        </div>
-        </form>
-      </div>
-    </div>
+        
 
     </div>
     </div>
