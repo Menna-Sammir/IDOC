@@ -8,7 +8,7 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">
               Profile Settings
             </li>
@@ -69,26 +69,19 @@
             <nav class="dashboard-menu">
               <ul>
                 <li>
-                  <a href="#">
+                  <a href="{{ url_for('patient_dashboard') }}">
                     <i class="fas fa-columns"></i>
                     <span>Dashboard</span>
                   </a>
                 </li>
                 <li>
-                  <a href="favourites.html">
+                  <a href="{{ url_for('appointment_History') }}">
                     <i class="fas fa-bookmark"></i>
-                    <span>Favourites</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="chat.html">
-                    <i class="fas fa-comments"></i>
-                    <span>Message</span>
-                    <small class="unread-msg">23</small>
+                    <span>appointment History</span>
                   </a>
                 </li>
                 <li class="active">
-                  <a href="profile-settings.html">
+                  <a href="{{ url_for('patient_setting') }}">
                     <i class="fas fa-user-cog"></i>
                     <span>Profile Settings</span>
                   </a>
@@ -100,7 +93,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="index-2.html">
+                  <a href="{{ url_for('logout_page') }}">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                   </a>

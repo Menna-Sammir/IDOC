@@ -500,100 +500,104 @@
                 </div>
               </div>
               <!-- /Prescription Tab -->
-<!-- Medical Records Tab -->
-<div id="pat_medical_records" class="tab-pane fade">
-  <div class="card card-table mb-0">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-hover table-center mb-0">
-          <thead>
-            <tr>
-              <th>Appt Date</th>
-              <th>Diagnosis</th>
-              <th>Attachment</th>
-              <th>Created by</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for appointment in appointments %}
-            <tr>
-              <td>
-                {{ appointment.date }}
-                <span class="d-block text-info"
-                  >{{ appointment.time_range }}</span
-                >
-              </td>
-              <td>{{ appointment.Diagnosis }}</td>
-              <td>
-                {% if appointment.Report %}
-                <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" target="_blank">
-                  {{ appointment.Report }}
-                </a>
-                {% else %} No attachment {% endif %}
-              </td>
-              
-              <td>
-                {% if appointment.Report %}
-                  <h2 class="table-avatar">
-                    <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}" class="avatar avatar-sm mr-2">
-                      {% set base_path = 'static/images/doctors/' %}
-                      <img class="avatar-img rounded-circle"  src="{{base_path ~ appointment.doctor.photo}}"
-                        alt="User Image"/>
-                    </a>
-                    <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}">
-                      {{ appointment.doctor.users.name }} <span>{{ appointment.doctor.specialization.specialization_name }}</span>
-                    </a>
-                  </h2>
-                {% else %}
-                  No doctor assigned
-                {% endif %}
-              </td>
-              
-              <td class="text-right">
-                <div class="table-action">
-                  <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')">
-                    <i class="fas fa-print"></i> Print
-                  </a>
+              <!-- Medical Records Tab -->
+              <div id="pat_medical_records" class="tab-pane fade">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Appt Date</th>
+                            <th>Diagnosis</th>
+                            <th>Attachment</th>
+                            <th>Created by</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for appointment in appointments %}
+                          <tr>
+                            <td>
+                              {{ appointment.date }}
+                              <span class="d-block text-info"
+                                >{{ appointment.time_range }}</span
+                              >
+                            </td>
+                            <td>{{ appointment.Diagnosis }}</td>
+                            <td>
+                              {% if appointment.Report %}
+                              <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" target="_blank">
+                                {{ appointment.Report }}
+                              </a>
+                              {% else %} No attachment {% endif %}
+                            </td>
+                            
+                            <td>
+                              {% if appointment.Report %}
+                                <h2 class="table-avatar">
+                                  <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}" class="avatar avatar-sm mr-2">
+                                    {% set base_path = 'static/images/doctors/' %}
+                                    <img class="avatar-img rounded-circle"  src="{{base_path ~ appointment.doctor.photo}}"
+                                      alt="User Image"/>
+                                  </a>
+                                  <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}">
+                                    {{ appointment.doctor.users.name }} <span>{{ appointment.doctor.specialization.specialization_name }}</span>
+                                  </a>
+                                </h2>
+                              {% else %}
+                                No doctor assigned
+                              {% endif %}
+                            </td>
+                            
+                            <td class="text-right">
+                              <div class="table-action">
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')">
+                                  <i class="fas fa-print"></i> Print
+                                </a>
 
-                  <iframe id="pdfIframe" style="display:none;" frameborder="0"></iframe>
+                                <iframe id="pdfIframe" style="display:none;" frameborder="0"></iframe>
 
-                  <script>
-                    function printPDF(pdfUrl) {
-                      var iframe = document.getElementById('pdfIframe');
-                      
-                      iframe.src = pdfUrl;
+                                <script>
+                                  function printPDF(pdfUrl) {
+                                    var iframe = document.getElementById('pdfIframe');
+                                    
+                                    iframe.src = pdfUrl;
 
-                      iframe.onload = function () {
-                        iframe.focus();
-                        iframe.contentWindow.print();
-                      };
-                    }
-                      </script>
+                                    iframe.onload = function () {
+                                      iframe.focus();
+                                      iframe.contentWindow.print();
+                                    };
+                                  }
+                                    </script>
 
-                  
-                  <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank">
-                    <i class="far fa-eye"></i> View
-                  </a>
-                  <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" 
-                  data-toggle="modal" 
-                  data-target="#add_medical_reports" 
-                  data-appointment-id="{{ appointment.id }}" 
-                  data-patient-id="{{ patient.id }}">
-                    <i class="fas fa-upload"></i> Report
-                  </a>
+                                
+                                <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank">
+                                  <i class="far fa-eye"></i> View
+                                </a>
+                                {% if current_user.doctor %}
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" 
+                                data-toggle="modal" 
+                                data-target="#add_medical_reports" 
+                                data-appointment-id="{{ appointment.id }}" 
+                                data-patient-id="{{ patient.id }}">
+                                  <i class="fas fa-upload"></i> Report
+                                </a>
+                              </div>
+                              
+                            </td>
+                          </tr>
+                          {% endif %}
+                          {% endfor %}
+                        </tbody>          
+                      </table>
+                    </div>
+                  </div>
                 </div>
-                
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>          
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /Medical Records Tab -->
+              </div>
+              <!-- /Medical Records Tab -->
+
+              <!-- Add patient history -->
               <div id="lab_Ray_files" class="tab-pane fade">
                 <div class="text-right mb-2">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -601,7 +605,6 @@
                   </button>
                 </div>
               <div class="card card-table mb-0">
-               
                 <div class="card-body">
                   
                   <div class="table-responsive">
@@ -618,9 +621,6 @@
                         {% for history in patient_history %}
                         {% if history.file_link %}
                         <tr>
-                       
-                    
-   
                           <td>
                             
                             <span class="d-block text-info"
@@ -685,7 +685,9 @@
                   </div>
                 </div>
               </div>
-<!-- Add Medical Records Modal -->
+              <!-- /Add patient history -->
+
+              <!-- Add Medical Records Modal -->
               <div
                 class="modal fade custom-modal"
                 id="add_medical_reports"
@@ -731,8 +733,8 @@
                   </div>
                 </div>
               </div>
+              <!-- /Add Medical Records Modal -->
 
-<!-- /Add Medical Records Modal -->
                 <!-- Tab Content -->
             </div>
             </div>
