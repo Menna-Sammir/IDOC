@@ -37,7 +37,7 @@ from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
 from app.views.forms.add_patient_history import PatientHistoryForm
-import uuid 
+import uuid
 
 csrf = CSRFProtect(app)
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -175,7 +175,7 @@ def patient_dashboard():
         .all()
     )
     form = PatientHistoryForm()
-    if form.validate_on_submit(): 
+    if form.validate_on_submit():
         if form.details.data:
             file = form.details.data
             unique_str = str(uuid.uuid4())[:8]
@@ -205,8 +205,8 @@ def patient_dashboard():
     # Organize patient history data
     patient_history = [
         {
-            'details': history.details,  
-            'type': history.type.value if history.type else 'Not Provided',  
+            'details': history.details,
+            'type': history.type.value if history.type else 'Not Provided',
             'added_by': history.user.name,
             'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
         }
@@ -311,7 +311,7 @@ def appointment_History():
                 flash(f'There was an error with adding medicine: {err_msg}', category='danger')
 
     form = PatientHistoryForm()
-    if form.validate_on_submit(): 
+    if form.validate_on_submit():
         if form.details.data:
             file = form.details.data
             unique_str = str(uuid.uuid4())[:8]
@@ -335,8 +335,8 @@ def appointment_History():
     # Organize patient history data
     patient_history = [
         {
-            'details': history.details,  
-            'type': history.type.value if history.type else 'Not Provided',  
+            'details': history.details,
+            'type': history.type.value if history.type else 'Not Provided',
             'added_by': history.user.name,
             'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
         }
@@ -347,15 +347,8 @@ def appointment_History():
         appointments=appointments,
         patient=patient,
         patient_medicines=patient_medicines,
-        # appointments=appointment_data,
-        # patient_history=history_data,
-        # blood_group=blood_group,
-        # allergy=allergy,
-        # medicine_data=medicine_data,
-        # medical_records=medical_records_data,
         patient_history=patient_history,
         patient_histories=patient_histories,
-        patient=patient,
         form=form
         )
 
