@@ -13,6 +13,7 @@ from app.views.forms.addClinic_form import EditClinicForm
 import os
 from werkzeug.utils import secure_filename
 import uuid
+import json
 
 
 
@@ -119,11 +120,8 @@ def clear_noti():
     return redirect(url_for('clinic_calender'))
 
 
-
-
-
 ### view all notifications page ###
-@app.route('/view_all', methods=['GET'], strict_slashes=False)
+@app.route('/view_all', methods=['GET', 'POST'], strict_slashes=False)
 def view_notifi():
     current_time = datetime.now()
     if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
@@ -179,7 +177,6 @@ def mark_as_read():
     notification.isRead = True
     db.session.commit()
 
-
     return jsonify({'message': 'Notification marked as read'})
 
 
@@ -198,6 +195,8 @@ def delete_notification():
     db.session.commit()
 
     return jsonify({'message': 'Notification deleted'})
+
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):

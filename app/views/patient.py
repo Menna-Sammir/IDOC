@@ -355,7 +355,6 @@ def appointment_History():
         # medical_records=medical_records_data,
         patient_history=patient_history,
         patient_histories=patient_histories,
-        patient=patient,
         form=form
         )
 
