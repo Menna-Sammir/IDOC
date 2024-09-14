@@ -94,7 +94,6 @@
                         </thead>
                         <tbody>
                           {% for appointment in appointments %}
-                          {% if appointment.status.name == 'Completed' %}
                           <tr>
                             <td>
                               <h2 class="table-avatar">
@@ -337,7 +336,6 @@
                             </td>
                             {% endif %}
                           </tr>
-                          {% endif %}
                           {% endfor %}
                         </tbody>
                       </table>
@@ -502,7 +500,7 @@
                 </div>
               </div>
               <!-- /Prescription Tab -->
-<!-- Medical Records Tab -->
+              <!-- Medical Records Tab -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">
                   <div class="card-body">
@@ -529,12 +527,12 @@
                             <td>{{ appointment.Diagnosis }}</td>
                             <td>
                               {% if appointment.Report %}
-                              <a href="{{ url_for('static', filename='pdfs/' ~ appointment.report) }}" target="_blank">
+                              <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" target="_blank">
                                 {{ appointment.Report }}
                               </a>
                               {% else %} No attachment {% endif %}
                             </td>
-
+                            
                             <td>
                               {% if appointment.Report %}
                                 <h2 class="table-avatar">
@@ -551,26 +549,45 @@
                                 No doctor assigned
                               {% endif %}
                             </td>
-
+                            
                             <td class="text-right">
                               <div class="table-action">
-                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light print-btn" data-report-url="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}">
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')">
                                   <i class="fas fa-print"></i> Print
                                 </a>
+
+                                <iframe id="pdfIframe" style="display:none;" frameborder="0"></iframe>
+
+                                <script>
+                                  function printPDF(pdfUrl) {
+                                    var iframe = document.getElementById('pdfIframe');
+                                    
+                                    iframe.src = pdfUrl;
+
+                                    iframe.onload = function () {
+                                      iframe.focus();
+                                      iframe.contentWindow.print();
+                                    };
+                                  }
+                                    </script>
+
+                                
                                 <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank">
                                   <i class="far fa-eye"></i> View
                                 </a>
+                                {% if current_user.doctor %}
                                 <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" 
-                                   data-toggle="modal" 
-                                   data-target="#add_medical_reports" 
-                                   data-appointment-id="{{ appointment.id }}" 
-                                   data-patient-id="{{ appointment.patient_id }}">
+                                data-toggle="modal" 
+                                data-target="#add_medical_reports" 
+                                data-appointment-id="{{ appointment.id }}" 
+                                data-patient-id="{{ patient.id }}">
                                   <i class="fas fa-upload"></i> Report
                                 </a>
                               </div>
-
+                              
                             </td>
                           </tr>
+                          {% endif %}
                           {% endfor %}
                         </tbody>          
                       </table>
@@ -578,8 +595,9 @@
                   </div>
                 </div>
               </div>
-              
-<!-- /Medical Records Tab -->
+              <!-- /Medical Records Tab -->
+
+              <!-- Add patient history -->
               <div id="lab_Ray_files" class="tab-pane fade">
                 <div class="text-right mb-2">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -587,7 +605,6 @@
                   </button>
                 </div>
               <div class="card card-table mb-0">
-               
                 <div class="card-body">
                   
                   <div class="table-responsive">
@@ -604,9 +621,6 @@
                         {% for history in patient_history %}
                         {% if history.file_link %}
                         <tr>
-                       
-                    
-   
                           <td>
                             
                             <span class="d-block text-info"
@@ -671,7 +685,9 @@
                   </div>
                 </div>
               </div>
-<!-- Add Medical Records Modal -->
+              <!-- /Add patient history -->
+
+              <!-- Add Medical Records Modal -->
               <div
                 class="modal fade custom-modal"
                 id="add_medical_reports"
@@ -717,8 +733,8 @@
                   </div>
                 </div>
               </div>
+              <!-- /Add Medical Records Modal -->
 
-<!-- /Add Medical Records Modal -->
                 <!-- Tab Content -->
             </div>
             </div>

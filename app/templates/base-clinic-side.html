@@ -14,10 +14,10 @@
           <h5 class="mb-0">
             <p class="mb-1 text-left">
               <i class="fas fa-map-marker-alt"></i> {{
-                current_user.clinic[0].address }}
+                current_user.clinic.address }}
             </p>
             <p class="mb-1 text-left">
-              <i class="fas fa-phone-alt"></i> {{ current_user.clinic[0].phone }}
+              <i class="fas fa-phone-alt"></i> {{ current_user.clinic.phone }}
             </p>
           </h5>
         </div>
@@ -45,7 +45,7 @@
             <span>Profile Settings</span>
           </a>
         </li>
-        <li class="{{ 'active' if request.endpoint == 'add_doctor' else '' }}"></li>
+        <li class="{{ 'active' if request.endpoint == 'add_doctor' else '' }}">
           <a href="{{ url_for('add_doctor') }}">
             <i class="fas fa-user-nurse"></i>
             <span>{{ translate('ADD Doctor') }}</span>

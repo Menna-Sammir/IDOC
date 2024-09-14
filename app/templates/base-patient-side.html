@@ -9,11 +9,11 @@
           alt="User Image"
       /></a>
       <div class="profile-det-info">
-        <h3>Welcome {{ user_name }}!</h3>
+        <h3>Welcome {{ current_user.name }}!</h3>
 
         <div class="patient-details">
-          <p><strong><i class="fas fa-tint"></i></strong> {{ blood_group }}</p>
-          <p><strong><i class="fas fa-allergies"></i></strong> {{ allergy }}</p>
+          <p><strong><i class="fas fa-tint"></i></strong> {{ current_user.patient[0].blood_group.name }}</p>
+          <p><strong><i class="fas fa-allergies"></i></strong> {{ current_user.patient[0].allergy.name }}</p>
           <h5 class="mb-0">
             <span class="{{ 'activated' if patient.users.activated else 'not-activated' }}">
               <i class="fas fa-user-check"></i> {{ 'Activated' if patient.users.activated else 'Not Activated' }}

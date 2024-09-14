@@ -37,7 +37,7 @@ from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
 from app.views.forms.add_patient_history import PatientHistoryForm
-import uuid 
+import uuid
 
 csrf = CSRFProtect(app)
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -175,7 +175,7 @@ def patient_dashboard():
         .all()
     )
     form = PatientHistoryForm()
-    if form.validate_on_submit(): 
+    if form.validate_on_submit():
         if form.details.data:
             file = form.details.data
             unique_str = str(uuid.uuid4())[:8]
@@ -205,8 +205,8 @@ def patient_dashboard():
     # Organize patient history data
     patient_history = [
         {
-            'details': history.details,  
-            'type': history.type.value if history.type else 'Not Provided',  
+            'details': history.details,
+            'type': history.type.value if history.type else 'Not Provided',
             'added_by': history.user.name,
             'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
         }
@@ -244,7 +244,7 @@ def appointment_History():
     elif current_user.doctor:
         patient_id = request.args.get('patient_id')
         if not patient_id:
-            flash('Patient ID is missing.', 'danger')
+            flash('Patient ID is missing', 'danger')
             return redirect(url_for('doctor_dash'))
 
         patient = Patient.query.get(patient_id)
@@ -311,7 +311,7 @@ def appointment_History():
                 flash(f'There was an error with adding medicine: {err_msg}', category='danger')
 
     form = PatientHistoryForm()
-    if form.validate_on_submit(): 
+    if form.validate_on_submit():
         if form.details.data:
             file = form.details.data
             unique_str = str(uuid.uuid4())[:8]
@@ -335,8 +335,8 @@ def appointment_History():
     # Organize patient history data
     patient_history = [
         {
-            'details': history.details,  
-            'type': history.type.value if history.type else 'Not Provided',  
+            'details': history.details,
+            'type': history.type.value if history.type else 'Not Provided',
             'added_by': history.user.name,
             'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
         }
@@ -347,24 +347,23 @@ def appointment_History():
         appointments=appointments,
         patient=patient,
         patient_medicines=patient_medicines,
-        # appointments=appointment_data,
-        # patient_history=history_data,
-        # blood_group=blood_group,
-        # allergy=allergy,
-        # medicine_data=medicine_data,
-        # medical_records=medical_records_data,
         patient_history=patient_history,
         patient_histories=patient_histories,
         form=form
         )
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_file_EXTENSIONS = {'pdf'}
+def allowed_file_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_file_EXTENSIONS
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ALLOWED_photo_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def allowed_photo_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_photo_EXTENSIONS
 
 @app.route('/upload_report', methods=['POST'])
+@login_required
+@doctor_permission.require(http_exception=403)
 def upload_report():
     patient_id = request.form.get('patient_id')
     appointment_id = request.form.get('appointment_id')
@@ -375,19 +374,19 @@ def upload_report():
     print(f"Appointment ID: {appointment_id}")
 
     if not patient_id:
-        flash('Patient ID is missing.')
+        flash('Patient ID is missing')
         return redirect(request.url)
 
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
-    
+
     file = request.files['file']
     if file.filename == '':
         flash('No selected file')
         return redirect(request.url)
-    
-    if file and allowed_file(file.filename):
+
+    if file and allowed_file_file(file.filename):
         if file.content_length > MAX_FILE_SIZE:
             flash('File exceeds maximum allowed size of 10MB', 'danger')
             return redirect(request.url)
@@ -400,7 +399,7 @@ def upload_report():
         except Exception as e:
             flash(f'Error saving file: {str(e)}')
             return redirect(request.url)
-        
+
         appointment_id = request.form.get('appointment_id')
         diagnosis = request.form.get('diagnosis')
 
@@ -408,14 +407,14 @@ def upload_report():
         if not appointment:
             flash('Appointment not found')
             return redirect(request.url)
-        
+
         appointment.Report = filename
         appointment.Diagnosis = diagnosis
 
         db.session.commit()
 
         flash('Report uploaded successfully', "success")
-        return redirect(url_for('appointment_History'))
+        return redirect(url_for('appointment_History', patient_id=patient_id))
 
     flash('Invalid file type. Only PDF files are allowed.')
     return redirect(request.url)
@@ -953,6 +952,7 @@ def patient_checkout():
                     db.session.add(message_create)
                     db.session.add(notification_create)
                     db.session.commit()
+                    print("dddddddddddddddddddddddddddddddddddd",clinic_data.id )
                     socketio.emit(
                         'appointment_notification',
                         {
@@ -969,7 +969,7 @@ def patient_checkout():
                     session['date'] = date.strftime('%d %b %Y')
                     session['start_time'] = start_time.strftime('%H:%M:%S')
                     session['clinic_id'] = clinic_data.id
-                    print('clinic_id', clinic_data.id)
+                    print('clinic_iddddddddddddddddddddddddddddddddddddd', clinic_data.id)
 
                     return redirect(url_for('checkout_success'))
                 if checkout_form.errors != {}:
@@ -1000,11 +1000,11 @@ def patient_checkout():
 
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
-    
-    
+
+
 @socketio.on('connect')
 def handle_connect():
-    clinic_id = getattr(current_user, 'clinic_id', None)
+    clinic_id = request.args.get('clinic_id')
     print(f"Clinic ID: {clinic_id}")
     if clinic_id:
         join_room(clinic_id)
@@ -1013,7 +1013,7 @@ def handle_connect():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    clinic_id = getattr(current_user, 'clinic_id', None)
+    clinic_id = getattr(current_user.clinic, 'id', None)
     if clinic_id:
         leave_room(clinic_id)
 
@@ -1424,16 +1424,29 @@ def patient_setting():
     if request.method == 'PUT':
         if form.validate():
             if form.photo.data:
-                photo_filename = secure_filename(form.photo.data.filename)
-                photo_directory = os.path.join('static', 'images', 'patients')
-
-                if not os.path.exists(photo_directory):
-                    os.makedirs(photo_directory)
-                photo_path = os.path.join(photo_directory, photo_filename)
-                form.photo.data.save(photo_path)
-                user.photo = photo_path
-            else:
-                photo_path = user.photo if user else None
+                file = request.files['photo']
+                print(file)
+                if 'photo' in request.files:
+                    unique_str = str(uuid.uuid4())[:8]
+                    original_filename, extension = os.path.splitext(file.filename)
+                    new_filename = f"{unique_str}_{current_user.name.replace(' ', '_')}{extension}"
+                    user.photo = new_filename
+                    if file and allowed_photo_file(file.filename):
+                        filename = secure_filename(new_filename)
+                        file.save(
+                            os.path.join(
+                                app.config['UPLOAD_FOLDER'], 'patients', filename
+                            )
+                        )
+                # photo_filename = secure_filename(form.photo.data.filename)
+                # photo_directory = os.path.join(app.config['UPLOAD_FOLDER'], 'patients', photo_filename)
+                # if not os.path.exists(photo_directory):
+                #     os.makedirs(photo_directory)
+                # photo_path = os.path.join(photo_directory, photo_filename)
+                # form.photo.data.save(photo_path)
+                # user.photo = photo_path
+            # else:
+            #     photo_path = user.photo if user else None
             email_exists = User.query.filter(
                 User.email == form.email.data, User.id != user.id
             ).first()
@@ -1448,7 +1461,7 @@ def patient_setting():
                 patient = Patient(user_id=current_user.id)
             patient.firstname = form.firstname.data
             patient.lastname = form.lastname.data
-            patient.email_address = form.email.data
+            user.email = form.email.data
             patient.phone = form.phone.data
             patient.address = form.address.data
             patient.governorate_id = form.governorate.data

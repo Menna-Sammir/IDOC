@@ -817,20 +817,10 @@ $(document).ready(function () {
     if (reportUrl) {
       var printWindow = window.open(reportUrl, '_blank');
       printWindow.onload = function () {
-        printWindow.focus();
         printWindow.print();
       };
     } else {
       alert('No report available to print.');
-    }
-  });
-
-  $('.view-btn').on('click', function () {
-    var reportUrl = $(this).data('report-url');
-    if (reportUrl) {
-      window.open(reportUrl, '_blank');
-    } else {
-      alert('No report available to view.');
     }
   });
 });
