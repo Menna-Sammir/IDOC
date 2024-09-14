@@ -22,33 +22,23 @@
 <!-- /Breadcrumb -->
 
 <!-- Page Content -->
+
 <div class="content">
   <div class="container-fluid">
     <div class="row">
       <!-- Profile Sidebar -->
+
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
         <div class="profile-sidebar">
           <div class="widget-profile pro-widget-content">
             <div class="profile-info-widget">
-              <a href="#" class="booking-doc-img">
-                {% if current_user.is_authenticated %} {% if current_user.photo
-                %}
+              <a href="profile.html" class="booking-doc-img">
+                {% set base_path = 'static/images/patients/' %}
                 <img
-                  src="{{ url_for('static', filename=current_user.photo) }}"
+                  class="avatar-img rounded-circle"
+                  src="{{base_path ~ current_user.photo}}"
                   alt="User Image"
-                />
-                {% else %}
-                <img
-                  src="{{ url_for('static', filename='default-profile.png') }}"
-                  alt="Default User Image"
-                />
-                {% endif %} {% else %}
-                <img
-                  src="{{ url_for('static', filename='default-profile.png') }}"
-                  alt="Default User Image"
-                />
-                {% endif %}
-              </a>
+              /></a>
               <div class="profile-det-info">
                 <h3>{{ current_user.name }}</h3>
                 <div class="patient-details">
@@ -110,7 +100,7 @@
           <div class="card-body">
             <!-- Profile Settings Form -->
             <form id="patientForm" enctype="multipart/form-data">
-              {{ form.hidden_tag() }}
+              {{ form.hidden_tag() }} {{ form.csrf_token }}
               <div class="row form-row">
                 <!-- Profile Photo -->
                 <div class="col-12">
@@ -197,9 +187,10 @@
                   </div>
                 </div>
               </div>
-              <div class="submit-section">
-                {{ form.submit(class="btn btn-primary submit-btn", value="Save
-                Changes") }}
+              <div class="submit-section submit-btn-bottom">
+                <div class="submit-section submit-btn-bottom">
+                  {{ form.submit(class="btn btn-primary submit-btn") }}
+                </div>
               </div>
             </form>
             <!-- /Profile Settings Form -->

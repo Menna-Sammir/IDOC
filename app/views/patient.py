@@ -36,6 +36,7 @@ from wtforms import SelectField, SubmitField
 from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
+from app.views.forms.auth_form import EditUserForm
 from app.views.forms.add_patient_history import PatientHistoryForm
 import uuid
 
@@ -1395,7 +1396,7 @@ def sendEmail():
     return redirect(url_for('home'))
 
 
-### patient setting to edit patient profile ###
+## patient setting to edit patient profile ###
 @app.route('/patient_setting', methods=['GET', 'PUT'])
 @login_required
 def patient_setting():
@@ -1404,44 +1405,41 @@ def patient_setting():
 
     form = PatientForm(
         firstname=user.name.split()[0] if user.name else '',
-        lastname=user.name.split()[1]
-        if user.name and len(user.name.split()) > 1
-        else '',
+        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
         email=user.email,
         phone=patient.phone if patient else '',
         address=patient.address if patient else '',
         governorate=patient.governorate_id if patient else None,
         age=patient.age if patient else None,
-        blood_group=patient.blood_group.name
-        if patient and patient.blood_group
-        else None,
+        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
         allergy=patient.allergy.name if patient and patient.allergy else None
     )
 
     if request.method == 'PUT':
-        if form.validate():
-            if form.photo.data:
-                photo_filename = secure_filename(form.photo.data.filename)
-                photo_directory = os.path.join(app.config['UPLOAD_FOLDER'], 'patients', photo_filename)
-                if not os.path.exists(photo_directory):
-                    os.makedirs(photo_directory)
-                photo_path = os.path.join(photo_directory, photo_filename)
-                form.photo.data.save(photo_path)
-                user.photo = photo_path
-            else:
-                photo_path = user.photo if user else None
+        if 'photo' in request.files:
+            file = request.files['photo']
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                unique_str = str(uuid.uuid4())[:8]
+                original_filename, extension = os.path.splitext(file.filename)
+                new_filename = f"{unique_str}_{secure_filename(current_user.name.replace(' ', '_'))}{extension}"
+                user.photo = new_filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'patients', new_filename))
+        else:
+            user.photo = user.photo if user else None
+
+        if form.validate_on_submit():
             email_exists = User.query.filter(
                 User.email == form.email.data, User.id != user.id
             ).first()
             if email_exists:
-                return (
-                    jsonify(
-                        {'status': 'error', 'message': 'Email address already exists!'}
-                    ),
-                    400
-                )
+                return jsonify({'status': 'error', 'message': 'Email address already exists!'}), 400
+
             if not patient:
                 patient = Patient(user_id=current_user.id)
+
             patient.firstname = form.firstname.data
             patient.lastname = form.lastname.data
             patient.email_address = form.email.data
@@ -1463,15 +1461,9 @@ def patient_setting():
                 return jsonify({'status': 'success'})
             except Exception as e:
                 db.session.rollback()
-                return (
-                    jsonify(
-                        {
-                            'status': 'error',
-                            'message': 'An error occurred while updating your settings. Please try again.'
-                        }
-                    ),
-                    500
-                )
+                return jsonify({'status': 'error', 'message': 'An error occurred while updating your settings. Please try again.'}), 500
+
         errors = {field: errors[0] for field, errors in form.errors.items()}
         return jsonify({'status': 'error', 'errors': errors}), 400
-    return render_template('patient-setting.html', form=form, patient=patient)
+
+    return render_template('patient-setting.html', form=form, patient=patient, user=user)
