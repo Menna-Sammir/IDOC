@@ -33,7 +33,6 @@
       </div>
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="row row-grid">
-          {% for appointment in appointments %}
           {% for patient in patients %}
           <!-- <a href="{{ url_for('add_prescription' , patient_id=patient.user_id) }}">add preeeeee</a> -->
           <div class="col-md-6 col-lg-4 col-xl-3">
@@ -41,7 +40,7 @@
               <div class="card-body">
                 <div class="pro-widget-content">
                   <div class="profile-info-widget">
-                    <a href="{{ url_for('appointment_History', patient_id=appointment.patient.id) }}" class="booking-doc-img">
+                    <a href="{{ url_for('appointment_History', patient_id=patient.id) }}" class="booking-doc-img">
                       <img
                         src="assets/img/patients/patient.jpg"
                         alt="User Image"
@@ -66,7 +65,6 @@
             </div>
           </div>
           {% endfor %}
-{% endfor %}
                 </div>
               </div>
             </div>

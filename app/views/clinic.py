@@ -120,42 +120,57 @@ def clear_noti():
     return redirect(url_for('clinic_calender'))
 
 
-# ### view all notifications page ###
-@app.route('/all_notifications', methods=['GET', 'POST'], strict_slashes=False)
+### view all notifications page ###
+@app.route('/notifications', methods=['GET', 'POST'], strict_slashes=False)
 def all_notifications():
+    if not current_user.is_authenticated or not hasattr(current_user, 'clinic'):
+        return redirect(url_for('login_page'))
+
+    clinic_id = current_user.clinic.id
+
+    notifications = Notification.query.filter_by(clinic_id=clinic_id).all()
+
+    current_time = datetime.now()
+    processed_notifications = []
+
+    for n in notifications:
+        appointment = Appointment.query.get(n.appointment_id)
+        if appointment:
+            doctor = Doctor.query.get(appointment.doctor_id)
+            patient = Patient.query.get(appointment.patient_id)
+            
+            if doctor and patient:
+                processed_notifications.append({
+                    'id': n.id,
+                    'doctor': doctor.users.name if doctor.users else 'Unknown Doctor',
+                    'patient': patient.users.name if patient.users else 'Unknown Patient',
+                    'body': n.noteBody,
+                    'isRead': n.isRead,
+                    'time': n.time.strftime('%H:%M %p'),
+                    'date': n.date.strftime('%d %B'),
+                    'photo': doctor.users.photo if doctor.users else None,
+                    'formatted_time': calculate_time_ago(current_time, n.notDate)
+                })
+
+    return render_template('all_notifications.html', notifications=processed_notifications)
+
+
+@app.route('/mark_as_read/<string:notification_id>', methods=['POST'])
+def mark_as_read(notification_id):
+    if not current_user.is_authenticated or not hasattr(current_user, 'clinic'):
+        return jsonify({"success": False, "message": "User not authenticated"}), 403
+
+    notification = Notification.query.get(notification_id)
     
-    load_notification()
-
-    return render_template('all_notifications.html', notifications=g.get('notifications', []), notification_count=g.get('notification_count', 0))
-
-
-
-@app.route('/mark_as_read', methods=['POST'])
-def mark_as_read():
-    notification_id = request.form.get('notification_id')
-    
-    if not notification_id:
-        flash('Notification ID is required.')
-        return redirect(url_for('all_notifications'))
-    
-    try:
-        load_notification()
-        
-        notification = db.session.query(Notification).filter_by(id=notification_id).first()
-        
-        if notification is None:
-            flash('Notification not found.')
-            return redirect(url_for('all_notifications'))
-        
+    if notification and notification.clinic_id == current_user.clinic.id:
         notification.isRead = True
         db.session.commit()
         
-        flash('Notification marked as read.')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'An error occurred: {e}')
-    
-    return redirect(url_for('all_notifications'))
+        return jsonify({"success": True, "message": "Notification marked as read"}), 200
+    else:
+        return jsonify({"success": False, "message": "Notification not found or access denied"}), 404
+
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):

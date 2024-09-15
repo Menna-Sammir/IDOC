@@ -154,6 +154,7 @@
                               <form
                                 action="{{ url_for('mark_as_read', notification_id=notification.id) }}"
                                 method="post"
+                                class="d-inline"
                               >
                                 <input
                                   type="hidden"
@@ -162,7 +163,8 @@
                                 />
                                 <button
                                   class="btn btn-sm bg-success-light mark-read-btn"
-                                  type="submit"
+                                  data-id="{{ notification.id }}"
+                                  type="button"
                                 >
                                   Mark as Read
                                 </button>

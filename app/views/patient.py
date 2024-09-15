@@ -1435,15 +1435,6 @@ def patient_setting():
                                 app.config['UPLOAD_FOLDER'], 'patients', filename
                             )
                         )
-                # photo_filename = secure_filename(form.photo.data.filename)
-                # photo_directory = os.path.join(app.config['UPLOAD_FOLDER'], 'patients', photo_filename)
-                # if not os.path.exists(photo_directory):
-                #     os.makedirs(photo_directory)
-                # photo_path = os.path.join(photo_directory, photo_filename)
-                # form.photo.data.save(photo_path)
-                # user.photo = photo_path
-            # else:
-            #     photo_path = user.photo if user else None
             email_exists = User.query.filter(
                 User.email == form.email.data, User.id != user.id
             ).first()
