@@ -50,29 +50,39 @@ def home():
     form = SearchForm()
     E_form = EmailForm()
 
+    # Get specializations that have doctors associated with them
+    specializations_with_doctors = db.session.query(Specialization).join(Doctor, Doctor.specialization_id == Specialization.id).distinct().all()
+    
+    # Get governorates that have clinics associated with doctors and same specialization
+    governorates_with_clinics = db.session.query(Governorate).join(Clinic, Clinic.governorate_id == Governorate.id) \
+        .join(Doctor, Doctor.clinic_id == Clinic.id).distinct().all()
+
+    # Set the choices for the specialization dropdown based on available doctors
     form.specialization.choices = [('', translate('Select a specialization'))] + [
-        (s.id, translate(s.specialization_name)) for s in Specialization.query.all()
+        (s.id, translate(s.specialization_name)) for s in specializations_with_doctors
     ]
 
+    # Set the choices for the governorate dropdown based on clinics that have doctors with the selected specialization
     form.governorate.choices = [('', translate('Select a governorate'))] + [
-        (g.id, translate(g.governorate_name)) for g in Governorate.query.all()
+        (g.id, translate(g.governorate_name)) for g in governorates_with_clinics
     ]
 
-    specialties = Specialization.query.filter().all()
-    doctor = Doctor.query.filter().all()
+    specialties = specializations_with_doctors
+    doctors = Doctor.query.all()
+
     if request.method == 'POST':
         if form.validate_on_submit():
             session['specialization_id'] = form.specialization.data
             session['governorate_id'] = form.governorate.data
             session['doctor_name'] = form.doctor_name.data
             return redirect(url_for('search_doctor'))
+
     if form.errors != {}:
         for err_msg in form.errors.values():
-            flash(
-                f'there was an error with creating a user: {err_msg}', category='danger'
-            )
+            flash(f'there was an error with creating a user: {err_msg}', category='danger')
+
     return render_template(
-        'index.html', form=form, specialties=specialties, doctors=doctor, E_form=E_form
+        'index.html', form=form, specialties=specialties, doctors=doctors, E_form=E_form
     )
 
 
@@ -636,9 +646,8 @@ def doctor_appointments():
         )
 
         if start_time > end_time:
-            end_time += timedelta(
-                days=1
-            )  # Handle cases where end time is on the next day
+            end_time += timedelta(days=1)  # Handle cases where end time is on the next day
+        
         current_time = start_time
 
         # Generate timeslots
@@ -646,11 +655,13 @@ def doctor_appointments():
             timeslot = f"{current_time.strftime('%I:%M %p')}"
             daily_timeslots.append((timeslot, timeslot))  # Only include start time
             current_time += duration
+
         # Filter out booked timeslots
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date
         ).all()
 
+        # Ensure the date and time formats match the ones used in the form
         booked_timeslots = [
             f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%I:%M %p')}"
             for a in existing_appointments
@@ -659,9 +670,11 @@ def doctor_appointments():
         # Mark timeslots as available or booked
         available_timeslots = []
         for timeslot in daily_timeslots:
-            is_available = timeslot[0] not in booked_timeslots
+            # Compare time without the date part
+            is_available = f"{date} {timeslot[0]}" not in booked_timeslots
             available_timeslots.append((timeslot[0], timeslot[1], is_available))
         timeslots_by_date[date] = available_timeslots
+
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
         # Print form data to terminal
@@ -671,6 +684,7 @@ def doctor_appointments():
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
+
         # Extract date and time from selected_timeslot
         try:
             date_str, start_time_str = selected_timeslot.split(' ', 1)
@@ -684,6 +698,7 @@ def doctor_appointments():
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
             return redirect(request.url)
+
     return render_template(
         'booking.html',
         form=form,
