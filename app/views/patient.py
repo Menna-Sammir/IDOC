@@ -185,14 +185,21 @@ def patient_dashboard():
     # Limit to 4 prescriptions for display
     limited_prescriptions = all_prescriptions[:4]
     show_more_button = len(all_prescriptions) > 4
+    Today_date = datetime.now().date()
+
     appointments = (
         db.session.query(Appointment)
         .join(Appointment.doctor)
         .join(Doctor.users)
         .options(joinedload(Appointment.doctor).joinedload(Doctor.users))
-        .filter(Appointment.patient_id == patient_id)
+        .filter(
+            Appointment.patient_id == patient_id,
+            Appointment.status == AppStatus.Confirmed,
+            Appointment.date >= Today_date
+        )
         .all()
     )
+
     form = PatientHistoryForm()
     if form.validate_on_submit():
         if form.details.data:
@@ -337,7 +344,6 @@ def appointment_History():
                     f'There was an error with adding medicine: {err_msg}',
                     category='danger'
                 )
-
         if form.validate_on_submit():
             if form.details.data:
                 file = form.details.data
@@ -348,7 +354,9 @@ def appointment_History():
                 )
                 print(f"Saving file to: {new_filename}")
                 file.save(
-                    os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename)
+                    os.path.join(
+                        app.config['UPLOAD_FOLDER'], 'history_files', new_filename
+                    )
                 )
 
                 new_history = PatientHistory(
@@ -819,7 +827,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                         <html>
+
+
+
+
 
 
 
@@ -827,7 +843,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                             <style>
+
+
+
+
 
 
 
@@ -835,7 +859,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     font-family: Arial, sans-serif;
+
+
+
+
 
 
 
@@ -843,7 +875,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     margin: 0;
+
+
+
+
 
 
 
@@ -851,11 +891,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     background-color: #f4f4f4;
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -863,7 +915,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     width: 80%;
+
+
+
+
 
 
 
@@ -871,11 +931,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     background-color: #fff;
 
 
 
+
+
+
+
                                     padding: 20px;
+
+
+
+
 
 
 
@@ -883,11 +955,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -895,7 +979,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     background-color: #007bff;
+
+
+
+
 
 
 
@@ -903,7 +995,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     text-align: center;
+
+
+
+
 
 
 
@@ -911,7 +1011,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -919,7 +1027,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     text-align: center;
+
+
+
+
 
 
 
@@ -927,7 +1043,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -935,11 +1059,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     padding: 20px;
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -947,7 +1083,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     text-align: left;
+
+
+
+
 
 
 
@@ -955,11 +1099,27 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     color: #777;
 
 
 
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -971,7 +1131,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     color: red;
+
+
+
+
 
 
 
@@ -979,7 +1147,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                             </style>
+
+
+
+
 
 
 
@@ -987,7 +1163,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                         <body>
+
+
+
+
 
 
 
@@ -995,7 +1179,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 <div class="header">
+
+
+
+
 
 
 
@@ -1003,7 +1195,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 </div>
+
+
+
+
 
 
 
@@ -1011,7 +1211,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 </div>
+
+
+
+
 
 
 
@@ -1019,7 +1227,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>Dear {name},</p>
+
+
+
+
 
 
 
@@ -1027,7 +1243,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <h3>Appointment Details:</h3>
+
+
+
+
 
 
 
@@ -1035,7 +1259,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                         <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
+
+
 
 
 
@@ -1043,7 +1275,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                         <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
+
+
+
+
 
 
 
@@ -1051,7 +1291,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     </ul>
+
+
+
+
 
 
 
@@ -1059,7 +1307,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <a>
+
+
+
+
 
 
 
@@ -1067,7 +1323,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     </a>
+
+
+
+
 
 
 
@@ -1075,11 +1339,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>We look forward to seeing you and providing the care you need.</p>
 
 
 
+
+
+
+
                                 </div>
+
+
+
+
 
 
 
@@ -1087,7 +1363,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>Best regards,</p>
+
+
+
+
 
 
 
@@ -1095,7 +1379,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>{clinic_data.phone}</p>
+
+
+
+
 
 
 
@@ -1103,7 +1395,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                             </div>
+
+
+
+
 
 
 
@@ -1111,7 +1411,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                         </html>
+
+
+
+
 
 
 
@@ -1269,7 +1577,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1301,7 +1641,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1333,7 +1705,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 font-family: Arial, sans-serif;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1365,7 +1769,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 margin: 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1397,6 +1833,22 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 background-color: #f4f4f4;
 
 
@@ -1413,7 +1865,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1445,7 +1929,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 width: 80%;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1477,6 +1993,22 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 background-color: #fff;
 
 
@@ -1493,7 +2025,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 padding: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1525,6 +2089,22 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
@@ -1541,7 +2121,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1573,6 +2185,22 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 font-size:16px;
 
 
@@ -1589,7 +2217,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1621,7 +2281,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 text-align: center;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1653,7 +2345,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1685,7 +2409,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 padding: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1717,7 +2473,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1749,7 +2537,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1781,6 +2601,22 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
 
@@ -1797,7 +2633,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1829,7 +2697,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <p>{form.message.data}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1861,7 +2761,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1893,7 +2825,39 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2021,4 +2985,3 @@ def patient_setting():
     return render_template(
         'patient-setting.html', form=form, patient=patient, user=user
     )
-
