@@ -51,11 +51,21 @@ def home():
     E_form = EmailForm()
 
     # Get specializations that have doctors associated with them
-    specializations_with_doctors = db.session.query(Specialization).join(Doctor, Doctor.specialization_id == Specialization.id).distinct().all()
-    
+    specializations_with_doctors = (
+        db.session.query(Specialization)
+        .join(Doctor, Doctor.specialization_id == Specialization.id)
+        .distinct()
+        .all()
+    )
+
     # Get governorates that have clinics associated with doctors and same specialization
-    governorates_with_clinics = db.session.query(Governorate).join(Clinic, Clinic.governorate_id == Governorate.id) \
-        .join(Doctor, Doctor.clinic_id == Clinic.id).distinct().all()
+    governorates_with_clinics = (
+        db.session.query(Governorate)
+        .join(Clinic, Clinic.governorate_id == Governorate.id)
+        .join(Doctor, Doctor.clinic_id == Clinic.id)
+        .distinct()
+        .all()
+    )
 
     # Set the choices for the specialization dropdown based on available doctors
     form.specialization.choices = [('', translate('Select a specialization'))] + [
@@ -76,11 +86,11 @@ def home():
             session['governorate_id'] = form.governorate.data
             session['doctor_name'] = form.doctor_name.data
             return redirect(url_for('search_doctor'))
-
     if form.errors != {}:
         for err_msg in form.errors.values():
-            flash(f'there was an error with creating a user: {err_msg}', category='danger')
-
+            flash(
+                f'there was an error with creating a user: {err_msg}', category='danger'
+            )
     return render_template(
         'index.html', form=form, specialties=specialties, doctors=doctors, E_form=E_form
     )
@@ -101,7 +111,6 @@ def patient_dashboard():
         if not patient_id:
             flash('Patient ID is missing.', 'danger')
             return redirect(url_for('doctor_dash'))
-
         patient = Patient.query.get(patient_id)
         if not patient:
             flash('Patient not found', 'danger')
@@ -147,7 +156,6 @@ def patient_dashboard():
         }
     else:
         appointment_data = None
-
     # Get monthly appointment count
     month_appointments_count = Appointment.query.filter(
         func.extract('month', Appointment.date) == datetime.now().month,
@@ -191,9 +199,13 @@ def patient_dashboard():
             file = form.details.data
             unique_str = str(uuid.uuid4())[:8]
             original_filename, extension = os.path.splitext(file.filename)
-            new_filename = f"{unique_str}_{secure_filename(original_filename)}{extension}"
+            new_filename = (
+                f"{unique_str}_{secure_filename(original_filename)}{extension}"
+            )
 
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename))
+            file.save(
+                os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename)
+            )
 
             new_history = PatientHistory(
                 details=new_filename,
@@ -205,7 +217,6 @@ def patient_dashboard():
             db.session.commit()
             flash('History record added successfully', 'success')
             return redirect(url_for('patient_dashboard', patient_id=patient_id))
-
     if request.method == 'POST':
         # Handle form submission if necessary
         pass
@@ -219,7 +230,11 @@ def patient_dashboard():
             'details': history.details,
             'type': history.type.value if history.type else 'Not Provided',
             'added_by': history.user.name,
-            'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
+            'file_link': url_for(
+                'static', filename=f'images/history_files/{history.details}'
+            )
+            if history.details
+            else None
         }
         for history in patient_history_query
     ]
@@ -242,8 +257,7 @@ def patient_dashboard():
     )
 
 
-
-@app.route('/patient_dashboard/appointment_History', methods=['GET', 'POST'])
+@app.route('/appointment_History', methods=['GET', 'POST'])
 @login_required
 def appointment_History():
     if current_user.patient:
@@ -257,7 +271,6 @@ def appointment_History():
         if not patient_id:
             flash('Patient ID is missing', 'danger')
             return redirect(url_for('doctor_dash'))
-
         patient = Patient.query.get(patient_id)
         if not patient:
             flash('Patient not found', 'danger')
@@ -265,7 +278,6 @@ def appointment_History():
     else:
         flash('Unauthorized access', 'danger')
         return redirect(url_for('home'))
-
     patient_histories = PatientHistory.query.filter_by(patient_id=patient_id).all()
 
     appointments = (
@@ -280,35 +292,38 @@ def appointment_History():
 
     patient_medicines = PatientMedicine.query.filter_by(patient_id=patient_id).all()
 
-    form = AddMedicineForm()
+    Medicine_form = AddMedicineForm()
+    form = PatientHistoryForm()
     if request.method == 'POST':
-        if form.validate_on_submit():
+        if Medicine_form.validate_on_submit():
             try:
-                for item in form.items:
-                    med_exist = PatientMedicine.query.filter_by(medName=item.form.name.data).first()
+                for item in Medicine_form.items:
+                    med_exist = PatientMedicine.query.filter_by(
+                        medName=item.form.name.data
+                    ).first()
                     if not med_exist:
                         Patient_Medicine = PatientMedicine(
                             medName=item.form.name.data,
                             Quantity=item.form.quantity.data,
                             Date=datetime.now().strftime('%Y-%m-%d'),
                             patient_id=patient_id,
-                            Added_By = current_user.id
+                            Added_By=current_user.id
                         )
                         db.session.add(Patient_Medicine)
                         current_medicine = Patient_Medicine
                         flash('Medicine added successfully', category='success')
-
                     else:
                         med_exist.Quantity = item.form.quantity.data
-                        med_exist.Date=datetime.now().strftime('%Y-%m-%d'),
-                        med_exist.Added_By = current_user.id,
+                        med_exist.Date = (datetime.now().strftime('%Y-%m-%d'),)
+                        med_exist.Added_By = (current_user.id,)
                         current_medicine = med_exist
-                        MedicineTimes.query.filter_by(patient_medicine=med_exist).delete()
+                        MedicineTimes.query.filter_by(
+                            patient_medicine=med_exist
+                        ).delete()
                         flash('Medicine updated successfully', category='success')
                     for time_of_day in item.form.time_of_day.data:
                         Medicine_Times = MedicineTimes(
-                            patient_medicine=current_medicine,
-                            time_of_day=time_of_day
+                            patient_medicine=current_medicine, time_of_day=time_of_day
                         )
                         db.session.add(Medicine_Times)
                 db.session.commit()
@@ -316,31 +331,36 @@ def appointment_History():
             except Exception as e:
                 db.session.rollback()
                 flash(f'There was an error: {e}', category='danger')
+        if Medicine_form.errors != {}:
+            for err_msg in Medicine_form.errors.values():
+                flash(
+                    f'There was an error with adding medicine: {err_msg}',
+                    category='danger'
+                )
 
-        if form.errors != {}:
-            for err_msg in form.errors.values():
-                flash(f'There was an error with adding medicine: {err_msg}', category='danger')
+        if form.validate_on_submit():
+            if form.details.data:
+                file = form.details.data
+                unique_str = str(uuid.uuid4())[:8]
+                original_filename, extension = os.path.splitext(file.filename)
+                new_filename = (
+                    f"{unique_str}_{secure_filename(original_filename)}{extension}"
+                )
+                print(f"Saving file to: {new_filename}")
+                file.save(
+                    os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename)
+                )
 
-    form = PatientHistoryForm()
-    if form.validate_on_submit():
-        if form.details.data:
-            file = form.details.data
-            unique_str = str(uuid.uuid4())[:8]
-            original_filename, extension = os.path.splitext(file.filename)
-            new_filename = f"{unique_str}_{secure_filename(original_filename)}{extension}"
-            print(f"Saving file to: {new_filename}")
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename))
-
-            new_history = PatientHistory(
-                details=new_filename,
-                type=form.type.data,
-                addedBy=current_user.id,
-                patient_id=patient_id
-            )
-            db.session.add(new_history)
-            db.session.commit()
-            flash('History record added successfully', 'success')
-            return redirect(url_for('appointment_History', patient_id=patient_id))
+                new_history = PatientHistory(
+                    details=new_filename,
+                    type=form.type.data,
+                    addedBy=current_user.id,
+                    patient_id=patient_id
+                )
+                db.session.add(new_history)
+                db.session.commit()
+                flash('History record added successfully', 'success')
+                return redirect(url_for('appointment_History', patient_id=patient_id))
     patient_history_query = PatientHistory.query.filter_by(patient_id=patient_id).all()
 
     # Organize patient history data
@@ -349,7 +369,11 @@ def appointment_History():
             'details': history.details,
             'type': history.type.value if history.type else 'Not Provided',
             'added_by': history.user.name,
-            'file_link': url_for('static', filename=f'images/history_files/{history.details}') if history.details else None
+            'file_link': url_for(
+                'static', filename=f'images/history_files/{history.details}'
+            )
+            if history.details
+            else None
         }
         for history in patient_history_query
     ]
@@ -360,17 +384,31 @@ def appointment_History():
         patient_medicines=patient_medicines,
         patient_history=patient_history,
         patient_histories=patient_histories,
-        form=form
-        )
+        form=form,
+        Medicine_form=Medicine_form
+    )
+
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_file_EXTENSIONS = {'pdf'}
+
+
 def allowed_file_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_file_EXTENSIONS
+    return (
+        '.' in filename
+        and filename.rsplit('.', 1)[1].lower() in ALLOWED_file_EXTENSIONS
+    )
+
 
 ALLOWED_photo_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+
 def allowed_photo_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_photo_EXTENSIONS
+    return (
+        '.' in filename
+        and filename.rsplit('.', 1)[1].lower() in ALLOWED_photo_EXTENSIONS
+    )
+
 
 @app.route('/upload_report', methods=['POST'])
 @login_required
@@ -387,21 +425,17 @@ def upload_report():
     if not patient_id:
         flash('Patient ID is missing')
         return redirect(request.url)
-
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
-
     file = request.files['file']
     if file.filename == '':
         flash('No selected file')
         return redirect(request.url)
-
     if file and allowed_file_file(file.filename):
         if file.content_length > MAX_FILE_SIZE:
             flash('File exceeds maximum allowed size of 10MB', 'danger')
             return redirect(request.url)
-
         filename = secure_filename(file.filename)
         filepath = os.path.join('app/static/pdfs', filename)
 
@@ -410,7 +444,6 @@ def upload_report():
         except Exception as e:
             flash(f'Error saving file: {str(e)}')
             return redirect(request.url)
-
         appointment_id = request.form.get('appointment_id')
         diagnosis = request.form.get('diagnosis')
 
@@ -418,18 +451,15 @@ def upload_report():
         if not appointment:
             flash('Appointment not found')
             return redirect(request.url)
-
         appointment.Report = filename
         appointment.Diagnosis = diagnosis
 
         db.session.commit()
 
-        flash('Report uploaded successfully', "success")
+        flash('Report uploaded successfully', 'success')
         return redirect(url_for('appointment_History', patient_id=patient_id))
-
     flash('Invalid file type. Only PDF files are allowed.')
     return redirect(request.url)
-
 
 
 @app.route('/cancel_appointment', methods=['POST'])
@@ -468,24 +498,29 @@ def update_follow_up():
     try:
         if follow_up_date_str and follow_up_time_str:
             follow_up_date_time_str = f"{follow_up_date_str} {follow_up_time_str}"
-            follow_up_date = datetime.strptime(follow_up_date_time_str, '%Y-%m-%d %H:%M')
+            follow_up_date = datetime.strptime(
+                follow_up_date_time_str, '%Y-%m-%d %H:%M'
+            )
         else:
             follow_up_date = None
-
         if appointment.status.name != 'Completed':
-            flash('Follow-up can only be added or updated for completed appointments.', 'danger')
-            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
-
+            flash(
+                'Follow-up can only be added or updated for completed appointments.',
+                'danger'
+            )
+            return redirect(
+                url_for('appointment_History', patient_id=appointment.patient_id)
+            )
         appointment_date = appointment.date
         if isinstance(appointment_date, datetime):
             appointment_date = appointment_date
         else:
             appointment_date = datetime.combine(appointment_date, datetime.min.time())
-
         if follow_up_date and follow_up_date <= appointment_date:
             flash('Follow-up date must be after the appointment date.', 'danger')
-            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
-
+            return redirect(
+                url_for('appointment_History', patient_id=appointment.patient_id)
+            )
         appointment.follow_up = follow_up_date
         db.session.commit()
         flash('Follow-up date updated successfully', 'success')
@@ -493,11 +528,14 @@ def update_follow_up():
         if current_user.doctor:
             return redirect(url_for('doctor_dash'))
         else:
-            return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
-
+            return redirect(
+                url_for('appointment_History', patient_id=appointment.patient_id)
+            )
     except ValueError:
         flash('Invalid date format. Please try again.', 'danger')
-        return redirect(url_for('appointment_History', patient_id=appointment.patient_id))
+        return redirect(
+            url_for('appointment_History', patient_id=appointment.patient_id)
+        )
 
 
 @app.route('/update_appointment_status', methods=['POST'])
@@ -509,8 +547,12 @@ def update_appointment_status():
     print(f"Received appointment_id: {appointment_id}, new_status: {new_status}")
 
     if not appointment_id or not new_status:
-        return jsonify({'success': False, 'error': 'Missing appointment_id or new_status'}), 400
-
+        return (
+            jsonify(
+                {'success': False, 'error': 'Missing appointment_id or new_status'}
+            ),
+            400
+        )
     try:
         new_status_enum = AppStatus[new_status]
 
@@ -521,7 +563,6 @@ def update_appointment_status():
             return jsonify({'success': True})
         else:
             return jsonify({'success': False, 'error': 'Appointment not found'}), 404
-
     except KeyError:
         print(f"Error: Invalid status received: {new_status}")
         return jsonify({'success': False, 'error': 'Invalid status'}), 400
@@ -529,7 +570,6 @@ def update_appointment_status():
         print(f"Error: {e}")
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
-
 
 
 #### doctor search page ####
@@ -646,8 +686,9 @@ def doctor_appointments():
         )
 
         if start_time > end_time:
-            end_time += timedelta(days=1)  # Handle cases where end time is on the next day
-        
+            end_time += timedelta(
+                days=1
+            )  # Handle cases where end time is on the next day
         current_time = start_time
 
         # Generate timeslots
@@ -655,7 +696,6 @@ def doctor_appointments():
             timeslot = f"{current_time.strftime('%I:%M %p')}"
             daily_timeslots.append((timeslot, timeslot))  # Only include start time
             current_time += duration
-
         # Filter out booked timeslots
         existing_appointments = Appointment.query.filter_by(
             doctor_id=doctor.id, date=date
@@ -674,7 +714,6 @@ def doctor_appointments():
             is_available = f"{date} {timeslot[0]}" not in booked_timeslots
             available_timeslots.append((timeslot[0], timeslot[1], is_available))
         timeslots_by_date[date] = available_timeslots
-
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
         # Print form data to terminal
@@ -684,7 +723,6 @@ def doctor_appointments():
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
-
         # Extract date and time from selected_timeslot
         try:
             date_str, start_time_str = selected_timeslot.split(' ', 1)
@@ -698,7 +736,6 @@ def doctor_appointments():
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
             return redirect(request.url)
-
     return render_template(
         'booking.html',
         form=form,
@@ -754,9 +791,7 @@ def patient_checkout():
                             _external=True
                         )
                         confirm_message = f"To confirm your appointment please login temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
-                        name = (
-                            f"{checkout_form.firstname.data} { checkout_form.lastname.data}"
-                        )
+                        name = f"{checkout_form.firstname.data} { checkout_form.lastname.data}"
                         user_to_create = User(
                             name=name,
                             email=checkout_form.email_address.data,
@@ -782,156 +817,308 @@ def patient_checkout():
 
                     message_body = f"""\
 
+
+
                         <html>
+
+
 
                         <head>
 
+
+
                             <style>
+
+
 
                                 body {{
 
+
+
                                     font-family: Arial, sans-serif;
+
+
 
                                     font-size: 18px;
 
+
+
                                     margin: 0;
+
+
 
                                     padding: 0;
 
+
+
                                     background-color: #f4f4f4;
 
+
+
                                 }}
+
+
 
                                 .container {{
 
+
+
                                     width: 80%;
+
+
 
                                     margin: 20px auto;
 
+
+
                                     background-color: #fff;
 
+
+
                                     padding: 20px;
+
+
 
                                     border-radius: 10px;
 
+
+
                                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
+
+
                                 }}
+
+
 
                                 .header {{
 
+
+
                                     background-color: #007bff;
+
+
 
                                     padding: 10px;
 
+
+
                                     text-align: center;
+
+
 
                                     border-radius: 10px 10px 0 0;
 
+
+
                                 }}
+
+
 
                                 .logo {{
 
+
+
                                     text-align: center;
+
+
 
                                     margin-bottom: 20px;
 
+
+
                                 }}
+
+
 
                                 .content {{
 
+
+
                                     padding: 20px;
 
+
+
                                 }}
+
+
 
                                 .footer {{
 
+
+
                                     text-align: left;
+
+
 
                                     margin-top: 20px;
 
+
+
                                     color: #777;
 
+
+
                                 }}
+
+
+
+
 
 
 
                                 a {{
 
+
+
                                     color: red;
+
+
 
                                 }}
 
+
+
                             </style>
+
+
 
                         </head>
 
+
+
                         <body>
+
+
 
                             <div class="container">
 
+
+
                                 <div class="header">
+
+
 
                                     <h2>Appointment Confirmation</h2>
 
+
+
                                 </div>
+
+
 
                                     <img src="cid:logo_image" alt="Your Logo" width="200">
 
+
+
                                 </div>
+
+
 
                                 <div class="content">
 
+
+
                                     <p>Dear {name},</p>
+
+
 
                                     <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
 
+
+
                                     <h3>Appointment Details:</h3>
+
+
 
                                     <ul>
 
+
+
                                         <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
 
                                         <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} for {doctor_data.duration} Min </li>
 
+
+
                                         <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
+
+
 
                                         <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
 
+
+
                                     </ul>
+
+
 
                                     <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
 
+
+
                                     <a>
+
+
 
                                     {confirm_message}
 
+
+
                                     </a>
+
+
 
                                     <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
 
+
+
                                     <p>We look forward to seeing you and providing the care you need.</p>
 
+
+
                                 </div>
+
+
 
                                 <div class="footer">
 
+
+
                                     <p>Best regards,</p>
+
+
 
                                     <p>{clinic_data.users.name}</p>
 
+
+
                                     <p>{clinic_data.phone}</p>
+
+
 
                                 </div>
 
+
+
                             </div>
+
+
 
                         </body>
 
+
+
                         </html>
 
+
+
                             """
-                    message_create = Message(appointment=appointment_create, status=False)
+                    message_create = Message(
+                        appointment=appointment_create, status=False
+                    )
 
                     server = smtplib.SMTP('smtp.gmail.com', 587)
                     server.starttls()
@@ -968,7 +1155,7 @@ def patient_checkout():
                     db.session.add(message_create)
                     db.session.add(notification_create)
                     db.session.commit()
-                    print("dddddddddddddddddddddddddddddddddddd",clinic_data.id )
+                    print('dddddddddddddddddddddddddddddddddddd', clinic_data.id)
                     socketio.emit(
                         'appointment_notification',
                         {
@@ -985,7 +1172,9 @@ def patient_checkout():
                     session['date'] = date.strftime('%d %b %Y')
                     session['start_time'] = start_time.strftime('%H:%M:%S')
                     session['clinic_id'] = clinic_data.id
-                    print('clinic_iddddddddddddddddddddddddddddddddddddd', clinic_data.id)
+                    print(
+                        'clinic_iddddddddddddddddddddddddddddddddddddd', clinic_data.id
+                    )
 
                     return redirect(url_for('checkout_success'))
                 if checkout_form.errors != {}:
@@ -1001,9 +1190,9 @@ def patient_checkout():
         else:
             flash(f'no doctor data found', category='danger')
     except Exception as e:
-                db.session.rollback()
-                flash(f'something wrong', category='danger')
-                print("fffffffffffffff",str(e))
+        db.session.rollback()
+        flash(f'something wrong', category='danger')
+        print('fffffffffffffff', str(e))
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -1012,7 +1201,8 @@ def patient_checkout():
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
         form=checkout_form
-        )
+    )
+
 
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
@@ -1071,7 +1261,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                     <html>
+
+
+
+
+
+
+
+
 
 
 
@@ -1087,7 +1293,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                         <style>
+
+
+
+
+
+
+
+
 
 
 
@@ -1103,7 +1325,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 font-family: Arial, sans-serif;
+
+
+
+
+
+
+
+
 
 
 
@@ -1119,7 +1357,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 margin: 0;
+
+
+
+
+
+
+
+
 
 
 
@@ -1135,6 +1389,14 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 background-color: #f4f4f4;
 
 
@@ -1143,7 +1405,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1159,7 +1437,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 width: 80%;
+
+
+
+
+
+
+
+
 
 
 
@@ -1175,6 +1469,14 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 background-color: #fff;
 
 
@@ -1183,7 +1485,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 padding: 20px;
+
+
+
+
+
+
+
+
 
 
 
@@ -1199,6 +1517,14 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
@@ -1207,7 +1533,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1223,6 +1565,14 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 font-size:16px;
 
 
@@ -1231,7 +1581,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1247,7 +1613,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 text-align: center;
+
+
+
+
+
+
+
+
 
 
 
@@ -1263,7 +1645,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1279,7 +1677,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 padding: 20px;
+
+
+
+
+
+
+
+
 
 
 
@@ -1295,7 +1709,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                         </style>
+
+
+
+
+
+
+
+
 
 
 
@@ -1311,7 +1741,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                     <body>
+
+
+
+
+
+
+
+
 
 
 
@@ -1327,6 +1773,14 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
 
@@ -1335,7 +1789,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1351,7 +1821,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                                 <p>{form.message.data}</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -1367,7 +1853,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1383,7 +1885,23 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
                     </html>
+
+
+
+
+
+
+
+
 
 
 
@@ -1423,13 +1941,17 @@ def patient_setting():
 
     form = PatientForm(
         firstname=user.name.split()[0] if user.name else '',
-        lastname=user.name.split()[1] if user.name and len(user.name.split()) > 1 else '',
+        lastname=user.name.split()[1]
+        if user.name and len(user.name.split()) > 1
+        else '',
         email=user.email,
         phone=patient.phone if patient else '',
         address=patient.address if patient else '',
         governorate=patient.governorate_id if patient else None,
         age=patient.age if patient else None,
-        blood_group=patient.blood_group.name if patient and patient.blood_group else None,
+        blood_group=patient.blood_group.name
+        if patient and patient.blood_group
+        else None,
         allergy=patient.allergy.name if patient and patient.allergy else None
     )
 
@@ -1441,7 +1963,9 @@ def patient_setting():
                 if 'photo' in request.files:
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
-                    new_filename = f"{unique_str}_{current_user.name.replace(' ', '_')}{extension}"
+                    new_filename = (
+                        f"{unique_str}_{current_user.name.replace(' ', '_')}{extension}"
+                    )
                     user.photo = new_filename
                     if file and allowed_photo_file(file.filename):
                         filename = secure_filename(new_filename)
@@ -1454,11 +1978,14 @@ def patient_setting():
                 User.email == form.email.data, User.id != user.id
             ).first()
             if email_exists:
-                return jsonify({'status': 'error', 'message': 'Email address already exists!'}), 400
-
+                return (
+                    jsonify(
+                        {'status': 'error', 'message': 'Email address already exists!'}
+                    ),
+                    400
+                )
             if not patient:
                 patient = Patient(user_id=current_user.id)
-
             patient.firstname = form.firstname.data
             patient.lastname = form.lastname.data
             user.email = form.email.data
@@ -1480,9 +2007,18 @@ def patient_setting():
                 return jsonify({'status': 'success'})
             except Exception as e:
                 db.session.rollback()
-                return jsonify({'status': 'error', 'message': 'An error occurred while updating your settings. Please try again.'}), 500
-
+                return (
+                    jsonify(
+                        {
+                            'status': 'error',
+                            'message': 'An error occurred while updating your settings. Please try again.'
+                        }
+                    ),
+                    500
+                )
         errors = {field: errors[0] for field, errors in form.errors.items()}
         return jsonify({'status': 'error', 'errors': errors}), 400
+    return render_template(
+        'patient-setting.html', form=form, patient=patient, user=user
+    )
 
-    return render_template('patient-setting.html', form=form, patient=patient, user=user)

@@ -141,7 +141,7 @@
                                 >{{appointment.status.name}}</span
                               >
                             </td>
-                            
+
                             {% endif %} {% if current_user.doctor %}
                             <td>
                               {% set status_class = { 'Pending':
@@ -395,8 +395,8 @@
 
                           <div class="table-responsive p-2">
                             <form method="POST">
-                              {{ form.hidden_tag() }} {{ form.csrf_token }} {{
-                              form.patient_id }}
+                              {{ Medicine_form.hidden_tag() }} {{ Medicine_form.csrf_token }} {{
+                                Medicine_form.patient_id }}
                               <table class="table table-hover table-center">
                                 <thead>
                                   <tr>
@@ -407,7 +407,7 @@
                                   </tr>
                                 </thead>
                                 <tbody id="items-container">
-                                  {% for item in form.items %}
+                                  {% for item in Medicine_form.items %}
                                   <tr>
                                     <td>
                                       {{ item.form.name(class_="form-control")
@@ -532,7 +532,7 @@
                               </a>
                               {% else %} No attachment {% endif %}
                             </td>
-                            
+
                             <td>
                               {% if appointment.Report %}
                                 <h2 class="table-avatar">
@@ -549,7 +549,7 @@
                                 No doctor assigned
                               {% endif %}
                             </td>
-                            
+
                             <td class="text-right">
                               <div class="table-action">
                                 <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')">
@@ -561,7 +561,7 @@
                                 <script>
                                   function printPDF(pdfUrl) {
                                     var iframe = document.getElementById('pdfIframe');
-                                    
+
                                     iframe.src = pdfUrl;
 
                                     iframe.onload = function () {
@@ -571,25 +571,25 @@
                                   }
                                     </script>
 
-                                
+
                                 <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank">
                                   <i class="far fa-eye"></i> View
                                 </a>
                                 {% if current_user.doctor %}
-                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" 
-                                data-toggle="modal" 
-                                data-target="#add_medical_reports" 
-                                data-appointment-id="{{ appointment.id }}" 
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light"
+                                data-toggle="modal"
+                                data-target="#add_medical_reports"
+                                data-appointment-id="{{ appointment.id }}"
                                 data-patient-id="{{ patient.id }}">
                                   <i class="fas fa-upload"></i> Report
                                 </a>
                               </div>
-                              
+
                             </td>
                           </tr>
                           {% endif %}
                           {% endfor %}
-                        </tbody>          
+                        </tbody>
                       </table>
                     </div>
                   </div>
@@ -606,7 +606,7 @@
                 </div>
               <div class="card card-table mb-0">
                 <div class="card-body">
-                  
+
                   <div class="table-responsive">
                     <table class="table table-hover table-center mb-0">
                       <thead>
@@ -622,7 +622,7 @@
                         {% if history.file_link %}
                         <tr>
                           <td>
-                            
+
                             <span class="d-block text-info"
                               >{{ history.type }}</span
                             >
@@ -639,14 +639,14 @@
                             </div>
 
                           </td>
-                          
+
                         </tr>
                         {% endif %}
                           {% endfor %}
                           {% else %}
                           <p class="w-100 h-100 d-flex justify-content-center align-items-center">No file attached.</p>
                           {% endif %}
-                      </tbody>          
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -664,24 +664,24 @@
                     <div class="modal-body">
                       <form method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
-                        
+
                         <div class="form-group">
                           <label for="details">{{ form.details.label }}</label>
                           {{ form.details(class="form-control") }}
                         </div>
-                        
+
                         <div class="form-group">
                           <label for="type">{{ form.type.label }}</label>
                           {{ form.type(class="form-control") }}
                         </div>
-                    
+
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                           <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                       </form>
                     </div>
-                    
+
                   </div>
                 </div>
               </div>
@@ -713,7 +713,7 @@
                         <div class="form-group">
                           <label>Diagnosis</label>
                           <textarea name="diagnosis" class="form-control" required></textarea>
-                        </div>     
+                        </div>
                         <div class="form-group">
                           <label>Upload File</label>
                           <input type="file" name="file" class="form-control" accept=".pdf" required />
@@ -721,7 +721,7 @@
 
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <input type="hidden" name="appointment_id" id="appointment_id" value="" />
-                        <input type="hidden" name="patient_id" id="patient_id" value="" /> 
+                        <input type="hidden" name="patient_id" id="patient_id" value="" />
                         <div class="submit-section text-center">
                           <button type="submit" class="btn btn-primary submit-btn">Submit</button>
                           <button type="button" class="btn btn-secondary submit-btn" data-dismiss="modal">
@@ -738,7 +738,7 @@
                 <!-- Tab Content -->
             </div>
             </div>
-              
+
         </div>
         </div>
     </div>
