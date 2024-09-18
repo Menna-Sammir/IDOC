@@ -110,15 +110,15 @@
                   <img
                     src="{{base_path ~ doctor.users.photo}}"
                     alt="User Image"
-                    class="avatar-img rounded-circle"
-                    height="150"
+                    class="avatar-img rounded-circle mr-3"
+                    height="80"
+                    width="80"
                   />
                 </div>
                 <div class="doc-info-cont">
                   <h4 class="doc-name">
-                    <a href="#"
-                      >{{ translate('Dr.') }}{{ translate(user.name) }}</a
-                    >
+                      {{ translate('Dr.') }}{{ translate(user.name) }}
+                    
                   </h4>
                   <h5 class="text-muted">
                     {{ translate(doctor.clinic.name) }}
