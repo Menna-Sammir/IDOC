@@ -107,23 +107,25 @@
 
             <div class="booking-summary">
               <div class="booking-item-wrap">
-                <ul class="booking-date mt-3">
-                  <li>{{ translate('Date') }} <span>{{ translate(date) }}</span></li>
-                  <li>{{ translate('Time') }} <span>{{ translate('from') }} {{ translate(start_time) }} {{ translate('to') }} {{ translate(end_time) }}</span></li>
-                </ul>
-                <ul class="booking-fee">
-                  <li>{{ translate('Consulting Fee') }} <span>${{ translate(doctor.price) }}</span></li>
-                </ul>
-                <div class="booking-total">
-                  <ul class="booking-total-list">
-                    <li>
-                      <span>{{ translate('Total') }}</span>
-                      <span class="total-cost">${{ translate(doctor.price) }}</span>
-                    </li>
+                  <ul class="booking-date mt-3">
+                      <li>{{ translate('Date') }} <span>{{ translate(date) }}</span></li>
+                      <li>{{ translate('Time') }} <span>{{ translate('from') }} {{ translate(start_time) }} {{ translate('to') }} {{ translate(end_time) }}</span></li>
                   </ul>
-                </div>
+                  <ul class="booking-fee">
+                      <li>{{ translate('Consulting Fee') }} <span>${{ translate(doctor.price) }}</span></li>
+                  </ul>
+                  <div class="booking-total">
+                      <ul class="booking-total-list">
+                          <li>
+                              <span>{{ translate('Total') }}</span>
+                              <span class="total-cost">${{ translate(doctor.price) }}</span>
+                          </li>
+                      </ul>
+                  </div>
               </div>
-            </div>
+          </div>
+          
+          </div>
           </div>
         </div>
         <!-- /Booking Summary -->
