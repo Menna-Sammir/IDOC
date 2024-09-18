@@ -244,11 +244,13 @@
                             <tr>
                               <td>
                                 <h2 class="table-avatar">
-                                  <a href="#" class="avatar avatar-sm mr-2">
+                                  <div class="avatar avatar-sm mr-2">
                                     {% set base_path = 'static/images/doctors/' %}
                                     <img class="avatar-img rounded-circle" src="{{ base_path ~ appointment.doctor.users.photo }}" alt="User Image"/>
-                                  </a>
-                                  <a href="#">{{ appointment.doctor.users.name }}<span>{{ appointment.doctor.specialization.specialization_name }}</span></a>
+                                  </div>
+                                  <p class="mt-2">
+                                    {{ appointment.doctor.users.name }}<span>{{ appointment.doctor.specialization.specialization_name }}</span>
+                                  </p>
                                 </h2>
                               </td>
                               <td>{{ appointment.date }}<span class="d-block text-info">{{ appointment.time_range }}</span></td>
