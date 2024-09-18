@@ -41,10 +41,8 @@
                 <div class="pro-widget-content">
                   <div class="profile-info-widget">
                     <a href="{{ url_for('appointment_History', patient_id=patient.id) }}" class="booking-doc-img">
-                      <img
-                        src="assets/img/patients/patient.jpg"
-                        alt="User Image"
-                      />
+                      {% set base_path = 'static/images/patients/' %}
+                      <img class="avatar-img rounded-circle" src="{{ base_path ~ patient.users.photo }}" alt="User Image"/>
                     </a>
                     <div class="profile-det-info">
                       <h3><a href="{{ url_for('appointment_History', patient_id=patient.id) }}">{{ patient.user_name }}</a></h3>
