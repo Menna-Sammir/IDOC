@@ -33,27 +33,27 @@
     <nav class="dashboard-menu">
       <ul>
 
-        <li class="active">
+        <li class="{{ 'active' if request.endpoint == 'patient_dashboard' else '' }}">
           <a href="{{ url_for('patient_dashboard') }}">
             <i class="fas fa-columns"></i>
             <span>Dashboard</span>
           </a>
         </li>
-        <li>
+        <li class="{{ 'active' if request.endpoint == 'appointment_History' else '' }}">
           <a href="{{ url_for('appointment_History') }}">
             <i class="fas fa-bookmark"></i>
             <span>appointment History</span>
           </a>
         </li>
 
-        <li>
+        <li class="{{ 'active' if request.endpoint == 'patient_setting' else '' }}">
           <a href="{{ url_for('patient_setting') }}">
             <i class="fas fa-user-cog"></i>
             <span>Profile Settings</span>
           </a>
         </li>
 
-        <li>
+        <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
           <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>
             <span>{{ translate('Change Password') }}</span>
