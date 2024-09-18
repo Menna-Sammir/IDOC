@@ -105,12 +105,12 @@
           <div class="card-body">
             <div class="doctor-widget">
               <div class="doc-info-left">
-                <div class="doctor-img">
+                <div class="booking-img">
                   {% set base_path = 'static/images/doctors/' %}
                   <img
-                    src="{{base_path ~ doctor.photo}}"
+                    src="{{base_path ~ doctor.users.photo}}"
                     alt="User Image"
-                    class="img-fluid"
+                    class="avatar-img rounded-circle"
                     height="150"
                   />
                 </div>
