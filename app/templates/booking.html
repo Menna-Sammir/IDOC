@@ -1,13 +1,20 @@
-{% extends 'base.html' %} {% block title %} {{ translate('Booking') }} {% endblock %} {%block body
-%}
+{% extends 'base.html' %} 
+{% block title %} 
+  {{ translate('Booking') }} 
+{% endblock %} 
+
+{% block body %}
 <!-- Breadcrumb -->
+<!-- This section displays a breadcrumb navigation bar and the page title "Booking" -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
     <div class="row align-items-center">
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
             <li class="breadcrumb-item active" aria-current="page">{{ translate('Booking') }}</li>
           </ol>
         </nav>
@@ -19,141 +26,144 @@
 <!-- /Breadcrumb -->
 
 <!-- Page Content -->
+<!-- Main booking content section -->
 <div class="content mb-5">
   <div class="container-fluid">
     <div class="row justify-content-between align-items-start">
 
+      <!-- Doctor Profile Card -->
+      <!-- This section displays the doctor profile with photo, name, specialization, and working hours -->
       <div class="col-lg-4 col-md-10">
-        <div class="card mt-1" style="box-shadow: #94dcfe94 0px 25px 50px -12px; background-color: #ade8f49c;
-    ">
+        <div class="card mt-1" style="box-shadow: #94dcfe94 0px 25px 50px -12px; background-color: #ade8f49c;">
           <div class="card-body row justify-content-center align-items-center">
-
-              <div class="col-md-2 p-1">
-                  {% set base_path = 'static/images/doctors/' %}
-                  <img class="img-fluid" src="{{base_path ~ doctor.users.photo}}" alt="User Image" width="80"  style="border: 3px groove #85d8ff;border-radius: 50%; height: 80px;"/>
-              </div>
-              <div class="col-md-10 p-1">
-                  <h4 class="mb-0 ">
-                    {{ translate('DR.') }} {{ translate(doctor.users.name) }}
-                  </h4>
-                    <p class="text-muted mb-0">
-                      {{ translate(specialization_name)
-                      }}
-                    </p>
-              </div>
-        <div class="col-md-11 mt-3 p-2" style="background-color: #ffffff87; border-radius: 20px; color: #009efb ;">
-          <p class="mb-0 ml-2">
-            <i class="fas fa-calendar-alt mr-1"></i> {{ translate(dates[0][1]) }},
-            {{ translate(dates[0][0]) }}
-          </p>
-          <p class="mb-0 ml-2">
-            <i class="fas fa-clock mr-1"></i> {{ translate('Working hours:') }} 
-            {{ doctor.From_working_hours.strftime('%H:%M') }} - 
-            {{ doctor.To_working_hours.strftime('%H:%M') }}
-          </p>
-
-        </div>
+            <div class="col-md-2 p-1">
+              {% set base_path = 'static/images/doctors/' %}
+              <img class="img-fluid" src="{{base_path ~ doctor.users.photo}}" alt="User Image" width="80"  style="border: 3px groove #85d8ff; border-radius: 50%; height: 80px;"/>
             </div>
-          </div>
-          <div class="col-md-12 justify-content-around mt-3">
-            <!-- Display other doctors of the same specialization -->
-        <h5 class="text-muted my-4 text-left">
-          {{ translate('you can also schedule with:') }}
-        </h5>
-            {% for other_doctor in other_doctors %}
-            <div class="card shadow suggestion-card">
-              <div class="card-body py-2">
-                <div class="row booking-doc-info">
-
-          <div class="col-md-3 p-0">
-            <a
-            href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}"
-            class="booking-doc-img"
-            >
-            {% set base_path = 'static/images/doctors/' %}
-            <img
-              src="{{base_path ~ other_doctor.users.photo}}"
-              alt="User Image"
-            />
-            </a></div>
-          <div class="col-md-9 p-0">
-
-            <div class="ml-2 mt-2">
-              <h4 class="mb-0">
-                <a
-                href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}"
-                >{{ translate('Dr.') }} {{ translate(other_doctor.users.name) }}</a
-                >
+            <div class="col-md-10 p-1">
+              <h4 class="mb-0 ">
+                {{ translate('DR.') }} {{ translate(doctor.users.name) }}
               </h4>
-
-                <p class="text-muted mb-0 d-flex align-items-center">
-                <i class="fas fa-stethoscope pr-1"></i> {{
-                translate(other_doctor.specialization.specialization_name) }}
-                </p>
-              </div>
+              <p class="text-muted mb-0">
+                {{ translate(specialization_name) }}
+              </p>
+            </div>
+            <div class="col-md-11 mt-3 p-2" style="background-color: #ffffff87; border-radius: 20px; color: #009efb;">
+              <p class="mb-0 ml-2">
+                <i class="fas fa-calendar-alt mr-1"></i> {{ translate(dates[0][1]) }}, {{ translate(dates[0][0]) }}
+              </p>
+              <p class="mb-0 ml-2">
+                <i class="fas fa-clock mr-1"></i> {{ translate('Working hours:') }} 
+                {{ doctor.From_working_hours.strftime('%H:%M') }} - 
+                {{ doctor.To_working_hours.strftime('%H:%M') }}
+              </p>
+            </div>
           </div>
+        </div>
+
+        <!-- Suggested Other Doctors Section -->
+        <!-- Displays a list of other doctors of the same specialization as suggestions -->
+        <div class="col-md-12 justify-content-around mt-3">
+          <h5 class="text-muted my-4 text-left">
+            {{ translate('you can also schedule with:') }}
+          </h5>
+          {% for other_doctor in other_doctors %}
+          <div class="card shadow suggestion-card">
+            <div class="card-body py-2">
+              <div class="row booking-doc-info">
+                <div class="col-md-3 p-0">
+                  <a href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}" class="booking-doc-img">
+                    {% set base_path = 'static/images/doctors/' %}
+                    <img src="{{base_path ~ other_doctor.users.photo}}" alt="User Image"/>
+                  </a>
+                </div>
+                <div class="col-md-9 p-0">
+                  <div class="ml-2 mt-2">
+                    <h4 class="mb-0">
+                      <a href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}">
+                        {{ translate('Dr.') }} {{ translate(other_doctor.users.name) }}
+                      </a>
+                    </h4>
+                    <p class="text-muted mb-0 d-flex align-items-center">
+                      <i class="fas fa-stethoscope pr-1"></i> 
+                      {{ translate(other_doctor.specialization.specialization_name) }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-            {% endfor %}
           </div>
+          {% endfor %}
         </div>
+      </div>
+      <!-- /Doctor Profile Card -->
 
-        <div class="row col-lg-8 col-md-12 px-2 card">
-          <div class="card-body p-1">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              <div class="alert alert-primary alert-primary-formbook mt-2">
-                {% for category, message in messages %}
-                  <p class="m-auto">{{ message }}</p>
-                {% endfor %}
+      <!-- Booking Form Section -->
+      <!-- Contains the booking form with timeslots, validation messages, and submit button -->
+      <div class="row col-lg-8 col-md-12 px-2 card">
+        <div class="card-body p-1">
+          <!-- Flash Messages (for form errors or success messages) -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="alert alert-primary alert-primary-formbook mt-2">
+              {% for category, message in messages %}
+                <p class="m-auto">{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% endwith %}
+
+          <!-- Booking Form -->
+          <form method="post" class="col-md-12 justify-content-center row">
+            {{ form.hidden_tag() }}
+            <h3 class="col-12 text-muted my-3 text-left">{{ translate('Schedules') }}</h3>
+
+            <!-- Date Selection -->
+            <div class="date-container col-md-12">
+              {% for date, day, day_only in dates %}
+              <div class="date-item slot-date">
+                <h6 class="m-auto bg-white shadow-sm align-items-center d-flex">
+                  {{ translate(day) }}<br />{{ translate(day_only) }}
+                </h6>
               </div>
-            {% endif %}
-            {% endwith %}
-            <form method="post" class="col-md-12 justify-content-center row">
-              {{ form.hidden_tag() }}
-              <h3 class="col-12 text-muted my-3 text-left">{{ translate('Schedules') }}</h3>
-              <div class="date-container col-md-12">
-                {% for date, day, day_only in dates %}
-                <div class="date-item slot-date">
-                  <h6 class="m-auto bg-white shadow-sm align-items-center d-flex">
-                    {{ translate(day) }}<br />{{ translate(day_only) }}
-                  </h6>
+              {% endfor %}
+            </div>
+
+            <!-- Timeslot Selection -->
+            <div class="col-md-12">
+              {% for date, day, day_only in dates %}
+              <div class="timeslots">
+                <h3 class="col-12 text-muted my-3 text-left">{{ translate('Time') }}</h3>
+                {% for timeslot in timeslots_by_date[date] %}
+                <div class="timeslot">
+                  <input
+                    type="radio"
+                    name="timeslot"
+                    id="{{ timeslot[0] }}"
+                    value="{{ date }} {{ timeslot[0] }}"
+                    class="rounded-sm" {% if not timeslot[2] %}disabled{% endif %}
+                  />
+                  <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %}>
+                    {{ translate(timeslot[1]) }} 
+                    {% if not timeslot[2] %}{{ translate('booked') }}{% endif %}
+                  </label>
                 </div>
                 {% endfor %}
               </div>
-              <div class="col-md-12">
-                {% for date, day, day_only in dates %}
-                <div class="timeslots">
-                  <h3 class="col-12 text-muted my-3 text-left">{{ translate('Time') }}</h3>
-                  {% for timeslot in timeslots_by_date[date] %}
-                  <div class="timeslot">
-                    <input
-                      type="radio"
-                      name="timeslot"
-                      id="{{ timeslot[0] }}"
-                      value="{{ date }} {{ timeslot[0] }}"
-                      class="rounded-sm" {% if not timeslot[2] %}disabled{% endif %}
-                    />
-                    <label for="{{ timeslot[0] }}" {% if not timeslot[2] %} style="color: grey;" {% endif %}>
-                      {{ translate(timeslot[1]) }} {% if not timeslot[2] %}{{ translate('booked') }}{% endif %}
-                    </label>
-                  </div>
-                  {% endfor %}
-                </div>
-                {% endfor %}
-              </div>
-              <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
-                <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
-                  {{ translate('Continue') }} <i class="fas fa-caret-right"></i>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
+              {% endfor %}
+            </div>
 
-    </div>
+            <!-- Submit Button -->
+            <div class="col-md-11 my-3 pr-0 d-flex justify-content-end align-items-center">
+              <button type="submit" class="btn btn-secondary submit-btn" style="border-radius: 10px;">
+                {{ translate('Continue') }} <i class="fas fa-caret-right"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- /Booking Form Section -->
+
     </div>
   </div>
 </div>
