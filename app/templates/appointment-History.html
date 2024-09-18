@@ -101,14 +101,9 @@
                                   {% set base_path = 'static/images/doctors/' %}
                                   <img class="avatar-img rounded-circle" src="{{ base_path ~ appointment.doctor.users.photo }}" alt="User Image"/>
                                 </div>
-                                <a href="doctor-profile.html"
-                                  >{{ appointment.doctor.users.name }}
-                                  <span
-                                    >{{
-                                    appointment.doctor.specialization.specialization_name
-                                    }}</span
-                                  ></a
-                                >
+                                <p class="mt-2">
+                                  {{ appointment.doctor.users.name }}<span>{{ appointment.doctor.specialization.specialization_name }}</span>
+                                </p>
                               </h2>
                             </td>
                             <td>
