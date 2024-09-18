@@ -153,12 +153,10 @@
 
                                   {%endif%}
                                   <h2 class="table-avatar">
-                                    <a href="#"
-                                      >{{ appointment.patient.name }}
-                                      <span
-                                        >{{ appointment.appointment_id }}</span
-                                      ></a
-                                    >
+                                    
+                                      {{ appointment.patient.users.name }}
+                                      <span>{{ appointment.appointment_id }}</span>
+                                    
                                   </h2>
                                 </td>
                                 <td>
