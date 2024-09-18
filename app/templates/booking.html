@@ -72,7 +72,7 @@
             >
             {% set base_path = 'static/images/doctors/' %}
             <img
-              src="{{base_path ~ other_doctor.photo}}"
+              src="{{base_path ~ other_doctor.users.photo}}"
               alt="User Image"
             />
             </a></div>
@@ -82,7 +82,7 @@
               <h4 class="mb-0">
                 <a
                 href="{{ url_for('doctor_appointments', doctor_id=other_doctor.id) }}"
-                >{{ translate('Dr.') }} {{ translate(other_doctor.name) }}</a
+                >{{ translate('Dr.') }} {{ translate(other_doctor.users.name) }}</a
                 >
               </h4>
 
