@@ -42,10 +42,13 @@
                     <a
                       class="booking-doc-img"
                     >
-                      <img
-                        src="assets/img/patients/patient.jpg"
-                        alt="User Image"
-                      />
+                    {% set base_path = 'static/images/patients/' %}
+
+                    <img
+                      src="{{base_path ~ patient.photo}}"
+                      alt="User Image"
+                    />
+
                     </a>
                     <div class="profile-det-info">
                       <h3>
