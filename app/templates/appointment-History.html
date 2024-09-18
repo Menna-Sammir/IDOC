@@ -226,7 +226,7 @@
                                       <!-- Loop through times of the day for prescription -->
                                       {% for subfield in item.form.time_of_day %}
                                       <div class="form-check form-check-inline">
-                                        {{ subfield(class_="form-check-input") }} {{ subfield.label }}
+                                        {{ subfield(class_="form-check-input") }} {{ subfield.label(class_="mb-0") }}
                                       </div>
                                       {% endfor %}
                                     </td>
