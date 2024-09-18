@@ -19,6 +19,8 @@ from datetime import date, datetime, timedelta
 from app.models.notiTime import calculate_time_ago
 from flask import g
 from enum import Enum
+import random
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -70,22 +72,22 @@ def inject_notification():
 
 
 class AppStatus(Enum):
-    Pending = "Pending"
-    Confirmed = "Confirmed"
-    Cancelled = "Cancelled"
-    Completed = "Completed"
+    Pending = 'Pending'
+    Confirmed = 'Confirmed'
+    Cancelled = 'Cancelled'
+    Completed = 'Completed'
 
 
 class PatientHisType(Enum):
-    Lab = "Lab"
-    X_ray = "X-ray"
+    Lab = 'Lab'
+    X_ray = 'X-ray'
 
 
 class MedicineTime(Enum):
-    MORNING = "Morning"
-    AFTERNOON = "Afternoon"
-    EVENING = "Evening"
-    NIGHT = "Night"
+    MORNING = 'Morning'
+    AFTERNOON = 'Afternoon'
+    EVENING = 'Evening'
+    NIGHT = 'Night'
 
 
 class BloodGroup(Enum):
@@ -299,13 +301,52 @@ class Patient(BaseModel):
     medicine = db.relationship('PatientMedicine', backref='patient', uselist=False)
     appointments = db.relationship('Appointment', back_populates='patient')
 
+    def get_advice(self):
+        patient_advice_list = [
+            {
+                'advice': 'Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.'
+            },
+            {
+                'advice': "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose."
+            },
+            {
+                'advice': 'Ensure you get 7-9 hours of sleep every night to help your body heal and function properly.'
+            },
+            {
+                'advice': 'Incorporate fruits, vegetables, whole grains, and lean proteins into your meals to support recovery and immune function.'
+            },
+            {
+                'advice': 'If approved by your doctor, light exercise such as walking can improve circulation and overall health. Avoid strenuous activities unless advised otherwise.'
+            },
+            {
+                'advice': 'Practice stress-reducing activities such as meditation, deep breathing, or yoga. Chronic stress can delay recovery.'
+            },
+            {
+                'advice': 'Be sure to attend all scheduled follow-up visits with your healthcare provider to monitor your progress.'
+            },
+            {
+                'advice': 'Immediately contact your doctor if you notice unusual symptoms like sudden pain, high fever, or swelling.'
+            },
+            {
+                'advice': 'Smoking and alcohol can slow down recovery and negatively impact your health. Avoid them during the healing process.'
+            },
+            {
+                'advice': 'Maintain a positive mindset during recovery. Mental health plays a crucial role in your overall wellbeing.'
+            }
+        ]
+
+        return random.choice([item['advice'] for item in patient_advice_list])
+
+
 class MedicineTimes(BaseModel):
     __tablename__ = 'MedicineTimes'
 
-    medicine_id = db.Column(VARCHAR(60), ForeignKey('PatientMedicine.id'), nullable=False)
+    medicine_id = db.Column(
+        VARCHAR(60), ForeignKey('PatientMedicine.id'), nullable=False
+    )
     time_of_day = db.Column(SQLAlchemyEnum(MedicineTime), nullable=False)
 
-    patient_medicine = relationship("PatientMedicine", back_populates='medicine_times')
+    patient_medicine = relationship('PatientMedicine', back_populates='medicine_times')
 
 
 class PatientMedicine(BaseModel):
@@ -318,20 +359,19 @@ class PatientMedicine(BaseModel):
     Added_By = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
 
     user = db.relationship('User', back_populates='patient_medicine')
-    medicine_times = relationship("MedicineTimes", back_populates='patient_medicine', uselist=True)
-
-
+    medicine_times = relationship(
+        'MedicineTimes', back_populates='patient_medicine', uselist=True
+    )
 
 
 class PatientHistory(BaseModel):
     __tablename__ = 'PatientHistory'
     details = db.Column(VARCHAR(255), nullable=False)
-    type =  db.Column(SQLAlchemyEnum(PatientHisType), nullable=True)
+    type = db.Column(SQLAlchemyEnum(PatientHisType), nullable=True)
     addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'))
 
     user = db.relationship('User', back_populates='patient_history')
-
 
 
 class Appointment(BaseModel):
@@ -357,10 +397,15 @@ class Appointment(BaseModel):
     notifications = relationship(
         'Notification', uselist=False, back_populates='appointment'
     )
+
     @property
     def time_range(self):
-        appointment_end_time = (datetime.combine(date.today(), self.time) + timedelta(hours=1)).time()
-        return f"{self.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+        appointment_end_time = (
+            datetime.combine(date.today(), self.time) + timedelta(hours=1)
+        ).time()
+        return (
+            f"{self.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+        )
 
     @property
     def formatted_date(self):
@@ -371,20 +416,19 @@ class Appointment(BaseModel):
         if self.follow_up:
             return self.follow_up.strftime('%A, %d %B').capitalize()
         else:
-            return "N/A"
-
+            return 'N/A'
 
     def status_bg(self):
         if self.status == AppStatus.Pending.value:
-            return "bg-info"
+            return 'bg-info'
         elif self.status == AppStatus.Confirmed.value:
-            return "bg-success"
+            return 'bg-success'
         elif self.status == AppStatus.Cancelled.value:
-            return "bg-danger"
+            return 'bg-danger'
         elif self.status == AppStatus.Completed.value:
-            return "bg-secondary"
+            return 'bg-secondary'
         else:
-            return "bg-secondary"
+            return 'bg-secondary'
 
 
 class Message(BaseModel):

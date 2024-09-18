@@ -1141,6 +1141,7 @@ button.bg-danger:hover {
 .card {
   border: 1px solid #f0f0f0;
   border-radius: 2rem;
+  flex-direction: row !important;
   margin-bottom: 1.875rem;
 }
 
@@ -9971,7 +9972,7 @@ body::-webkit-scrollbar-thumb {
   border-bottom: 0;
 }
 
-.lab-card{
+.lab-card {
   border-left: 1px dashed lightgray;
 }
 
@@ -10099,4 +10100,10 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   text-align: center;
   z-index: 99;
+}
+
+.ques-card {
+  border: 1px solid #056ad77a;
+  box-shadow: #056ad75e 0px 3px 8px;
+
 }

@@ -831,7 +831,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                         <html>
+
+
+
+
+
+
+
+
 
 
 
@@ -847,7 +863,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                             <style>
+
+
+
+
+
+
+
+
 
 
 
@@ -863,7 +895,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     font-family: Arial, sans-serif;
+
+
+
+
+
+
+
+
 
 
 
@@ -879,7 +927,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     margin: 0;
+
+
+
+
+
+
+
+
 
 
 
@@ -895,6 +959,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     background-color: #f4f4f4;
 
 
@@ -903,7 +975,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -919,7 +1007,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     width: 80%;
+
+
+
+
+
+
+
+
 
 
 
@@ -935,6 +1039,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     background-color: #fff;
 
 
@@ -943,7 +1055,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     padding: 20px;
+
+
+
+
+
+
+
+
 
 
 
@@ -959,6 +1087,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
@@ -967,7 +1103,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -983,7 +1135,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     background-color: #007bff;
+
+
+
+
+
+
+
+
 
 
 
@@ -999,7 +1167,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     text-align: center;
+
+
+
+
+
+
+
+
 
 
 
@@ -1015,7 +1199,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1031,7 +1231,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     text-align: center;
+
+
+
+
+
+
+
+
 
 
 
@@ -1047,7 +1263,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1063,6 +1295,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     padding: 20px;
 
 
@@ -1071,7 +1311,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -1087,7 +1343,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     text-align: left;
+
+
+
+
+
+
+
+
 
 
 
@@ -1103,6 +1375,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     color: #777;
 
 
@@ -1111,7 +1391,31 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1135,7 +1439,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     color: red;
+
+
+
+
+
+
+
+
 
 
 
@@ -1151,7 +1471,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                             </style>
+
+
+
+
+
+
+
+
 
 
 
@@ -1167,7 +1503,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                         <body>
+
+
+
+
+
+
+
+
 
 
 
@@ -1183,7 +1535,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 <div class="header">
+
+
+
+
+
+
+
+
 
 
 
@@ -1199,7 +1567,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1215,7 +1599,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1231,7 +1631,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     <p>Dear {name},</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -1247,7 +1663,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     <h3>Appointment Details:</h3>
+
+
+
+
+
+
+
+
 
 
 
@@ -1263,7 +1695,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                         <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
+
+
+
+
+
+
 
 
 
@@ -1279,7 +1727,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                         <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
+
+
+
+
+
+
+
+
 
 
 
@@ -1295,7 +1759,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     </ul>
+
+
+
+
+
+
+
+
 
 
 
@@ -1311,7 +1791,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     <a>
+
+
+
+
+
+
+
+
 
 
 
@@ -1327,7 +1823,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     </a>
+
+
+
+
+
+
+
+
 
 
 
@@ -1343,6 +1855,14 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     <p>We look forward to seeing you and providing the care you need.</p>
 
 
@@ -1351,7 +1871,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1367,7 +1903,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     <p>Best regards,</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -1383,7 +1935,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                                     <p>{clinic_data.phone}</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -1399,7 +1967,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1415,7 +1999,23 @@ def patient_checkout():
 
 
 
+
+
+
+
+
+
+
+
                         </html>
+
+
+
+
+
+
+
+
 
 
 
@@ -1593,7 +2193,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1657,7 +2321,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1721,7 +2449,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 font-family: Arial, sans-serif;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1785,7 +2577,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 margin: 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1849,6 +2705,38 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 background-color: #f4f4f4;
 
 
@@ -1881,7 +2769,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1945,7 +2897,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 width: 80%;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2009,6 +3025,38 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 background-color: #fff;
 
 
@@ -2041,7 +3089,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 padding: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2105,6 +3217,38 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
@@ -2137,7 +3281,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2201,6 +3409,38 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 font-size:16px;
 
 
@@ -2233,7 +3473,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2297,7 +3601,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 text-align: center;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2361,7 +3729,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2425,7 +3857,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 padding: 20px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2489,7 +3985,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2553,7 +4113,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2617,6 +4241,38 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
 
@@ -2649,7 +4305,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2713,7 +4433,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <p>{form.message.data}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2777,7 +4561,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2841,7 +4689,71 @@ def sendEmail():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

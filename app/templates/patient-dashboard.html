@@ -63,18 +63,10 @@
             </div>
           </div>
         </div>
+        <div class="row">
+        {% if appointment %}
+          <div class="col-md-4 justify-content-center card py-4 p-2 m-2 text-center" style="border: 1px solid #056ad77a; box-shadow: #056ad75e 0px 3px 8px;"  data-toggle="tooltip" data-placement="right" title="{{ appointment.date }} {{ appointment.time_range }}">
 
-          <div class="col-md-3 justify-content-center card py-4 p-2 m-2 text-center" style="border: 1px solid #056ad77a; box-shadow: #056ad75e 0px 3px 8px;" type="button" data-toggle="tooltip" data-placement="right" title="{{ appointment.date }} {{ appointment.time_range }}">
-            {% set base_path = 'static/images/doctors/' %}
-              <div class="booking-doc-img" style="border: 2px double #007bffb7; border-radius: 40px; width: 50%; margin: auto;">
-                <img
-
-                  src="{{base_path ~ current_user.photo}}"
-                  alt="Doctor's photo"
-                  width="50"
-                  height="50"
-                />
-              </div>
               <div>
                 <p class="mb-1">
                   Dr. {{ appointment.doctor_name }}
@@ -90,17 +82,35 @@
               </div>
 
           </div>
+          {% endif %}
+
+          <div class="col-md-3 align-items-center card py-4 p-2 m-2 text-center d-flex" style="border: 1px solid #056ad77a; box-shadow: #056ad75e 0px 3px 8px;" >
+            <span class="fa-stack fa-2x">
+              <i class="fas fa-tint fa-stack-2x" style="color: #1f80f991;"></i>
+              <i class="fas fa-tint fa-stack-1x fa-inverse" style="color:#1f80f9"></i>
+            </span>
+            <div>
+              <h4>Blood Type</h2>
+              <span class="text-center ">
+                {{
+                  patient.blood_group.value }}
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4 align-items-center card p-4 m-2 text-center ques-card" >
+            <p class="text-left" style="font-weight: 400;">{{patient.get_advice()}}</p>
+          </div>
+
+        </div>
           <div class="card col-md-12 row py-3 mt-4" style="flex-direction: row!important">
           <div class="col-md-6 pl-2">
-            {% if appointment %}
-
             {% if prescriptions %}
             <div class="row flex-wrap  align-items-center ">
 
               <div class="col-md-12 card-header border-0 pb-2"><h4>Treatment</h4></div>
               {% for prescription in prescriptions %}
               <div
-                class="col-md-10 shadow-sm p-2 pl-4 treatment-card"
+                class="col-md-10 shadow-sm mt-1 p-2 pl-4 treatment-card ml-4"
 
               >
                 <div class="d-flex justify-content-start align-items-center">
@@ -259,164 +269,9 @@
 
           </div>
         </div>
-            {% endif %}
-            <div class="row">
-              <div class="col-md-4 col-lg-4 col-xl-4">
-                <h3 class="mb-3">
-                  <i class="fas fa-hand-point-right"></i> Next appointment
-                </h3>
 
-                <div class="Next-appointment-card card shadow-sm p-4">
-                  <div>
-                    {% if appointment %}
-                    <h4 class="text-primary">{{ appointment.date }}</h4>
-                    <p class="mb-2">
-                      <i class="far fa-clock"></i> {{ appointment.time_range }}
-                      - {{ appointment.duration }}
-                    </p>
-                    <p class="mb-2">
-                      <i class="fas fa-map-marker-alt"></i> {{
-                      appointment.clinic_address }}
-                    </p>
-                    <div class="d-flex align-items-center mt-3">
-                      <div class="booking-doc-img">
-                        <img
-                          class="rounded-circle"
-                          src="{{base_path ~ current_user.doctor.photo}}"
-                          alt="Doctor's photo"
-                          width="80"
-                          height="80"
-                        />
-                      </div>
-                      <div class="ml-3">
-                        <p class="font-weight-bold mb-1">
-                          {{ appointment.doctor_name }}
-                        </p>
-                        <p class="text-muted">
-                          {{ appointment.doctor_specialization }}
-                        </p>
-                      </div>
-                    </div>
-                    {% else %}
-                    <p
-                      class="w-100 h-100 d-flex justify-content-center align-items-center text-muted"
-                    >
-                      No upcoming appointments.
-                    </p>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
 
-              <div class="col-md-4 col-lg-4 col-xl-4">
-                <h3 class="mb-3">
-                  <i class="fas fa-mortar-pestle"></i> Prescription Details
-                </h3>
-              </div>
-              <div class="col-md-4 col-lg-4 col-xl-4">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-2"
-                >
-                  <h3><i class="fas fa-file d-inline"></i> Patient files</h3>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
-                  >
-                    <i class="fas fa-cloud-upload-alt"></i>
-                  </button>
-                </div>
 
-                <div
-                  class="Prescription-appointment-card d-flex flex-wrap justify-content-start overflow-auto"
-                >
-                  {% if patient_history %} {% for history in patient_history %}
-                  {% if history.file_link %}
-                  <div
-                    class="prescription-card shadow-sm rounded bg-light border text-center m-2"
-                  >
-                    <a
-                      href="{{ history.file_link }}"
-                      download
-                      class="text-decoration-none text-black"
-                    >
-                      <div class="text-center mb-2">
-                        <i class="fas fa-file-medical-alt h1 text-primary"></i>
-                      </div>
-                      <p class="text-dark font-weight-bold mb-1">
-                        <i class="fas fa-location-arrow"></i> {{ history.type }}
-                      </p>
-                      <p class="text-muted mb-0">
-                        <i class="fas fa-user-plus"></i> {{ history.added_by }}
-                      </p>
-                    </a>
-                  </div>
-                  {% endif %} {% endfor %} {% else %}
-                  <p
-                    class="w-100 h-100 d-flex justify-content-center align-items-center"
-                  >
-                    No file attached.
-                  </p>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            <!-- Modal -->
-            <div
-              class="modal fade"
-              id="exampleModal"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      add attached
-                    </h5>
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data">
-                      {{ form.hidden_tag() }}
-
-                      <div class="form-group">
-                        <label for="details">{{ form.details.label }}</label>
-                        {{ form.details(class="form-control") }}
-                      </div>
-
-                      <div class="form-group">
-                        <label for="type">{{ form.type.label }}</label>
-                        {{ form.type(class="form-control") }}
-                      </div>
-
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                          Submit
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div class="col-md-12 col-lg-12 col-xl-12 mt-5">
               <div class="card">
                 <div class="card-body pt-0">
@@ -429,7 +284,7 @@
                           class="nav-link active"
                           href="#pat_appointments"
                           data-toggle="tab"
-                          >next Appointments</a
+                          >Next Appointments</a
                         >
                       </li>
                     </ul>
@@ -466,16 +321,17 @@
                                   <td>
                                     <h2 class="table-avatar">
                                       <a
-                                        href="doctor-profile.html"
+                                        href="#"
                                         class="avatar avatar-sm mr-2"
                                       >
+                                      {% set base_path = 'static/images/doctors/' %}
                                         <img
                                           class="avatar-img rounded-circle"
                                           src="{{ appointment.doctor.users.photo }}"
                                           alt="User Image"
                                         />
                                       </a>
-                                      <a href="doctor-profile.html"
+                                      <a href="#"
                                         >{{ appointment.doctor.users.name }}
                                         <span
                                           >{{
@@ -550,7 +406,65 @@
       </div>
       <!-- </div> -->
       <!-- /Page Content -->
-      {% endblock %}
+
+
+  <!-- Modal -->
+      <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              add attached
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" enctype="multipart/form-data">
+              {{ form.hidden_tag() }}
+
+              <div class="form-group">
+                <label for="details">{{ form.details.label }}</label>
+                {{ form.details(class="form-control") }}
+              </div>
+
+              <div class="form-group">
+                <label for="type">{{ form.type.label }}</label>
+                {{ form.type(class="form-control") }}
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </div>
   </div>
 </div>
+ {% endblock %}
