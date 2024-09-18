@@ -325,12 +325,11 @@
                                         class="avatar avatar-sm mr-2"
                                       >
                                       {% set base_path = 'static/images/doctors/' %}
-                                        <img
+                                      <img
                                           class="avatar-img rounded-circle"
-                                          src="{{ appointment.doctor.users.photo }}"
+                                          src="{{ base_path ~ appointment.doctor.users.photo }}"
                                           alt="User Image"
-                                        />
-                                      </a>
+                                      />
                                       <a href="#"
                                         >{{ appointment.doctor.users.name }}
                                         <span
