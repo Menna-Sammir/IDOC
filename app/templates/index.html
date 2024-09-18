@@ -542,14 +542,12 @@
                 <div class="card">
                   <div class="profile-widget card-body">
                     <div class="doc-img">
-                      <a href="#">
                         {% set base_path = 'static/images/doctors/' %}
                         <img
                           class="img-fluid"
                           alt="User Image"
-                          src="{{base_path ~ doctor.photo}}"
+                          src="{{base_path ~ doctor.users.photo}}"
                         />
-                      </a>
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
