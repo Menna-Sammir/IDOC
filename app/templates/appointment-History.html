@@ -1,7 +1,9 @@
-{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
-{% endblock %} {% block body %}
+{% extends 'base.html' %} 
+{% block title %} Doctor {{ translate('Dashboard') }} {% endblock %} 
 
-<!-- Breadcrumb -->
+{% block body %}
+
+<!-- Breadcrumb: Navigation to indicate user's current location in the application -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
     <div class="row align-items-center">
@@ -9,9 +11,7 @@
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">
-              Dashboard
-            </li>
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
           </ol>
         </nav>
         <h2 class="breadcrumb-title">Dashboard</h2>
@@ -21,62 +21,43 @@
 </div>
 <!-- /Breadcrumb -->
 
-<!-- Page Content -->
+<!-- Page Content: Main container for the dashboard content -->
 <div class="content">
   <div class="container-fluid">
     <div class="row">
-      <!-- Profile Sidebar -->
+      <!-- Profile Sidebar: Sidebar navigation for different roles (Admin, Doctor, Patient, etc.) -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
-        %}
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock %}
       </div>
       <!-- / Profile Sidebar -->
 
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="card">
           <div class="card-body pt-0">
-            <!-- Tab Menu -->
+
+            <!-- Tab Menu: Navigation tabs for different sections like Appointments, Prescriptions, Medical Records, etc. -->
             <nav class="user-tabs mb-4">
               <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
                 <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    href="#pat_appointments"
-                    data-toggle="tab"
-                    >Appointments</a
-                  >
+                  <a class="nav-link active" href="#pat_appointments" data-toggle="tab">Appointments</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    href="#pat_prescriptions"
-                    data-toggle="tab"
-                    >Prescriptions</a
-                  >
+                  <a class="nav-link" href="#pat_prescriptions" data-toggle="tab">Prescriptions</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    href="#pat_medical_records"
-                    data-toggle="tab"
-                    ><span class="med-records">Medical Records</span></a
-                  >
+                  <a class="nav-link" href="#pat_medical_records" data-toggle="tab"><span class="med-records">Medical Records</span></a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    href="#lab_Ray_files"
-                    data-toggle="tab"
-                    >lab - Ray files</a
-                  >
+                  <a class="nav-link" href="#lab_Ray_files" data-toggle="tab">Lab - Ray Files</a>
                 </li>
               </ul>
             </nav>
             <!-- /Tab Menu -->
 
-            <!-- Tab Content -->
+            <!-- Tab Content: Display content based on the selected tab -->
             <div class="tab-content pt-0">
-              <!-- Appointment Tab -->
+
+              <!-- Appointment Tab: Shows details of the patient's appointments -->
               <div id="pat_appointments" class="tab-pane fade show active">
                 <div class="card card-table mb-0">
                   <div class="card-body">
@@ -93,235 +74,102 @@
                           </tr>
                         </thead>
                         <tbody>
+                          <!-- Loop through appointments and display each one -->
                           {% for appointment in appointments %}
                           <tr>
                             <td>
                               <h2 class="table-avatar">
                                 <div class="avatar avatar-sm mr-2">
                                   {% set base_path = 'static/images/doctors/' %}
+                                  <!-- Doctor's image -->
                                   <img class="avatar-img rounded-circle" src="{{ base_path ~ appointment.doctor.users.photo }}" alt="User Image"/>
                                 </div>
-                                <p class="mt-2">
-                                  {{ appointment.doctor.users.name }}<span>{{ appointment.doctor.specialization.specialization_name }}</span>
-                                </p>
+                                <p class="mt-2">{{ appointment.doctor.users.name }}<span>{{ appointment.doctor.specialization.specialization_name }}</span></p>
                               </h2>
                             </td>
                             <td>
                               {{ appointment.date }}
-                              <span class="d-block text-info"
-                                >{{ appointment.time_range }}</span
-                              >
+                              <span class="d-block text-info">{{ appointment.time_range }}</span>
                             </td>
                             <td>${{ appointment.doctor.price }}</td>
                             <td>
-                              {% if current_user.doctor or (current_user.patient
-                              and appointment.status.name == 'Completed') %} {%
-                              if appointment.follow_up %} {{
-                              appointment.follow_up.strftime('%d %b %Y') }}<br />
-                              {{ appointment.follow_up.strftime('%I:%M %p') }}
-                              {% else %} No Follow-Up {% endif %} {% else %} No
-                              Follow-Up {% endif %} {% if current_user.patient
-                              %}
+                              {% if current_user.doctor or (current_user.patient and appointment.status.name == 'Completed') %}
+                                <!-- Follow-up information -->
+                                {% if appointment.follow_up %} 
+                                  {{ appointment.follow_up.strftime('%d %b %Y') }}<br />
+                                  {{ appointment.follow_up.strftime('%I:%M %p') }}
+                                {% else %} 
+                                  No Follow-Up 
+                                {% endif %}
+                              {% else %} 
+                                No Follow-Up 
+                              {% endif %}
                             </td>
 
                             <td>
-                              <span
-                                class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline"
-                                >{{appointment.status.name}}</span
-                              >
+                              <!-- Appointment Status with dynamic badge color -->
+                              <span class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline">{{appointment.status.name}}</span>
                             </td>
 
-                            {% endif %} {% if current_user.doctor %}
+                            <!-- Dropdown for doctors to change appointment status -->
+                            {% if current_user.doctor %}
                             <td>
-                              {% set status_class = { 'Pending':
-                              'bg-warning-light', 'Confirmed':
-                              'bg-success-light', 'Cancelled':
-                              'bg-danger-light', 'Completed': 'bg-primary-light'
-                              }[appointment.status.name] %}
-
+                              {% set status_class = { 'Pending': 'bg-warning-light', 'Confirmed': 'bg-success-light', 'Cancelled': 'bg-danger-light', 'Completed': 'bg-primary-light' }[appointment.status.name] %}
                               <div class="status-dropdown">
-                                <button
-                                  class="btn dropdown-toggle badge badge-pill {{ status_class }} status-badge"
-                                  type="button"
-                                  id="dropdownMenuButton"
-                                  data-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                                  data-appointment-id="{{ appointment.id }}"
-                                >
+                                <button class="btn dropdown-toggle badge badge-pill {{ status_class }} status-badge" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-appointment-id="{{ appointment.id }}">
                                   {{ translate(appointment.status.name) }}
                                 </button>
-                                <div
-                                  class="dropdown-menu"
-                                  aria-labelledby="dropdownMenuButton"
-                                >
-                                  <button
-                                    class="dropdown-item"
-                                    data-status="Pending"
-                                    style="
-                                      background-color: rgba(255, 193, 7, 0.1);
-                                      color: #ffc107;
-                                    "
-                                  >
-                                    Pending
-                                  </button>
-                                  <button
-                                    class="dropdown-item"
-                                    data-status="Confirmed"
-                                    style="
-                                      background-color: rgba(40, 167, 69, 0.1);
-                                      color: #28a745;
-                                    "
-                                  >
-                                    Confirmed
-                                  </button>
-                                  <button
-                                    class="dropdown-item"
-                                    data-status="Cancelled"
-                                    style="
-                                      background-color: rgba(220, 53, 69, 0.1);
-                                      color: #dc3545;
-                                    "
-                                  >
-                                    Cancelled
-                                  </button>
-                                  <button
-                                    class="dropdown-item"
-                                    data-status="Completed"
-                                    style="
-                                      background-color: rgba(
-                                        108,
-                                        117,
-                                        125,
-                                        0.1
-                                      );
-                                      color: #6c757d;
-                                    "
-                                  >
-                                    Completed
-                                  </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                  <button class="dropdown-item" data-status="Pending" style="background-color: rgba(255, 193, 7, 0.1); color: #ffc107;">Pending</button>
+                                  <button class="dropdown-item" data-status="Confirmed" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">Confirmed</button>
+                                  <button class="dropdown-item" data-status="Cancelled" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">Cancelled</button>
+                                  <button class="dropdown-item" data-status="Completed" style="background-color: rgba(108, 117, 125, 0.1); color: #6c757d;">Completed</button>
                                 </div>
                               </div>
                             </td>
 
                             <td class="text-right">
                               <div class="table-action">
-                                <a
-                                  href="javascript:void(0);"
-                                  class="btn btn-sm bg-primary-light"
-                                >
-                                  <i class="fas fa-print"></i> Print
-                                </a>
-                                <a
-                                  href="javascript:void(0);"
-                                  class="btn btn-sm bg-info-light"
-                                >
-                                  <i class="far fa-eye"></i> View
-                                </a>
-                                <a
-                                  href="javascript:void(0);"
-                                  class="btn btn-sm bg-primary-light"
-                                  onclick="showEditForm('{{ appointment.id }}')"
-                                >
-                                  <i class="far fa-edit"></i> Edit
-                                </a>
+                                <!-- Options for printing, viewing, and editing appointments -->
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light"><i class="fas fa-print"></i> Print</a>
+                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light"><i class="far fa-eye"></i> View</a>
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="showEditForm('{{ appointment.id }}')"><i class="far fa-edit"></i> Edit</a>
                               </div>
-                              <div
-                                id="overlay"
-                                class="overlay"
-                                style="display: none"
-                              ></div>
 
-                              <!-- Add Follow-Up -->
-                              <div
-                                id="editFollowUpModal"
-                                class="modal"
-                                tabindex="-1"
-                                role="dialog"
-                                style="display: none"
-                              >
+                              <!-- Overlay and Modal for editing follow-up -->
+                              <div id="overlay" class="overlay" style="display: none"></div>
+                              <div id="editFollowUpModal" class="modal" tabindex="-1" role="dialog" style="display: none">
                                 <div class="modal-dialog" role="document">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <h5 class="modal-title">
-                                        Edit Follow-Up
-                                      </h5>
-                                      <button
-                                        type="button"
-                                        class="close"
-                                        aria-label="Close"
-                                        onclick="hideEditForm()"
-                                      >
+                                      <h5 class="modal-title">Edit Follow-Up</h5>
+                                      <button type="button" class="close" aria-label="Close" onclick="hideEditForm()">
                                         <span aria-hidden="true">&times;</span>
                                       </button>
                                     </div>
                                     <div class="modal-body">
-                                      <form
-                                        method="POST"
-                                        action="{{ url_for('update_follow_up') }}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          id="appointment_id"
-                                          name="appointment_id"
-                                        />
-                                        <input
-                                          type="hidden"
-                                          name="csrf_token"
-                                          value="{{ csrf_token() }}"
-                                        />
-                                        <input
-                                          type="hidden"
-                                          name="patient_id"
-                                          value="{{ patient.id }}"
-                                        />
-
+                                      <form method="POST" action="{{ url_for('update_follow_up') }}">
+                                        <input type="hidden" id="appointment_id" name="appointment_id" />
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <input type="hidden" name="patient_id" value="{{ patient.id }}" />
                                         <div class="form-group">
-                                          <label for="follow_up_date"
-                                            >Date</label
-                                          >
-                                          <input
-                                            type="date"
-                                            id="follow_up_date"
-                                            name="follow_up_date"
-                                            class="form-control"
-                                          />
+                                          <label for="follow_up_date">Date</label>
+                                          <input type="date" id="follow_up_date" name="follow_up_date" class="form-control" />
                                         </div>
                                         <div class="form-group">
-                                          <label for="follow_up_time"
-                                            >Time</label
-                                          >
-                                          <input
-                                            type="time"
-                                            id="follow_up_time"
-                                            name="follow_up_time"
-                                            class="form-control"
-                                          />
+                                          <label for="follow_up_time">Time</label>
+                                          <input type="time" id="follow_up_time" name="follow_up_time" class="form-control" />
                                         </div>
                                         <div class="modal-footer">
-                                          <button
-                                            type="submit"
-                                            class="btn btn-primary"
-                                          >
-                                            Save Follow-Up
-                                          </button>
-                                          <button
-                                            type="button"
-                                            class="btn btn-secondary"
-                                            onclick="hideEditForm()"
-                                          >
-                                            Cancel
-                                          </button>
+                                          <button type="submit" class="btn btn-primary">Save Follow-Up</button>
+                                          <button type="button" class="btn btn-secondary" onclick="hideEditForm()">Cancel</button>
                                         </div>
                                       </form>
                                     </div>
                                   </div>
                                 </div>
-                                <div
-                                  class="modal-overlay"
-                                  onclick="hideEditForm()"
-                                ></div>
                               </div>
+                              <!-- /Overlay and Modal for editing follow-up -->
                             </td>
                             {% endif %}
                           </tr>
@@ -334,58 +182,32 @@
               </div>
               <!-- /Appointment Tab -->
 
-              <!-- Prescription Tab -->
+              <!-- Prescription Tab: Displays patient's prescriptions -->
               <div class="tab-pane fade" id="pat_prescriptions">
                 <div class="text-right">
-                  <a
-                    href="#"
-                    class="add-new-btn"
-                    data-toggle="modal"
-                    data-target="#prescription_modal"
-                    >Add Prescription</a
-                  >
+                  <a href="#" class="add-new-btn" data-toggle="modal" data-target="#prescription_modal">Add Prescription</a>
                 </div>
-                <div
-                  class="modal fade custom-modal"
-                  id="prescription_modal"
-                  tabindex="-1"
-                  role="dialog"
-                  aria-labelledby="exampleModalLabel"
-                  aria-hidden="true"
-                >
-                  <div
-                    class="modal-dialog modal-dialog-centered modal-lg"
-                    role="document"
-                    style="min-width: 80%"
-                  >
+                <div class="modal fade custom-modal" id="prescription_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="min-width: 80%">
                     <div class="modal-content mb-0" style="min-width: inherit">
                       <div class="modal-header">
                         <h3 class="modal-title">Medical Records</h3>
-                        <button
-                          type="button"
-                          class="close"
-                          data-dismiss="modal"
-                          aria-label="Close"
-                        >
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
 
                       <div class="modal-body">
-                        <!-- Add Item -->
+                        <!-- Add Item: Allows user to add multiple prescription items -->
                         <div class="add-more-item text-right">
-                          <a href="#" id="add-more-item">
-                            <i class="fas fa-plus-circle"></i> Add Item
-                          </a>
+                          <a href="#" id="add-more-item"><i class="fas fa-plus-circle"></i> Add Item</a>
                         </div>
-                        <!-- /Add Item -->
-                        <div class="row justify-content-center">
-                          <!-- Prescription Item -->
 
+                        <div class="row justify-content-center">
+                          <!-- Prescription Form -->
                           <div class="table-responsive p-2">
                             <form method="POST">
-                              {{ Medicine_form.hidden_tag() }} {{ Medicine_form.csrf_token }} {{
-                                Medicine_form.patient_id }}
+                              {{ Medicine_form.hidden_tag() }} {{ Medicine_form.csrf_token }} {{ Medicine_form.patient_id }}
                               <table class="table table-hover table-center">
                                 <thead>
                                   <tr>
@@ -398,64 +220,41 @@
                                 <tbody id="items-container">
                                   {% for item in Medicine_form.items %}
                                   <tr>
+                                    <td>{{ item.form.name(class_="form-control") }}</td>
+                                    <td>{{ item.form.quantity(class_="form-control") }}</td>
                                     <td>
-                                      {{ item.form.name(class_="form-control")
-                                      }}
-                                    </td>
-                                    <td>
-                                      {{
-                                      item.form.quantity(class_="form-control")
-                                      }}
-                                    </td>
-                                    <td>
-                                      {% for subfield in item.form.time_of_day
-                                      %}
+                                      <!-- Loop through times of the day for prescription -->
+                                      {% for subfield in item.form.time_of_day %}
                                       <div class="form-check form-check-inline">
-                                        {{ subfield(class_="form-check-input")
-                                        }} {{ subfield.label }}
+                                        {{ subfield(class_="form-check-input") }} {{ subfield.label }}
                                       </div>
                                       {% endfor %}
                                     </td>
                                     <td>
-                                      <a
-                                        href="#"
-                                        class="btn bg-danger-light trash"
-                                        ><i class="far fa-trash-alt"></i
-                                      ></a>
+                                      <a href="#" class="btn bg-danger-light trash"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                   </tr>
                                   {% endfor %}
                                 </tbody>
                               </table>
 
+                              <!-- Form submit and reset buttons -->
                               <div class="col-md-6">
                                 <div class="submit-section">
-                                  <button
-                                    type="submit"
-                                    class="btn btn-primary submit-btn"
-                                  >
-                                    Save
-                                  </button>
-                                  <button
-                                    type="reset"
-                                    class="btn btn-secondary submit-btn"
-                                  >
-                                    Clear
-                                  </button>
+                                  <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                  <button type="reset" class="btn btn-secondary submit-btn">Clear</button>
                                 </div>
                               </div>
                             </form>
                           </div>
-                          <!-- Submit Section -->
-
-                          <!-- /Submit Section -->
-                          <!-- /Prescription Item -->
+                          <!-- /Prescription Form -->
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
+                <!-- Display list of prescriptions -->
                 <div class="card card-table mb-0">
                   <div class="card-body">
                     <div class="table-responsive">
@@ -470,14 +269,14 @@
                           </tr>
                         </thead>
                         <tbody>
+                          <!-- Loop through patient medicines and display each one -->
                           {% for medicine in patient_medicines %}
                           <tr>
                             <td>{{ medicine.Date }}</td>
                             <td>{{ medicine.medName }}</td>
                             <td>{{ medicine.Quantity }}</td>
                             <td>
-                              {% for time in medicine.medicine_times %}{{
-                              time.time_of_day.name }} | {% endfor %}
+                              {% for time in medicine.medicine_times %}{{ time.time_of_day.name }} | {% endfor %}
                             </td>
                             <td>{{ medicine.user.name }}</td>
                           </tr>
@@ -489,7 +288,8 @@
                 </div>
               </div>
               <!-- /Prescription Tab -->
-              <!-- Medical Records Tab -->
+
+              <!-- Medical Records Tab: Displays medical records for the patient -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">
                   <div class="card-body">
@@ -505,75 +305,60 @@
                           </tr>
                         </thead>
                         <tbody>
+                          <!-- Loop through appointments and display diagnosis and report attachments -->
                           {% for appointment in appointments %}
                           <tr>
-                            <td>
-                              {{ appointment.date }}
-                              <span class="d-block text-info"
-                                >{{ appointment.time_range }}</span
-                              >
-                            </td>
+                            <td>{{ appointment.date }}<span class="d-block text-info">{{ appointment.time_range }}</span></td>
                             <td>{{ appointment.Diagnosis }}</td>
                             <td>
                               {% if appointment.Report %}
-                              <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" target="_blank">
-                                {{ appointment.Report }}
-                              </a>
-                              {% else %} No attachment {% endif %}
+                              <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" target="_blank">{{ appointment.Report }}</a>
+                              {% else %} 
+                              No attachment 
+                              {% endif %}
                             </td>
 
                             <td>
                               {% if appointment.Report %}
-                                <h2 class="table-avatar">
-                                  <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}" class="avatar avatar-sm mr-2">
-                                    {% set base_path = 'static/images/doctors/' %}
-                                    <img class="avatar-img rounded-circle"  src="{{base_path ~ appointment.doctor.photo}}"
-                                      alt="User Image"/>
-                                  </a>
-                                  <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}">
-                                    {{ appointment.doctor.users.name }} <span>{{ appointment.doctor.specialization.specialization_name }}</span>
-                                  </a>
-                                </h2>
+                              <h2 class="table-avatar">
+                                <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}" class="avatar avatar-sm mr-2">
+                                  {% set base_path = 'static/images/doctors/' %}
+                                  <img class="avatar-img rounded-circle" src="{{base_path ~ appointment.doctor.photo}}" alt="User Image"/>
+                                </a>
+                                <a href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}">
+                                  {{ appointment.doctor.users.name }} <span>{{ appointment.doctor.specialization.specialization_name }}</span>
+                                </a>
+                              </h2>
                               {% else %}
-                                No doctor assigned
+                              No doctor assigned
                               {% endif %}
                             </td>
 
+                            <!-- Options for printing or viewing report -->
                             <td class="text-right">
                               <div class="table-action">
-                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')">
-                                  <i class="fas fa-print"></i> Print
-                                </a>
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')"><i class="fas fa-print"></i> Print</a>
 
                                 <iframe id="pdfIframe" style="display:none;" frameborder="0"></iframe>
 
                                 <script>
                                   function printPDF(pdfUrl) {
                                     var iframe = document.getElementById('pdfIframe');
-
                                     iframe.src = pdfUrl;
-
                                     iframe.onload = function () {
                                       iframe.focus();
                                       iframe.contentWindow.print();
                                     };
                                   }
-                                    </script>
+                                </script>
 
-
-                                <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank">
-                                  <i class="far fa-eye"></i> View
-                                </a>
+                                <a href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}" class="btn btn-sm bg-info-light" target="_blank"><i class="far fa-eye"></i> View</a>
+                                
                                 {% if current_user.doctor %}
-                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light"
-                                data-toggle="modal"
-                                data-target="#add_medical_reports"
-                                data-appointment-id="{{ appointment.id }}"
-                                data-patient-id="{{ patient.id }}">
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light" data-toggle="modal" data-target="#add_medical_reports" data-appointment-id="{{ appointment.id }}" data-patient-id="{{ patient.id }}">
                                   <i class="fas fa-upload"></i> Report
                                 </a>
                               </div>
-
                             </td>
                           </tr>
                           {% endif %}
@@ -586,118 +371,89 @@
               </div>
               <!-- /Medical Records Tab -->
 
-              <!-- Add patient history -->
+              <!-- Lab/Ray Files Tab: Shows attached lab and X-ray files for the patient -->
               <div id="lab_Ray_files" class="tab-pane fade">
                 <div class="text-right mb-2">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    <i class="fas fa-cloud-upload-alt"></i> upload file
-                  </button>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-cloud-upload-alt"></i> Upload File</button>
                 </div>
-              <div class="card card-table mb-0">
-                <div class="card-body">
-
-                  <div class="table-responsive">
-                    <table class="table table-hover table-center mb-0">
-                      <thead>
-                        <tr>
-                          <th>type file</th>
-                          <th>Created by</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% if patient_history %}
-                        {% for history in patient_history %}
-                        {% if history.file_link %}
-                        <tr>
-                          <td>
-
-                            <span class="d-block text-info"
-                              >{{ history.type }}</span
-                            >
-                          </td>
-                          <td>{{ history.added_by }}</td>
-                          <td class="text-right">
-                            <div class="table-action">
-                              <a href="{{ history.file_link }}" download class="btn btn-sm bg-primary-light print-btn">
-                                <i class="fas fa-print"></i> Print
-                              </a>
-                              <a href="{{ history.file_link }}" class="btn btn-sm bg-info-light" target="_blank">
-                                <i class="far fa-eye"></i> View
-                              </a>
-                            </div>
-
-                          </td>
-
-                        </tr>
-                        {% endif %}
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>File Type</th>
+                            <th>Created by</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Loop through patient history and display lab/X-ray files -->
+                          {% if patient_history %}
+                          {% for history in patient_history %}
+                          {% if history.file_link %}
+                          <tr>
+                            <td><span class="d-block text-info">{{ history.type }}</span></td>
+                            <td>{{ history.added_by }}</td>
+                            <td class="text-right">
+                              <div class="table-action">
+                                <a href="{{ history.file_link }}" download class="btn btn-sm bg-primary-light print-btn"><i class="fas fa-print"></i> Print</a>
+                                <a href="{{ history.file_link }}" class="btn btn-sm bg-info-light" target="_blank"><i class="far fa-eye"></i> View</a>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endif %}
                           {% endfor %}
                           {% else %}
                           <p class="w-100 h-100 d-flex justify-content-center align-items-center">No file attached.</p>
                           {% endif %}
-                      </tbody>
-                    </table>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
-              </div>
+              <!-- /Lab/Ray Files Tab -->
+
+              <!-- Modal for uploading new lab/X-ray files -->
               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">add attached</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
+                      <h5 class="modal-title" id="exampleModalLabel">Add Attachment</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
                       <form method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
-
                         <div class="form-group">
                           <label for="details">{{ form.details.label }}</label>
                           {{ form.details(class="form-control") }}
                         </div>
-
                         <div class="form-group">
                           <label for="type">{{ form.type.label }}</label>
                           {{ form.type(class="form-control") }}
                         </div>
-
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                           <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                       </form>
                     </div>
-
                   </div>
                 </div>
               </div>
-              <!-- /Add patient history -->
+              <!-- /Modal for uploading new lab/X-ray files -->
 
-              <!-- Add Medical Records Modal -->
-              <div
-                class="modal fade custom-modal"
-                id="add_medical_reports"
-                tabindex="-1"
-                role="dialog"
-                aria-labelledby="add_medical_reports_label"
-                aria-hidden="true"
-              >
+              <!-- Modal for adding medical reports -->
+              <div class="modal fade custom-modal" id="add_medical_reports" tabindex="-1" role="dialog" aria-labelledby="add_medical_reports_label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="add_medical_reports_label">Report</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
-                    <form
-                      action="{{ url_for('upload_report') }}"
-                      method="POST"
-                      enctype="multipart/form-data"
-                    >
+                    <form action="{{ url_for('upload_report') }}" method="POST" enctype="multipart/form-data">
                       <div class="modal-body">
                         <div class="form-group">
                           <label>Diagnosis</label>
@@ -713,58 +469,54 @@
                         <input type="hidden" name="patient_id" id="patient_id" value="" />
                         <div class="submit-section text-center">
                           <button type="submit" class="btn btn-primary submit-btn">Submit</button>
-                          <button type="button" class="btn btn-secondary submit-btn" data-dismiss="modal">
-                            Cancel
-                          </button>
+                          <button type="button" class="btn btn-secondary submit-btn" data-dismiss="modal">Cancel</button>
                         </div>
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
-              <!-- /Add Medical Records Modal -->
+              <!-- /Modal for adding medical reports -->
 
-                <!-- Tab Content -->
             </div>
-            </div>
+            <!-- /Tab Content -->
 
+          </div>
         </div>
-        </div>
-    </div>
-
       </div>
     </div>
+
     <!-- Modal for rescheduling appointments -->
     <div id="reschedule-modal" style="display: none">
       <!-- Modal content will be loaded dynamically -->
     </div>
 
-    <!-- /Page Content -->
-    <script>
-      function showEditForm(appointmentId, followUpDateTime) {
-        const [date, time] = followUpDateTime
-          ? followUpDateTime.split(' ')
-          : ['', ''];
-        document.getElementById('appointment_id').value = appointmentId;
-        document.getElementById('follow_up_date').value = date || '';
-        document.getElementById('follow_up_time').value = time || '';
-        document.getElementById('editFollowUpModal').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-      }
-
-      function hideEditForm() {
-        document.getElementById('editFollowUpModal').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-      }
-
-      window.onclick = function (event) {
-        var modal = document.getElementById('editFollowUpModal');
-        var overlay = document.getElementById('overlay');
-        if (event.target === modal || event.target === overlay) {
-          hideEditForm();
-        }
-      };
-    </script>
-    {% endblock %}
+  </div>
 </div>
-</div>
+
+<!-- Script for showing and hiding follow-up edit form -->
+<script>
+  function showEditForm(appointmentId, followUpDateTime) {
+    const [date, time] = followUpDateTime ? followUpDateTime.split(' ') : ['', ''];
+    document.getElementById('appointment_id').value = appointmentId;
+    document.getElementById('follow_up_date').value = date || '';
+    document.getElementById('follow_up_time').value = time || '';
+    document.getElementById('editFollowUpModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  }
+
+  function hideEditForm() {
+    document.getElementById('editFollowUpModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  window.onclick = function (event) {
+    var modal = document.getElementById('editFollowUpModal');
+    var overlay = document.getElementById('overlay');
+    if (event.target === modal || event.target === overlay) {
+      hideEditForm();
+    }
+  };
+</script>
+
+{% endblock %}
