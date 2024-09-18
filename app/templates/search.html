@@ -151,8 +151,8 @@
                       <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $
                     </li>
                     <li>
-                      <i class="far fa-clock"></i> {{
-                      doctor.clinic.working_hours }}
+                      <i class="far fa-clock"></i> 
+                      {{ doctor.From_working_hours.strftime('%H:%M') }} - {{ doctor.To_working_hours.strftime('%H:%M') }}
                     </li>
                   </ul>
                 </div>
