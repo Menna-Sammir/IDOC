@@ -1,43 +1,43 @@
-document.addEventListener("DOMContentLoaded", (event) => {
+document.addEventListener('DOMContentLoaded', (event) => {
   if (clinic_id) {
-    console.log("Rendered clinic_id:", clinic_id);
-    if (!clinic_id) {
+    console.log('Rendered clinic_id:', clinic_id);
+    if (!Clinic_id) {
       console.error(
-        "Clinic ID is missing. Cannot establish WebSocket connection."
+        'Clinic ID is missing. Cannot establish WebSocket connection.'
       );
       return;
     }
-    console.log("Connecting with clinic_id:", clinic_id);
+    console.log('Connecting with clinic_id:', clinic_id);
 
-    var socket = io.connect("http://localhost:5000", {
-      query: "clinic_id=" + clinic_id,
-      transports: ["websocket", "polling"],
+    var socket = io.connect('http://localhost:5000', {
+      query: 'clinic_id=' + clinic_id,
+      transports: ['websocket', 'polling'],
     });
 
-    socket.on("connected", function (msg) {
+    socket.on('connected', function (msg) {
       console.log(msg.message);
     });
 
-    socket.on("appointment_notification", function (data) {
-      console.log("Appointment notification:", data);
+    socket.on('appointment_notification', function (data) {
+      console.log('Appointment notification:', data);
       addNotification(data, true);
     });
 
-    socket.on("disconnected", function (msg) {
+    socket.on('disconnected', function (msg) {
       console.log(msg.message);
     });
 
     function addNotification(data, store = false) {
-      var notificationList = document.getElementById("notification-list");
-      var notificationCount = document.getElementById("notification-count");
+      var notificationList = document.getElementById('notification-list');
+      var notificationCount = document.getElementById('notification-count');
 
-      var newNotification = document.createElement("li");
-      newNotification.classList.add("notification-message");
+      var newNotification = document.createElement('li');
+      newNotification.classList.add('notification-message');
 
       var currentTime = new Date();
       var formattedTime = currentTime.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: '2-digit',
+        minute: '2-digit',
       });
       var notificationContent = `
         <a href="#">
@@ -71,34 +71,34 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     function playNotificationSound() {
-      var audio = document.getElementById("notification-sound");
+      var audio = document.getElementById('notification-sound');
       if (audio) {
         audio.play().catch((error) => {
-          console.error("Error playing audio:", error);
+          console.error('Error playing audio:', error);
         });
       } else {
-        console.error("Audio element not found");
+        console.error('Audio element not found');
       }
     }
 
     function storeNotification(data) {
       var notifications =
-        JSON.parse(localStorage.getItem("notifications")) || [];
+        JSON.parse(localStorage.getItem('notifications')) || [];
       notifications.unshift(data);
-      localStorage.setItem("notifications", JSON.stringify(notifications));
+      localStorage.setItem('notifications', JSON.stringify(notifications));
     }
 
     function loadNotifications() {
       var notifications =
-        JSON.parse(localStorage.getItem("notifications")) || [];
+        JSON.parse(localStorage.getItem('notifications')) || [];
       notifications.forEach((notification) => {
         addNotification(notification, true);
       });
     }
 
     document
-      .getElementById("clear-all-notifications")
-      .addEventListener("click", function () {
+      .getElementById('clear-all-notifications')
+      .addEventListener('click', function () {
         clearAllNotifications();
       });
 
@@ -121,15 +121,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // }
 
     function clearAllNotifications() {
-      var notificationList = document.getElementById("notification-list");
-      var notificationCount = document.getElementById("notification-count");
+      var notificationList = document.getElementById('notification-list');
+      var notificationCount = document.getElementById('notification-count');
       if (notificationList && notificationCount) {
-        notificationList.innerHTML = "";
-        notificationCount.textContent = "0";
-        localStorage.removeItem("notifications");
+        notificationList.innerHTML = '';
+        notificationCount.textContent = '0';
+        localStorage.removeItem('notifications');
       }
     }
-    socket.on("notification_update", function (data) {
+    socket.on('notification_update', function (data) {
       updateNotificationCount(data.count);
     });
 
