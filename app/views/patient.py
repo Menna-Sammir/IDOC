@@ -50,13 +50,8 @@ def home():
     form = SearchForm()
     E_form = EmailForm()
 
-    # Get specializations that have doctors associated with them
-    specializations_with_doctors = (
-        db.session.query(Specialization)
-        .join(Doctor, Doctor.specialization_id == Specialization.id)
-        .distinct()
-        .all()
-    )
+    # Get all specializations, regardless of whether they have doctors associated with them
+    all_specializations = db.session.query(Specialization).all()
 
     # Get governorates that have clinics associated with doctors and same specialization
     governorates_with_clinics = (
@@ -67,9 +62,9 @@ def home():
         .all()
     )
 
-    # Set the choices for the specialization dropdown based on available doctors
+    # Set the choices for the specialization dropdown with all specializations
     form.specialization.choices = [('', translate('Select a specialization'))] + [
-        (s.id, translate(s.specialization_name)) for s in specializations_with_doctors
+        (s.id, translate(s.specialization_name)) for s in all_specializations
     ]
 
     # Set the choices for the governorate dropdown based on clinics that have doctors with the selected specialization
@@ -77,7 +72,7 @@ def home():
         (g.id, translate(g.governorate_name)) for g in governorates_with_clinics
     ]
 
-    specialties = specializations_with_doctors
+    specialties = all_specializations
     doctors = Doctor.query.all()
 
     if request.method == 'POST':
@@ -94,6 +89,7 @@ def home():
     return render_template(
         'index.html', form=form, specialties=specialties, doctors=doctors, E_form=E_form
     )
+
 
 
 @app.route('/patient_dashboard', methods=['GET', 'POST'])
