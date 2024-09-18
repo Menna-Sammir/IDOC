@@ -97,16 +97,10 @@
                           <tr>
                             <td>
                               <h2 class="table-avatar">
-                                <a
-                                  href="doctor-profile.html"
-                                  class="avatar avatar-sm mr-2"
-                                >
-                                  <img
-                                    class="avatar-img rounded-circle"
-                                    src="{{ appointment.doctor_photo }}"
-                                    alt="User Image"
-                                  />
-                                </a>
+                                <div class="avatar avatar-sm mr-2">
+                                  {% set base_path = 'static/images/doctors/' %}
+                                  <img class="avatar-img rounded-circle" src="{{ base_path ~ appointment.doctor.users.photo }}" alt="User Image"/>
+                                </div>
                                 <a href="doctor-profile.html"
                                   >{{ appointment.doctor.users.name }}
                                   <span
