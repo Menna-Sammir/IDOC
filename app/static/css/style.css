@@ -8548,11 +8548,11 @@ div.prescription-card>a>div>p {
 #clock:after {
   content: '';
   position: absolute;
-  width: 400px;
+  width: 317px;
   height: 20px;
   border-radius: 100%;
   left: 50%;
-  margin-left: -200px;
+  margin-left: -160px;
   bottom: 2px;
   z-index: -1;
 }
