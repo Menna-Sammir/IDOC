@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %} {{ translate('Checkout') }} {% endblock %}
 {% block body %}
-<!-- Breadcrumb -->
+<!-- Breadcrumb Section: Shows the page navigation and current location on the website -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
     <div class="row align-items-center">
@@ -17,81 +17,80 @@
     </div>
   </div>
 </div>
-<!-- /Breadcrumb -->
+<!-- /Breadcrumb Section -->
 
-<!-- Page Content -->
+<!-- Page Content Section -->
 <div class="content">
   <div class="container-fluid">
     <div class="row">
+      <!-- Left Section: Main checkout form for personal information -->
       <div class="col-md-7 col-lg-8">
         <div class="card">
           <div class="card-body">
             <!-- Checkout Form -->
             <form method="POST">
               {{ form.hidden_tag() }}
-              <!-- Personal Information -->
+              
+              <!-- Personal Information Section -->
               <div class="info-widget">
                 <h4 class="card-title">{{ translate('Personal Information') }}</h4>
                 <div class="row">
+                  <!-- First Name Input -->
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
                       {{ form.firstname.label() }}
-                        {{
-                        form.firstname(class="form-control" )}}
+                      {{ form.firstname(class="form-control" )}}
                     </div>
                   </div>
+                  <!-- Last Name Input -->
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
                       {{ form.lastname.label() }}
-                      {{
-                      form.lastname(class="form-control")}}
-
+                      {{ form.lastname(class="form-control")}}
                     </div>
                   </div>
+                  <!-- Email Address Input -->
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
                       {{ form.email_address.label() }}
-                      {{
-                      form.email_address(class="form-control")}}
+                      {{ form.email_address(class="form-control")}}
                     </div>
                   </div>
+                  <!-- Phone Input -->
                   <div class="col-md-6 col-sm-12">
                     <div class="form-group card-label">
                       {{ form.phone.label() }}
-                      {{
-                      form.phone(class="form-control")}}
+                      {{ form.phone(class="form-control")}}
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- /Personal Information -->
+              <!-- /Personal Information Section -->
 
-              <!-- Submit Section -->
+              <!-- Submit Button Section -->
               <div class="submit-section mt-4">
                 {{ form.submit(class="btn btn-secondary submit-btn")}}
               </div>
-              <!-- /Submit Section -->
+              <!-- /Submit Button Section -->
             </form>
             <!-- /Checkout Form -->
           </div>
         </div>
       </div>
+      <!-- /Left Section -->
 
+      <!-- Right Section: Booking summary showing doctor and clinic details -->
       <div class="col-md-5 col-lg-4 theiaStickySidebar">
-        <!-- Booking Summary -->
         <div class="card booking-card">
           <div class="card-header">
             <h4 class="card-title">{{ translate('Booking Summary') }}</h4>
           </div>
           <div class="card-body">
-            <!-- Booking Doctor Info -->
+            <!-- Doctor Information Section -->
             <div class="booking-doc-info">
               <a href="#" class="booking-doc-img">
                 {% set base_path = 'static/images/doctors/' %}
-                <img
-                  src="{{base_path ~ doctor.users.photo}}"
-                  alt="User Image"
-                />
+                <img src="{{base_path ~ doctor.users.photo}}" alt="User Image" />
               </a>
               <div class="booking-info">
                 <h4>Dr. {{doctor.users.name}}</h4>
@@ -103,36 +102,38 @@
                 </div>
               </div>
             </div>
-            <!-- Booking Doctor Info -->
+            <!-- /Doctor Information Section -->
 
+            <!-- Booking Summary Details Section -->
             <div class="booking-summary">
               <div class="booking-item-wrap">
-                  <ul class="booking-date mt-3">
-                      <li>{{ translate('Date') }} <span>{{ translate(date) }}</span></li>
-                      <li>{{ translate('Time') }} <span>{{ translate('from') }} {{ translate(start_time) }} {{ translate('to') }} {{ translate(end_time) }}</span></li>
+                <!-- Appointment Date and Time -->
+                <ul class="booking-date mt-3">
+                  <li>{{ translate('Date') }} <span>{{ translate(date) }}</span></li>
+                  <li>{{ translate('Time') }} <span>{{ translate('from') }} {{ translate(start_time) }} {{ translate('to') }} {{ translate(end_time) }}</span></li>
+                </ul>
+                <!-- Consultation Fee -->
+                <ul class="booking-fee">
+                  <li>{{ translate('Consulting Fee') }} <span>${{ translate(doctor.price) }}</span></li>
+                </ul>
+                <!-- Total Cost Summary -->
+                <div class="booking-total">
+                  <ul class="booking-total-list">
+                    <li>
+                      <span>{{ translate('Total') }}</span>
+                      <span class="total-cost">${{ translate(doctor.price) }}</span>
+                    </li>
                   </ul>
-                  <ul class="booking-fee">
-                      <li>{{ translate('Consulting Fee') }} <span>${{ translate(doctor.price) }}</span></li>
-                  </ul>
-                  <div class="booking-total">
-                      <ul class="booking-total-list">
-                          <li>
-                              <span>{{ translate('Total') }}</span>
-                              <span class="total-cost">${{ translate(doctor.price) }}</span>
-                          </li>
-                      </ul>
-                  </div>
+                </div>
               </div>
-          </div>
-          
-          </div>
+            </div>
+            <!-- /Booking Summary Details Section -->
           </div>
         </div>
-        <!-- /Booking Summary -->
       </div>
+      <!-- /Right Section -->
     </div>
   </div>
 </div>
-<!-- /Page Content -->
+<!-- /Page Content Section -->
 {% endblock %}
-<!-- Footer -->
