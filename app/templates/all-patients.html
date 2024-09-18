@@ -39,11 +39,11 @@
               <div class="card-body">
                 <div class="pro-widget-content">
                   <div class="profile-info-widget">
-                    <a
-                      class="booking-doc-img"
-                    >
+                    <a href="profile.html" class="booking-doc-img">
+                      {% set base_path = 'static/images/patients/' %}
                       <img
-                        src="assets/img/patients/patient.jpg"
+                        class="avatar-img rounded-circle"
+                        src="{{ base_path ~ patient.patient_photo }}"  
                         alt="User Image"
                       />
                     </a>
