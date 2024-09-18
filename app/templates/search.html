@@ -1,11 +1,15 @@
-{% extends 'base.html' %} {% block title %} {{ translate('search Dashboard') }}
-{% endblock %} {% block body %}
+{% extends 'base.html' %} 
 
-<!-- Breadcrumb -->
+<!-- Title block for the page, here it's showing 'search Dashboard' -->
+{% block title %} {{ translate('search Dashboard') }} {% endblock %} 
+
+{% block body %}
+<!-- Breadcrumb for navigation -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
     <div class="row align-items-center">
       <div class="col-md-8 col-12">
+        <!-- Breadcrumb navigation links -->
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -16,6 +20,7 @@
             </li>
           </ol>
         </nav>
+        <!-- Display total number of matches found -->
         <h2 class="breadcrumb-title">
           {{ pagination.total }} {{ translate('matches found') }}
         </h2>
@@ -26,23 +31,28 @@
 </div>
 <!-- /Breadcrumb -->
 
-<!-- Page Content -->
+<!-- Page Content Section -->
 <div class="content">
   <div class="container-fluid">
     <div class="row">
+      <!-- Sidebar filter for search options -->
       <div class="col-md-12 col-lg-4 col-xl-3 theiaStickySidebar">
-        <!-- Search Filter -->
+        <!-- Search Filter Card -->
         <div class="card search-filter">
           <div class="card-header">
             <h4 class="card-title mb-0">{{ translate('Search Filter') }}</h4>
           </div>
           <div class="card-body">
+            <!-- Search form for filtering doctors -->
             <form
               action="{{ url_for('search_doctor') }}"
               method="POST"
               id="search-form"
             >
-              {{ form.hidden_tag() }} {{ form.csrf_token }}
+              {{ form.hidden_tag() }} 
+              {{ form.csrf_token }}
+
+              <!-- Date picker for selecting the appointment date -->
               <div class="filter-widget">
                 <div class="cal-icon">
                   <input
@@ -54,28 +64,23 @@
                   />
                 </div>
               </div>
-              <div class="filter-widget"></div>
+
+              <!-- Specialization filter -->
               <div class="filter-widget">
                 <h4>{{ translate('Select specialization') }}</h4>
                 <div class="search_filter">
                   {% for specialization in specializations %}
                   <div>
+                    <!-- Checkbox for each specialization option -->
                     <label class="custom_check">
                       <input
                         type="checkbox"
                         name="select_specialization"
                         value="{{ specialization.id}}"
                         class="Specialization"
-                        {%
-                        if
-                        specialization.id
-                        in
-                        selected_specializations
-                        %}
+                        {% if specialization.id in selected_specializations %}
                         checked
-                        {%
-                        endif
-                        %}
+                        {% endif %}
                       />
                       <span class="checkmark"></span> {{
                       translate(specialization.specialization_name) }}
@@ -84,6 +89,8 @@
                   {% endfor %}
                 </div>
               </div>
+
+              <!-- Submit button for searching -->
               <div class="btn-search">
                 <button type="submit" class="btn btn-block">
                   {{ translate('Search') }}
@@ -92,19 +99,18 @@
             </form>
           </div>
         </div>
-
         <!-- /Search Filter -->
       </div>
 
+      <!-- Main content showing doctors' details -->
       <div class="col-md-12 col-lg-8 col-xl-9">
-        <!-- Doctor Widget -->
-        {% for doctor, specialization, clinic, governorate, user in
-        pagination.items %}
-
+        <!-- Loop through each doctor and display their information -->
+        {% for doctor, specialization, clinic, governorate, user in pagination.items %}
         <div class="card">
           <div class="card-body">
             <div class="doctor-widget">
               <div class="doc-info-left">
+                <!-- Doctor image -->
                 <div class="booking-img">
                   {% set base_path = 'static/images/doctors/' %}
                   <img
@@ -115,14 +121,15 @@
                     width="80"
                   />
                 </div>
+                <!-- Doctor's basic information -->
                 <div class="doc-info-cont">
                   <h4 class="doc-name">
                       {{ translate('Dr.') }}{{ translate(user.name) }}
-                    
                   </h4>
                   <h5 class="text-muted">
                     {{ translate(doctor.clinic.name) }}
                   </h5>
+                  <!-- Specialization with image -->
                   <p class="doc-department mt-2">
                     <img
                       src="{{ specialization.photo }}"
@@ -130,38 +137,42 @@
                       alt="Speciality"
                     />{{ translate(specialization.specialization_name) }}
                   </p>
+                  <!-- Clinic location -->
                   <div class="clinic-details">
                     <p class="doc-location">
                       <i class="fas fa-map-marker-alt"></i>
                       {{ translate(doctor.clinic.address) }}
                     </p>
                   </div>
-                  <div class="clinic-services"></div>
                 </div>
               </div>
+
+              <!-- Doctor's additional info and booking options -->
               <div class="doc-info-right">
                 <div class="clini-infos">
                   <ul>
+                    <!-- Location with governorate -->
                     <li>
                       <i class="fas fa-map-marker-alt"></i>
-                      {{ translate(governorate.governorate_name) }}{{
-                      translate(',Egypt') }}
+                      {{ translate(governorate.governorate_name) }}{{ translate(',Egypt') }}
                     </li>
+                    <!-- Price for the appointment -->
                     <li>
                       <i class="far fa-money-bill-alt"></i> {{ doctor.price }} $
                     </li>
+                    <!-- Working hours -->
                     <li>
                       <i class="far fa-clock"></i> 
                       {{ doctor.From_working_hours.strftime('%H:%M') }} - {{ doctor.To_working_hours.strftime('%H:%M') }}
                     </li>
                   </ul>
                 </div>
+                <!-- Book appointment button -->
                 <div class="clinic-booking">
                   <a
                     href="{{ url_for('doctor_appointments', doctor_id=doctor.id) }}"
                     class="apt-btn"
-                    ><i class="far fa-calendar-alt"></i> {{ translate('Book
-                    Appointment') }}</a
+                    ><i class="far fa-calendar-alt"></i> {{ translate('Book Appointment') }}</a
                   >
                 </div>
               </div>
@@ -170,21 +181,27 @@
         </div>
         {% endfor %}
         <!-- /Doctor Widget -->
+
+        <!-- Load more button for pagination -->
         {% if pagination.has_next %}
         <div class="load-more text-center">
           <form action="{{ url_for('search_doctor') }}" method="get">
+            <!-- Hidden field to keep track of the next page number -->
             <input
               type="hidden"
               name="page"
               value="{{ pagination.next_num }}"
             />
+            <!-- Keep the selected specializations for the next search -->
             {% for spec in selected_specializations %}
             <input
               type="hidden"
               name="select_specialization"
               value="{{ spec }}"
             />
-            {% endfor %} {% if selected_date %}
+            {% endfor %}
+            <!-- Keep the selected date for the next search -->
+            {% if selected_date %}
             <input type="hidden" name="date" value="{{ selected_date }}" />
             {% endif %}
             <button class="btn btn-primary btn-sm" type="submit">
@@ -198,5 +215,4 @@
   </div>
 </div>
 <!-- /Page Content -->
-
 {% endblock %}
