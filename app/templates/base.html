@@ -291,8 +291,8 @@
 
     {% if current_user.is_authenticated and current_user.clinic %}
     <script type="text/javascript">
-      const clinicId = "{{ current_user.clinic.id }}";
-      console.log("Clinic ID:", clinicId);
+      const clinic_id = "{{ current_user.clinic.id }}";
+      console.log("Clinic ID:", clinic_id);
     </script>
     {% endif %} {% block js %} {% include 'base-js.html' %} {% endblock %}
   </body>
