@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
-from datetime import datetime, time
+from datetime import datetime
 from sqlalchemy import func, asc
 from flask import session
 from datetime import date
@@ -24,7 +24,6 @@ clinic_permission = Permission(RoleNeed('clinic'))
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 
 # doctor dashboard page >>> view appointments today
@@ -55,9 +54,11 @@ def doctor_dash():
             appointment = Appointment.query.get(appointment_id)
             if appointment:
                 appointment.seen = True
+                appointment.status = AppStatus.Completed.value
                 db.session.commit()
-                flash('Appointment marked as seen', category='success')
+                flash('Appointment marked as seen and status updated to Completed', category='success')
                 return redirect(url_for('doctor_dash'))
+
     return render_template(
         'doctor-dashboard.html',
         doctor=doctor,
@@ -67,20 +68,6 @@ def doctor_dash():
         nextAppt=nextAppt,
         form=form
     )
-
-
-### Patient list
-@app.route('/patient_list', methods=['GET', 'POST'])
-@login_required
-@doctor_permission.require(http_exception=403)
-def patient_list():
-    doctor = Doctor.query.filter_by(user_id=current_user.id).first()
-    if doctor is None:
-        return translate('User is not a doctor'), 403
-    appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
-    patients = [appointment.patient for appointment in appointments]
-
-    return render_template('patient-list.html', doctor=doctor, patients=patients)
 
 
 @app.route('/doctor_profile', methods=['GET', 'POST'])
@@ -105,7 +92,7 @@ def doctor_profile():
             try:
                 doctor_form.populate_obj(doctor)
                 user_form.populate_obj(user)
-                user.name = (user_form.firstname.data + ' ' + user_form.lastname.data)
+                user.name = (doctor_form.firstname.data + ' ' + doctor_form.lastname.data)
                 doc_dur = int(doctor_form.duration.data) if doctor_form.duration.data is not None else 0
                 doctor.duration = str(doc_dur * 100)
                 file = request.files['photo']
@@ -143,48 +130,79 @@ def doctor_profile():
                 )
         return redirect(url_for('doctor_profile'))
     name_split = current_user.name.split()
-    user_form.firstname.data = name_split[0]
-    user_form.lastname.data = ' '.join(name_split[1:])
+    doctor_form.firstname.data = name_split[0]
+    doctor_form.lastname.data = ' '.join(name_split[1:])
     minutes = doctor.duration.hour * 60 + doctor.duration.minute
     doctor_form.duration.data = str(minutes)
     return render_template(
         'doctor-profile-settings.html', user_form=user_form, doctor_form=doctor_form
     )
 
-
 @app.route('/Prescription', methods=['GET', 'POST'])
 @login_required
-@doctor_permission.require(http_exception=403)
+# @doctor_permission.require(http_exception=403)
 def add_prescription():
     form = AddMedicineForm()
-    patient_id = "800b065d-945d-4ba0-bb20-10c1d480d352"
+    patient_id = "ee57d6e4-1d31-4b8d-a615-55b4391ef8db"
     # patient_id = request.args.get("patient_id")
     if form.validate_on_submit():
-        # MedicineTimes
-        for item in form.items:
-            Patient_Medicine = PatientMedicine(
-                medName = item.form.name.data,
-                Quantity = item.form.quantity.data,
-                Days = item.form.Days.data,
-                patient_id = patient_id
-            )
-            db.session.add(Patient_Medicine)
+        try:
+            # MedicineTimes
+            for item in form.items:
+                med_exist = PatientMedicine.query.filter_by(medName=item.form.name.data).first()
+                if not med_exist:
+                    Patient_Medicine = PatientMedicine(
+                        medName=item.form.name.data,
+                        Quantity=item.form.quantity.data,
+                        Date=datetime.now().strftime('%Y-%m-%d'),
+                        patient_id=patient_id,
+                        Added_By = current_user.id
+                    )
+                    db.session.add(Patient_Medicine)
+                    current_medicine = Patient_Medicine
+                    flash('Medicine added successfully', category='success')
+
+                else:
+                    med_exist.Quantity = item.form.quantity.data
+                    med_exist.Days = item.form.Days.data
+                    current_medicine = med_exist
+                    MedicineTimes.query.filter_by(patient_medicine=med_exist).delete()
+                    flash('Medicine updated successfully', category='success')
             for time_of_day in item.form.time_of_day.data:
                 Medicine_Times = MedicineTimes(
-                    patient_medicine = Patient_Medicine,
-                    time_of_day = time_of_day
+                    patient_medicine=current_medicine,
+                    time_of_day=time_of_day
                 )
                 db.session.add(Medicine_Times)
-
             db.session.commit()
-            flash(f'medicine added successfully', category='success')
             return redirect(url_for('add_prescription'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'There was an error: {e}', category='danger')
 
     if form.errors != {}:
         for err_msg in form.errors.values():
-            flash(
-                f'there was an error with adding doctor: {err_msg}',
-                category='danger'
-            )
+            flash(f'There was an error with adding medicine: {err_msg}', category='danger')
 
     return render_template('prescription.html', form=form)
+
+
+### patient list
+@app.route('/patient_list', methods=['GET', 'POST'])
+@login_required
+@doctor_permission.require(http_exception=403)
+def patient_list():
+    doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    if doctor is None:
+        return translate('User is not a doctor'), 403
+
+    appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
+    patient_ids = set(appointment.patient_id for appointment in appointments)
+
+    patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
+
+    for patient in patients:
+        user = User.query.filter_by(id=patient.user_id).first()
+        patient.user_name = user.name if user else 'Unknown'
+
+    return render_template('patient-list.html', doctor=doctor, patients=patients, appointments=appointments)

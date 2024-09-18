@@ -13,7 +13,8 @@ from app.views.forms.auth_form import (
     LoginForm,
     RegisterForm,
     ChangePasswordForm,
-    ResetPasswordForm
+    ResetPasswordForm,
+    AppointmentForm
 )
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import not_
@@ -26,6 +27,8 @@ from flask_principal import (
 )
 from flask_socketio import disconnect
 from datetime import datetime, timedelta
+from sqlalchemy import asc
+
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
@@ -111,12 +114,6 @@ def login_page():
                     category='danger'
                 )
     return render_template('login.html', form=form)
-
-
-@socketio.on('disconnect request')
-def handle_disconnect_request():
-    session_id = request.sid
-    disconnect(sid=session_id)
 
 
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)

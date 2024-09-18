@@ -197,9 +197,18 @@
                       aria-expanded="true"
                     >
                       <span class="user-img">
+                        {% if current_user.user_roles.role.role_name == 'Admin'
+                        %} {% set base_path = 'static/images/Admin/' %} {% elif
+                        current_user.user_roles.role.role_name == 'doctor' %} {%
+                        set base_path = 'static/images/doctors/' %} {% elif
+                        current_user.user_roles.role.role_name == 'clinic' %} {%
+                        set base_path = 'static/images/clinic/' %} {% elif
+                        current_user.user_roles.role.role_name == 'patient' %}
+                        {% set base_path = 'static/images/patients/' %} {% endif
+                        %}
                         <img
                           class="rounded-circle"
-                          src="{{current_user.photo}}"
+                          src="{{base_path ~ current_user.photo}}"
                           width="31"
                           alt="user image"
                         />
@@ -239,6 +248,13 @@
                       <a
                         class="dropdown-item"
                         href="{{ url_for('clinic_dash') }}"
+                        >{{ translate('Dashboard') }}</a
+                      >
+                      {% elif current_user.user_roles.role.role_name ==
+                      'patient' %}
+                      <a
+                        class="dropdown-item"
+                        href="{{ url_for('patient_dashboard') }}"
                         >{{ translate('Dashboard') }}</a
                       >
                       {% endif %}

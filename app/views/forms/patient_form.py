@@ -40,5 +40,4 @@ class PatientForm(FlaskForm):
     blood_group = SelectField('Blood Group', validators=[DataRequired()])
     allergy = SelectField('Allergy', validators=[DataRequired()])
 
-
     submit = SubmitField('Submit')

@@ -3,6 +3,8 @@ from app.models.adminUser import *
 from app.models.addGovs import *
 from app.models.addspecalties import *
 from app.models.addRoles import *
+from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_required
 
 
 def initialize_app():
@@ -12,7 +14,6 @@ def initialize_app():
         seed_roles()
         create_admin_user()
         create_specialties()
-
 
 
 if __name__ == '__main__':

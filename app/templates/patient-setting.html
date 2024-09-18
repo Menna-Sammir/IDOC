@@ -8,7 +8,7 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">
               Profile Settings
             </li>
@@ -22,112 +22,43 @@
 <!-- /Breadcrumb -->
 
 <!-- Page Content -->
+
 <div class="content">
   <div class="container-fluid">
     <div class="row">
-      <!-- Profile Sidebar -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        <div class="profile-sidebar">
-          <div class="widget-profile pro-widget-content">
-            <div class="profile-info-widget">
-              <a href="#" class="booking-doc-img">
-                {% if current_user.is_authenticated %} {% if current_user.photo
-                %}
-                <img
-                  src="{{ url_for('static', filename=current_user.photo) }}"
-                  alt="User Image"
-                />
-                {% else %}
-                <img
-                  src="{{ url_for('static', filename='default-profile.png') }}"
-                  alt="Default User Image"
-                />
-                {% endif %} {% else %}
-                <img
-                  src="{{ url_for('static', filename='default-profile.png') }}"
-                  alt="Default User Image"
-                />
-                {% endif %}
-              </a>
-              <div class="profile-det-info">
-                <h3>{{ current_user.name }}</h3>
-                <div class="patient-details">
-                  <h5>
-                    <i class="fas fa-birthday-cake"></i> {{ patient.age }} years
-                    old
-                  </h5>
-                  <h5 class="mb-0">
-                    <i class="fas fa-map-marker-alt"></i> {{ patient.address }},
-                    {{ patient.governorate.governorate_name if
-                    patient.governorate else 'Unknown' }}
-                  </h5>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="dashboard-widget">
-            <nav class="dashboard-menu">
-              <ul>
-                <li>
-                  <a href="#">
-                    <i class="fas fa-columns"></i>
-                    <span>Dashboard</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="favourites.html">
-                    <i class="fas fa-bookmark"></i>
-                    <span>Favourites</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="chat.html">
-                    <i class="fas fa-comments"></i>
-                    <span>Message</span>
-                    <small class="unread-msg">23</small>
-                  </a>
-                </li>
-                <li class="active">
-                  <a href="profile-settings.html">
-                    <i class="fas fa-user-cog"></i>
-                    <span>Profile Settings</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="change-password.html">
-                    <i class="fas fa-lock"></i>
-                    <span>Change Password</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="index-2.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
+        <!-- Profile Sidebar -->
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
+        %}
+        <!-- /Profile Sidebar -->
       </div>
-      <!-- /Profile Sidebar -->
-
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="card">
           <div class="card-body">
             <!-- Profile Settings Form -->
             <form id="patientForm" enctype="multipart/form-data">
-              {{ form.hidden_tag() }}
+              {{ form.hidden_tag() }} {{ form.csrf_token }}
               <div class="row form-row">
                 <!-- Profile Photo -->
                 <div class="col-12">
                   <div class="form-group">
                     <div class="change-avatar">
                       <div class="profile-img">
+                        {% if current_user.photo %} {% set base_path =
+                        'static/images/patients/' %}
                         <img
-                          src="assets/img/patients/patient.jpg"
+                          class="avatar-img rounded-circle"
+                          src="{{base_path ~ current_user.photo}}"
+                          id="imagePreview"
                           alt="User Image"
                         />
+                        {% else %}
+                        <img
+                          src="static/img/user.svg"
+                          id="imagePreview"
+                          alt="User Image"
+                        />
+                        {% endif %}
                       </div>
                       <div class="upload-img">
                         <div class="change-photo-btn">
@@ -204,8 +135,10 @@
                   </div>
                 </div>
               </div>
-              <div class="submit-section">
-                {{ form.submit(class="btn btn-primary submit-btn") }}
+              <div class="submit-section submit-btn-bottom">
+                <div class="submit-section submit-btn-bottom">
+                  {{ form.submit(class="btn btn-primary submit-btn") }}
+                </div>
               </div>
             </form>
             <!-- /Profile Settings Form -->

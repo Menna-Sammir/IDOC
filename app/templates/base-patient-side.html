@@ -2,21 +2,27 @@
   <div class="widget-profile pro-widget-content">
     <div class="profile-info-widget">
       <a href="profile.html" class="booking-doc-img">
-        {% set base_path = 'static/images/doctors/' %}
+        {% set base_path = 'static/images/patients/' %}
         <img
           class="avatar-img rounded-circle"
-          src="{{base_path ~ current_user.patient.photo}}"
+          src="{{base_path ~ current_user.photo}}"
           alt="User Image"
       /></a>
       <div class="profile-det-info">
-        <h3>Welcome {{ user_name }}!</h3>
+        <h3>{{ current_user.name }}</h3>
 
         <div class="patient-details">
-          <p><strong>Blood Group:</strong> {{ blood_group }}</p>
-          <p><strong>Allergy:</strong> {{ allergy }}</p>
+
+          <p>
+            <strong><i class="fas fa-allergies"></i></strong> {{
+            patient.allergy.value }}
+          </p>
           <h5 class="mb-0">
-            <span class="{{ 'activated' if patient.users.activated else 'not-activated' }}">
-              {{ 'Activated' if patient.users.activated else 'Not Activated' }}
+            <span
+              class="{{ 'activated' if patient.users.activated else 'not-activated' }}"
+            >
+              <i class="fas fa-user-check"></i> {{ 'Activated' if
+              patient.users.activated else 'Not Activated' }}
             </span>
           </h5>
         </div>
@@ -26,6 +32,7 @@
   <div class="dashboard-widget">
     <nav class="dashboard-menu">
       <ul>
+
         <li class="active">
           <a href="{{ url_for('patient_dashboard') }}">
             <i class="fas fa-columns"></i>
@@ -38,31 +45,29 @@
             <span>appointment History</span>
           </a>
         </li>
-        <li>
-          <a href="chat.html">
-            <i class="fas fa-comments"></i>
-            <span>Message</span>
-            <small class="unread-msg">23</small>
-          </a>
-        </li>
+
         <li>
           <a href="{{ url_for('patient_setting') }}">
             <i class="fas fa-user-cog"></i>
             <span>Profile Settings</span>
           </a>
         </li>
+
         <li>
           <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>
             <span>{{ translate('Change Password') }}</span>
           </a>
         </li>
+
+
         <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
           <a href="{{ url_for('logout_page') }}">
             <i class="fas fa-sign-out-alt"></i>
             <span>{{ translate('Logout') }}</span>
           </a>
         </li>
+
       </ul>
     </nav>
   </div>

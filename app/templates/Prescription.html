@@ -1,150 +1,147 @@
 {% extends 'base.html' %} {% block title %} {{ translate('Doctor Profile') }} {%
-endblock %} {% block body %}
+  endblock %} {% block body %}
 
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar">
-  <div class="container-fluid">
-    <div class="row align-items-center">
-      <div class="col-md-12 col-12">
-        <nav aria-label="breadcrumb" class="page-breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-              {{ translate('Profile Settings') }}
-            </li>
-          </ol>
-        </nav>
-        <h2 class="breadcrumb-title">{{ translate('Profile Settings') }}</h2>
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                {{ translate('Profile Settings') }}
+              </li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">{{ translate('Profile Settings') }}</h2>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- /Breadcrumb -->
+  <!-- /Breadcrumb -->
 
-<!-- Page Content -->
-<div class="content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        <!-- Profile Sidebar -->
-        {% block sidebar %} {% include 'base-admin-side.html' %} {% endblock %}
-        <!-- /Profile Sidebar -->
-      </div>
+  <!-- Page Content -->
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+          <!-- Profile Sidebar -->
+          {% block sidebar %} {% include 'base-admin-side.html' %} {% endblock %}
+          <!-- /Profile Sidebar -->
+        </div>
 
-      <div class="col-md-7 col-lg-8 col-xl-9">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title mb-0">Add Prescription</h4>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="biller-info">
-                  <h4 class="d-block">Dr. Darren Elder</h4>
-                  <span class="d-block text-sm text-muted">Dentist</span>
-                  <span class="d-block text-sm text-muted"
-                    >Newyork, United States</span
-                  >
-                </div>
-              </div>
-
-              <!-- Add Item -->
-              <button class="border-0 bg-transparent add-more-item text-right" id="add-more-item">
-                    <i class="fas fa-plus-circle"></i> Add Item
-              </button>
-              <!-- /Add Item -->
-
-              <!-- Prescription Item -->
-              <div class="card card-table">
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <form method="POST">
-                      {{ form.hidden_tag() }}
-                      {{ form.csrf_token }}
-                    <table class="table table-hover table-center">
-                      <thead>
-                        <tr>
-                          <th style="min-width: 200px">Name</th>
-                          <th style="min-width: 100px">Quantity</th>
-                          <th style="min-width: 100px">Days</th>
-                          <th style="min-width: 100px">Time</th>
-                          <th style="min-width: 80px"></th>
-                        </tr>
-                      </thead>
-                      <tbody id="items-container">
-
-                        {% for item in form.items %}
-                        <tr>
-                          <td>
-                           {{ item.form.name(class_="form-control") }}
-                          </td>
-                          <td>
-                            {{ item.form.quantity(class_="form-control") }}
-                          </td>
-                          </td>
-                          <td>
-                            {{ item.form.Days(class_="form-control") }}
-                          </td>
-                          <td>
-                            {% for subfield in item.form.time_of_day %}
-                            <div class="form-check form-check-inline">
-                              <label class="form-check-label">
-                                {{ subfield(class_="form-check-input") }}
-
-                                {{ subfield.label }}
-                              </label>
-                            </div>
-                            {% endfor %}
-                          </td>
-                          <td>
-                            <a href="#" class="btn bg-danger-light trash"
-                              ><i class="far fa-trash-alt"></i
-                            ></a>
-                          </td>
-                        </tr>
-                        {% endfor %}
-
-
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <td>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="submit-section">
-                                  <button type="submit" class="btn btn-primary submit-btn">
-                                    Save
-                                  </button>
-                                  <button type="reset" class="btn btn-secondary submit-btn">
-                                    Clear
-                                  </button>
-                                </div>
-                              </div>
-                          </td>
-                        </tr>
-
-                        </div>
-                      </tfoot>
-
-                    </table>
-                  </form>
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title mb-0">Add Prescription</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="biller-info">
+                    <h4 class="d-block">Dr. Darren Elder</h4>
+                    <span class="d-block text-sm text-muted">Dentist</span>
+                    <span class="d-block text-sm text-muted"
+                      >Newyork, United States</span
+                    >
                   </div>
                 </div>
+
+                <!-- Add Item -->
+                <a class="border-0 bg-transparent add-more-item text-right" id="add-more-item">
+                      <i class="fas fa-plus-circle"></i> Add Item
+                </a>
+                <!-- /Add Item -->
+
+                <!-- Prescription Item -->
+                <div class="card card-table">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <form method="POST">
+                        {{ form.csrf_token }} {{ form.hidden_tag() }}
+
+                      <table class="table table-hover table-center">
+                        <thead>
+                          <tr>
+                            <th style="min-width: 200px">Name</th>
+                            <th style="min-width: 100px">Quantity</th>
+                            <th style="min-width: 100px">Time</th>
+                            <th style="min-width: 80px"></th>
+                          </tr>
+                        </thead>
+                        <tbody id="items-container">
+
+                          {% for item in form.items %}
+                          <tr>
+                            <td>
+                             {{ item.form.name(class_="form-control") }}
+                            </td>
+                            <td>
+                              {{ item.form.quantity(class_="form-control") }}
+                            </td>
+                            </td>
+
+                            <td>
+                              {% for subfield in item.form.time_of_day %}
+                              <div class="form-check form-check-inline">
+                                <label class="form-check-label" for="{{ subfield.id }}">
+                                  {{ subfield(class_="form-check-input") }}
+
+                                  {{ subfield.label }}
+                                </label>
+                              </div>
+                              {% endfor %}
+                            </td>
+                            <td>
+                              <a href="#" class="btn bg-danger-light trash"
+                                ><i class="far fa-trash-alt"></i
+                              ></a>
+                            </td>
+                          </tr>
+                          {% endfor %}
+
+
+
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="submit-section">
+                                    <button type="submit" class="btn btn-primary submit-btn">
+                                      Save
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary submit-btn">
+                                      Clear
+                                    </button>
+                                  </div>
+                                </div>
+                            </td>
+                          </tr>
+
+                        </tfoot>
+
+                      </table>
+                    </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Prescription Item -->
+
+                <!-- Submit Section -->
+
+                <!-- /Submit Section -->
               </div>
-              <!-- /Prescription Item -->
-
-              <!-- Submit Section -->
-
-              <!-- /Submit Section -->
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- /Page Content -->
+    {% endblock %}
+    <!-- Footer -->
   </div>
-  <!-- /Page Content -->
-  {% endblock %}
-  <!-- Footer -->
-</div>

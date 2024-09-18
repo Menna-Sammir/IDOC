@@ -15,10 +15,11 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin, current_user
 from flask_principal import RoleNeed, identity_loaded, UserNeed
 from sqlalchemy import func
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from app.models.notiTime import calculate_time_ago
 from flask import g
 from enum import Enum
+import random
 
 
 @login_manager.user_loader
@@ -43,17 +44,17 @@ def inject_cache_id():
 @app.before_request
 def load_notification():
     current_time = datetime.now()
-    if current_user.is_authenticated and hasattr(current_user, 'clinic_id'):
-        notification = Notification.query.filter_by(clinic_id=current_user.clinic_id)
+    if current_user.is_authenticated and hasattr(current_user.clinic, 'id'):
+        notification = Notification.query.filter_by(clinic_id=current_user.clinic.id)
         processed_notifications = [
             {
-                'doctor': n.appointment.doctor.name,
-                'patient': n.appointment.patient.name,
+                'doctor': n.appointment.doctor.users.name,
+                'patient': n.appointment.patient.users.name,
                 'body': n.noteBody,
                 'isRead': n.isRead,
                 'time': n.time.strftime('%H:%M %p'),
                 'date': n.date.strftime('%d %B'),
-                'photo': n.appointment.doctor.photo,
+                'photo': n.appointment.doctor.users.photo,
                 'formatted_time': calculate_time_ago(current_time, n.notDate)
             }
             for n in notification.all()[:10]
@@ -71,21 +72,22 @@ def inject_notification():
 
 
 class AppStatus(Enum):
-    Pending = 0
-    Confirmed = 1
-    Cancelled = 2
-    Completed = 3
+    Pending = 'Pending'
+    Confirmed = 'Confirmed'
+    Cancelled = 'Cancelled'
+    Completed = 'Completed'
 
 
 class PatientHisType(Enum):
-    Lab = 1
-    medicine = 3
+    Lab = 'Lab'
+    X_ray = 'X-ray'
+
 
 class MedicineTime(Enum):
-    MORNING = "Morning"
-    AFTERNOON = "Afternoon"
-    EVENING = "Evening"
-    NIGHT = "Night"
+    MORNING = 'Morning'
+    AFTERNOON = 'Afternoon'
+    EVENING = 'Evening'
+    NIGHT = 'Night'
 
 
 class BloodGroup(Enum):
@@ -152,7 +154,7 @@ class Doctor(BaseModel):
     user_id = db.Column(
         VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True
     )
-    users = relationship('User', back_populates='doctor')
+    users = relationship('User', back_populates='doctor', lazy='joined')
 
     specialization = relationship('Specialization', back_populates='doctors')
     clinic = relationship('Clinic', back_populates='doctors')
@@ -228,9 +230,10 @@ class User(BaseModel, UserMixin):
 
     doctor = relationship('Doctor', back_populates='users')
     patient = relationship('Patient', back_populates='users')
-    clinic = relationship('Clinic', back_populates='users')
+    clinic = relationship('Clinic', back_populates='users', uselist=False)
     user_roles = relationship('UserRole', uselist=False, back_populates='user')
     patient_history = relationship('PatientHistory', back_populates='user')
+    patient_medicine = relationship('PatientMedicine', back_populates='user')
 
     @property
     def password_hash(self):
@@ -298,13 +301,52 @@ class Patient(BaseModel):
     medicine = db.relationship('PatientMedicine', backref='patient', uselist=False)
     appointments = db.relationship('Appointment', back_populates='patient')
 
+    def get_advice(self):
+        patient_advice_list = [
+            {
+                'advice': 'Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.'
+            },
+            {
+                'advice': "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose."
+            },
+            {
+                'advice': 'Ensure you get 7-9 hours of sleep every night to help your body heal and function properly.'
+            },
+            {
+                'advice': 'Incorporate fruits, vegetables, whole grains, and lean proteins into your meals to support recovery and immune function.'
+            },
+            {
+                'advice': 'If approved by your doctor, light exercise such as walking can improve circulation and overall health. Avoid strenuous activities unless advised otherwise.'
+            },
+            {
+                'advice': 'Practice stress-reducing activities such as meditation, deep breathing, or yoga. Chronic stress can delay recovery.'
+            },
+            {
+                'advice': 'Be sure to attend all scheduled follow-up visits with your healthcare provider to monitor your progress.'
+            },
+            {
+                'advice': 'Immediately contact your doctor if you notice unusual symptoms like sudden pain, high fever, or swelling.'
+            },
+            {
+                'advice': 'Smoking and alcohol can slow down recovery and negatively impact your health. Avoid them during the healing process.'
+            },
+            {
+                'advice': 'Maintain a positive mindset during recovery. Mental health plays a crucial role in your overall wellbeing.'
+            }
+        ]
+
+        return random.choice([item['advice'] for item in patient_advice_list])
+
+
 class MedicineTimes(BaseModel):
     __tablename__ = 'MedicineTimes'
 
-    medicine_id = db.Column(VARCHAR(60), ForeignKey('PatientMedicine.id'), nullable=False)
+    medicine_id = db.Column(
+        VARCHAR(60), ForeignKey('PatientMedicine.id'), nullable=False
+    )
     time_of_day = db.Column(SQLAlchemyEnum(MedicineTime), nullable=False)
 
-    patient_medicine = relationship("PatientMedicine", back_populates='medicine_times')
+    patient_medicine = relationship('PatientMedicine', back_populates='medicine_times')
 
 
 class PatientMedicine(BaseModel):
@@ -312,22 +354,24 @@ class PatientMedicine(BaseModel):
 
     medName = db.Column(VARCHAR(255), nullable=False)
     Quantity = db.Column(VARCHAR(255), nullable=False)
-    Days = db.Column(VARCHAR(100), nullable=False)
+    Date = db.Column(DATE, nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
+    Added_By = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
 
-    medicine_times = relationship("MedicineTimes", back_populates='patient_medicine', uselist=True)
-
+    user = db.relationship('User', back_populates='patient_medicine')
+    medicine_times = relationship(
+        'MedicineTimes', back_populates='patient_medicine', uselist=True
+    )
 
 
 class PatientHistory(BaseModel):
     __tablename__ = 'PatientHistory'
     details = db.Column(VARCHAR(255), nullable=False)
-    type =  db.Column(SQLAlchemyEnum(PatientHisType), nullable=True)
-    addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False, unique=True)
-    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), unique=True)
+    type = db.Column(SQLAlchemyEnum(PatientHisType), nullable=True)
+    addedBy = db.Column(VARCHAR(60), ForeignKey('users.id'), nullable=False)
+    patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'))
 
     user = db.relationship('User', back_populates='patient_history')
-
 
 
 class Appointment(BaseModel):
@@ -341,17 +385,50 @@ class Appointment(BaseModel):
     Report = db.Column(VARCHAR(255), nullable=True)
     Diagnosis = db.Column(VARCHAR(255), nullable=True)
     status = db.Column(SQLAlchemyEnum(AppStatus), nullable=False)
+    follow_up = db.Column(DATETIME, nullable=True)
 
     clinic_id = db.Column(VARCHAR(60), ForeignKey('clinic.id'), nullable=False)
     patient_id = db.Column(VARCHAR(60), ForeignKey('patient.id'), nullable=False)
     doctor_id = db.Column(VARCHAR(60), ForeignKey('doctor.id'), nullable=False)
     clinic = relationship('Clinic', back_populates='appointments')
     patient = relationship('Patient', back_populates='appointments')
-    doctor = relationship('Doctor', back_populates='appointments')
+    doctor = relationship('Doctor', back_populates='appointments', lazy='joined')
     messages = relationship('Message', uselist=False, back_populates='appointment')
     notifications = relationship(
         'Notification', uselist=False, back_populates='appointment'
     )
+
+    @property
+    def time_range(self):
+        appointment_end_time = (
+            datetime.combine(date.today(), self.time) + timedelta(hours=1)
+        ).time()
+        return (
+            f"{self.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
+        )
+
+    @property
+    def formatted_date(self):
+        return self.date.strftime('%A, %d %B').capitalize()
+
+    @property
+    def followup_date(self):
+        if self.follow_up:
+            return self.follow_up.strftime('%A, %d %B').capitalize()
+        else:
+            return 'N/A'
+
+    def status_bg(self):
+        if self.status == AppStatus.Pending.value:
+            return 'bg-info'
+        elif self.status == AppStatus.Confirmed.value:
+            return 'bg-success'
+        elif self.status == AppStatus.Cancelled.value:
+            return 'bg-danger'
+        elif self.status == AppStatus.Completed.value:
+            return 'bg-secondary'
+        else:
+            return 'bg-secondary'
 
 
 class Message(BaseModel):

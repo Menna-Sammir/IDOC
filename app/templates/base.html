@@ -187,7 +187,7 @@
                   </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
-                  <a href="{{ url_for('view_notifi') }}"
+                  <a href="{{ url_for('all_notifications') }}"
                     >{{ translate('View all Notifications') }}</a
                   >
                 </div>
@@ -195,6 +195,7 @@
             </li>
             <!-- /Notifications -->
             {% endif %}
+
             <!-- User Menu -->
             {% if current_user.is_authenticated %}
             <li class="nav-item dropdown has-arrow logged-item mr-3">
@@ -206,21 +207,30 @@
                 aria-expanded="true"
               >
                 <span class="user-img">
+                  {% if current_user.user_roles.role.role_name == 'Admin' %} {%
+                  set base_path = 'static/images/Admin/' %} {% elif
+                  current_user.user_roles.role.role_name == 'doctor' %} {% set
+                  base_path = 'static/images/doctors/' %} {% elif
+                  current_user.user_roles.role.role_name == 'clinic' %} {% set
+                  base_path = 'static/images/clinic/' %} {% elif
+                  current_user.user_roles.role.role_name == 'patient' %} {% set
+                  base_path = 'static/images/patients/' %} {% endif %}
+
                   <img
-                    class="rounded-circle"
-                    src="{{current_user.photo}}"
-                    width="31"
-                    alt="user image"
+                    class="avatar-img rounded-circle"
+                    src="{{base_path ~ current_user.photo}}"
+                    alt="User Image"
                   />
                 </span>
               </a>
               <div class="dropdown-menu user-dropmenu dropdown-menu-right">
                 <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
+
                     <img
-                      src="{{current_user.photo}}"
-                      alt="User Image"
                       class="avatar-img rounded-circle"
+                      src="{{base_path ~ current_user.photo}}"
+                      alt="User Image"
                     />
                   </div>
                   <div class="user-text">
@@ -241,6 +251,12 @@
                 >
                 {% elif current_user.user_roles.role.role_name == 'clinic' %}
                 <a class="dropdown-item" href="{{ url_for('clinic_dash') }}"
+                  >{{ translate('Dashboard') }}</a
+                >
+                {% elif current_user.user_roles.role.role_name == 'patient' %}
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('patient_dashboard') }}"
                   >{{ translate('Dashboard') }}</a
                 >
                 {% endif %}
@@ -266,8 +282,6 @@
 
       <!-- /Footer -->
     </div>
-    {% block js %} {% include 'base-js.html' %}
-
     <audio id="notification-sound">
       <source
         src="/static/sounds/bell-congratulations-epic-stock-media-1-00-01.mp3"
@@ -275,149 +289,11 @@
       />
     </audio>
 
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    {% if current_user.is_authenticated and current_user.clinic %}
     <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', (event) => {
-        var clinic_id = '{{ current_user.clinic_id }}';
-
-        if (!clinic_id) {
-          console.error(
-            'Clinic ID is missing. Cannot establish WebSocket connection.'
-          );
-          return;
-        }
-        console.log('Connecting with clinic_id:', clinic_id);
-
-        var socket = io.connect('http://localhost:5000', {
-          query: 'clinic_id=' + clinic_id,
-        });
-
-        socket.on('connected', function (msg) {
-          console.log(msg.message);
-        });
-
-        socket.on('appointment_notification', function (data) {
-          console.log('Appointment notification:', data);
-          addNotification(data, true);
-        });
-
-        socket.on('disconnected', function (msg) {
-          console.log(msg.message);
-        });
-
-        function addNotification(data, store = false) {
-          var notificationList = document.getElementById('notification-list');
-          var notificationCount = document.getElementById('notification-count');
-
-          var newNotification = document.createElement('li');
-          newNotification.classList.add('notification-message');
-
-          var currentTime = new Date();
-          var formattedTime = currentTime.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          });
-          var notificationContent = `
-            <a href="#">
-              <div class="media">
-                <span class="avatar avatar-sm">
-                  <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
-                </span>
-                <div class="media-body">
-                  <p class="noti-details">
-                    <span class="noti-title">Dr. ${data.doctor}</span> has a new appointment on
-                    <span class="noti-title">${data.date} at ${data.time}</span>
-                  </p>
-                  <p class="noti-time">
-                    <span class="notification-time">${formattedTime}</span>
-                  </p>
-                </div>
-              </div>
-            </a>
-          `;
-
-          newNotification.innerHTML = notificationContent;
-          notificationList.prepend(newNotification);
-
-          var currentCount = parseInt(notificationCount.textContent);
-          notificationCount.textContent = currentCount + 1;
-          playNotificationSound();
-          {
-          }
-        }
-
-        function playNotificationSound() {
-          var audio = document.getElementById('notification-sound');
-          if (audio) {
-            audio.play().catch((error) => {
-              console.error('Error playing audio:', error);
-            });
-          } else {
-            console.error('Audio element not found');
-          }
-        }
-
-        if (store) {
-          storeNotification(data);
-        }
-
-        function storeNotification(data) {
-          var notifications =
-            JSON.parse(localStorage.getItem('notifications')) || [];
-          notifications.unshift(data);
-          localStorage.setItem('notifications', JSON.stringify(notifications));
-        }
-
-        function loadNotifications() {
-          var notifications =
-            JSON.parse(localStorage.getItem('notifications')) || [];
-          notifications.forEach((notification) => {
-            addNotification(notification, false);
-          });
-        }
-
-        document
-          .getElementById('clear-all-notifications')
-          .addEventListener('click', function () {
-            clearAllNotifications();
-          });
-
-        function fetchNotifications() {
-          fetch(`/notifications?clinic_id=${clinic_id}`)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json();
-            })
-            .then((data) => {
-              data.forEach((notification) =>
-                addNotification(notification, false)
-              );
-            })
-            .catch((error) =>
-              console.error('Error fetching notifications:', error)
-            );
-        }
-
-        function clearAllNotifications() {
-          var notificationList = document.getElementById('notification-list');
-          var notificationCount = document.getElementById('notification-count');
-          if (notificationList && notificationCount) {
-            notificationList.innerHTML = '';
-            notificationCount.textContent = '0';
-            localStorage.removeItem('notifications');
-          }
-        }
-        socket.on('notification_update', function (data) {
-          updateNotificationCount(data.count);
-        });
-
-        loadNotifications();
-        fetchNotifications();
-      });
+      const clinic_id = "{{ current_user.clinic.id }}";
+      console.log("Clinic ID:", clinic_id);
     </script>
-
-    {% endblock %}
+    {% endif %} {% block js %} {% include 'base-js.html' %} {% endblock %}
   </body>
 </html>

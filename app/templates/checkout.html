@@ -21,7 +21,7 @@
 
 <!-- Page Content -->
 <div class="content">
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-7 col-lg-8">
         <div class="card">
@@ -89,13 +89,13 @@
               <a href="#" class="booking-doc-img">
                 {% set base_path = 'static/images/doctors/' %}
                 <img
-                  src="{{base_path ~ doctor.photo}}"
+                  src="{{base_path ~ doctor.users.photo}}"
                   alt="User Image"
                 />
               </a>
               <div class="booking-info">
-                <h4><a href="#">Dr. {{doctor.name}}</a></h4>
-                <h5>{{clinic.name}}</h5>
+                <h4><a href="#">Dr. {{doctor.users.name}}</a></h4>
+                <h5>{{clinic.users.name}}</h5>
                 <div class="clinic-details">
                   <p class="doc-location">
                     <i class="fas fa-map-marker-alt"></i> {{ translate(clinic.address) }}, {{ translate(gov.governorate_name) }}, Egypt

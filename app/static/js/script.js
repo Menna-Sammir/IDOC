@@ -566,24 +566,26 @@ if (timeslots) {
 $(document).ready(function () {
   let unreadCount = parseInt($("#notification-count").text(), 10);
 
-  $(".mark-read-btn").on("click", function () {
+  $(".mark-read-btn").on("click", function (event) {
+    event.preventDefault();
+
     const notificationId = $(this).data("id");
     console.log("Notification ID:", notificationId);
+
+    const button = $(this);
+
     $.ajax({
       type: "POST",
-      url: "/mark_as_read",
+      url: `/mark_as_read/${notificationId}`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"),
       },
-      data: {
-        notification_id: notificationId,
-      },
       success: function (data) {
         console.log("AJAX request successful", data);
 
-        if (data.message === "Notification marked as read") {
-          const notificationRow = $(this).closest("tr");
+        if (data.success) {
+          const notificationRow = button.closest("tr");
           if (notificationRow.length) {
             notificationRow.removeClass("unread-notification");
             $("#read-notifications-body").append(notificationRow);
@@ -591,13 +593,7 @@ $(document).ready(function () {
             notificationRow
               .find(".delete-btn")
               .removeClass("bg-success-light")
-              .addClass("bg-danger-light");
-            notificationRow
-              .find(".delete-btn i")
-              .removeClass("fa-check")
-              .addClass("fa-times");
-            notificationRow
-              .find(".delete-btn")
+              .addClass("bg-danger-light")
               .html('<i class="fas fa-times"></i> Delete');
 
             unreadCount -= 1;
@@ -608,40 +604,7 @@ $(document).ready(function () {
         } else {
           console.error("Error marking notification as read:", data.message);
         }
-      }.bind(this),
-      error: function (xhr, status, error) {
-        console.error("AJAX request failed with status:", status);
-        console.error("Response text:", xhr.responseText);
-        console.error("Error:", error);
       },
-    });
-  });
-
-  $(".delete-btn").on("click", function () {
-    const notificationId = $(this).data("id");
-    console.log("Notification ID:", notificationId);
-    $.ajax({
-      type: "POST",
-      url: "/delete_notification",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"),
-      },
-      data: {
-        notification_id: notificationId,
-      },
-      success: function (data) {
-        if (data.message === "Notification deleted") {
-          const notificationRow = $(this).closest("tr");
-          if (notificationRow.hasClass("unread-notification")) {
-            unreadCount -= 1;
-            updateNotificationCount();
-          }
-          notificationRow.remove();
-        } else {
-          console.error("Error deleting notification:", data.message);
-        }
-      }.bind(this),
       error: function (xhr, status, error) {
         console.error("AJAX request failed with status:", status);
         console.error("Response text:", xhr.responseText);
@@ -689,35 +652,137 @@ $("#patientForm").on("submit", function (event) {
     },
   });
 });
+
 $(document).ready(function () {
-  $("#add-more-item").click(function () {
-    // Clone the last row
-    var newRow = $("#items-container tr:last").clone();
+  $("#add-more-item").click(function (e) {
+    e.preventDefault();
+    // Get the number of existing items
+    var count = $("#items-container tr").length;
 
-    // Clear the values of all input elements in the cloned row
-    newRow.find("input").val("");
+    // Clone the last item row
+    var newItem = $("#items-container tr:last").clone();
 
-    // Clear the values of any select elements if they exist
-    newRow.find("select").val("");
+    // Clear input values in the cloned row
+    newItem.find('input:not([type="checkbox"])').val("");
 
-    // Update the names of the input elements in the cloned row
-    newRow.find("input, select").each(function () {
-      var currentName = $(this).attr("name");
-      var newName = currentName.replace(/items-\d+-/g, function (match) {
-        var index = parseInt(match.match(/\d+/)) + 1;
-        return "items-" + index + "-";
-      });
-      $(this).attr("name", newName);
+    newItem.find('input[type="checkbox"]').prop("checked", false);
+
+    // Update the name and id attributes for each form element in the new item row
+    newItem.find("input, select, label").each(function () {
+      var name = $(this).attr("name");
+      if (name) {
+        var newName = name.replace(/\d+/, count);
+        $(this).attr("name", newName);
+      }
+
+      var id = $(this).attr("id");
+      if (id) {
+        var newId = id.replace(/\d+/, count);
+        $(this).attr("id", newId);
+      }
+
+      var forAttr = $(this).attr("for");
+      if (forAttr) {
+        var newFor = forAttr.replace(/\d+/, count);
+        $(this).attr("for", newFor);
+      }
     });
 
-    // Append the cloned row to the container
-    console.log(newRow)
-    $("#items-container").append(newRow);
+    // Append the new item row to the items container
+    $("#items-container").append(newItem);
   });
 
   // Remove a row when the trash button is clicked
   $("#items-container").on("click", ".trash", function (e) {
     e.preventDefault();
     $(this).closest("tr").remove();
+  });
+});
+
+// update appointment status
+$(document).ready(function () {
+  $(".status-dropdown .dropdown-item").click(function () {
+    const newStatus = $(this).data("status");
+    const dropdownButton = $(this)
+      .closest(".status-dropdown")
+      .find(".status-badge");
+    const appointmentId = dropdownButton.data("appointment-id");
+    const csrfToken = $('meta[name="csrf-token"]').attr("content");
+
+    console.log("Sending AJAX request with:", {
+      appointment_id: appointmentId,
+      new_status: newStatus,
+      csrf_token: csrfToken,
+    });
+
+    $.ajax({
+      url: "/update_appointment_status",
+      method: "POST",
+      data: {
+        appointment_id: appointmentId,
+        new_status: newStatus,
+        csrf_token: csrfToken,
+      },
+      success: function (response) {
+        if (response.success) {
+          const badge = $(
+            `.status-badge[data-appointment-id="${appointmentId}"]`
+          );
+          badge
+            .text(newStatus)
+            .removeClass("bg-warning-light bg-success-light bg-danger-light")
+            .addClass(`bg-${getStatusColor(newStatus)}-light`);
+        } else {
+          alert("Failed to update status. Please try again.");
+        }
+      },
+      error: function (xhr, status, error) {
+        alert("An error occurred. Please try again.");
+        console.error("Error:", status, error);
+      },
+    });
+  });
+});
+
+function getStatusColor(status) {
+  switch (status) {
+    case "Pending":
+      return "warning";
+    case "Confirmed":
+      return "success";
+    case "Cancelled":
+      return "danger";
+    case "Completed":
+      return "primary";
+    default:
+      return "warning";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  $("#add_medical_reports").on("show.bs.modal", function (event) {
+    var button = $(event.relatedTarget);
+    var appointmentId = button.data("appointment-id");
+    var patientId = button.data("patient-id");
+    var diagnosis = button.data("diagnosis");
+
+    var modal = $(this);
+    modal.find("#appointment_id").val(appointmentId);
+    modal.find("#patient_id").val(patientId);
+    modal.find("#modal_diagnosis").val(diagnosis);
+  });
+});
+
+$(document).ready(function () {
+  $(".print-btn").on("click", function () {
+    var reportUrl = $(this).data("report-url");
+    if (reportUrl) {
+      var printWindow = window.open(reportUrl, "_blank");
+      printWindow.onload = function () {
+        printWindow.print();
+      };
+    } else {
+      alert("No report available to print.");
+    }
   });
 });

@@ -72,9 +72,7 @@ class EditUserForm(FlaskForm):
             if '.' not in filename or filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
                 raise ValidationError(translate('Unsupported file extension.'))
 
-    firstname = StringField(validators=[Length(min=2, max=30), DataRequired()])
-    lastname = StringField(validators=[Length(min=2, max=70), DataRequired()])
+
     email = StringField(label='Email Address:', validators=[Email(), DataRequired()])
-    phone = StringField(validators=[Length(min=0, max=11), DataRequired()])
     photo = FileField(validators=[file_size_check])
 
