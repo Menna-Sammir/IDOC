@@ -48,3 +48,5 @@ if __name__ == '__main__':
 # Fix flaky doctor appointment test issue
 
 # Modify test for new doctor appointment endpoint
+
+# Adjust test for new doctor appointment schema
