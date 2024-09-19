@@ -35,3 +35,5 @@ if __name__ == '__main__':
 # Add logging for debugging
 
 # Remove unused imports
+
+# Update test client setup
