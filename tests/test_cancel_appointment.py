@@ -49,3 +49,5 @@ if __name__ == '__main__':
 # Modify test for new endpoint
 
 # Adjust test for new schema
+
+# Improve exception handling
