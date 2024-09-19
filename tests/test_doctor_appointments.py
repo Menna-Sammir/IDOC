@@ -64,3 +64,5 @@ if __name__ == '__main__':
 # Reorganize doctor appointment test structure
 
 # Cleanup test data for doctor appointment
+
+# Add mock server responses for doctor appointment
