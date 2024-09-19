@@ -63,3 +63,5 @@ if __name__ == '__main__':
 # Reorganize test structure
 
 # Cleanup test data
+
+# Add mock server responses
