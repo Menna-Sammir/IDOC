@@ -34,3 +34,5 @@ if __name__ == '__main__':
 # Change appointment ID in doctor appointment test
 
 # Add logging for debugging doctor appointment
+
+# Remove unused imports in doctor appointment test
