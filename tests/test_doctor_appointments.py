@@ -54,3 +54,5 @@ if __name__ == '__main__':
 # Improve exception handling in doctor appointment test
 
 # Add teardown step for cleanup in doctor appointment test
+
+# Enhance setup logic for doctor appointment test
