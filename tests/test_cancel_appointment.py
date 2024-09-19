@@ -19,3 +19,5 @@ if __name__ == '__main__':
 # Fix bug in test case
 
 # Improve error handling
+
+# Add more assertions
