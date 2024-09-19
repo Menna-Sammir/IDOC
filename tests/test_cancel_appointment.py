@@ -51,3 +51,5 @@ if __name__ == '__main__':
 # Adjust test for new schema
 
 # Improve exception handling
+
+# Add teardown step for cleanup
