@@ -32,3 +32,5 @@ if __name__ == '__main__':
 # Fix typo in doctor_id variable
 
 # Change appointment ID in doctor appointment test
+
+# Add logging for debugging doctor appointment
