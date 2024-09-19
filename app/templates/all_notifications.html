@@ -76,16 +76,11 @@
                         >
                           <td class="notification-message">
                             {% if notification.photo %}
-                            <a
-                              href="patient-profile.html"
-                              class="avatar avatar-sm mr-2"
-                            >
                               <img
                                 class="avatar-img rounded-circle"
                                 src="{{ notification.photo }}"
                                 alt="Doctor Photo"
                               />
-                            </a>
                             {% endif %}
                             <span>{{ notification.patient }}</span> has an
                             appointment with Dr. {{ notification.doctor }}
