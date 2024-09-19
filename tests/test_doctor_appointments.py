@@ -70,3 +70,5 @@ if __name__ == '__main__':
 # Handle edge cases in doctor appointment test
 
 # Fix timeout issues in doctor appointment test
+
+# Refactor doctor appointment test setup logic
