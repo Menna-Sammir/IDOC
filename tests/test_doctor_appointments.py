@@ -66,3 +66,5 @@ if __name__ == '__main__':
 # Cleanup test data for doctor appointment
 
 # Add mock server responses for doctor appointment
+
+# Handle edge cases in doctor appointment test
