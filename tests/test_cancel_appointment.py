@@ -31,3 +31,5 @@ if __name__ == '__main__':
 # Fix typo in variable name
 
 # Change appointment ID in test
+
+# Add logging for debugging
