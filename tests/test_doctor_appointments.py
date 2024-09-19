@@ -74,3 +74,5 @@ if __name__ == '__main__':
 # Refactor doctor appointment test setup logic
 
 # Improve readability of doctor appointment test
+
+# Add documentation for doctor appointment tests
