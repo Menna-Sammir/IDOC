@@ -40,3 +40,5 @@ if __name__ == '__main__':
 # Update test client setup for doctor appointment
 
 # Fix HTTP status code check in doctor appointment test
+
+# Enhance test reliability for doctor appointment
