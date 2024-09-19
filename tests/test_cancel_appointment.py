@@ -37,3 +37,5 @@ if __name__ == '__main__':
 # Remove unused imports
 
 # Update test client setup
+
+# Fix HTTP status code check
