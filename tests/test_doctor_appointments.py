@@ -68,3 +68,5 @@ if __name__ == '__main__':
 # Add mock server responses for doctor appointment
 
 # Handle edge cases in doctor appointment test
+
+# Fix timeout issues in doctor appointment test
