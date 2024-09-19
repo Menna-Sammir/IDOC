@@ -15,3 +15,5 @@ class TestCancelAppointment(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# Fix bug in test case
