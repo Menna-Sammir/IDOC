@@ -56,3 +56,5 @@ if __name__ == '__main__':
 # Add teardown step for cleanup in doctor appointment test
 
 # Enhance setup logic for doctor appointment test
+
+# Add more test cases for doctor appointment
