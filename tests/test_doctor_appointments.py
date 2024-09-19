@@ -50,3 +50,5 @@ if __name__ == '__main__':
 # Modify test for new doctor appointment endpoint
 
 # Adjust test for new doctor appointment schema
+
+# Improve exception handling in doctor appointment test
