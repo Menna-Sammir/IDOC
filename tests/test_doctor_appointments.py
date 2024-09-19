@@ -24,3 +24,5 @@ if __name__ == '__main__':
 # Add more assertions for doctor appointment
 
 # Refactor doctor appointment test function
+
+# Improve doctor appointment test coverage
