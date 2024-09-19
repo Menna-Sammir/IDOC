@@ -20,3 +20,5 @@ if __name__ == '__main__':
 # Fix bug in doctor appointment test case
 
 # Improve error handling in doctor appointment test
+
+# Add more assertions for doctor appointment
