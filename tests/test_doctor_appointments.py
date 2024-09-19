@@ -28,3 +28,5 @@ if __name__ == '__main__':
 # Improve doctor appointment test coverage
 
 # Adjust mock data for doctor appointment
+
+# Fix typo in doctor_id variable
