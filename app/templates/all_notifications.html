@@ -76,11 +76,13 @@
                         >
                           <td class="notification-message">
                             {% if notification.photo %}
+                            <p class="avatar avatar-sm mr-2">
+                              {% set base_path = 'static/images/doctors/' %}
                               <img
-                                class="avatar-img rounded-circle"
-                                src="{{ notification.photo }}"
+                                src="{{base_path ~ notification.photo}}"
                                 alt="Doctor Photo"
                               />
+                            </p>
                             {% endif %}
                             <span>{{ notification.patient }}</span> has an
                             appointment with Dr. {{ notification.doctor }}
@@ -124,13 +126,13 @@
                         >
                           <td class="notification-message">
                             {% if notification.photo %}
-                            <a href="#" class="avatar avatar-sm mr-2">
+                            <p class="avatar avatar-sm mr-2">
                               {% set base_path = 'static/images/doctors/' %}
                               <img
                                 src="{{base_path ~ notification.photo}}"
                                 alt="Doctor Photo"
                               />
-                            </a>
+                            </p>
                             {% endif %}
                             <span>{{ notification.patient }}</span> has an
                             appointment with Dr. {{ notification.doctor }}
