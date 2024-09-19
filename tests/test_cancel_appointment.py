@@ -23,3 +23,5 @@ if __name__ == '__main__':
 # Add more assertions
 
 # Refactor test function
+
+# Improve test coverage
