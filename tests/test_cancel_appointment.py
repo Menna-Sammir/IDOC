@@ -33,3 +33,5 @@ if __name__ == '__main__':
 # Change appointment ID in test
 
 # Add logging for debugging
+
+# Remove unused imports
