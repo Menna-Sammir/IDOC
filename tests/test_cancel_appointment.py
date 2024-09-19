@@ -45,3 +45,5 @@ if __name__ == '__main__':
 # Improve performance of test
 
 # Fix flaky test issue
+
+# Modify test for new endpoint
