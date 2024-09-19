@@ -38,3 +38,5 @@ if __name__ == '__main__':
 # Remove unused imports in doctor appointment test
 
 # Update test client setup for doctor appointment
+
+# Fix HTTP status code check in doctor appointment test
