@@ -47,3 +47,5 @@ if __name__ == '__main__':
 # Fix flaky test issue
 
 # Modify test for new endpoint
+
+# Adjust test for new schema
