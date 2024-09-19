@@ -58,3 +58,5 @@ if __name__ == '__main__':
 # Enhance setup logic for doctor appointment test
 
 # Add more test cases for doctor appointment
+
+# Update dependencies for doctor appointment tests
