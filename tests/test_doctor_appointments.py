@@ -16,3 +16,5 @@ class TestDoctorAppointments(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# Fix bug in doctor appointment test case
