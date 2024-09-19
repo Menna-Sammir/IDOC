@@ -52,3 +52,5 @@ if __name__ == '__main__':
 # Adjust test for new doctor appointment schema
 
 # Improve exception handling in doctor appointment test
+
+# Add teardown step for cleanup in doctor appointment test
