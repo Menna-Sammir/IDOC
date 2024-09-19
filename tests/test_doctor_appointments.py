@@ -36,3 +36,5 @@ if __name__ == '__main__':
 # Add logging for debugging doctor appointment
 
 # Remove unused imports in doctor appointment test
+
+# Update test client setup for doctor appointment
