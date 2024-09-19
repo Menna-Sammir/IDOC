@@ -20,25 +20,25 @@
   <div class="dashboard-widget">
     <nav class="dashboard-menu">
       <ul>
-        <li class="active">
+        <li class="{{ 'active' if request.endpoint == 'doctor_dash' else '' }}">
           <a href="{{ url_for('doctor_dash') }}">
             <i class="fas fa-columns"></i>
             <span>{{ translate('Dashboard') }}</span>
           </a>
         </li>
-        <li class="active">
+        <li class="{{ 'active' if request.endpoint == 'patient_list' else '' }}">
           <a href="{{ url_for('patient_list') }}">
             <i class="fas fa-user-injured"></i>
             <span>My Patients</span>
           </a>
         </li>
-        <li>
+        <li class="{{ 'active' if request.endpoint == 'doctor_profile' else '' }}">
           <a href="{{ url_for('doctor_profile') }}">
             <i class="fas fa-user-cog"></i>
             <span>Profile Settings</span>
           </a>
         </li>
-        <li>
+        <li class="{{ 'active' if request.endpoint == 'change_password' else '' }}">
           <a href="{{url_for('change_password')}}">
             <i class="fas fa-lock"></i>
             <span>Change Password</span>

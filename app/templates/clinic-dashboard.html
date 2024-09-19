@@ -216,11 +216,7 @@ block body %}
                               <tr>
                                 <td>
                                   <h2 class="table-avatar">
-                                    <a href="#"
-                                      >{{ translate(patient.name) }}<span
-                                        >{{ translate('Dr.') }} {{ translate(doctor.name) }}</span
-                                      ></a
-                                    >
+                                      {{ translate(patient.users.name) }}<span>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</span>
                                   </h2>
                                 </td>
                                 <td>

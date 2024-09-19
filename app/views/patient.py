@@ -50,13 +50,8 @@ def home():
     form = SearchForm()
     E_form = EmailForm()
 
-    # Get specializations that have doctors associated with them
-    specializations_with_doctors = (
-        db.session.query(Specialization)
-        .join(Doctor, Doctor.specialization_id == Specialization.id)
-        .distinct()
-        .all()
-    )
+    # Get all specializations, regardless of whether they have doctors associated with them
+    all_specializations = db.session.query(Specialization).all()
 
     # Get governorates that have clinics associated with doctors and same specialization
     governorates_with_clinics = (
@@ -67,9 +62,9 @@ def home():
         .all()
     )
 
-    # Set the choices for the specialization dropdown based on available doctors
+    # Set the choices for the specialization dropdown with all specializations
     form.specialization.choices = [('', translate('Select a specialization'))] + [
-        (s.id, translate(s.specialization_name)) for s in specializations_with_doctors
+        (s.id, translate(s.specialization_name)) for s in all_specializations
     ]
 
     # Set the choices for the governorate dropdown based on clinics that have doctors with the selected specialization
@@ -77,7 +72,7 @@ def home():
         (g.id, translate(g.governorate_name)) for g in governorates_with_clinics
     ]
 
-    specialties = specializations_with_doctors
+    specialties = all_specializations
     doctors = Doctor.query.all()
 
     if request.method == 'POST':
@@ -94,6 +89,7 @@ def home():
     return render_template(
         'index.html', form=form, specialties=specialties, doctors=doctors, E_form=E_form
     )
+
 
 
 @app.route('/patient_dashboard', methods=['GET', 'POST'])
@@ -722,28 +718,30 @@ def doctor_appointments():
             is_available = f"{date} {timeslot[0]}" not in booked_timeslots
             available_timeslots.append((timeslot[0], timeslot[1], is_available))
         timeslots_by_date[date] = available_timeslots
+    
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
-        # Print form data to terminal
-        print('Form Data:', request.form)
-        print('Selected Timeslot:', selected_timeslot)
 
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
-        # Extract date and time from selected_timeslot
+
         try:
             date_str, start_time_str = selected_timeslot.split(' ', 1)
-            # Ensure the time is properly formatted
             start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
+
+            # حساب وقت النهاية بناءً على وقت البدء ومدة الكشف
+            end_time = (datetime.combine(datetime.strptime(date_str, '%Y-%m-%d'), start_time) + duration).time()
 
             session['doctor_id'] = doctor_id
             session['date'] = date_str
-            session['start_time'] = start_time_str  # Only send the start time
+            session['start_time'] = start_time_str
+            session['end_time'] = end_time.strftime('%I:%M %p')  # حفظ وقت النهاية
             return redirect(url_for('patient_checkout'))
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
             return redirect(request.url)
+
     return render_template(
         'booking.html',
         form=form,
@@ -754,31 +752,33 @@ def doctor_appointments():
         other_doctors=other_doctors
     )
 
-
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
     try:
         checkout_form = checkoutForm()
         doctor_id = session.get('doctor_id', None)
         date_str = session.get('date', None)
-        date = datetime.strptime(date_str, '%Y-%m-%d')
         start_time = session.get('start_time', None)
+        end_time = session.get('end_time', None)  # استلام وقت النهاية من الجلسة
+
+        date = datetime.strptime(date_str, '%Y-%m-%d')
         start_time = datetime.strptime(start_time, '%I:%M %p').time()
 
         doctor_data = Doctor.query.filter_by(id=doctor_id).first()
+
         if doctor_data:
             clinic_data = doctor_data.clinic
             gov = clinic_data.governorate
+
             if request.method == 'POST':
                 confirm_message = ''
                 user_to_create = None
                 name = ''
                 status = AppStatus.Confirmed
+
                 if checkout_form.validate_on_submit():
                     temp_password = secrets.token_urlsafe(8)
-                    # patient = Patient.query.filter_by(
-                    #     email=checkout_form.email_address.data
-                    # ).first()
+
                     role = Role.query.filter_by(role_name='patient').first().id
                     patient_user = (
                         User.query.filter_by(email=checkout_form.email_address.data)
@@ -786,6 +786,7 @@ def patient_checkout():
                         .filter(UserRole.role_id == role)
                         .first()
                     )
+
                     if patient_user:
                         name = patient_user.name
                         patient_create = Patient.query.filter_by(
@@ -799,7 +800,7 @@ def patient_checkout():
                             _external=True
                         )
                         confirm_message = f"To confirm your appointment please login temporary password is: {temp_password}\n\nUse this link to reset your password:<a href=' {reset_link}'>click Here</a>"
-                        name = f"{checkout_form.firstname.data} { checkout_form.lastname.data}"
+                        name = f"{checkout_form.firstname.data} {checkout_form.lastname.data}"
                         user_to_create = User(
                             name=name,
                             email=checkout_form.email_address.data,
@@ -812,6 +813,7 @@ def patient_checkout():
                         role_to_create = UserRole(role_id=role, user=user_to_create)
                         db.session.add(patient_create)
                         db.session.add(role_to_create)
+
                     appointment_create = Appointment(
                         date=date.strftime('%Y-%m-%d'),
                         time=start_time.strftime('%H:%M:%S'),
@@ -821,1209 +823,81 @@ def patient_checkout():
                         doctor_id=doctor_id,
                         status=status
                     )
+
                     logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
 
-                    message_body = f"""\
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    message_body = f"""
+                    <html>
                         <head>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 body {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     font-family: Arial, sans-serif;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     font-size: 18px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     margin: 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     padding: 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     background-color: #f4f4f4;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 .container {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     width: 80%;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     margin: 20px auto;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     background-color: #fff;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     padding: 20px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     border-radius: 10px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 .header {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     background-color: #007bff;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     padding: 10px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     text-align: center;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     border-radius: 10px 10px 0 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 .logo {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     text-align: center;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     margin-bottom: 20px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 .content {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     padding: 20px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 .footer {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     text-align: left;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     margin-top: 20px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     color: #777;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 a {{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     color: red;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </head>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <div class="container">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 <div class="header">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <h2>Appointment Confirmation</h2>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    <img src="cid:logo_image" alt="Your Logo" width="200">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                <img src="cid:logo_image" alt="Your Logo" width="200">
                                 <div class="content">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>Dear {name},</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <h3>Appointment Details:</h3>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <ul>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                         <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} for {doctor_data.duration} Min </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                        <li><strong>Time:</strong> from {start_time.strftime("%H:%M:%S")} to {end_time} </li>
                                         <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                         <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     </ul>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    <a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    {confirm_message}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    </a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>We look forward to seeing you and providing the care you need.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 <div class="footer">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>Best regards,</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>{clinic_data.users.name}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <p>{clinic_data.phone}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </body>
+                    </html>
+                    """
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            """
                     message_create = Message(
                         appointment=appointment_create, status=False
                     )
@@ -2049,7 +923,7 @@ def patient_checkout():
                     server.send_message(msg)
                     server.quit()
                     message_create.status = True
-
+                    
                     notification_create = Notification(
                         clinic_id=clinic_data.id,
                         date=date.strftime('%Y-%m-%d'),
@@ -2060,10 +934,9 @@ def patient_checkout():
                     )
 
                     db.session.add(appointment_create)
-                    db.session.add(message_create)
                     db.session.add(notification_create)
                     db.session.commit()
-                    print('dddddddddddddddddddddddddddddddddddd', clinic_data.id)
+
                     socketio.emit(
                         'appointment_notification',
                         {
@@ -2079,28 +952,26 @@ def patient_checkout():
                     session['doctor'] = doctor_data.users.name
                     session['date'] = date.strftime('%d %b %Y')
                     session['start_time'] = start_time.strftime('%H:%M:%S')
+                    session['end_time'] = end_time  
                     session['clinic_id'] = clinic_data.id
-                    print(
-                        'clinic_iddddddddddddddddddddddddddddddddddddd', clinic_data.id
-                    )
 
                     return redirect(url_for('checkout_success'))
+
                 if checkout_form.errors != {}:
                     for err_msg in checkout_form.errors.values():
                         flash(
                             translate(
-                                'there was an error with creating a user: {err_msg}'.format(
-                                    err_msg=err_msg
-                                )
+                                f'there was an error with creating a user: {err_msg}'
                             ),
                             category='danger'
                         )
         else:
-            flash(f'no doctor data found', category='danger')
+            flash('No doctor data found', 'danger')
+
     except Exception as e:
         db.session.rollback()
-        flash(f'something wrong', category='danger')
-        print('fffffffffffffff', str(e))
+        flash(f'Something went wrong: {str(e)}', 'danger')
+
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -2108,6 +979,7 @@ def patient_checkout():
         gov=gov,
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
+        end_time=end_time,  
         form=checkout_form
     )
 

@@ -2,22 +2,28 @@
 <html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8" />
+    <!-- Page Title -->
     <title>{{ translate('Login Page') }}</title>
+    <!-- Ensures proper scaling on mobile devices -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
     />
     <!-- Favicons -->
     <link href="assets/img/favicon.png" rel="icon" />
+    <!-- Include base CSS -->
     {% block alert %} {% include 'base-css.html' %} {% endblock %}
   </head>
   <body class="account-page">
+    <!-- Include alert notifications -->
     {% block head %} {% include 'base-alert.html' %} {% endblock %}
+    
     <!-- Main Wrapper -->
     <div class="loader">
+      <!-- Loading animation section -->
       {% block loading %} {% include 'base-loading.html' %} {% endblock %}
-
     </div>
+    
     <div class="main-wrapper">
       <!-- Page Content -->
       <div class="content">
@@ -27,6 +33,7 @@
               <!-- Login Tab Content -->
               <div class="account-content">
                 <div class="row align-items-center justify-content-center">
+                  <!-- Left side of login page, displaying an image -->
                   <div class="col-md-7 col-lg-6 login-left">
                     <img
                       src="static/img/login-banner.png"
@@ -34,24 +41,28 @@
                       alt="IDOC Login"
                     />
                   </div>
+                  
+                  <!-- Right side of login page with form -->
                   <div class="col-md-12 col-lg-6 login-right">
                     <div class="login-header">
                       <h3>{{ translate('Login') }} <span>IDOC</span></h3>
                     </div>
+                    
+                    <!-- Login Form -->
                     <form method="POST">
-						          {{ form.hidden_tag() }}
+                      {{ form.hidden_tag() }}
+                      <!-- Email Address Input -->
                       <div class="form-group form-focus">
                         {{ form.email_address.label(class="focus-label") }}
-                        {{
-                        form.email_address(class="form-control floating" )}}
+                        {{ form.email_address(class="form-control floating") }}
                       </div>
+                      <!-- Password Input -->
                       <div class="form-group form-focus">
-                        {{ form.password.label(class="focus-label") }} {{
-                        form.password(class="form-control floating")}}
+                        {{ form.password.label(class="focus-label") }}
+                        {{ form.password(class="form-control floating") }}
                       </div>
-                      <!-- <div class="text-right">
-												<a class="forgot-link" href="forgot-password.html">Forgot Password ?</a>
-											</div> -->
+                      
+                      <!-- Signup Link -->
                       <div class="text-right">
                         <a
                           class="forgot-link"
@@ -59,9 +70,11 @@
                           >{{ translate('Don’t have an account?') }}</a
                         >
                       </div>
-                      {{ form.submit(class="btn btn-primary btn-block btn-lg
-                      login-btn") }}
+                      
+                      <!-- Submit Button -->
+                      {{ form.submit(class="btn btn-primary btn-block btn-lg login-btn") }}
                     </form>
+                    <!-- End of Login Form -->
                   </div>
                 </div>
               </div>
@@ -72,10 +85,12 @@
       </div>
       <!-- /Page Content -->
 
+      <!-- Include footer -->
       {% block footer %} {% include 'base-footer.html' %} {% endblock %}
     </div>
     <!-- /Main Wrapper -->
 
+    <!-- Include JavaScript files -->
     {% block js %} {% include 'base-js.html' %} {% endblock %}
   </body>
 </html>

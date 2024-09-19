@@ -365,39 +365,55 @@
               data-aos="fade-right"
               data-aos-delay="100"
             >
-              <div class="card-header p-0 border-0">
-                <form
+            <div class="card-header p-0 border-0">
+              <form
                   method="POST"
                   action="{{ url_for('home') }}"
                   class="row m-0 justify-content-md-between justify-content-sm-center overflow-hidden align-items-center rounded-sm"
-                >
-                  {{ form.hidden_tag() }} {{ form.csrf_token }}
-                  <p
-                    class="col-md-3 col-sm-8 p-0 pl-1 my-4 d-flex border-right"
-                  >
-                    {{ form.specialization(class="doctor-select2 floating w-75
-                    border-0 bg-transparent") }}
+              >
+                  {{ form.hidden_tag() }} 
+                  {{ form.csrf_token }}
+                  
+                  <!-- Specialization dropdown (Only those linked to doctors) -->
+                  <p class="col-md-3 col-sm-8 p-0 pl-1 my-4 d-flex border-right">
+                      <select 
+                          name="specialization" 
+                          class="doctor-select2 floating w-75 border-0 bg-transparent"
+                      >
+                          <option value="">{{ translate('Select a specialization') }}</option>
+                          {% for specialization in specialties %}
+                              {% if specialization.doctors|length > 0 %}
+                                  <option value="{{ specialization.id }}">
+                                      {{ translate(specialization.specialization_name) }}
+                                  </option>
+                              {% endif %}
+                          {% endfor %}
+                      </select>
                   </p>
+          
+                  <!-- Governorate dropdown -->
                   <p class="col-md-3 col-sm-8 p-0 my-4 d-flex border-right">
-                    {{ form.governorate (class="location-select2 floating w-75
-                    border-0 bg-transparent") }}
+                      {{ form.governorate (class="location-select2 floating w-75 border-0 bg-transparent") }}
                   </p>
-                  <p
-                    class="col-md-4 col-sm-8 p-0 my-4 form-focus form-group"
-                    placeholder="Doctor Name "
-                  >
-                    {{ form.doctor_name.label(class="focus-label") }} {{
-                    form.doctor_name( class="form-control border-0 p-1
-                    floating")}}
+          
+                  <!-- Doctor Name -->
+                  <p class="col-md-4 col-sm-8 p-0 my-4 form-focus form-group" placeholder="Doctor Name">
+                      {{ form.doctor_name.label(class="focus-label") }} 
+                      {{ form.doctor_name( class="form-control border-0 p-1 floating") }}
                   </p>
+          
                   <div class="col-md-1"></div>
+          
+                  <!-- Submit button -->
                   <p class="col-md-1 col-sm-4 mt-1 mb-1 p-0 pr-4 text-right">
-                    <button type="submit" class="btn btn-info search-btn">
-                      <i class="fas fa-search"></i> {{ form.submit.label.text}}
-                    </button>
+                      <button type="submit" class="btn btn-info search-btn">
+                          <i class="fas fa-search"></i> {{ form.submit.label.text }}
+                      </button>
                   </p>
-                </form>
-              </div>
+              </form>
+          </div>
+          
+          
             </div>
           </div>
         </div>
@@ -526,19 +542,17 @@
                 <div class="card">
                   <div class="profile-widget card-body">
                     <div class="doc-img">
-                      <a href="#">
                         {% set base_path = 'static/images/doctors/' %}
                         <img
                           class="img-fluid"
                           alt="User Image"
-                          src="{{base_path ~ doctor.photo}}"
+                          src="{{base_path ~ doctor.users.photo}}"
                         />
-                      </a>
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
                         <a href="#"
-                          >{{ translate('Dr.') }}{{ translate(doctor.name) }}</a
+                          >{{ translate('Dr.') }}{{ translate(doctor.users.name) }}</a
                         >
                         <i class="fas fa-check-circle verified"></i>
                       </h3>
