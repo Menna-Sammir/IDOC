@@ -108,3 +108,5 @@ if __name__ == '__main__':
 # Enhance logging for better debugging in upload report test
 
 # Add mock user login functionality in upload report test
+
+# Improve test performance for large file uploads
