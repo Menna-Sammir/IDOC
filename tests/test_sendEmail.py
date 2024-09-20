@@ -33,3 +33,5 @@ if __name__ == '__main__':
 # Adjust mock data for email sending test
 
 # Fix typo in email address variable
+
+# Change response content check in email sending test
