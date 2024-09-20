@@ -98,3 +98,5 @@ if __name__ == '__main__':
 # Refactor login handling in upload report test
 
 # Improve user session handling in upload report test
+
+# Enhance file type validation in upload report test
