@@ -32,3 +32,5 @@ if __name__ == '__main__':
 # Add logging for debugging home route
 
 # Remove unused imports in home route test
+
+# Update test client setup for home route
