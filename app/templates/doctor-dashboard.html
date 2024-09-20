@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
-{% endblock %} {% block body %}
+{% extends 'base.html' %} {% block title %} {{ translate('Dashboard') }} {{
+translate('Doctor') }} {% endblock %} {% block body %}
 
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -154,15 +154,20 @@
                                   {%endif%}
                                   <h2 class="table-avatar">
                                     <div class="avatar avatar-sm mr-2">
-                                      {% set base_path = 'static/images/patients/' %}
-                                      <img class="avatar-img rounded-circle" src="{{ base_path ~ appointment.patient.users.photo }}" alt="User Image"/>
+                                      {% set base_path =
+                                      'static/images/patients/' %}
+                                      <img
+                                        class="avatar-img rounded-circle"
+                                        src="{{ base_path ~ appointment.patient.users.photo }}"
+                                        alt="User Image"
+                                      />
                                     </div>
                                     <p class="mt-2">
                                       {{ appointment.patient.users.name }}
-                                      <span>{{ appointment.appointment_id }}</span>
+                                      <span
+                                        >{{ appointment.appointment_id }}</span
+                                      >
                                     </p>
-                                      
-                                    
                                   </h2>
                                 </td>
                                 <td>

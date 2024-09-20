@@ -68,3 +68,5 @@ class EditClinicForm(FlaskForm):
         self.phone.label.text = translate('phone number')
         self.gov_id.label.text = translate('governorate')
         self.submit.label.text = translate('Add Clinic')
+
+

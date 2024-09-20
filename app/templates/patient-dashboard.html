@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
-{% block title %} Doctor {{ translate('Dashboard') }} {% endblock %}
-
-{% block body %}
+{% extends 'base.html' %} {% block title %}{{ translate('Dashboard') }} {{
+translate('Patient') }} {% endblock %} {% block body %}
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
   <div class="container-fluid">
@@ -10,11 +8,15 @@
         <!-- Breadcrumb navigation -->
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            <li class="breadcrumb-item">
+              <a href="#">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Dashboard') }}
+            </li>
           </ol>
         </nav>
-        <h2 class="breadcrumb-title">Dashboard</h2>
+        <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
       </div>
     </div>
   </div>
@@ -25,19 +27,16 @@
 <div class="content">
   <div class="container-fluid">
     <div class="row">
-      
       <!-- Profile Sidebar -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
         {% block sidebar %}
         <!-- Include the patient sidebar template -->
-        {% include 'base-patient-side.html' %}
-        {% endblock %}
+        {% include 'base-patient-side.html' %} {% endblock %}
       </div>
       <!-- /Profile Sidebar -->
 
       <!-- Main Content Area -->
       <div class="col-md-7 col-lg-8 col-xl-9">
-        
         <!-- Calendar Section -->
         <div class="row justify-content-center">
           <div class="col-md-5 card card-calender">
@@ -58,13 +57,21 @@
           </div>
 
           <!-- Welcome Card Section -->
-          <div class="col-md-7 card p-4 patient-card" style="padding-bottom: 0 !important">
+          <div
+            class="col-md-7 card p-4 patient-card"
+            style="padding-bottom: 0 !important"
+          >
             <div class="d-flex justify-content-between">
               <div>
                 <!-- Greet the current user -->
-                <h3>Hello, {{ current_user.name.split()[0] }}!</h3>
-                <p>Have a nice day</p>
-                <span>Don't forget to keep your info updated</span>
+                <h3>
+                  {{ translate('Hello,') }} {{ current_user.name.split()[0] }}!
+                </h3>
+                <p>{{ translate('Have a nice day') }}</p>
+                <span
+                  >{{ translate("Don't forget to keep your info updated")
+                  }}</span
+                >
               </div>
               <img src="../static/img/chief.png" style="width: 150px" />
             </div>
@@ -73,56 +80,98 @@
 
         <!-- Appointment and Information Section -->
         <div class="row">
-          
           <!-- Display Appointment Information if Available -->
           {% if appointment %}
-          <div class="col-md-4 justify-content-center card py-4 p-2 m-2 text-center" style="border: 1px solid #056ad77a; box-shadow: #056ad75e 0px 3px 8px;"  data-toggle="tooltip" data-placement="right" title="{{ appointment.date }} {{ appointment.time_range }}">
+          <div
+            class="col-md-4 justify-content-center card py-4 p-2 m-2 text-center"
+            style="
+              border: 1px solid #056ad77a;
+              box-shadow: #056ad75e 0px 3px 8px;
+            "
+            data-toggle="tooltip"
+            data-placement="right"
+            title="{{ appointment.date }} {{ appointment.time_range }}"
+          >
             <div>
               <p class="mb-1">Dr. {{ appointment.doctor_name }}</p>
-              <div class="text-muted">{{ appointment.doctor_specialization }}</div>
+              <div class="text-muted">
+                {{ appointment.doctor_specialization }}
+              </div>
               <span class="text-secondary">{{ appointment.date }}</span>
-              <p class="mb-2"><i class="far fa-clock"></i> {{ appointment.time_range }} - {{ appointment.duration }}</p>
+              <p class="mb-2">
+                <i class="far fa-clock"></i> {{ appointment.time_range }} - {{
+                appointment.duration }}
+              </p>
             </div>
           </div>
           {% endif %}
-          
+
           <!-- Display Blood Type -->
-          <div class="col-md-3 align-items-center card py-4 p-2 m-2 text-center d-flex" style="border: 1px solid #056ad77a; box-shadow: #056ad75e 0px 3px 8px;" >
+          <div
+            class="col-md-3 align-items-center card py-4 p-2 m-2 text-center d-flex"
+            style="
+              border: 1px solid #056ad77a;
+              box-shadow: #056ad75e 0px 3px 8px;
+            "
+          >
             <span class="fa-stack fa-2x">
-              <i class="fas fa-tint fa-stack-2x" style="color: #1f80f991;"></i>
-              <i class="fas fa-tint fa-stack-1x fa-inverse" style="color:#1f80f9"></i>
+              <i class="fas fa-tint fa-stack-2x" style="color: #1f80f991"></i>
+              <i
+                class="fas fa-tint fa-stack-1x fa-inverse"
+                style="color: #1f80f9"
+              ></i>
             </span>
             <div>
-              <h4>Blood Type</h4>
-              <span class="text-center ">{{ patient.blood_group.value }}</span>
+              <h4>{{ translate('Blood Type') }}</h4>
+              <span class="text-center">{{ patient.blood_group.value }}</span>
             </div>
           </div>
 
           <!-- Patient Advice Section -->
-          <div class="col-md-4 align-items-center card p-4 m-2 text-center ques-card">
-            <p class="text-left" style="font-weight: 400;">{{patient.get_advice()}}</p>
+          <div
+            class="col-md-4 align-items-center card p-4 m-2 text-center ques-card"
+          >
+            <p class="text-left" style="font-weight: 400">
+              {{patient.get_advice()}}
+            </p>
           </div>
         </div>
 
         <!-- Treatment and Report Section -->
-        <div class="card col-md-12 row py-3 mt-4" style="flex-direction: row!important">
-          
+        <div
+          class="card col-md-12 row py-3 mt-4"
+          style="flex-direction: row !important"
+        >
           <!-- Treatment Section -->
           <div class="col-md-6 pl-2">
             {% if prescriptions %}
             <div class="row flex-wrap align-items-center">
-              <div class="col-md-12 card-header border-0 pb-2"><h4>Treatment</h4></div>
-              
+              <div class="col-md-12 card-header border-0 pb-2">
+                <h4>{{ translate('Treatment') }}</h4>
+              </div>
+
               <!-- Loop through prescriptions and display them -->
               {% for prescription in prescriptions %}
-              <div class="col-md-10 shadow-sm mt-1 p-2 pl-4 treatment-card ml-4">
+              <div
+                class="col-md-10 shadow-sm mt-1 p-2 pl-4 treatment-card ml-4"
+              >
                 <div class="d-flex justify-content-start align-items-center">
-                  <div class="d-inline-block text-center mr-2 mb-2 px-2" style="background-color: rgb(187, 233, 248); color: rgb(4, 179, 238); border-radius: 50%;">
+                  <div
+                    class="d-inline-block text-center mr-2 mb-2 px-2"
+                    style="
+                      background-color: rgb(187, 233, 248);
+                      color: rgb(4, 179, 238);
+                      border-radius: 50%;
+                    "
+                  >
                     <i class="fas fa-pills"></i>
                   </div>
                   <div>
                     <h5 class="text-muted mb-0">{{ prescription.name }}</h5>
-                    <p class="text-muted mb-0">{{ prescription.quantity }} :{{ prescription.times_of_day | join(', ') }}</p>
+                    <p class="text-muted mb-0">
+                      {{ prescription.quantity }} :{{ prescription.times_of_day
+                      | join(', ') }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -130,8 +179,13 @@
 
               <!-- Show more button if there are more than 4 prescriptions -->
               {% if show_more_button %}
-              <div class="col-md-12 d-flex flex-wrap justify-content-center align-items-center">
-                <a href="{{ url_for('appointment_History') }}" class="icon-container">
+              <div
+                class="col-md-12 d-flex flex-wrap justify-content-center align-items-center"
+              >
+                <a
+                  href="{{ url_for('appointment_History') }}"
+                  class="icon-container"
+                >
                   <i class="fas fa-angle-double-down"></i>
                 </a>
               </div>
@@ -143,9 +197,19 @@
           <!-- Patient Reports Section -->
           <div class="col-md-6 lab-card">
             <div class="card-header border-0 d-flex justify-content-between">
-              <h4>Patient Reports</h4>
+              <h4>{{ translate('Patient Reports') }}</h4>
               <!-- Upload button -->
-              <button type="button" class="bg-none py-2" style="border: 1px solid lightgrey; color: grey; border-radius: 10px;" data-toggle="modal" data-target="#exampleModal">
+              <button
+                type="button"
+                class="bg-none py-2"
+                style="
+                  border: 1px solid lightgrey;
+                  color: grey;
+                  border-radius: 10px;
+                "
+                data-toggle="modal"
+                data-target="#exampleModal"
+              >
                 <i class="fas fa-cloud-upload-alt"></i>
               </button>
             </div>
@@ -153,54 +217,96 @@
             <div class="card-body row">
               <!-- Lab Reports -->
               <div class="col-md-6">
-                <h5>Lab</h5>
-                <div class="d-flex flex-wrap justify-content-between align-items-center">
-                  {% if patient_history %}
-                  {% set counter = 1 %}
-                  {% for history in patient_history %}
-                  {% if history.file_link and history.type == "Lab" %}
+                <h5>{{ translate('Lab') }}</h5>
+                <div
+                  class="d-flex flex-wrap justify-content-between align-items-center"
+                >
+                  {% if patient_history %} {% set counter = 1 %} {% for history
+                  in patient_history %} {% if history.file_link and history.type
+                  == "Lab" %}
                   <div>
-                    <div class="d-inline-block text-center mr-2 mb-2 px-2" style="background-color: rgb(187, 233, 248); color: rgb(4, 179, 238); border-radius: 10px;">
+                    <div
+                      class="d-inline-block text-center mr-2 mb-2 px-2"
+                      style="
+                        background-color: rgb(187, 233, 248);
+                        color: rgb(4, 179, 238);
+                        border-radius: 10px;
+                      "
+                    >
                       <i class="fas fa-vial"></i>
                     </div>
-                    <a href="{{ history.file_link }}" download class="text-decoration-none text-black" style="font-size: 16px">
+                    <a
+                      href="{{ history.file_link }}"
+                      download
+                      class="text-decoration-none text-black"
+                      style="font-size: 16px"
+                    >
                       Lab-{{ counter }}
                     </a>
                   </div>
-                  <div class="bg-none" style="color: lightblue" data-toggle="tooltip" data-placement="right" title="{{ history.added_by }}">
+                  <div
+                    class="bg-none"
+                    style="color: lightblue"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="{{ history.added_by }}"
+                  >
                     <i class="fas fa-info" style="font-size: 14px"></i>
                   </div>
-                  {% endif %}
-                  {% endfor %}
-                  {% else %}
-                  <p class="w-100 h-100 d-flex justify-content-center align-items-center">No file attached.</p>
+                  {% endif %} {% endfor %} {% else %}
+                  <p
+                    class="w-100 h-100 d-flex justify-content-center align-items-center"
+                  >
+                    {{ translate('No file attached.') }}
+                  </p>
                   {% endif %}
                 </div>
               </div>
 
               <!-- X-ray Reports -->
               <div class="col-md-6" style="border-left: 1px dashed lightgray">
-                <h5>X-rayes</h5>
-                <div class="d-flex flex-wrap justify-content-between align-items-center">
-                  {% if patient_history %}
-                  {% set counter = 1 %}
-                  {% for history in patient_history %}
-                  {% if history.file_link and history.type == "X_ray" %}
+                <h5>{{ translate('X-rayes') }}</h5>
+                <div
+                  class="d-flex flex-wrap justify-content-between align-items-center"
+                >
+                  {% if patient_history %} {% set counter = 1 %} {% for history
+                  in patient_history %} {% if history.file_link and history.type
+                  == "X_ray" %}
                   <div>
-                    <div class="d-inline-block text-center mr-2 mb-2 px-2" style="background-color: rgb(187, 233, 248); color: rgb(4, 179, 238); border-radius: 10px;">
+                    <div
+                      class="d-inline-block text-center mr-2 mb-2 px-2"
+                      style="
+                        background-color: rgb(187, 233, 248);
+                        color: rgb(4, 179, 238);
+                        border-radius: 10px;
+                      "
+                    >
                       <i class="fas fa-x-ray"></i>
                     </div>
-                    <a href="{{ history.file_link }}" download class="text-decoration-none text-black" style="font-size: 16px">
+                    <a
+                      href="{{ history.file_link }}"
+                      download
+                      class="text-decoration-none text-black"
+                      style="font-size: 16px"
+                    >
                       X-RAY-{{ counter }}
                     </a>
                   </div>
-                  <div class="bg-none" style="color: lightblue" data-toggle="tooltip" data-placement="right" title="{{ history.added_by }}">
+                  <div
+                    class="bg-none"
+                    style="color: lightblue"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="{{ history.added_by }}"
+                  >
                     <i class="fas fa-info" style="font-size: 14px"></i>
                   </div>
-                  {% endif %}
-                  {% endfor %}
-                  {% else %}
-                  <p class="w-100 h-100 d-flex justify-content-center align-items-center">No file attached.</p>
+                  {% endif %} {% endfor %} {% else %}
+                  <p
+                    class="w-100 h-100 d-flex justify-content-center align-items-center"
+                  >
+                    {{ translate('No file attached.') }}
+                  </p>
                   {% endif %}
                 </div>
               </div>
@@ -213,9 +319,16 @@
           <div class="card">
             <div class="card-body pt-0">
               <div class="user-tabs">
-                <ul class="nav nav-tabs nav-tabs-bottom nav-justified flex-wrap">
+                <ul
+                  class="nav nav-tabs nav-tabs-bottom nav-justified flex-wrap"
+                >
                   <li class="nav-item">
-                    <a class="nav-link active" href="#pat_appointments" data-toggle="tab">Next Appointments</a>
+                    <a
+                      class="nav-link active"
+                      href="#pat_appointments"
+                      data-toggle="tab"
+                      >{{ translate('Next Appointments') }}</a
+                    >
                   </li>
                 </ul>
               </div>
@@ -229,52 +342,90 @@
                         <table class="table table-hover table-center mb-0">
                           <thead>
                             <tr>
-                              <th>Doctor</th>
-                              <th>Appt Date</th>
-                              <th>Amount</th>
-                              <th>Status</th>
-                              <th class="text-center">Cancelled</th>
+                              <th>{{ translate('Doctor') }}</th>
+                              <th>{{ translate('Appt Date') }}</th>
+                              <th>{{ translate('Amount') }}</th>
+                              <th>{{ translate('Status') }}</th>
+                              <th class="text-center">
+                                {{ translate('Cancelled') }}
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
-                            {% set confirmed_appointments = [] %}
-                            {% for appointment in appointments %}
-                            {% if appointment.status.name == 'Confirmed' and not appointment.seen %}
-                            {% set confirmed_appointments = confirmed_appointments + [appointment] %}
+                            {% set confirmed_appointments = [] %} {% for
+                            appointment in appointments %} {% if
+                            appointment.status.name == 'Confirmed' and not
+                            appointment.seen %} {% set confirmed_appointments =
+                            confirmed_appointments + [appointment] %}
                             <tr>
                               <td>
                                 <h2 class="table-avatar">
                                   <div class="avatar avatar-sm mr-2">
-                                    {% set base_path = 'static/images/doctors/' %}
-                                    <img class="avatar-img rounded-circle" src="{{ base_path ~ appointment.doctor.users.photo }}" alt="User Image"/>
+                                    {% set base_path = 'static/images/doctors/'
+                                    %}
+                                    <img
+                                      class="avatar-img rounded-circle"
+                                      src="{{ base_path ~ appointment.doctor.users.photo }}"
+                                      alt="User Image"
+                                    />
                                   </div>
                                   <p class="mt-2">
-                                    {{ appointment.doctor.users.name }}<span>{{ appointment.doctor.specialization.specialization_name }}</span>
+                                    {{ appointment.doctor.users.name }}<span
+                                      >{{
+                                      appointment.doctor.specialization.specialization_name
+                                      }}</span
+                                    >
                                   </p>
                                 </h2>
                               </td>
-                              <td>{{ appointment.date }}<span class="d-block text-info">{{ appointment.time_range }}</span></td>
+                              <td>
+                                {{ appointment.date }}<span
+                                  class="d-block text-info"
+                                  >{{ appointment.time_range }}</span
+                                >
+                              </td>
                               <td>${{ appointment.doctor.price }}</td>
                               <td>
-                                <span class="badge badge-pill bg-success-light position-relative d-inline">{{ appointment.status.name }}</span>
+                                <span
+                                  class="badge badge-pill bg-success-light position-relative d-inline"
+                                  >{{ appointment.status.name }}</span
+                                >
                               </td>
                               <td class="text-right">
-                                <form action="{{ url_for('cancel_appointment') }}" method="post">
+                                <form
+                                  action="{{ url_for('cancel_appointment') }}"
+                                  method="post"
+                                >
                                   <div class="table-action">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}" />
-                                    <button type="submit" class="btn btn-sm bg-danger-light"> <i class="far fa-trash-alt mr-2"> </i>Cancel</button>
+                                    <input
+                                      type="hidden"
+                                      name="csrf_token"
+                                      value="{{ csrf_token() }}"
+                                    />
+                                    <input
+                                      type="hidden"
+                                      name="appointment_id"
+                                      value="{{ appointment.id }}"
+                                    />
+                                    <button
+                                      type="submit"
+                                      class="btn btn-sm bg-danger-light"
+                                    >
+                                      <i class="far fa-trash-alt mr-2"> </i>{{
+                                      translate('Cancel') }}
+                                    </button>
                                   </div>
                                 </form>
                               </td>
                             </tr>
-                            {% endif %}
-                            {% endfor %}
+                            {% endif %} {% endfor %}
 
                             <!-- No appointments message -->
                             {% if confirmed_appointments|length == 1 %}
                             <tr>
-                              <td colspan="5" class="text-center">No upcoming appointments.</td>
+                              <td colspan="5" class="text-center">
+                                {{ translate('No upcoming appointments.') }}
+                              </td>
                             </tr>
                             {% endif %}
                           </tbody>
@@ -288,19 +439,32 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </div>
 
 <!-- Modal for Uploading Reports -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Attachment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{ translate('Add Attachment') }}
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -316,8 +480,16 @@
             {{ form.type(class="form-control") }}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              {{ translate('Close') }}
+            </button>
+            <button type="submit" class="btn btn-primary">
+              {{ translate('Submit') }}
+            </button>
           </div>
         </form>
       </div>
