@@ -54,3 +54,5 @@ if __name__ == '__main__':
 # Enhance setup logic for home route test
 
 # Add more test cases for home route
+
+# Update dependencies for home route tests
