@@ -54,3 +54,5 @@ if __name__ == '__main__':
 # Improve performance of upload report test
 
 # Fix flaky upload report test issue
+
+# Modify test for new upload report endpoint
