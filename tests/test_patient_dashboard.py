@@ -77,3 +77,5 @@ if __name__ == '__main__':
 # Adjust mock data for patient dashboard test
 
 # Fix typo in patient dashboard test
+
+# Change response content check in patient dashboard test
