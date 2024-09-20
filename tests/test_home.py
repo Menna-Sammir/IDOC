@@ -60,3 +60,5 @@ if __name__ == '__main__':
 # Reorganize home route test structure
 
 # Cleanup test data for home route
+
+# Add mock server responses for home route
