@@ -105,11 +105,12 @@
                                 No Follow-Up 
                               {% endif %}
                             </td>
-
+                            {% if current_user.patient %}
                             <td>
                               <!-- Appointment Status with dynamic badge color -->
                               <span class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline">{{appointment.status.name}}</span>
                             </td>
+                            {% endif %}
 
                             <!-- Dropdown for doctors to change appointment status -->
                             {% if current_user.doctor %}
