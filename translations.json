@@ -364,6 +364,11 @@
     "File Type": "File Type",
     "Diagnosis": "Diagnosis",
     "Attachments": "Attachments",
+    "Morning": "Morning",
+    "Afternoon": "Afternoon",
+    "Evening": "Evening",
+    "Night": "Night",
+
     "Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.": "Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.",
     "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.": "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.",
     "Ensure you get 7-9 hours of sleep every night to help your body heal and function properly.": "Ensure you get 7-9 hours of sleep every night to help your body heal and function properly.",
@@ -738,6 +743,10 @@
     "File Type": "نوع الملف",
     "Attachments": "المرفقات",
     "Diagnosis": "التشخيص",
+    "Morning": "الصباح",
+    "Afternoon": "الظهيرة",
+    "Evening": "المساء",
+    "Night": "الليل",
 
     "Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.": "اشرب ما لا يقل عن 8 أكواب من الماء يوميًا للبقاء مرطبًا. يساعد الترطيب السليم في الشفاء والصحة العامة.",
     "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.": "تناول الأدوية الخاصة بك كما يصفها لك الطبيب. ضع تذكيرات للتأكد من عدم تفويت جرعة.",
