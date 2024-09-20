@@ -99,3 +99,5 @@ if __name__ == '__main__':
 # Adjust test for new patient dashboard schema
 
 # Improve exception handling in patient dashboard test
+
+# Add teardown step for cleanup in patient dashboard test
