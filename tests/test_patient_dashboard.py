@@ -69,3 +69,5 @@ if __name__ == '__main__':
 # Improve patient dashboard error handling
 
 # Add more assertions for patient dashboard
+
+# Refactor patient dashboard test function
