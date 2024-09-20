@@ -79,3 +79,5 @@ if __name__ == '__main__':
 # Fix typo in patient dashboard test
 
 # Change response content check in patient dashboard test
+
+# Add logging for debugging patient dashboard
