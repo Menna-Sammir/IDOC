@@ -111,3 +111,5 @@ if __name__ == '__main__':
 # Reorganize patient dashboard test structure
 
 # Cleanup test data for patient dashboard
+
+# Add mock server responses for patient dashboard
