@@ -67,3 +67,5 @@ if __name__ == '__main__':
 # Reorganize email sending test structure
 
 # Cleanup test data for email sending
+
+# Add mock server responses for email sending
