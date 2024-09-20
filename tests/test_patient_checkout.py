@@ -46,3 +46,5 @@ if __name__ == '__main__':
 # Fix flaky patient checkout test issue
 
 # Modify test for new patient checkout endpoint
+
+# Adjust test for new patient checkout schema
