@@ -26,3 +26,5 @@ if __name__ == '__main__':
 # Adjust mock data for home route test
 
 # Fix typo in specialization variable
+
+# Change response content check in home route test
