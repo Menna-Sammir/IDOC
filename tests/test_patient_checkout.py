@@ -24,3 +24,5 @@ if __name__ == '__main__':
 # Refactor patient checkout test function
 
 # Improve test coverage for patient checkout
+
+# Adjust mock data for patient checkout test
