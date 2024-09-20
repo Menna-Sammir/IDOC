@@ -39,3 +39,5 @@ if __name__ == '__main__':
 # Add logging for debugging email sending
 
 # Remove unused imports in email sending test
+
+# Update test client setup for email sending
