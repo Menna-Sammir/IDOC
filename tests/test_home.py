@@ -28,3 +28,5 @@ if __name__ == '__main__':
 # Fix typo in specialization variable
 
 # Change response content check in home route test
+
+# Add logging for debugging home route
