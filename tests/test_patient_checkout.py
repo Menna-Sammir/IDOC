@@ -20,3 +20,5 @@ if __name__ == '__main__':
 # Improve patient checkout error handling
 
 # Add more assertions for patient checkout
+
+# Refactor patient checkout test function
