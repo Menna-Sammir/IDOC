@@ -34,3 +34,5 @@ if __name__ == '__main__':
 # Add logging for debugging patient checkout
 
 # Remove unused imports in patient checkout test
+
+# Update test client setup for patient checkout
