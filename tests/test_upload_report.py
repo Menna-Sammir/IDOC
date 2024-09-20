@@ -44,3 +44,5 @@ if __name__ == '__main__':
 # Add logging for debugging upload report
 
 # Remove unused imports in upload report test
+
+# Update test client setup for upload report
