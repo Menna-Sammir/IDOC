@@ -55,3 +55,5 @@ if __name__ == '__main__':
 # Adjust test for new email sending schema
 
 # Improve exception handling in email sending test
+
+# Add teardown step for cleanup in email sending test
