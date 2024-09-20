@@ -18,3 +18,5 @@ if __name__ == '__main__':
 # Fix patient checkout route test issue
 
 # Improve patient checkout error handling
+
+# Add more assertions for patient checkout
