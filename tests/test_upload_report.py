@@ -40,3 +40,5 @@ if __name__ == '__main__':
 # Fix typo in upload report variables
 
 # Change response content check in upload report test
+
+# Add logging for debugging upload report
