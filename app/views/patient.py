@@ -886,6 +886,7 @@ def patient_checkout():
                                     <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
                                     <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
                                     <p>We look forward to seeing you and providing the care you need.</p>
+                                    <a>{confirm_message}</a>
                                 </div>
                                 <div class="footer">
                                     <p>Best regards,</p>
