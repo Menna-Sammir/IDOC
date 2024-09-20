@@ -46,3 +46,5 @@ if __name__ == '__main__':
 # Modify test for new home route endpoint
 
 # Adjust test for new home route schema
+
+# Improve exception handling in home route test
