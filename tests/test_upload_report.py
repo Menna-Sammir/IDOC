@@ -38,3 +38,5 @@ if __name__ == '__main__':
 # Adjust mock data for upload report test
 
 # Fix typo in upload report variables
+
+# Change response content check in upload report test
