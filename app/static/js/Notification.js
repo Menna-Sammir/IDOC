@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-  if (clinic_id) {
-    console.log('Rendered clinic_id:', clinic_id);
+  if (Clinic_id) {
+    console.log('Rendered clinic_id:', Clinic_id);
     if (!Clinic_id) {
       console.error(
         'Clinic ID is missing. Cannot establish WebSocket connection.'
       );
       return;
     }
-    console.log('Connecting with clinic_id:', clinic_id);
+    console.log('Connecting with clinic_id:', Clinic_id);
 
     var socket = io.connect('http://localhost:5000', {
-      query: 'clinic_id=' + clinic_id,
+      query: 'clinic_id=' + Clinic_id,
       transports: ['websocket', 'polling'],
     });
 
