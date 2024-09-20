@@ -23,3 +23,5 @@ if __name__ == '__main__':
 # Fix email sending test issue
 
 # Improve email test error handling
+
+# Add more assertions for email sending
