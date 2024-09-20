@@ -161,3 +161,5 @@ if __name__ == '__main__':
 # Improve session handling for cancel appointment test
 
 # Add more assertions for appointment cancellation
+
+# Refactor cancel appointment test function
