@@ -209,3 +209,5 @@ if __name__ == '__main__':
 # Handle edge cases in cancel appointment test
 
 # Fix timeout issues in cancel appointment test
+
+# Refactor cancel appointment test setup logic
