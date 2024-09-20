@@ -26,3 +26,5 @@ if __name__ == '__main__':
 # Improve test coverage for patient checkout
 
 # Adjust mock data for patient checkout test
+
+# Fix typo in checkout variable
