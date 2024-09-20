@@ -730,13 +730,12 @@ def doctor_appointments():
             date_str, start_time_str = selected_timeslot.split(' ', 1)
             start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
 
-            # حساب وقت النهاية بناءً على وقت البدء ومدة الكشف
             end_time = (datetime.combine(datetime.strptime(date_str, '%Y-%m-%d'), start_time) + duration).time()
 
             session['doctor_id'] = doctor_id
             session['date'] = date_str
             session['start_time'] = start_time_str
-            session['end_time'] = end_time.strftime('%I:%M %p')  # حفظ وقت النهاية
+            session['end_time'] = end_time.strftime('%I:%M %p')  
             return redirect(url_for('patient_checkout'))
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')

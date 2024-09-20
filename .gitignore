@@ -4,3 +4,4 @@ app/__pycache__/
 .venv
 *:[Zz]one.[Ii]dentifier
 bulk_commit.sh
+auto_commit.py
