@@ -97,3 +97,5 @@ if __name__ == '__main__':
 # Modify test for new patient dashboard endpoint
 
 # Adjust test for new patient dashboard schema
+
+# Improve exception handling in patient dashboard test
