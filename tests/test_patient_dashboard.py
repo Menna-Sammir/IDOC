@@ -65,3 +65,5 @@ if __name__ == '__main__':
     unittest.main()
 
 # Fix patient dashboard route test issue
+
+# Improve patient dashboard error handling
