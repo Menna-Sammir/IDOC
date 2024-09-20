@@ -42,3 +42,5 @@ if __name__ == '__main__':
 # Improve performance of home route test
 
 # Fix flaky home route test issue
+
+# Modify test for new home route endpoint
