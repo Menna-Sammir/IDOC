@@ -60,3 +60,5 @@ if __name__ == '__main__':
 # Adjust test for new upload report schema
 
 # Improve exception handling in upload report test
+
+# Add teardown step for cleanup in upload report test
