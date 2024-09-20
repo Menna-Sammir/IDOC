@@ -64,3 +64,5 @@ if __name__ == '__main__':
 # Add teardown step for cleanup in upload report test
 
 # Enhance setup logic for upload report test
+
+# Add more test cases for upload report
