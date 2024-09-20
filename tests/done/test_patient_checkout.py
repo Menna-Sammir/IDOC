@@ -2,7 +2,7 @@ import unittest
 from app import app, db
 from app.models.models import User, Doctor, Clinic, Governorate, Specialization
 
-class TestDoctorAppointments(unittest.TestCase):
+class TestPatientCheckout(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
@@ -84,12 +84,18 @@ class TestDoctorAppointments(unittest.TestCase):
         self.session.commit()
         return doctor
 
-    def test_doctor_appointments_get(self):
+    def test_patient_checkout_get(self):
+        with self.app.session_transaction() as sess:
+            sess['doctor_id'] = self.doctor.id
+            sess['date'] = '2024-09-20'
+            sess['start_time'] = '09:00 AM'
+            sess['end_time'] = '10:00 AM'
+
         with self.app:
-            result = self.app.get(f'/book?doctor_id={self.doctor.id}')
+            result = self.app.get('/checkout')
             self.assertEqual(result.status_code, 200)
-            self.assertIn(b'Schedules', result.data)  
-            self.assertIn(b'Test Specialization', result.data)  
+            self.assertIn(b'Checkout', result.data) 
+
 
 if __name__ == '__main__':
     unittest.main()
