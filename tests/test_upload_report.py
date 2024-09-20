@@ -1,48 +1,54 @@
 import unittest
-from app import create_app
+from app import app, db
+from app.models.models import User, Appointment, Clinic
 from flask import url_for
 
 class TestUploadReport(unittest.TestCase):
 
     def setUp(self):
-        # إعداد التطبيق للاختبار
-        self.app = create_app('testing')
-        self.client = self.app.test_client()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        # Set up the application for testing
+        app.debug = True  
+        self.app = app.test_client()
+        self.app.testing = True
+
+        # Create the database tables and add a test user
+        db.create_all()
+        self.user = User(name='Test User', email='test@example.com', password='password', activated=True)
+        db.session.add(self.user)
+        db.session.commit()
 
     def tearDown(self):
-        self.app_context.pop()
+        # Clean up the database after each test
+        db.session.remove()
+        db.drop_all()
 
-    def login(self, email_or_id, password):
-        # تأكد من تمرير القيم الصحيحة وعدم تمرير قيم فارغة
-        if not email_or_id or not password:
-            raise ValueError("Both email_or_id and password must be provided")
-        
-        # تأكد من أن البيانات المرسلة صحيحة
-        return self.client.post('/login', data={
-            'email_or_id': email_or_id,
-            'password': password
-        }, follow_redirects=True)
+    def login(self):
+        # Perform login for testing purposes
+        response = self.app.post('/login', data=dict(
+            email='test@example.com',
+            password='password'
+        ), follow_redirects=True)
+        print("Login response status code:", response.status_code)
+        print("Login response data:", response.data)
+        return response
 
     def test_upload_report(self):
-        # إجراء تسجيل الدخول باستخدام بيانات صحيحة
-        email_or_id = 'test@example.com'  # تأكد من أن هذا حقل صحيح في النموذج
-        password = 'password'  # تأكد من أن كلمة المرور صحيحة
+        # Check if the main page is reachable
+        response = self.app.get('/')
+        print("Main page response data:", response.data)
 
-        # إجراء طلب تسجيل الدخول
-        login_response = self.login(email_or_id, password)
+        # Log in before testing report upload
+        login_response = self.login()
 
-        # تحقق من حالة الرد (تأكد من أن تسجيل الدخول تم بنجاح)
-        self.assertEqual(login_response.status_code, 200)
+        # Test uploading a report
+        response = self.app.post('/upload_report', data=dict(
+            report='Test Report',
+            appointment_id=1
+        ), follow_redirects=True)
 
-        # اختبارات إضافية بعد تسجيل الدخول
-        # مثال: تحميل تقرير
-        response = self.client.post('/upload_report', data={
-            'report_data': 'Test report data'
-        }, follow_redirects=True)
-
-        # تحقق من حالة الرد بعد رفع التقرير
+        # Check if the upload was successful
+        print("Upload report response status code:", response.status_code)
+        print("Upload report response data:", response.data)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Report uploaded successfully', response.data)
 
