@@ -28,3 +28,5 @@ if __name__ == '__main__':
 # Fix upload report route test issue
 
 # Improve upload report error handling
+
+# Add more assertions for upload report
