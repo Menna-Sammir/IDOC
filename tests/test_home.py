@@ -24,3 +24,5 @@ if __name__ == '__main__':
 # Improve test coverage for home route
 
 # Adjust mock data for home route test
+
+# Fix typo in specialization variable
