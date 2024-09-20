@@ -77,3 +77,5 @@ if __name__ == '__main__':
 # Refactor email sending test setup logic
 
 # Improve readability of email sending test
+
+# Add documentation for email sending tests
