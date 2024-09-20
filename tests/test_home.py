@@ -22,3 +22,5 @@ if __name__ == '__main__':
 # Refactor home route test function
 
 # Improve test coverage for home route
+
+# Adjust mock data for home route test
