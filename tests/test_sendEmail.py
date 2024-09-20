@@ -29,3 +29,5 @@ if __name__ == '__main__':
 # Refactor email sending test function
 
 # Improve test coverage for email sending
+
+# Adjust mock data for email sending test
