@@ -169,3 +169,5 @@ if __name__ == '__main__':
 # Adjust mock data for cancel appointment test
 
 # Fix typo in appointment ID variable
+
+# Change appointment status after cancellation test
