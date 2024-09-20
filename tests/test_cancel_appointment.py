@@ -181,3 +181,5 @@ if __name__ == '__main__':
 # Fix HTTP status code check in cancel appointment test
 
 # Enhance test reliability for appointment cancellation
+
+# Improve performance of cancel appointment test
