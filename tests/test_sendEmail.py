@@ -75,3 +75,5 @@ if __name__ == '__main__':
 # Fix timeout issues in email sending test
 
 # Refactor email sending test setup logic
+
+# Improve readability of email sending test
