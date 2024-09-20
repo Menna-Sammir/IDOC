@@ -93,3 +93,5 @@ if __name__ == '__main__':
 # Improve performance of patient dashboard test
 
 # Fix flaky patient dashboard test issue
+
+# Modify test for new patient dashboard endpoint
