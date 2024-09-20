@@ -18,3 +18,5 @@ if __name__ == '__main__':
 # Improve home route test error handling
 
 # Add more assertions for home route
+
+# Refactor home route test function
