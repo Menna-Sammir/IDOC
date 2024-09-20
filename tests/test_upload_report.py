@@ -24,3 +24,5 @@ class TestUploadReport(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# Fix upload report route test issue
