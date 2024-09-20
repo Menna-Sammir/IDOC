@@ -177,3 +177,5 @@ if __name__ == '__main__':
 # Remove unused imports in cancel appointment test
 
 # Update test client setup for appointment cancellation
+
+# Fix HTTP status code check in cancel appointment test
