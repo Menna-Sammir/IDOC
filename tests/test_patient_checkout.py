@@ -44,3 +44,5 @@ if __name__ == '__main__':
 # Improve performance of patient checkout test
 
 # Fix flaky patient checkout test issue
+
+# Modify test for new patient checkout endpoint
