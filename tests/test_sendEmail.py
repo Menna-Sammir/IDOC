@@ -43,3 +43,5 @@ if __name__ == '__main__':
 # Update test client setup for email sending
 
 # Fix HTTP status code check in email sending test
+
+# Enhance test reliability for email sending
