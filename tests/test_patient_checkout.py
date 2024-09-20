@@ -72,3 +72,5 @@ if __name__ == '__main__':
 # Refactor patient checkout test setup logic
 
 # Improve readability of patient checkout test
+
+# Add documentation for patient checkout tests
