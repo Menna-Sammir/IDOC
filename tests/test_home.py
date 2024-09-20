@@ -36,3 +36,5 @@ if __name__ == '__main__':
 # Update test client setup for home route
 
 # Fix HTTP status code check in home route test
+
+# Enhance test reliability for home route
