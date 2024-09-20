@@ -136,3 +136,21 @@ from app.views import doctor
 from app.views import admin
 from app.views import patient
 from app.views import clinic
+from flask import Flask
+
+def create_app(config_name):
+    app = Flask(__name__)
+
+    # تهيئة التطبيق وفقاً للإعدادات المختلفة
+    if config_name == 'testing':
+        app.config.from_object('config.TestingConfig')
+    elif config_name == 'development':
+        app.config.from_object('config.DevelopmentConfig')
+    else:
+        app.config.from_object('config.ProductionConfig')
+
+    # تسجيل الـ Blueprints إذا كانت موجودة
+    # from .main import main as main_blueprint
+    # app.register_blueprint(main_blueprint)
+
+    return app
