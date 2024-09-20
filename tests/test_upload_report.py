@@ -116,3 +116,5 @@ if __name__ == '__main__':
 # Fix file path issues in upload report test
 
 # Improve file read and write handling in upload report test
+
+# Ensure proper cleanup after file upload test
