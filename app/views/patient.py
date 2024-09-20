@@ -758,7 +758,7 @@ def patient_checkout():
         doctor_id = session.get('doctor_id', None)
         date_str = session.get('date', None)
         start_time = session.get('start_time', None)
-        end_time = session.get('end_time', None)  # استلام وقت النهاية من الجلسة
+        end_time = session.get('end_time', None)
 
         date = datetime.strptime(date_str, '%Y-%m-%d')
         start_time = datetime.strptime(start_time, '%I:%M %p').time()
