@@ -167,3 +167,5 @@ if __name__ == '__main__':
 # Improve test coverage for cancel appointment
 
 # Adjust mock data for cancel appointment test
+
+# Fix typo in appointment ID variable
