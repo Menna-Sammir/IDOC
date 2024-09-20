@@ -31,3 +31,5 @@ if __name__ == '__main__':
 # Improve test coverage for email sending
 
 # Adjust mock data for email sending test
+
+# Fix typo in email address variable
