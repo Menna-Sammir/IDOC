@@ -165,3 +165,5 @@ if __name__ == '__main__':
 # Refactor cancel appointment test function
 
 # Improve test coverage for cancel appointment
+
+# Adjust mock data for cancel appointment test
