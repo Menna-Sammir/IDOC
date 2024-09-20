@@ -195,3 +195,5 @@ if __name__ == '__main__':
 # Add teardown step for cleanup in cancel appointment test
 
 # Enhance setup logic for cancel appointment test
+
+# Add more test cases for cancel appointment
