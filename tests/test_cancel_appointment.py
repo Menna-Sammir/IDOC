@@ -213,3 +213,5 @@ if __name__ == '__main__':
 # Refactor cancel appointment test setup logic
 
 # Improve readability of cancel appointment test
+
+# Add documentation for cancel appointment tests
