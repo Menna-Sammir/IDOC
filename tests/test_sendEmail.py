@@ -51,3 +51,5 @@ if __name__ == '__main__':
 # Fix flaky email sending test issue
 
 # Modify test for new email sending endpoint
+
+# Adjust test for new email sending schema
