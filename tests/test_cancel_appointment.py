@@ -203,3 +203,5 @@ if __name__ == '__main__':
 # Reorganize appointment cancellation test structure
 
 # Cleanup test data for appointment cancellation
+
+# Add mock server responses for appointment cancellation
