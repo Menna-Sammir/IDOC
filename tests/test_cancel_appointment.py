@@ -175,3 +175,5 @@ if __name__ == '__main__':
 # Add logging for debugging appointment cancellation
 
 # Remove unused imports in cancel appointment test
+
+# Update test client setup for appointment cancellation
