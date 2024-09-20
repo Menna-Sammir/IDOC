@@ -36,3 +36,5 @@ if __name__ == '__main__':
 # Remove unused imports in patient checkout test
 
 # Update test client setup for patient checkout
+
+# Fix HTTP status code check in patient checkout test
