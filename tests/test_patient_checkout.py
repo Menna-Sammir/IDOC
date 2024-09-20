@@ -32,3 +32,5 @@ if __name__ == '__main__':
 # Change response content check in patient checkout test
 
 # Add logging for debugging patient checkout
+
+# Remove unused imports in patient checkout test
