@@ -41,3 +41,5 @@ if __name__ == '__main__':
 # Remove unused imports in email sending test
 
 # Update test client setup for email sending
+
+# Fix HTTP status code check in email sending test
