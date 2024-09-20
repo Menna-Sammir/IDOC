@@ -56,3 +56,5 @@ if __name__ == '__main__':
 # Add more test cases for home route
 
 # Update dependencies for home route tests
+
+# Reorganize home route test structure
