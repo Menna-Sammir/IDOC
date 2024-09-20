@@ -36,3 +36,5 @@ if __name__ == '__main__':
 # Improve test coverage for upload report
 
 # Adjust mock data for upload report test
+
+# Fix typo in upload report variables
