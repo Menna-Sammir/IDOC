@@ -58,3 +58,5 @@ if __name__ == '__main__':
 # Add more test cases for patient checkout
 
 # Update dependencies for patient checkout tests
+
+# Reorganize patient checkout test structure
