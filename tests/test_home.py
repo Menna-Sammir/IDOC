@@ -48,3 +48,5 @@ if __name__ == '__main__':
 # Adjust test for new home route schema
 
 # Improve exception handling in home route test
+
+# Add teardown step for cleanup in home route test
