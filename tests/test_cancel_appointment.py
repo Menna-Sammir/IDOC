@@ -185,3 +185,5 @@ if __name__ == '__main__':
 # Improve performance of cancel appointment test
 
 # Fix flaky cancel appointment test issue
+
+# Modify test for new appointment cancellation endpoint
