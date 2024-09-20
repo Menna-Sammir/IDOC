@@ -1,10 +1,5 @@
-{% extends 'base.html' %}
-
-{% block title %}
-  {{ translate('Patient Profile') }}
-{% endblock %}
-
-{% block body %}
+{% extends 'base.html' %} {% block title %} {{ translate('Patient Profile') }}
+{% endblock %} {% block body %}
 
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -14,12 +9,16 @@
         <!-- Breadcrumb Navigation -->
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Profile Settings</li>
+            <li class="breadcrumb-item">
+              <a href="#">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Profile Settings') }}
+            </li>
           </ol>
         </nav>
         <!-- Page Title -->
-        <h2 class="breadcrumb-title">Profile Settings</h2>
+        <h2 class="breadcrumb-title">{{ translate('Profile Settings') }}</h2>
       </div>
     </div>
   </div>
@@ -30,12 +29,10 @@
 <div class="content">
   <div class="container-fluid">
     <div class="row">
-      
       <!-- Profile Sidebar -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        {% block sidebar %}
-          {% include 'base-patient-side.html' %}
-        {% endblock %}
+        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
+        %}
       </div>
       <!-- /Profile Sidebar -->
 
@@ -45,8 +42,7 @@
           <div class="card-body">
             <!-- Profile Settings Form -->
             <form id="patientForm" enctype="multipart/form-data">
-              {{ form.hidden_tag() }}
-              {{ form.csrf_token }}
+              {{ form.hidden_tag() }} {{ form.csrf_token }}
 
               <!-- Profile Photo Upload -->
               <div class="row form-row">
@@ -55,19 +51,34 @@
                     <div class="change-avatar">
                       <div class="profile-img">
                         <!-- Display user photo if available, otherwise show default image -->
-                        {% if current_user.photo %}
-                          {% set base_path = 'static/images/patients/' %}
-                          <img class="avatar-img rounded-circle" src="{{ base_path ~ current_user.photo }}" id="imagePreview" alt="User Image"/>
+                        {% if current_user.photo %} {% set base_path =
+                        'static/images/patients/' %}
+                        <img
+                          class="avatar-img rounded-circle"
+                          src="{{ base_path ~ current_user.photo }}"
+                          id="imagePreview"
+                          alt="User Image"
+                        />
                         {% else %}
-                          <img src="static/img/user.svg" id="imagePreview" alt="User Image"/>
+                        <img
+                          src="static/img/user.svg"
+                          id="imagePreview"
+                          alt="User Image"
+                        />
                         {% endif %}
                       </div>
                       <div class="upload-img">
                         <div class="change-photo-btn">
-                          <span><i class="fa fa-upload"></i> Upload Photo</span>
+                          <span
+                            ><i class="fa fa-upload"></i> {{ translate('Upload
+                            Photo') }}</span
+                          >
                           {{ form.photo(class="upload") }}
                         </div>
-                        <small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
+                        <small class="form-text text-muted"
+                          >{{ translate('Allowed JPG, GIF or PNG. Max size of
+                          2MB') }}</small
+                        >
                       </div>
                     </div>
                   </div>
@@ -76,72 +87,71 @@
                 <!-- First Name Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.firstname.label }}
-                    {{ form.firstname(class="form-control") }}
+                    {{ form.firstname.label }} {{
+                    form.firstname(class="form-control") }}
                   </div>
                 </div>
 
                 <!-- Last Name Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.lastname.label }}
-                    {{ form.lastname(class="form-control") }}
+                    {{ form.lastname.label }} {{
+                    form.lastname(class="form-control") }}
                   </div>
                 </div>
 
                 <!-- Blood Group Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.blood_group.label }}
-                    {{ form.blood_group(class="form-control") }}
+                    {{ form.blood_group.label }} {{
+                    form.blood_group(class="form-control") }}
                   </div>
                 </div>
 
                 <!-- Age Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.age.label }}
-                    {{ form.age(class="form-control") }}
+                    {{ form.age.label }} {{ form.age(class="form-control") }}
                   </div>
                 </div>
 
                 <!-- Email Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.email.label }}
-                    {{ form.email(class="form-control") }}
+                    {{ form.email.label }} {{ form.email(class="form-control")
+                    }}
                   </div>
                 </div>
 
                 <!-- Address Field -->
                 <div class="col-12">
                   <div class="form-group">
-                    {{ form.address.label }}
-                    {{ form.address(class="form-control") }}
+                    {{ form.address.label }} {{
+                    form.address(class="form-control") }}
                   </div>
                 </div>
 
                 <!-- Phone Number Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.phone.label }}
-                    {{ form.phone(class="form-control") }}
+                    {{ form.phone.label }} {{ form.phone(class="form-control")
+                    }}
                   </div>
                 </div>
 
                 <!-- Governorate Field -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    {{ form.governorate.label }}
-                    {{ form.governorate(class="form-control") }}
+                    {{ form.governorate.label }} {{
+                    form.governorate(class="form-control") }}
                   </div>
                 </div>
 
                 <!-- Allergies Field -->
                 <div class="col-12">
                   <div class="form-group">
-                    {{ form.allergy.label }}
-                    {{ form.allergy(class="form-control") }}
+                    {{ form.allergy.label }} {{
+                    form.allergy(class="form-control") }}
                   </div>
                 </div>
               </div>
@@ -150,7 +160,6 @@
               <div class="submit-section submit-btn-bottom">
                 {{ form.submit(class="btn btn-primary submit-btn") }}
               </div>
-
             </form>
             <!-- /Profile Settings Form -->
           </div>

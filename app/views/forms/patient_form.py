@@ -3,6 +3,7 @@ from wtforms import StringField, SubmitField, SelectField, TextAreaField, FileFi
 from wtforms.validators import Length, Email, DataRequired, ValidationError
 from app.models.models import User, BloodGroup, Governorate, Allergy
 import os
+from app import app, db, translate
 
 class PatientForm(FlaskForm):
     
@@ -41,3 +42,21 @@ class PatientForm(FlaskForm):
     allergy = SelectField('Allergy', validators=[DataRequired()])
 
     submit = SubmitField('Submit')
+
+    def __init__(self, *args, **kwargs):
+        super(PatientForm, self).__init__(*args, **kwargs)
+        self.governorate.choices = [(g.id, translate(g.governorate_name)) for g in Governorate.query.all()]
+        self.blood_group.choices = [(bg.name, translate(bg.value)) for bg in BloodGroup]
+        self.allergy.choices = [(a.name, translate(a.value)) for a in Allergy]
+
+        self.governorate.label.text = translate('Governorate')
+        self.blood_group.label.text = translate('Blood Group')
+        self.allergy.label.text = translate('Allergy')
+        self.firstname.label.text = translate('First Name')
+        self.lastname.label.text = translate('Last Name')
+        self.email.label.text = translate('Email Address')
+        self.phone.label.text = translate('Phone')
+        self.photo.label.text = translate('Photo')
+        self.address.label.text = translate('Address')
+        self.age.label.text = translate('Age')
+        self.submit.label.text = translate('Submit')

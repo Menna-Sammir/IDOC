@@ -304,34 +304,34 @@ class Patient(BaseModel):
     def get_advice(self):
         patient_advice_list = [
             {
-                'advice': 'Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.'
+                'advice': translate('Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.')
             },
             {
-                'advice': "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose."
+                'advice': translate("Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.")
             },
             {
-                'advice': 'Ensure you get 7-9 hours of sleep every night to help your body heal and function properly.'
+                'advice': translate('Ensure you get 7-9 hours of sleep every night to help your body heal and function properly.')
             },
             {
-                'advice': 'Incorporate fruits, vegetables, whole grains, and lean proteins into your meals to support recovery and immune function.'
+                'advice': translate('Incorporate fruits, vegetables, whole grains, and lean proteins into your meals to support recovery and immune function.')
             },
             {
-                'advice': 'If approved by your doctor, light exercise such as walking can improve circulation and overall health. Avoid strenuous activities unless advised otherwise.'
+                'advice': translate('If approved by your doctor, light exercise such as walking can improve circulation and overall health. Avoid strenuous activities unless advised otherwise.')
             },
             {
-                'advice': 'Practice stress-reducing activities such as meditation, deep breathing, or yoga. Chronic stress can delay recovery.'
+                'advice': translate('Practice stress-reducing activities such as meditation, deep breathing, or yoga. Chronic stress can delay recovery.')
             },
             {
-                'advice': 'Be sure to attend all scheduled follow-up visits with your healthcare provider to monitor your progress.'
+                'advice': translate('Be sure to attend all scheduled follow-up visits with your healthcare provider to monitor your progress.')
             },
             {
-                'advice': 'Immediately contact your doctor if you notice unusual symptoms like sudden pain, high fever, or swelling.'
+                'advice': translate('Immediately contact your doctor if you notice unusual symptoms like sudden pain, high fever, or swelling.')
             },
             {
-                'advice': 'Smoking and alcohol can slow down recovery and negatively impact your health. Avoid them during the healing process.'
+                'advice': translate('Smoking and alcohol can slow down recovery and negatively impact your health. Avoid them during the healing process.')
             },
             {
-                'advice': 'Maintain a positive mindset during recovery. Mental health plays a crucial role in your overall wellbeing.'
+                'advice': translate('Maintain a positive mindset during recovery. Mental health plays a crucial role in your overall wellbeing.')
             }
         ]
 

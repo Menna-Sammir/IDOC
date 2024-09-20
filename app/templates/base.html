@@ -226,7 +226,6 @@
               <div class="dropdown-menu user-dropmenu dropdown-menu-right">
                 <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
-
                     <img
                       class="avatar-img rounded-circle"
                       src="{{base_path ~ current_user.photo}}"
@@ -291,8 +290,8 @@
 
     {% if current_user.is_authenticated and current_user.clinic %}
     <script type="text/javascript">
-      const clinic_id = "{{ current_user.clinic.id }}";
-      console.log("Clinic ID:", clinic_id);
+      const Clinic_id = '{{ current_user.clinic.id }}';
+      console.log('Clinic ID:', Clinic_id);
     </script>
     {% endif %} {% block js %} {% include 'base-js.html' %} {% endblock %}
   </body>
