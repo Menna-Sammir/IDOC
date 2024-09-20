@@ -27,3 +27,5 @@ if __name__ == '__main__':
 # Add more assertions for email sending
 
 # Refactor email sending test function
+
+# Improve test coverage for email sending
