@@ -68,3 +68,5 @@ if __name__ == '__main__':
 # Handle edge cases in patient checkout test
 
 # Fix timeout issues in patient checkout test
+
+# Refactor patient checkout test setup logic
