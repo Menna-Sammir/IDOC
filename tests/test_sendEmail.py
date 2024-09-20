@@ -37,3 +37,5 @@ if __name__ == '__main__':
 # Change response content check in email sending test
 
 # Add logging for debugging email sending
+
+# Remove unused imports in email sending test
