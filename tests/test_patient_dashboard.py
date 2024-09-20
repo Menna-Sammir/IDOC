@@ -115,3 +115,5 @@ if __name__ == '__main__':
 # Add mock server responses for patient dashboard
 
 # Handle edge cases in patient dashboard test
+
+# Fix timeout issues in patient dashboard test
