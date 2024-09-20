@@ -30,3 +30,5 @@ if __name__ == '__main__':
 # Fix typo in checkout variable
 
 # Change response content check in patient checkout test
+
+# Add logging for debugging patient checkout
