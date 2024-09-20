@@ -100,3 +100,5 @@ if __name__ == '__main__':
 # Improve user session handling in upload report test
 
 # Enhance file type validation in upload report test
+
+# Add tests for file size restrictions in upload report test
