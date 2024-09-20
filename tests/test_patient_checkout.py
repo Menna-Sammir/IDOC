@@ -50,3 +50,5 @@ if __name__ == '__main__':
 # Adjust test for new patient checkout schema
 
 # Improve exception handling in patient checkout test
+
+# Add teardown step for cleanup in patient checkout test
