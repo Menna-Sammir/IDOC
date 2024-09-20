@@ -110,3 +110,5 @@ if __name__ == '__main__':
 # Add mock user login functionality in upload report test
 
 # Improve test performance for large file uploads
+
+# Refactor session setup in upload report test
