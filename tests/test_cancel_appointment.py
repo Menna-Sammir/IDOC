@@ -197,3 +197,5 @@ if __name__ == '__main__':
 # Enhance setup logic for cancel appointment test
 
 # Add more test cases for cancel appointment
+
+# Update dependencies for appointment cancellation tests
