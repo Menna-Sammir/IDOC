@@ -62,3 +62,5 @@ if __name__ == '__main__':
 # Cleanup test data for home route
 
 # Add mock server responses for home route
+
+# Handle edge cases in home route test
