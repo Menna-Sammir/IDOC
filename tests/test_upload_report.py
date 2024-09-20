@@ -66,3 +66,5 @@ if __name__ == '__main__':
 # Enhance setup logic for upload report test
 
 # Add more test cases for upload report
+
+# Update dependencies for upload report tests
