@@ -122,3 +122,5 @@ if __name__ == '__main__':
 # Enhance exception handling for invalid file types
 
 # Improve test reliability for different file types
+
+# Add test case for file upload timeout scenario
