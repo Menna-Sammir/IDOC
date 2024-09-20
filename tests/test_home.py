@@ -70,3 +70,5 @@ if __name__ == '__main__':
 # Refactor home route test setup logic
 
 # Improve readability of home route test
+
+# Add documentation for home route tests
