@@ -96,3 +96,5 @@ if __name__ == '__main__':
 # Improve test data setup for upload report
 
 # Refactor login handling in upload report test
+
+# Improve user session handling in upload report test
