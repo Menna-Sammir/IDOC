@@ -50,3 +50,5 @@ if __name__ == '__main__':
 # Improve exception handling in home route test
 
 # Add teardown step for cleanup in home route test
+
+# Enhance setup logic for home route test
