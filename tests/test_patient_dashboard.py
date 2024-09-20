@@ -67,3 +67,5 @@ if __name__ == '__main__':
 # Fix patient dashboard route test issue
 
 # Improve patient dashboard error handling
+
+# Add more assertions for patient dashboard
