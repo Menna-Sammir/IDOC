@@ -49,3 +49,5 @@ if __name__ == '__main__':
 # Improve performance of email sending test
 
 # Fix flaky email sending test issue
+
+# Modify test for new email sending endpoint
