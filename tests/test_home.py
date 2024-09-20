@@ -14,3 +14,5 @@ class TestHomeRoute(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 # Fix home route test issue
+
+# Improve home route test error handling
