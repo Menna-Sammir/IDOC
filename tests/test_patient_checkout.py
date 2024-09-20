@@ -62,3 +62,5 @@ if __name__ == '__main__':
 # Reorganize patient checkout test structure
 
 # Cleanup test data for patient checkout
+
+# Add mock server responses for patient checkout
