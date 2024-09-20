@@ -83,3 +83,5 @@ if __name__ == '__main__':
 # Add logging for debugging patient dashboard
 
 # Remove unused imports in patient dashboard test
+
+# Update test client setup for patient dashboard
