@@ -66,3 +66,5 @@ if __name__ == '__main__':
 # Add mock server responses for patient checkout
 
 # Handle edge cases in patient checkout test
+
+# Fix timeout issues in patient checkout test
