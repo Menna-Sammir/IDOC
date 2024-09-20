@@ -35,3 +35,5 @@ if __name__ == '__main__':
 # Fix typo in email address variable
 
 # Change response content check in email sending test
+
+# Add logging for debugging email sending
