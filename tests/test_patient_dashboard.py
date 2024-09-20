@@ -103,3 +103,5 @@ if __name__ == '__main__':
 # Add teardown step for cleanup in patient dashboard test
 
 # Enhance setup logic for patient dashboard test
+
+# Add more test cases for patient dashboard
