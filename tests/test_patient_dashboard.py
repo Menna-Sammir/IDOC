@@ -121,3 +121,5 @@ if __name__ == '__main__':
 # Refactor patient dashboard test setup logic
 
 # Improve readability of patient dashboard test
+
+# Add documentation for patient dashboard tests
