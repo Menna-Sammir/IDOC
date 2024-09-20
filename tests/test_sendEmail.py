@@ -53,3 +53,5 @@ if __name__ == '__main__':
 # Modify test for new email sending endpoint
 
 # Adjust test for new email sending schema
+
+# Improve exception handling in email sending test
