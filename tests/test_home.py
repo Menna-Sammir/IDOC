@@ -20,3 +20,5 @@ if __name__ == '__main__':
 # Add more assertions for home route
 
 # Refactor home route test function
+
+# Improve test coverage for home route
