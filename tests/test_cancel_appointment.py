@@ -157,3 +157,5 @@ if __name__ == '__main__':
     unittest.main()
 
 # Fix CSRF issue in cancel appointment test
+
+# Improve session handling for cancel appointment test
