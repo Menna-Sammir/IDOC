@@ -59,3 +59,5 @@ if __name__ == '__main__':
 # Add teardown step for cleanup in email sending test
 
 # Enhance setup logic for email sending test
+
+# Add more test cases for email sending
