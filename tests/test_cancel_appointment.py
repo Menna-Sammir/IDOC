@@ -159,3 +159,5 @@ if __name__ == '__main__':
 # Fix CSRF issue in cancel appointment test
 
 # Improve session handling for cancel appointment test
+
+# Add more assertions for appointment cancellation
