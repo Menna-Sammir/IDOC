@@ -38,3 +38,5 @@ if __name__ == '__main__':
 # Fix HTTP status code check in home route test
 
 # Enhance test reliability for home route
+
+# Improve performance of home route test
