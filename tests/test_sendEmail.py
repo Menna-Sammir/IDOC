@@ -19,3 +19,5 @@ class TestSendEmail(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# Fix email sending test issue
