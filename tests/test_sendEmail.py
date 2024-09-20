@@ -63,3 +63,5 @@ if __name__ == '__main__':
 # Add more test cases for email sending
 
 # Update dependencies for email sending tests
+
+# Reorganize email sending test structure
