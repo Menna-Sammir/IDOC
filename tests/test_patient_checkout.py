@@ -60,3 +60,5 @@ if __name__ == '__main__':
 # Update dependencies for patient checkout tests
 
 # Reorganize patient checkout test structure
+
+# Cleanup test data for patient checkout
