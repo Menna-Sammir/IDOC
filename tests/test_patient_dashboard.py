@@ -87,3 +87,5 @@ if __name__ == '__main__':
 # Update test client setup for patient dashboard
 
 # Fix HTTP status code check in patient dashboard test
+
+# Enhance test reliability for patient dashboard
