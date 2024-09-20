@@ -63,3 +63,5 @@ class TestPatientDashboard(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# Fix patient dashboard route test issue
