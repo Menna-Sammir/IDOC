@@ -171,3 +171,5 @@ if __name__ == '__main__':
 # Fix typo in appointment ID variable
 
 # Change appointment status after cancellation test
+
+# Add logging for debugging appointment cancellation
