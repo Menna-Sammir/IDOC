@@ -88,3 +88,5 @@ if __name__ == '__main__':
 # Improve validation of file upload in upload report test
 
 # Ensure CSRF token is handled properly in upload report test
+
+# Test large file upload scenario in upload report test
