@@ -187,3 +187,5 @@ if __name__ == '__main__':
 # Fix flaky cancel appointment test issue
 
 # Modify test for new appointment cancellation endpoint
+
+# Adjust test for new appointment cancellation schema
