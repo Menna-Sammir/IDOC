@@ -54,3 +54,5 @@ if __name__ == '__main__':
 # Add teardown step for cleanup in patient checkout test
 
 # Enhance setup logic for patient checkout test
+
+# Add more test cases for patient checkout
