@@ -183,3 +183,5 @@ if __name__ == '__main__':
 # Enhance test reliability for appointment cancellation
 
 # Improve performance of cancel appointment test
+
+# Fix flaky cancel appointment test issue
