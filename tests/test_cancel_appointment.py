@@ -207,3 +207,5 @@ if __name__ == '__main__':
 # Add mock server responses for appointment cancellation
 
 # Handle edge cases in cancel appointment test
+
+# Fix timeout issues in cancel appointment test
