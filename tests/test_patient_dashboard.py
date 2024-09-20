@@ -85,3 +85,5 @@ if __name__ == '__main__':
 # Remove unused imports in patient dashboard test
 
 # Update test client setup for patient dashboard
+
+# Fix HTTP status code check in patient dashboard test
