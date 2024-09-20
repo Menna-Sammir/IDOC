@@ -84,3 +84,5 @@ if __name__ == '__main__':
 # Improve readability of upload report test
 
 # Add documentation for upload report tests
+
+# Improve validation of file upload in upload report test
