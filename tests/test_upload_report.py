@@ -32,3 +32,5 @@ if __name__ == '__main__':
 # Add more assertions for upload report
 
 # Refactor upload report test function
+
+# Improve test coverage for upload report
