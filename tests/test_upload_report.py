@@ -86,3 +86,5 @@ if __name__ == '__main__':
 # Add documentation for upload report tests
 
 # Improve validation of file upload in upload report test
+
+# Ensure CSRF token is handled properly in upload report test
