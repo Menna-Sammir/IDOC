@@ -57,3 +57,5 @@ if __name__ == '__main__':
 # Improve exception handling in email sending test
 
 # Add teardown step for cleanup in email sending test
+
+# Enhance setup logic for email sending test
