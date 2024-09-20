@@ -120,3 +120,5 @@ if __name__ == '__main__':
 # Ensure proper cleanup after file upload test
 
 # Enhance exception handling for invalid file types
+
+# Improve test reliability for different file types
