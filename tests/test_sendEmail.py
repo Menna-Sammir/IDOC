@@ -21,3 +21,5 @@ if __name__ == '__main__':
     unittest.main()
 
 # Fix email sending test issue
+
+# Improve email test error handling
