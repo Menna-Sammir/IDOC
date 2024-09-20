@@ -34,3 +34,5 @@ if __name__ == '__main__':
 # Remove unused imports in home route test
 
 # Update test client setup for home route
+
+# Fix HTTP status code check in home route test
