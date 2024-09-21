@@ -328,3 +328,22 @@ def all_patients():
         })
 
     return render_template('all-patients.html', patient_data=patient_data)
+
+@app.route('/all_appointments', methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def all_appointments():
+    # Query to fetch all appointments
+    appointments = db.session.query(
+        Appointment,
+        Doctor,
+        Clinic,
+        Patient,
+        User
+    ).join(Patient, Appointment.patient_id == Patient.id)\
+     .join(User, Patient.user_id == User.id)\
+     .join(Doctor, Appointment.doctor_id == Doctor.id)\
+     .join(Clinic, Appointment.clinic_id == Clinic.id)\
+     .all()
+
+    return render_template('all-appointments.html', appointments=appointments)

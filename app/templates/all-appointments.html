@@ -50,48 +50,81 @@
                     
                     <!-- Appointment Tab -->
                     <div id="pat_appointments" class="tab-pane fade show active">
-                        <div class="card card-table mb-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Clinic</th>
-                                                <th>Doctor</th>
-                                                <th>Patient</th>
-                                                <th>Price</th>
-                                                <th>Specialization</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for appointment in appointments %}
-                                            <tr>
-                                              <td>{{ appointment.clinic_name }}</td>
-                                              <td>{{ appointment.doctor_name }}</td>
-                                              <td>{{ appointment.patient_name }}</td>
-                                              <td>${{ appointment.price }}</td>
-                                              <td>{{ appointment.specialization }}</td>
+                      <div class="card card-table mb-0">
+                          <div class="card-body">
+                              <div class="table-responsive">
+                                  <table class="table table-hover table-center mb-0">
+                                      <thead>
+                                          <tr>
+                                              <th>Clinic</th>
+                                              <th>Doctor</th>
+                                              <th>Patient</th>
+                                              <th>Price</th>
+                                              <th>Specialization</th>
+                                              <th>Status</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for appointment, doctor, clinic, patient, user in appointments %}
+                                          <tr>
                                               <td>
-                                                  {% if appointment.status == 'Cancelled' %}
+                                                <h2 class="table-avatar">
+                                                  {% set base_path = 'static/images/clinic/' %}
+                                                  <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.users.photo}}" alt="User Image"></p>
+                                                  <p>{{ translate(clinic.users.name) }}</p>
+                                                </h2>
+                                              </td>
+                                              <td>
+                                                <h2 class="table-avatar">
+                                                  {% set base_path = 'static/images/doctors/' %}
+                                                  <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.users.photo}}" alt="User Image"></p>
+    
+                                                  <p>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</p>
+                                                </h2>
+                                              </td>
+                                              <td><h2 class="table-avatar">
+                                                <div class="avatar avatar-sm mr-2">
+                                                  {% set base_path =
+                                                  'static/images/patients/' %}
+                                                  <img
+                                                    class="avatar-img rounded-circle"
+                                                    src="{{ base_path ~ user.photo }}"
+                                                    alt="User Image"
+                                                  />
+                                                </div>
+                                                <p class="mt-2">
+                                                  {{ user.name }}
+                                                  <span
+                                                    > {{ appointment.date }}
+                                                    <span class="d-block text-info"
+                                                      >{{ appointment.time.strftime('%I:%M %p')
+                                                      }}</span
+                                                    ></span
+                                                  >
+                                                </p>
+                                              </h2></td>
+                                              <td>${{ doctor.price }}</td>
+                                              <td>{{ doctor.specialization.specialization_name }}</td>
+                                              <td>
+                                                  {% if appointment.appointment_status == 'Cancelled' %}
                                                       <span class="badge badge-pill bg-danger position-relative d-inline">Cancelled</span>
-                                                  {% elif appointment.status == 'Pending' %}
+                                                  {% elif appointment.appointment_status == 'Pending' %}
                                                       <span class="badge badge-pill bg-info position-relative d-inline">Pending</span>
-                                                  {% elif appointment.status == 'Confirmed' %}
+                                                  {% elif appointment.appointment_status == 'Confirmed' %}
                                                       <span class="badge badge-pill bg-success position-relative d-inline">Confirmed</span>
                                                   {% else %}
-                                                      <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status }}</span>
+                                                      <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status.name }}</span>
                                                   {% endif %}
                                               </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>                                        
-                                        </table>
-                                        
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                          </tr>
+                                          {% endfor %}
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  
                     <!-- /Appointment Tab -->
                     
                 </div>

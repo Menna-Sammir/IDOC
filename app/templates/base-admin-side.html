@@ -34,6 +34,14 @@
           </a>
         </li>
         <li
+          class="{{ 'active' if request.endpoint == 'all_appointments' else '' }}"
+        >
+          <a href="{{ url_for('all_appointments') }}">
+            <i class="fas fa-user-injured"></i>
+            <span>{{ translate('all appointments') }}</span>
+          </a>
+        </li>
+        <li
           class="{{ 'active' if request.endpoint == 'change_password' else '' }}"
         >
           <a href="{{ url_for('change_password') }}">
