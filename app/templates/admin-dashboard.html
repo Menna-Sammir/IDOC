@@ -142,7 +142,12 @@
                                             {% set base_path = 'static/images/doctors/' %}
                                             <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.users.photo}}" alt="User Image"></p>
 
-                                              <p>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</p>
+                                              <p>
+                                                {{ translate('Dr.') }} {{ translate(doctor.users.name) }}
+                                                <span class="d-block text-info">
+                                                  {{ translate(doctor.clinic.users.name) }} 
+                                                </span>
+                                              </p>
                                           </h2>
                                       </td>
                                       <td>{{ translate(doctor.specialization.specialization_name) }}</td>
