@@ -138,10 +138,15 @@
                             {% if current_user.patient %}
                             <td>
                               <!-- Appointment Status with dynamic badge color -->
-                              <span
-                                class="badge badge-pill {{ appointment.status_bg() }} position-relative d-inline"
-                                >{{appointment.status.name}}</span
-                              >
+                              {% if appointment.status.name == 'Cancelled' %}
+                              <span class="badge badge-pill bg-danger position-relative d-inline">Cancelled</span>
+                              {% elif appointment.status.name == 'Pending' %}
+                              <span class="badge badge-pill bg-info position-relative d-inline">Pending</span>
+                              {% elif appointment.status.name == 'Completed' %}
+                              <span class="badge badge-pill bg-success position-relative d-inline">Completed</span>
+                              {% else %}
+                              <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status.name }}</span>
+                              {% endif %}
                             </td>
                             {% endif %}
 

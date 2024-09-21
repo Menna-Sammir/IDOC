@@ -106,12 +106,12 @@
                                               <td>${{ doctor.price }}</td>
                                               <td>{{ doctor.specialization.specialization_name }}</td>
                                               <td>
-                                                  {% if appointment.appointment_status == 'Cancelled' %}
+                                                  {% if appointment.status.name == 'Cancelled' %}
                                                       <span class="badge badge-pill bg-danger position-relative d-inline">Cancelled</span>
-                                                  {% elif appointment.appointment_status == 'Pending' %}
+                                                  {% elif appointment.status.name == 'Pending' %}
                                                       <span class="badge badge-pill bg-info position-relative d-inline">Pending</span>
-                                                  {% elif appointment.appointment_status == 'Confirmed' %}
-                                                      <span class="badge badge-pill bg-success position-relative d-inline">Confirmed</span>
+                                                  {% elif appointment.status.name == 'Completed' %}
+                                                      <span class="badge badge-pill bg-success position-relative d-inline">Completed</span>
                                                   {% else %}
                                                       <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status.name }}</span>
                                                   {% endif %}
