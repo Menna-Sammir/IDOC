@@ -140,9 +140,9 @@
                                       <td>
                                           <h2 class="table-avatar">
                                             {% set base_path = 'static/images/doctors/' %}
-                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.photo}}" alt="User Image"></a>
+                                            <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.users.photo}}" alt="User Image"></p>
 
-                                              <a href="#">{{ translate('Dr.') }} {{ translate(doctor.name) }}</a>
+                                              <p>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</p>
                                           </h2>
                                       </td>
                                       <td>{{ translate(doctor.specialization.specialization_name) }}</td>
@@ -180,8 +180,8 @@
                                       <td>
                                           <h2 class="table-avatar">
                                             {% set base_path = 'static/images/clinic/' %}
-                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.photo}}" alt="User Image"></a>
-                                              <a href="profile.html">{{ translate(clinic.name) }}</a>
+                                            <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.users.photo}}" alt="User Image"></p>
+                                              <p>{{ translate(clinic.users.name) }}</p>
                                           </h2>
                                       </td>
                                       <td class="text-wrap">{{ translate(clinic.address) }}</td>
