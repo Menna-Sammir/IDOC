@@ -31,7 +31,7 @@
           <nav
             class="navbar navbar-expand-lg navbar-light topnavbar justify-content-between"
           >
-            <a class="navbar-brand col-sm-2 col-md-2 d-block" href="#">
+            <a class="navbar-brand col-sm-2 col-md-2 d-block" href="{{ url_for('home') }}">
               <svg
                 style="width: 8rem"
                 version="1.0"
@@ -556,30 +556,26 @@
                     </div>
                     <div class="pro-content">
                       <h3 class="title">
-                        <a href="#"
-                          >{{ translate('Dr.') }}{{ translate(doctor.users.name)
-                          }}</a
-                        >
-                        <i class="fas fa-check-circle verified"></i>
+                        <p>
+                          {{ translate('Dr.') }}{{ translate(doctor.users.name)}} <i class="fas fa-check-circle verified"></i>
+                        </p>
+                        
                       </h3>
                       <p class="speciality">
+                        <i class="fas fa-stethoscope pr-1"></i>
                         {{ translate(doctor.specialization.specialization_name)
                         }}
                       </p>
                       <ul class="available-info">
                         <li>
-                          <i class="fas fa-map-marker-alt"></i>
-                          {{ doctor.clinic.name}} {{
-                          translate(doctor.clinic.address) }}, Egypt
+                          <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ doctor.clinic.governorate.governorate_name }}, {{ translate(doctor.clinic.address) }}
+                          </li>
                         </li>
                         <li>
                           <i class="far fa-money-bill-alt"></i> {{doctor.price}}
                           $
-                          <i
-                            class="fas fa-info-circle"
-                            data-toggle="tooltip"
-                            title="Lorem Ipsum"
-                          ></i>
                         </li>
                       </ul>
                       <div class="row row-sm">

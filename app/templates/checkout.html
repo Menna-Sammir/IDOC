@@ -88,10 +88,10 @@
           <div class="card-body">
             <!-- Doctor Information Section -->
             <div class="booking-doc-info">
-              <a href="#" class="booking-doc-img">
+              <p class="booking-doc-img">
                 {% set base_path = 'static/images/doctors/' %}
                 <img src="{{base_path ~ doctor.users.photo}}" alt="User Image" />
-              </a>
+              </p>
               <div class="booking-info">
                 <h4>Dr. {{doctor.users.name}}</h4>
                 <h5>{{clinic.users.name}}</h5>

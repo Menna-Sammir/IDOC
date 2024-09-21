@@ -1,13 +1,13 @@
 <div class="profile-sidebar">
   <div class="widget-profile pro-widget-content">
     <div class="profile-info-widget">
-      <a href="profile.html" class="booking-doc-img">
+      <p  class="booking-doc-img">
         {% set base_path = 'static/images/patients/' %}
         <img
           class="avatar-img rounded-circle"
           src="{{ base_path ~ patient.users.photo}}"
           alt="User Image"
-      /></a>
+      /></p>
       <div class="profile-det-info">
         <h3>{{ patient.users.name }}</h3>
 
