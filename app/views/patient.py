@@ -91,6 +91,9 @@ def home():
     )
 
 
+@app.template_filter('basename')
+def basename(path):
+    return os.path.basename(path)
 
 @app.route('/patient_dashboard', methods=['GET', 'POST'])
 @login_required
