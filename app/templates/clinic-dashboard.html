@@ -37,24 +37,10 @@ block body %}
             <div class="card dash-card">
               <div class="card-body">
                 <div class="row justify-content-between">
-                  <div class="col-md-6 col-lg-4">
+                  <div class="col-md-6 col-lg-6">
                     <h2>{{ translate('Good Morning ,') }}</h2>
-                    <div>
-                      {% if is_open_today %}
-                      <span class="text-info"
-                        >{{ translate('The clinic in this time open') }}</span
-                      >
-                      {% else %}
-                      <span class="text-danger">
-                        {{ translate('The clinic in this time closed') }} <br />
-                        <i class="far fa-clock text-info"></i>
-                        <span class="text-info"
-                          >{{ translate('Working hours:') }} {{ clinic.working_hours }}.</span
-                        >
-                      </span>
-                      {% endif %}
-                    </div>
-                    <div><span class="text-muted">{{ translate('have a nice day') }}</span></div>
+                    <p class="mt-4 mb-2 text-muted" style="font-size: 1rem;">Whatever you do, do with determination. You have one life to live; do your work with passion and give your best.
+                    </p>
                   </div>
                   <div class="col-md-6 col-lg-4" style="position: relative">
                     <img class="clinic-dash"

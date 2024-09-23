@@ -8,9 +8,7 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              {{ translate('Home') }}
-            </li>
+            <li class="breadcrumb-item">{{ translate('Home') }}</li>
             <li class="breadcrumb-item active" aria-current="page">
               {{ translate('Dashboard') }}
             </li>
@@ -139,13 +137,25 @@
                             <td>
                               <!-- Appointment Status with dynamic badge color -->
                               {% if appointment.status.name == 'Cancelled' %}
-                              <span class="badge badge-pill bg-danger position-relative d-inline">Cancelled</span>
+                              <span
+                                class="badge badge-pill bg-danger position-relative d-inline"
+                                >Cancelled</span
+                              >
                               {% elif appointment.status.name == 'Pending' %}
-                              <span class="badge badge-pill bg-info position-relative d-inline">Pending</span>
+                              <span
+                                class="badge badge-pill bg-info position-relative d-inline"
+                                >Pending</span
+                              >
                               {% elif appointment.status.name == 'Completed' %}
-                              <span class="badge badge-pill bg-success position-relative d-inline">Completed</span>
+                              <span
+                                class="badge badge-pill bg-success position-relative d-inline"
+                                >Completed</span
+                              >
                               {% else %}
-                              <span class="badge badge-pill bg-secondary position-relative d-inline">{{ appointment.status.name }}</span>
+                              <span
+                                class="badge badge-pill bg-secondary position-relative d-inline"
+                                >{{ appointment.status.name }}</span
+                              >
                               {% endif %}
                             </td>
                             {% endif %}
@@ -573,6 +583,7 @@
                             <!-- Options for printing or viewing report -->
                             <td class="text-right">
                               <div class="table-action">
+                                {% if appointment.Report %}
                                 <a
                                   href="javascript:void(0);"
                                   class="btn btn-sm bg-primary-light"
@@ -590,7 +601,7 @@
                                 <script>
                                   function printPDF(pdfUrl) {
                                     var iframe =
-                                      document.getElementById('pdfIframe');
+                                      document.getElementById("pdfIframe");
                                     iframe.src = pdfUrl;
                                     iframe.onload = function () {
                                       iframe.focus();
@@ -619,6 +630,7 @@
                                   <i class="fas fa-upload"></i> {{
                                   translate('Report') }}
                                 </a>
+                                {% endif %}
                               </div>
                             </td>
                           </tr>
@@ -669,8 +681,11 @@
                             <td>{{ history.added_by }}</td>
                             <td>
                               {% if history.file_link %}
-                              <a href="{{ history.file_link }}" target="_blank">{{ history.file_link | basename }}</a>
-                              {% else %} {{ translate('No attachment') }} {% endif %}
+                              <a href="{{ history.file_link }}" target="_blank"
+                                >{{ history.file_link | basename }}</a
+                              >
+                              {% else %} {{ translate('No attachment') }} {%
+                              endif %}
                             </td>
                             <td class="text-right">
                               <div class="table-action">
@@ -868,23 +883,23 @@
 <script>
   function showEditForm(appointmentId, followUpDateTime) {
     const [date, time] = followUpDateTime
-      ? followUpDateTime.split(' ')
-      : ['', ''];
-    document.getElementById('appointment_id').value = appointmentId;
-    document.getElementById('follow_up_date').value = date || '';
-    document.getElementById('follow_up_time').value = time || '';
-    document.getElementById('editFollowUpModal').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
+      ? followUpDateTime.split(" ")
+      : ["", ""];
+    document.getElementById("appointment_id").value = appointmentId;
+    document.getElementById("follow_up_date").value = date || "";
+    document.getElementById("follow_up_time").value = time || "";
+    document.getElementById("editFollowUpModal").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
   }
 
   function hideEditForm() {
-    document.getElementById('editFollowUpModal').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
+    document.getElementById("editFollowUpModal").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
   }
 
   window.onclick = function (event) {
-    var modal = document.getElementById('editFollowUpModal');
-    var overlay = document.getElementById('overlay');
+    var modal = document.getElementById("editFollowUpModal");
+    var overlay = document.getElementById("overlay");
     if (event.target === modal || event.target === overlay) {
       hideEditForm();
     }

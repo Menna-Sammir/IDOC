@@ -1,9 +1,9 @@
-if ($("#calendar").length) {
+if ($("#calendar-appointment").length) {
   var currentLang = $("html").attr("lang");
-  var dir = (currentLang == 'ar') ? 'rtl' : 'ltr';
+  var dir = currentLang == "ar" ? "rtl" : "ltr";
   var CalendarApp = function () {
     this.$body = $("body");
-    (this.$calendar = $("#calendar")),
+    (this.$calendar = $("#calendar-appointment")),
       (this.$event = "#calendar-events div.calendar-events"),
       (this.$categoryForm = $("#add_new_event form")),
       (this.$extEvents = $("#calendar-events")),
@@ -89,7 +89,12 @@ if ($("#calendar").length) {
         slotDuration: "00:45:00",
         minTime: "08:00:00",
         maxTime: "19:00:00",
-        eventLimit: false, // allow "more" link when too many events
+        eventLimit: true,
+        views: {
+          month: {
+            eventLimit: 2,
+          },
+        },
         selectable: true,
         events: [],
         locale: currentLang,
@@ -117,5 +122,3 @@ if ($("#calendar").length) {
   $.CalendarApp.init();
 }
 // function changelocale(language){
-
-

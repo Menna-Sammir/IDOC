@@ -300,29 +300,6 @@
     });
   }
 
-  // Chat
-
-  var chatAppTarget = $(".chat-window");
-  (function () {
-    if ($(window).width() > 991) chatAppTarget.removeClass("chat-slide");
-
-    $(document).on(
-      "click",
-      ".chat-window .chat-users-list a.media",
-      function () {
-        if ($(window).width() <= 991) {
-          chatAppTarget.addClass("chat-slide");
-        }
-        return false;
-      }
-    );
-    $(document).on("click", "#back_user_list", function () {
-      if ($(window).width() <= 991) {
-        chatAppTarget.removeClass("chat-slide");
-      }
-      return false;
-    });
-  })();
 
   function changeFont(language) {
     if (language === "en") {
