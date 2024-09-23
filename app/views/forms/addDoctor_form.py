@@ -58,7 +58,7 @@ class DoctorForm(FlaskForm):
         self.toHour.label.text = translate('To')
         self.photo.label.text = translate('Doctor Image')
         self.IDNum.label.text = translate('ID Num')
-        # self.clinic_id.label.text = translate('clinic')
+
         self.specialization_id.label.text = translate('Specialization')
         self.submit.label.text = translate('Add Doctor')
 

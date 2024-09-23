@@ -98,20 +98,23 @@ endblock %} {% block body %}
                     form.IDNum(class="form-control" )}}
                   </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                   <div class="form-group">
                     {{ form.fromHour.label() }} {{
                     form.fromHour(class="form-control" )}}
                   </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                   <div class="form-group">
-                    {{ form.toHour.label() }} {{
+                    {{ form.toHour.label() }}
+
+                    {{
                     form.toHour(class="form-control" )}}
                   </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                   <div class="form-group">
+                    {{ form.duration.label() }}
                     {{ form.duration(class="form-control") }}
                   </div>
                 </div>

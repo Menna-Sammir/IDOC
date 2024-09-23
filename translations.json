@@ -369,6 +369,7 @@
     "Afternoon": "Afternoon",
     "Evening": "Evening",
     "Night": "Night",
+    "Examination_duration": "Examination Duration",
 
     "Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.": "Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.",
     "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.": "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.",
@@ -748,7 +749,7 @@
     "Afternoon": "الظهيرة",
     "Evening": "المساء",
     "Night": "الليل",
-
+    "Examination_duration": "مدة الكشف",
     "Clinic Dashboard": "لوحة تحكم العيادة",
     "Drink at least 8 glasses of water per day to stay hydrated. Proper hydration helps with recovery and overall health.": "اشرب ما لا يقل عن 8 أكواب من الماء يوميًا للبقاء مرطبًا. يساعد الترطيب السليم في الشفاء والصحة العامة.",
     "Take your medications as prescribed by your doctor. Set reminders to ensure you don't miss a dose.": "تناول الأدوية الخاصة بك كما يصفها لك الطبيب. ضع تذكيرات للتأكد من عدم تفويت جرعة.",
