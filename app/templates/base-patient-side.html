@@ -5,23 +5,23 @@
         {% set base_path = 'static/images/patients/' %}
         <img
           class="avatar-img rounded-circle"
-          src="{{ base_path ~ patient.users.photo}}"
+          src="{{ base_path ~ current_user.photo}}"
           alt="User Image"
       /></p>
       <div class="profile-det-info">
-        <h3>{{ patient.users.name }}</h3>
+        <h3>{{ current_user.name }}</h3>
 
         <div class="patient-details">
           <p>
             <strong><i class="fas fa-allergies"></i></strong> {{
-            translate(patient.allergy.value) }}
+            translate(current_user.patient[0].allergy.value) }}
           </p>
           <h5 class="mb-0">
             <span
-              class="{{ 'activated' if patient.users.activated else 'not-activated' }}"
+              class="{{ 'activated' if current_user.patient[0].users.activated else 'not-activated' }}"
             >
               <i class="fas fa-user-check"></i> {{ 'Activated' if
-              patient.users.activated else 'Not Activated' }}
+              current_user.patient[0].users.activated else 'Not Activated' }}
             </span>
           </h5>
         </div>
