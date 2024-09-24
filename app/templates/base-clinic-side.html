@@ -36,6 +36,14 @@
             <span>{{ translate('calender') }}</span>
           </a>
         </li>
+        <li
+          class="{{ 'active' if request.endpoint == 'patient_list' else '' }}"
+        >
+          <a href="{{ url_for('patient_list') }}">
+            <i class="fas fa-user-injured"></i>
+            <span>{{ translate('Patients') }}</span>
+          </a>
+        </li>
         <li>
           <a href="{{url_for('clinic_profile')}}">
             <i class="fas fa-user-cog"></i>

@@ -197,13 +197,13 @@ def patient_list():
     if doctor is None:
         return translate('User is not a doctor'), 403
 
-    appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
-    patient_ids = set(appointment.patient_id for appointment in appointments)
+    patients = (
+        db.session.query(Patient, User)
+        .join(User, Patient.user_id == User.id)
+        .join(Appointment, Appointment.patient_id == Patient.id)
+        .filter(Appointment.doctor_id == doctor.id)
+        .distinct(Patient.id)
+        .all()
+    )
 
-    patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
-
-    for patient in patients:
-        user = User.query.filter_by(id=patient.user_id).first()
-        patient.user_name = user.name if user else 'Unknown'
-
-    return render_template('patient-list.html', doctor=doctor, patients=patients, appointments=appointments)
+    return render_template('patient-list.html', doctor=doctor, patients=patients)
