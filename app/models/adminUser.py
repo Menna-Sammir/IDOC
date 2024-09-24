@@ -10,12 +10,12 @@ def create_admin_user():
     existing_admin = User.query.join(UserRole).filter(User.email == admin_email, UserRole.role_id == admin_role.id).first()
 
     if not existing_admin:
-        logo_path ='static/img/user.svg'
+        # logo_path ='static/img/user.svg'
         admin_user = User(
             name='Admin',
             email=admin_email,
             password_hash=admin_password,
-            photo=logo_path,
+            # photo=logo_path,
             activated= True
         )
         admin_role = UserRole(

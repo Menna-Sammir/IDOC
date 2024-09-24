@@ -9,6 +9,7 @@ from flask import (
     session
 )
 from app.models.models import *
+from werkzeug.exceptions import HTTPException
 from app.views.forms.auth_form import (
     LoginForm,
     RegisterForm,
@@ -118,9 +119,7 @@ def login_page():
 
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
-    print(f"User before logout: {current_user}")
     logout_user()
-    print(f"User after logout: {current_user}")
     identity_changed.send(
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
@@ -190,7 +189,32 @@ def reset_password(email):
     return render_template('reset_password.html', email=email, form=form)
 
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return render_template('error.html', error_message=str(e), error_code=500), 500
+
+
 @app.errorhandler(403)
 def permission_denied(e):
-    return 'Permission Denied', 403
+    print(e)
+    return (
+        render_template(
+            'error.html',
+            error_message="You don't have permission to access this page",
+            error_code=403
+        ),
+        403
+    )
 
+
+@app.route('/error', methods=['GET'])
+def ErrorPage():
+    return render_template('error.html')
+
+
+@app.route('/<path:path>')
+def catch_all(path):
+    return (
+        render_template('error.html', error_message='Page Not Found', error_code=404),
+        404
+    )

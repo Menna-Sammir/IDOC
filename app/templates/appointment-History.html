@@ -521,6 +521,7 @@
               </div>
               <!-- /Prescription Tab -->
 
+              <!-- Medical Records Tab: Displays medical records for the patient -->
               <!-- Medical Records Tab -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">
@@ -530,7 +531,7 @@
                         <thead>
                           <tr>
                             <th>Appt Date</th>
-                            <th>Diagnosis</th>
+                            <!-- <th>Diagnosis</th> -->
                             <th>Attachment</th>
                             <th>Created by</th>
                             <th></th>
@@ -545,8 +546,8 @@
                                 >{{ appointment.time_range }}</span
                               >
                             </td>
-                            <td>{{ appointment.Diagnosis }}</td>
-                            <td>
+                            <!-- <td>{{ appointment.Diagnosis }}</td> -->
+                            <td style="text-wrap: wrap">
                               {% if appointment.Report %}
                               <a
                                 href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
@@ -622,21 +623,21 @@
                                 >
                                   <i class="far fa-eye"></i> View
                                 </a>
-                                {% if current_user.doctor %}
+                                {% if current_user.user_roles.role.role_name ==
+                                'doctor' %}
                                 <a
                                   href="javascript:void(0);"
                                   class="btn btn-sm bg-primary-light"
                                   data-toggle="modal"
                                   data-target="#add_medical_reports"
                                   data-appointment-id="{{ appointment.id }}"
-                                  data-patient-id="{{ patient.id }}"
                                 >
                                   <i class="fas fa-upload"></i> Report
                                 </a>
                               </div>
                             </td>
                           </tr>
-                          {% endif %} {% endfor %}
+                          {% endfor %}
                         </tbody>
                       </table>
                     </div>

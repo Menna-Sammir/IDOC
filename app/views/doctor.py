@@ -44,7 +44,7 @@ def doctor_dash():
     else:
         nextAppt = None
     monthAppointments = Appointment.query.filter(
-        Appointment.doctor_id == doctor.id, 
+        Appointment.doctor_id == doctor.id,
         func.extract('month', Appointment.date) == datetime.now().month
     ).count()
     patient_count = appointments.count()
