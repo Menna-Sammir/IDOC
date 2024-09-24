@@ -281,7 +281,6 @@ def appointment_History():
         if not patient:
             flash('Patient not found', 'danger')
             return redirect(url_for('doctor_dash'))
-
     elif current_user.clinic:
         patient_id = request.args.get('patient_id')
         if not patient_id:
@@ -291,7 +290,6 @@ def appointment_History():
         if not patient:
             flash('Patient not found', 'danger')
             return redirect(url_for('clinic_dash'))
-
     else:
         flash('Unauthorized access', 'danger')
         return redirect(url_for('home'))
@@ -312,7 +310,7 @@ def appointment_History():
     Medicine_form = AddMedicineForm()
     form = PatientHistoryForm()
     if request.method == 'POST':
-            if Medicine_form.validate_on_submit():
+        if Medicine_form.validate_on_submit():
             try:
                 for item in Medicine_form.items:
                     med_exist = PatientMedicine.query.filter_by(
@@ -405,7 +403,6 @@ def appointment_History():
         form=form,
         Medicine_form=Medicine_form
     )
-
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_file_EXTENSIONS = {'pdf'}
 

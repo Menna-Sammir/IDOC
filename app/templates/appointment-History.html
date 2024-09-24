@@ -130,8 +130,7 @@
                             </td>
                             <td>${{ appointment.doctor.price }}</td>
                             <td>
-                              {% if current_user.doctor or (current_user.patient
-                              and appointment.status.name == 'Completed') %}
+                              {% if appointment.status.name == 'Completed' %}
                               <!-- Follow-up information -->
                               {% if appointment.follow_up %} {{
                               appointment.follow_up.strftime('%d %b %Y') }}<br />
@@ -637,7 +636,7 @@
                               </div>
                             </td>
                           </tr>
-                          {% endfor %}
+                          {% endif %} {% endfor %}
                         </tbody>
                       </table>
                     </div>
