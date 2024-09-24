@@ -337,12 +337,12 @@ def appointment_History():
             except Exception as e:
                 db.session.rollback()
                 flash(f'There was an error: {e}', category='danger')
-        if Medicine_form.errors != {}:
-            for err_msg in Medicine_form.errors.values():
-                flash(
-                    f'There was an error with adding medicine: {err_msg}',
-                    category='danger'
-                )
+            if Medicine_form.errors != {}:
+                for err_msg in Medicine_form.errors.values():
+                    flash(
+                        f'There was an error with adding medicine: {err_msg}',
+                        category='danger'
+                    )
         if form.validate_on_submit():
             if form.details.data:
                 file = form.details.data
@@ -421,17 +421,11 @@ def allowed_photo_file(filename):
 @login_required
 @doctor_permission.require(http_exception=403)
 def upload_report():
-    patient_id = request.form.get('patient_id')
+
     appointment_id = request.form.get('appointment_id')
     diagnosis = request.form.get('diagnosis')
     report_file = request.files.get('file')
-
-    print(f"Patient ID: {patient_id}")
     print(f"Appointment ID: {appointment_id}")
-
-    if not patient_id:
-        flash('Patient ID is missing')
-        return redirect(request.url)
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
@@ -464,7 +458,7 @@ def upload_report():
         db.session.commit()
 
         flash('Report uploaded successfully', 'success')
-        return redirect(url_for('appointment_History', patient_id=patient_id))
+        return redirect(url_for('appointment_History', patient_id = appointment.patient_id))
     flash('Invalid file type. Only PDF files are allowed.')
     return redirect(request.url)
 
@@ -721,7 +715,7 @@ def doctor_appointments():
             is_available = f"{date} {timeslot[0]}" not in booked_timeslots
             available_timeslots.append((timeslot[0], timeslot[1], is_available))
         timeslots_by_date[date] = available_timeslots
-    
+
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
 
@@ -738,7 +732,7 @@ def doctor_appointments():
             session['doctor_id'] = doctor_id
             session['date'] = date_str
             session['start_time'] = start_time_str
-            session['end_time'] = end_time.strftime('%I:%M %p')  
+            session['end_time'] = end_time.strftime('%I:%M %p')
             return redirect(url_for('patient_checkout'))
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
@@ -926,7 +920,7 @@ def patient_checkout():
                     server.send_message(msg)
                     server.quit()
                     message_create.status = True
-                    
+
                     notification_create = Notification(
                         clinic_id=clinic_data.id,
                         date=date.strftime('%Y-%m-%d'),
@@ -955,7 +949,7 @@ def patient_checkout():
                     session['doctor'] = doctor_data.users.name
                     session['date'] = date.strftime('%d %b %Y')
                     session['start_time'] = start_time.strftime('%H:%M:%S')
-                    session['end_time'] = end_time  
+                    session['end_time'] = end_time
                     session['clinic_id'] = clinic_data.id
 
                     return redirect(url_for('checkout_success'))
@@ -982,7 +976,7 @@ def patient_checkout():
         gov=gov,
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
-        end_time=end_time,  
+        end_time=end_time,
         form=checkout_form
     )
 

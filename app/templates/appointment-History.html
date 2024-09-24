@@ -27,8 +27,15 @@
     <div class="row">
       <!-- Profile Sidebar: Sidebar navigation for different roles (Admin, Doctor, Patient, etc.) -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
-        %}
+        {% if current_user.user_roles.role.role_name == 'Admin' %} {% block
+        Adminsidebar %} {% include 'base-admin-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'clinic' %} {% block
+        clinicsidebar %} {% include 'base-clinic-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'doctor' %} {% block
+        doctorsidebar %} {% include 'base-doctor-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'patient' %} {% block
+        patientsidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+        {% endif %}
       </div>
       <!-- / Profile Sidebar -->
 
@@ -515,6 +522,7 @@
               <!-- /Prescription Tab -->
 
               <!-- Medical Records Tab: Displays medical records for the patient -->
+              <!-- Medical Records Tab -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">
                   <div class="card-body">
@@ -522,33 +530,32 @@
                       <table class="table table-hover table-center mb-0">
                         <thead>
                           <tr>
-                            <th>{{ translate('Appt Date') }}</th>
-                            <th>{{ translate('Diagnosis') }}</th>
-                            <th>{{ translate('Attachment') }}</th>
-                            <th>{{ translate('Created by') }}</th>
+                            <th>Appt Date</th>
+                            <!-- <th>Diagnosis</th> -->
+                            <th>Attachment</th>
+                            <th>Created by</th>
                             <th></th>
                           </tr>
                         </thead>
                         <tbody>
-                          <!-- Loop through appointments and display diagnosis and report attachments -->
                           {% for appointment in appointments %}
                           <tr>
                             <td>
-                              {{ appointment.date }}<span
-                                class="d-block text-info"
+                              {{ appointment.date }}
+                              <span class="d-block text-info"
                                 >{{ appointment.time_range }}</span
                               >
                             </td>
-                            <td>{{ appointment.Diagnosis }}</td>
-                            <td>
+                            <!-- <td>{{ appointment.Diagnosis }}</td> -->
+                            <td style="text-wrap: wrap">
                               {% if appointment.Report %}
                               <a
                                 href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
                                 target="_blank"
-                                >{{ appointment.Report }}</a
                               >
-                              {% else %} {{ translate('No attachment') }} {%
-                              endif %}
+                                {{ appointment.Report }}
+                              </a>
+                              {% else %} No attachment {% endif %}
                             </td>
 
                             <td>
@@ -576,21 +583,18 @@
                                   >
                                 </a>
                               </h2>
-                              {% else %} {{ translate('No doctor assigned') }}
-                              {% endif %}
+                              {% else %} No doctor assigned {% endif %}
                             </td>
 
-                            <!-- Options for printing or viewing report -->
                             <td class="text-right">
                               <div class="table-action">
-                                {% if appointment.Report %}
                                 <a
                                   href="javascript:void(0);"
                                   class="btn btn-sm bg-primary-light"
                                   onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')"
-                                  ><i class="fas fa-print"></i> {{
-                                  translate('Print') }}</a
                                 >
+                                  <i class="fas fa-print"></i> Print
+                                </a>
 
                                 <iframe
                                   id="pdfIframe"
@@ -602,7 +606,9 @@
                                   function printPDF(pdfUrl) {
                                     var iframe =
                                       document.getElementById("pdfIframe");
+
                                     iframe.src = pdfUrl;
+
                                     iframe.onload = function () {
                                       iframe.focus();
                                       iframe.contentWindow.print();
@@ -614,27 +620,25 @@
                                   href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
                                   class="btn btn-sm bg-info-light"
                                   target="_blank"
-                                  ><i class="far fa-eye"></i> {{
-                                  translate('View') }}</a
                                 >
-
-                                {% if current_user.doctor %}
+                                  <i class="far fa-eye"></i> View
+                                </a>
+                                {% if current_user.user_roles.role.role_name ==
+                                'doctor' %}
                                 <a
                                   href="javascript:void(0);"
                                   class="btn btn-sm bg-primary-light"
                                   data-toggle="modal"
                                   data-target="#add_medical_reports"
                                   data-appointment-id="{{ appointment.id }}"
-                                  data-patient-id="{{ patient.id }}"
                                 >
-                                  <i class="fas fa-upload"></i> {{
-                                  translate('Report') }}
+                                  <i class="fas fa-upload"></i> Report
                                 </a>
                                 {% endif %}
                               </div>
                             </td>
                           </tr>
-                          {% endif %} {% endfor %}
+                          {% endfor %}
                         </tbody>
                       </table>
                     </div>

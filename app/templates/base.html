@@ -214,23 +214,38 @@
                   current_user.user_roles.role.role_name == 'clinic' %} {% set
                   base_path = 'static/images/clinic/' %} {% elif
                   current_user.user_roles.role.role_name == 'patient' %} {% set
-                  base_path = 'static/images/patients/' %} {% endif %}
-
+                  base_path = 'static/images/patients/' %} {% endif %} {% if
+                  current_user.photo %}
                   <img
                     class="avatar-img rounded-circle"
                     src="{{base_path ~ current_user.photo}}"
                     alt="User Image"
                   />
+                  {% else %}
+                  <img
+                    class="avatar-img rounded-circle"
+                    src="../static/img/user.svg"
+                    alt="User Image"
+                  />
+                  {% endif %}
                 </span>
               </a>
               <div class="dropdown-menu user-dropmenu dropdown-menu-right">
                 <div class="user-header align-items-center">
                   <div class="avatar avatar-sm">
+                    {% if current_user.photo %}
                     <img
                       class="avatar-img rounded-circle"
                       src="{{base_path ~ current_user.photo}}"
                       alt="User Image"
                     />
+                    {% else %}
+                    <img
+                      class="avatar-img rounded-circle"
+                      src="../static/img/user.svg"
+                      alt="User Image"
+                    />
+                    {% endif %}
                   </div>
                   <div class="user-text">
                     <h6>{{ current_user.name }}</h6>
@@ -290,8 +305,8 @@
 
     {% if current_user.is_authenticated and current_user.clinic %}
     <script type="text/javascript">
-      const Clinic_id = '{{ current_user.clinic.id }}';
-      console.log('Clinic ID:', Clinic_id);
+      const Clinic_id = "{{ current_user.clinic.id }}";
+      console.log("Clinic ID:", Clinic_id);
     </script>
     {% endif %} {% block js %} {% include 'base-js.html' %} {% endblock %}
   </body>

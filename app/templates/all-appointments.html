@@ -34,7 +34,7 @@
       <div class="col-md-7 col-lg-8 col-xl-9">
         <div class="card">
             <div class="card-body pt-0">
-            
+
                 <!-- Tab Menu -->
                 <nav class="user-tabs mb-4">
                     <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
@@ -44,10 +44,10 @@
                     </ul>
                 </nav>
                 <!-- /Tab Menu -->
-                
+
                 <!-- Tab Content -->
                 <div class="tab-content pt-0">
-                    
+
                     <!-- Appointment Tab -->
                     <div id="pat_appointments" class="tab-pane fade show active">
                       <div class="card card-table mb-0">
@@ -78,7 +78,7 @@
                                                 <h2 class="table-avatar">
                                                   {% set base_path = 'static/images/doctors/' %}
                                                   <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.users.photo}}" alt="User Image"></p>
-    
+
                                                   <p>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</p>
                                                 </h2>
                                               </td>
@@ -124,18 +124,20 @@
                           </div>
                       </div>
                   </div>
-                  
+
                     <!-- /Appointment Tab -->
-                    
+
                 </div>
                 <!-- Tab Content -->
-                
+
             </div>
         </div>
     </div>
-    
+
     </div>
+  </div>
     <!-- /Page Content -->
-    {% endblock %}
+
   </div>
 </div>
+{% endblock %}
