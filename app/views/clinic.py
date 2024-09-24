@@ -38,22 +38,34 @@ def clinic_dash():
     )
     today = datetime.today().strftime('%Y-%m-%d')
 
+    today_appointments_count = Appointment.query.filter_by(clinic_id=clinic.id, date=today).count()
+
     # Removed working_hours logic
     is_open_today = None  # Or any other logic if applicable
 
-    appointments = (
+    today_appointments = (
         db.session.query(Appointment, Patient, Doctor)
         .join(Patient, Appointment.patient_id == Patient.id)
         .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .filter(Appointment.clinic_id == clinic.id, Appointment.date >= today)
+        .filter(Appointment.clinic_id == clinic.id, Appointment.date == today)
         .all()
     )
+
+    upcoming_appointments = (
+        db.session.query(Appointment, Patient, Doctor)
+        .join(Patient, Appointment.patient_id == Patient.id)
+        .join(Doctor, Appointment.doctor_id == Doctor.id)
+        .filter(Appointment.clinic_id == clinic.id, Appointment.date > today)
+        .all()
+    )
+
     return render_template(
         'clinic-dashboard.html',
         clinic=clinic,
         today_appointments=today_appointments,
         total_appointments=total_appointments,
-        appointments=appointments,
+        today_appointments_count=today_appointments_count,
+        upcoming_appointments=upcoming_appointments,
         clinic_id=clinic.id
     )
 
