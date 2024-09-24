@@ -20,19 +20,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     socket.on('appointment_notification', function (data) {
       console.log('Appointment notification:', data);
-      addNotification(data, true);
+      addNotification(data, true, true);
     });
 
     socket.on('disconnected', function (msg) {
       console.log(msg.message);
     });
 
-    function addNotification(data, store = false) {
+    function addNotification(data, store = false, isNewNotification = false) {
       var notificationList = document.getElementById('notification-list');
       var notificationCount = document.getElementById('notification-count');
 
       var newNotification = document.createElement('li');
       newNotification.classList.add('notification-message');
+
+      if (isNewNotification) {
+        newNotification.classList.add('unread-notification');
+      }
 
       var currentTime = new Date();
       var formattedTime = currentTime.toLocaleTimeString([], {
@@ -61,10 +65,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
       newNotification.innerHTML = notificationContent;
       notificationList.prepend(newNotification);
 
-      var currentCount = parseInt(notificationCount.textContent);
-      notificationCount.textContent = currentCount + 1;
+      if (isNewNotification) {
+        var currentCount = parseInt(notificationCount.textContent);
+        notificationCount.textContent = currentCount + 1;
 
-      playNotificationSound();
+        playNotificationSound();
+      }
+
       if (store) {
         storeNotification(data);
       }
@@ -92,7 +99,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       var notifications =
         JSON.parse(localStorage.getItem('notifications')) || [];
       notifications.forEach((notification) => {
-        addNotification(notification, true);
+        addNotification(notification, false, false);
       });
     }
 
