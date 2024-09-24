@@ -108,7 +108,7 @@ block body %}
                           <div class="d-block mt-3 doctor-title">
                             <span>{{ translate('Today Appt') }}</span>
                           </div>
-                          <div class="d-block text-muted">{{today_appointments}}</div>
+                          <div class="d-block text-muted">{{today_appointments_count}}</div>
                         </div>
                       </div>
                     </div>
@@ -168,69 +168,124 @@ block body %}
             <div class="col-md-12">
               <h4 class="mb-4">{{ translate('Patient Appoinment') }}</h4>
               <div class="appointment-tab">
-                <!-- Appointment Tab -->
-                <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
-                  <li class="nav-item">
-                    <a
-                      class="nav-link active"
-                      href="#today-appointments"
-                      data-toggle="tab"
-                      >{{ translate('appointments') }}</a>
-                  </li>
-                </ul>
-                <!-- /Appointment Tab -->
+<!-- Appointment Tab -->
+<ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
+  <li class="nav-item">
+    <a
+      class="nav-link active"
+      href="#today-appointments"
+      data-toggle="tab"
+      >{{ translate('Today') }}</a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      href="#upcoming-appointments"
+      data-toggle="tab"
+      >{{ translate('Upcoming') }}</a>
+  </li>
+</ul>
+<!-- /Appointment Tab -->
+
 
                 <div class="tab-content">
-                  <!-- Today Appointment Tab -->
-                  <div class="tab-pane active" id="today-appointments">
-                    <div class="card card-table mb-0">
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table table-hover table-center mb-0">
-                            <thead>
-                              <tr>
-                                <th>{{ translate('Patient Name') }}</th>
-                                <th>{{ translate('Appt Date') }}</th>
-                                <th class="text-center">{{ translate('Paid Amount') }}</th>
-                                <th></th>
-
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {% for appointment, patient, doctor in
-                              appointments %}
-                              <tr>
-                                <td>
-                                  <h2 class="table-avatar">
-                                      {{ translate(patient.users.name) }}<span>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</span>
-                                  </h2>
-                                </td>
-                                <td>
-                                  {{ translate(appointment.date) }}
-                                  <span class="d-block text-info"
-                                    >{{ translate(appointment.time) }}</span
-                                  >
-                                </td>
-                                <td class="text-center">
-                                  {{ translate(appointment.doctor.price)  }}$
-                                </td>
-                                <td>
-                                  {% if appointment.seen == false %}
-                                  <i class="fas fa-exclamation-circle text-warning"></i>
-                                  {% else %}
-                                  <i class="fas fa-check-circle text-success"></i>
-                                  {% endif %}
-                                </td>
-
-                              </tr>
-                              {% endfor %}
-                            </tbody>
-                          </table>
-                        </div>
+<!-- /Appointment Tab -->
+<div class="tab-content">
+  
+                <!-- Today Appointment Tab -->
+                <div class="tab-pane active" id="today-appointments">
+                  <div class="card card-table mb-0">
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table class="table table-hover table-center mb-0">
+                          <thead>
+                            <tr>
+                              <th>{{ translate('Patient Name') }}</th>
+                              <th>{{ translate('Appt Date') }}</th>
+                              <th class="text-center">{{ translate('Paid Amount') }}</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for appointment, patient, doctor in today_appointments %}
+                            <tr>
+                              <td>
+                                <h2 class="table-avatar">
+                                  {{ translate(patient.users.name) }}<span>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</span>
+                                </h2>
+                              </td>
+                              <td>
+                                {{ translate(appointment.date) }}
+                                <span class="d-block text-info">{{ translate(appointment.time) }}</span>
+                              </td>
+                              <td class="text-center">
+                                {{ translate(appointment.doctor.price) }}$
+                              </td>
+                              <td>
+                                {% if appointment.seen == false %}
+                                <i class="fas fa-exclamation-circle text-warning"></i>
+                                {% else %}
+                                <i class="fas fa-check-circle text-success"></i>
+                                {% endif %}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
-                  <!-- /Today Appointment Tab -->
+                </div>
+                <!-- /Today Appointment Tab -->
+                
+                <!-- Upcoming Appointment Tab -->
+                <div class="tab-pane" id="upcoming-appointments">
+                  <div class="card card-table mb-0">
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table class="table table-hover table-center mb-0">
+                          <thead>
+                            <tr>
+                              <th>{{ translate('Patient Name') }}</th>
+                              <th>{{ translate('Appt Date') }}</th>
+                              <th class="text-center">{{ translate('Paid Amount') }}</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for appointment, patient, doctor in upcoming_appointments %}
+                            <tr>
+                              <td>
+                                <h2 class="table-avatar">
+                                  {{ translate(patient.users.name) }}<span>{{ translate('Dr.') }} {{ translate(doctor.users.name) }}</span>
+                                </h2>
+                              </td>
+                              <td>
+                                {{ translate(appointment.date) }}
+                                <span class="d-block text-info">{{ translate(appointment.time) }}</span>
+                              </td>
+                              <td class="text-center">
+                                {{ translate(appointment.doctor.price) }}$
+                              </td>
+                              <td>
+                                {% if appointment.seen == false %}
+                                <i class="fas fa-exclamation-circle text-warning"></i>
+                                {% else %}
+                                <i class="fas fa-check-circle text-success"></i>
+                                {% endif %}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Upcoming Appointment Tab -->
+
+              </div>
+
                 </div>
               </div>
             </div>
