@@ -53,15 +53,19 @@
                           >{{ patient.patient_name }}</a
                         >
                       </h3>
-                      <div class="patient-details">
-                        <h5>
-                          <i class="fas fa-id-card-alt"></i> {{
-                          patient.patient_id }}
-                        </h5>
-                        <h5 class="mb-0">
-                          <i class="fas fa-map-marker-alt"></i> {{
-                          patient.address }}
-                        </h5>
+                      <div class="patient-details d-flex w-100 mb-0 justify-content-around">
+                        <p>
+                          <i class="far fa-calendar-check"></i
+                            ><span class="ml-2">{{ patient.completed_count }}</span>
+                        </p>
+                        <p>
+                          <i class="fas fa-calendar-plus"></i>
+                          <span class="ml-2">{{ patient.confirmed_count }}</span>
+                        </p>
+                        <p>
+                          <i class="fas fa-calendar-times"></i
+                            ><span class="ml-2">{{ patient.canceled_count }}</span>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -79,18 +83,6 @@
                     <li>
                       <i class="fas fa-allergies"></i>
                       <span>{{ patient.allergy }}</span>
-                    </li>
-                    <li>
-                      <i class="far fa-calendar-check"></i
-                      ><span>{{ patient.completed_count }}</span>
-                    </li>
-                    <li>
-                      <i class="fas fa-calendar-plus"></i>
-                      <span>{{ patient.confirmed_count }}</span>
-                    </li>
-                    <li>
-                      <i class="fas fa-calendar-times"></i
-                      ><span>{{ patient.canceled_count }}</span>
                     </li>
                   </ul>
                 </div>
