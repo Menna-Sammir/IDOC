@@ -256,18 +256,28 @@
                                 </td>
                                 <td>{{ appointment.patient.phone }}</td>
                                 <td class="text-centre">
-                                  <div class="table-action">
-                                    {% if not appointment.seen %}
-                                    <form action="/doctor_dashboard" method="POST">
-                                      {{ form.hidden_tag() }}
-                                      {{ form.csrf_token }}
-                                      <input type="hidden" name="appointment_id" value="{{ appointment.id }}" />
-                                      <button type="submit" name="seen" class="btn btn-sm bg-success-light">
-                                        <i class="far fa-eye"></i> {{ translate('Seen') }}
-                                      </button>
-                                    </form>
+                                    <!-- Appointment Status with dynamic badge color -->
+                                    {% if appointment.status.name == 'Cancelled' %}
+                                    <span
+                                      class="badge badge-pill bg-danger position-relative d-inline"
+                                      >Cancelled</span
+                                    >
+                                    {% elif appointment.status.name == 'Pending' %}
+                                    <span
+                                      class="badge badge-pill bg-info position-relative d-inline"
+                                      >Pending</span
+                                    >
+                                    {% elif appointment.status.name == 'Completed' %}
+                                    <span
+                                      class="badge badge-pill bg-success position-relative d-inline"
+                                      >Completed</span
+                                    >
+                                    {% else %}
+                                    <span
+                                      class="badge badge-pill bg-secondary position-relative d-inline"
+                                      >{{ appointment.status.name }}</span
+                                    >
                                     {% endif %}
-                                  </div>
                                 </td>
                               </tr>
                               {% endif %}
