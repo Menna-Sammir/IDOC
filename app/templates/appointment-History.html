@@ -140,7 +140,7 @@
                               endif %} {% else %} {{ translate('No Follow-Up')
                               }} {% endif %}
                             </td>
-                            {% if current_user.patient %}
+                            {% if current_user.patient or current_user.clinic %}
                             <td>
                               <!-- Appointment Status with dynamic badge color -->
                               {% if appointment.status.name == 'Cancelled' %}

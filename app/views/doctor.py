@@ -191,19 +191,30 @@ def add_prescription():
 ### patient list
 @app.route('/patient_list', methods=['GET', 'POST'])
 @login_required
-@doctor_permission.require(http_exception=403)
 def patient_list():
+    clinic = Clinic.query.filter_by(user_id=current_user.id).first()
     doctor = Doctor.query.filter_by(user_id=current_user.id).first()
-    if doctor is None:
-        return translate('User is not a doctor'), 403
 
-    patients = (
-        db.session.query(Patient, User)
-        .join(User, Patient.user_id == User.id)
-        .join(Appointment, Appointment.patient_id == Patient.id)
-        .filter(Appointment.doctor_id == doctor.id)
-        .distinct(Patient.id)
-        .all()
-    )
+    if clinic:
+        patients = (
+            db.session.query(Patient, User)
+            .join(User, Patient.user_id == User.id)
+            .join(Appointment, Appointment.patient_id == Patient.id)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .filter(Doctor.clinic_id == clinic.id)
+            .distinct(Patient.id)
+            .all()
+        )
+    elif doctor:
+        patients = (
+            db.session.query(Patient, User)
+            .join(User, Patient.user_id == User.id)
+            .join(Appointment, Appointment.patient_id == Patient.id)
+            .filter(Appointment.doctor_id == doctor.id)
+            .distinct(Patient.id)
+            .all()
+        )
+    else:
+        return translate('User is not a doctor or clinic'), 403
 
     return render_template('patient-list.html', doctor=doctor, patients=patients)
