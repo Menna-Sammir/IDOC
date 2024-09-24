@@ -337,12 +337,12 @@ def appointment_History():
             except Exception as e:
                 db.session.rollback()
                 flash(f'There was an error: {e}', category='danger')
-        if Medicine_form.errors != {}:
-            for err_msg in Medicine_form.errors.values():
-                flash(
-                    f'There was an error with adding medicine: {err_msg}',
-                    category='danger'
-                )
+            if Medicine_form.errors != {}:
+                for err_msg in Medicine_form.errors.values():
+                    flash(
+                        f'There was an error with adding medicine: {err_msg}',
+                        category='danger'
+                    )
         if form.validate_on_submit():
             if form.details.data:
                 file = form.details.data
@@ -357,7 +357,6 @@ def appointment_History():
                         app.config['UPLOAD_FOLDER'], 'history_files', new_filename
                     )
                 )
-
                 new_history = PatientHistory(
                     details=new_filename,
                     type=form.type.data,
