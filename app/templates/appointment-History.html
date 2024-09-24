@@ -357,6 +357,8 @@
               <!-- Prescription Tab: Displays patient's prescriptions -->
               <div class="tab-pane fade" id="pat_prescriptions">
                 <div class="text-right">
+                  {% if current_user.role == 'doctor' or current_user.role ==
+                  'patient' %}
                   <a
                     href="#"
                     class="add-new-btn"
@@ -364,6 +366,7 @@
                     data-target="#prescription_modal"
                     >{{ translate('Add Prescription') }}</a
                   >
+                  {% endif %}
                 </div>
                 <div
                   class="modal fade custom-modal"
@@ -520,7 +523,6 @@
               </div>
               <!-- /Prescription Tab -->
 
-              <!-- Medical Records Tab: Displays medical records for the patient -->
               <!-- Medical Records Tab -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">

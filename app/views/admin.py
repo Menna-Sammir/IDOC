@@ -304,7 +304,8 @@ def all_patients():
                 User.photo.label('patient_photo'),
                 Patient.phone.label('patient_phone'),
                 Patient.blood_group.label('blood_group'),
-                Patient.allergy.label('allergy')
+                Patient.allergy.label('allergy'),
+                Patient.address.label('address')
             )
             .join(User, Patient.user_id == User.id)
             .all()
@@ -351,6 +352,7 @@ def all_patients():
                     'patient_phone': patient.patient_phone,
                     'blood_group': blood_group,
                     'allergy': allergy,
+                    'address': patient.address,
                     'completed_count': completed_count,
                     'confirmed_count': confirmed_count,
                     'canceled_count': canceled_count
