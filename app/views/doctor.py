@@ -39,6 +39,9 @@ def doctor_dash():
     appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(
         asc(Appointment.time)
     )
+    all_appointments = Appointment.query.order_by(
+    asc(Appointment.date), asc(Appointment.time)
+    ).all()
     if appointments.all():
         nextAppt = appointments.order_by(asc(Appointment.time)).first().id
     else:
@@ -67,7 +70,9 @@ def doctor_dash():
         patient_count=patient_count,
         monthAppointments=monthAppointments,
         nextAppt=nextAppt,
-        form=form
+        form=form,
+        all_appointments=all_appointments,
+        date=date
     )
 
 

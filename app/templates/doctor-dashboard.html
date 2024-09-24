@@ -122,6 +122,9 @@
                     >{{ translate('Today') }}</a
                   >
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link ml-3" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
+                </li>
               </ul>
               <!-- /Appointment Tab -->
 
@@ -129,7 +132,7 @@
                 <!-- Today Appointment Tab -->
                 <div class="tab-content">
                   <!-- Today Appointment Tab -->
-                  <div class="tab-pane show active" id="upcoming-appointments">
+                  <div class="tab-pane show active" id="Today-appointments">
                     <div class="card card-table mb-0">
                       <div class="card-body">
                         <div class="table-responsive">
@@ -212,6 +215,70 @@
                       </div>
                     </div>
                   </div>
+                  <div class="tab-pane show" id="upcoming-appointments">
+                    <div class="card card-table mb-0">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                            <thead>
+                              <tr>
+                                <th>{{ translate('Patient Name') }}</th>
+                                <th>{{ translate('Appt Date') }}</th>
+                                <th>{{ translate('Phone') }}</th>
+                                <th>{{ translate('Status') }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for appointment in all_appointments %}
+                              {% if appointment.date > date.today() %}
+                              <tr>
+                                <td>
+                                    <h2 class="table-avatar">
+                                    <div class="avatar avatar-sm mr-2">
+                                      {% set base_path = 'static/images/patients/' %}
+                                      <img
+                                        class="avatar-img rounded-circle"
+                                        src="{{ base_path ~ appointment.patient.users.photo }}"
+                                        alt="User Image"
+                                      />
+                                    </div>
+                                    <p class="mt-2">
+                                      {{ appointment.patient.users.name }}
+                                      <span>{{ appointment.appointment_id }}</span>
+                                    </p>
+                                  </h2>
+                                </td>
+                                <td>
+                                  {{ appointment.date }}
+                                  <span class="d-block text-info">
+                                    {{ appointment.time.strftime('%I:%M %p') }}
+                                  </span>
+                                </td>
+                                <td>{{ appointment.patient.phone }}</td>
+                                <td class="text-centre">
+                                  <div class="table-action">
+                                    {% if not appointment.seen %}
+                                    <form action="/doctor_dashboard" method="POST">
+                                      {{ form.hidden_tag() }}
+                                      {{ form.csrf_token }}
+                                      <input type="hidden" name="appointment_id" value="{{ appointment.id }}" />
+                                      <button type="submit" name="seen" class="btn btn-sm bg-success-light">
+                                        <i class="far fa-eye"></i> {{ translate('Seen') }}
+                                      </button>
+                                    </form>
+                                    {% endif %}
+                                  </div>
+                                </td>
+                              </tr>
+                              {% endif %}
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <!-- /Today Appointment Tab -->
                 </div>
               </div>
