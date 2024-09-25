@@ -162,8 +162,8 @@ def add_clinic():
                             category='danger'
                         )
         except Exception as e:
-            flash(f'something wrong', category='danger')
-            print('Exception', e)
+            db.session.rollback()
+            raise e
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
@@ -280,8 +280,9 @@ def add_doctor():
                     )
                     return redirect(url_for('clinic_dash'))
             except Exception as e:
-                print(str(e))
-                flash(f'something wrong', category='danger')
+                db.session.rollback()
+                raise e
+
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
@@ -359,9 +360,7 @@ def all_patients():
         return render_template('all-patients.html', patient_data=patient_data)
     except Exception as e:
         db.session.rollback()
-        flash(f'There was an error: {e}', category='danger')
-# class CustomException(Exception):
-#     pass
+        raise e
 
 
 @app.route('/all_appointments', methods=['GET'])
@@ -369,7 +368,6 @@ def all_patients():
 @admin_permission.require(http_exception=403)
 def all_appointments():
     try:
-
         appointments = (
             db.session.query(Appointment, Doctor, Clinic, Patient, User)
             .join(Patient, Appointment.patient_id == Patient.id)
@@ -378,11 +376,6 @@ def all_appointments():
             .join(Clinic, Appointment.clinic_id == Clinic.id)
             .all()
         )
-        # raise CustomException("A custom error occurred!")
-
         return render_template('all-appointments.html', appointments=appointments)
     except Exception as e:
-        print("fffffffffffffffffffffffffff")
-        # db.session.rollback()
-        flash(f'There was an error: {e}', category='danger')
-        # raise handle_exception(f'There was an error: {e}', category='danger')
+        raise e

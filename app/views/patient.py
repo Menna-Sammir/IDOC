@@ -47,220 +47,154 @@ doctor_permission = Permission(RoleNeed('doctor'))
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
-    form = SearchForm()
-    E_form = EmailForm()
+    try:
+        form = SearchForm()
+        E_form = EmailForm()
 
-    # Get all specializations, regardless of whether they have doctors associated with them
-    all_specializations = db.session.query(Specialization).all()
+        # Get all specializations, regardless of whether they have doctors associated with them
+        all_specializations = db.session.query(Specialization).all()
 
-    # Get governorates that have clinics associated with doctors and same specialization
-    governorates_with_clinics = (
-        db.session.query(Governorate)
-        .join(Clinic, Clinic.governorate_id == Governorate.id)
-        .join(Doctor, Doctor.clinic_id == Clinic.id)
-        .distinct()
-        .all()
-    )
+        # Get governorates that have clinics associated with doctors and same specialization
+        governorates_with_clinics = (
+            db.session.query(Governorate)
+            .join(Clinic, Clinic.governorate_id == Governorate.id)
+            .join(Doctor, Doctor.clinic_id == Clinic.id)
+            .distinct()
+            .all()
+        )
 
-    # Set the choices for the specialization dropdown with all specializations
-    form.specialization.choices = [('', translate('Select a specialization'))] + [
-        (s.id, translate(s.specialization_name)) for s in all_specializations
-    ]
+        # Set the choices for the specialization dropdown with all specializations
+        form.specialization.choices = [('', translate('Select a specialization'))] + [
+            (s.id, translate(s.specialization_name)) for s in all_specializations
+        ]
 
-    # Set the choices for the governorate dropdown based on clinics that have doctors with the selected specialization
-    form.governorate.choices = [('', translate('Select a governorate'))] + [
-        (g.id, translate(g.governorate_name)) for g in governorates_with_clinics
-    ]
+        # Set the choices for the governorate dropdown based on clinics that have doctors with the selected specialization
+        form.governorate.choices = [('', translate('Select a governorate'))] + [
+            (g.id, translate(g.governorate_name)) for g in governorates_with_clinics
+        ]
 
-    specialties = all_specializations
-    doctors = Doctor.query.all()
+        specialties = all_specializations
+        doctors = Doctor.query.all()
 
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            session['specialization_id'] = form.specialization.data
-            session['governorate_id'] = form.governorate.data
-            session['doctor_name'] = form.doctor_name.data
-            return redirect(url_for('search_doctor'))
-    if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(
-                f'there was an error with creating a user: {err_msg}', category='danger'
-            )
-    return render_template(
-        'index.html', form=form, specialties=specialties, doctors=doctors, E_form=E_form
-    )
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                session['specialization_id'] = form.specialization.data
+                session['governorate_id'] = form.governorate.data
+                session['doctor_name'] = form.doctor_name.data
+                return redirect(url_for('search_doctor'))
+        if form.errors != {}:
+            for err_msg in form.errors.values():
+                flash(
+                    f'there was an error with creating a user: {err_msg}',
+                    category='danger'
+                )
+        return render_template(
+            'index.html',
+            form=form,
+            specialties=specialties,
+            doctors=doctors,
+            E_form=E_form
+        )
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 
 @app.template_filter('basename')
 def basename(path):
     return os.path.basename(path)
 
+
 @app.route('/patient_dashboard', methods=['GET', 'POST'])
 @login_required
 def patient_dashboard():
-    # Fetch patient details
-    if current_user.patient:
-        patient = Patient.query.filter_by(user_id=current_user.id).first()
-        if not patient:
-            flash('Patient not found', 'danger')
-            return redirect(url_for('patient_dashboard'))
-        patient_id = patient.id
-    elif current_user.doctor:
-        patient_id = request.args.get('patient_id')
-        if not patient_id:
-            flash('Patient ID is missing.', 'danger')
-            return redirect(url_for('doctor_dash'))
-        patient = Patient.query.get(patient_id)
-        if not patient:
-            flash('Patient not found', 'danger')
-            return redirect(url_for('doctor_dash'))
-    else:
-        flash('Unauthorized access', 'danger')
-        return redirect(url_for('home'))
-    # Get next appointment
-    next_appointment_query = (
-        db.session.query(Appointment, Doctor, Clinic, Specialization)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .join(Clinic, Doctor.clinic_id == Clinic.id)
-        .join(Specialization, Doctor.specialization_id == Specialization.id)
-        .filter(Appointment.patient_id == patient.id)
-        .filter(Appointment.date >= db.func.current_date())
-        .filter(Appointment.seen == False)
-        .filter(Appointment.status == AppStatus.Confirmed.value)
-        .order_by(Appointment.date.asc(), Appointment.time.asc())
-    )
-    next_appointment = next_appointment_query.first()
+    try:
+        # Fetch patient details
+        if current_user.patient:
+            patient = Patient.query.filter_by(user_id=current_user.id).first()
+            if not patient:
+                flash('Patient not found', 'danger')
+                return redirect(url_for('patient_dashboard'))
+            patient_id = patient.id
+        # elif current_user.doctor:
+        #     patient_id = request.args.get('patient_id')
+        #     if not patient_id:
+        #         flash('Patient ID is missing.', 'danger')
+        #         return redirect(url_for('doctor_dash'))
+        else:
+            flash('Unauthorized access', 'danger')
+            return redirect(url_for('home'))
+        # Get next appointment
 
-    if next_appointment:
-        appointment, doctor, clinic, specialization = next_appointment
-
-        appointment_start_time = datetime.combine(appointment.date, appointment.time)
-        duration_delta = timedelta(
-            hours=doctor.duration.hour, minutes=doctor.duration.minute
+        Today_date = datetime.now().date()
+        next_appointment_data = (
+            db.session.query(Appointment)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .join(Clinic, Doctor.clinic_id == Clinic.id)
+            .join(Specialization, Doctor.specialization_id == Specialization.id)
+            .filter(
+                Appointment.patient_id == patient_id,
+                Appointment.date >= Today_date,
+                Appointment.seen == False,
+                Appointment.status == AppStatus.Confirmed.value
+            )
+            .order_by(Appointment.date.asc(), Appointment.time.asc())
         )
-        appointment_end_time = (appointment_start_time + duration_delta).time()
 
-        time_range = f"{appointment.time.strftime('%H:%M')} - {appointment_end_time.strftime('%H:%M')}"
-        duration_str = f"{doctor.duration.minute} min"
-        formatted_date = appointment.date.strftime('%A, %d %B').capitalize()
-
-        appointment_data = {
-            'date': formatted_date,
-            'time_range': time_range,
-            'duration': duration_str,
-            'clinic_address': clinic.address,
-            'doctor_name': doctor.users.name,
-            'doctor_photo': doctor.users.photo,
-            'doctor_specialization': specialization.specialization_name
-        }
-    else:
-        appointment_data = None
-    # Get monthly appointment count
-    month_appointments_count = Appointment.query.filter(
-        func.extract('month', Appointment.date) == datetime.now().month,
-        Appointment.patient_id == patient.id
-    ).count()
-
-    # Get the number of upcoming appointments
-    upcoming_appointments_count = next_appointment_query.count()
-
-    # Blood group and allergy info
-    blood_group = patient.blood_group.name if patient.blood_group else 'Not Provided'
-    allergy = patient.allergy.name if patient.allergy else 'Not Provided'
-
-    # Fetch prescriptions
-    prescriptions_query = db.session.query(PatientMedicine).filter(
-        PatientMedicine.patient_id == patient.id
-    )
-    all_prescriptions = [
-        {
-            'name': medicine.medName,
-            'quantity': medicine.Quantity,
-            'times_of_day': [time.time_of_day.name for time in medicine.medicine_times]
-        }
-        for medicine in prescriptions_query.all()
-    ]
-
-    # Limit to 4 prescriptions for display
-    limited_prescriptions = all_prescriptions[:4]
-    show_more_button = len(all_prescriptions) > 4
-    Today_date = datetime.now().date()
-
-    appointments = (
-        db.session.query(Appointment)
-        .join(Appointment.doctor)
-        .join(Doctor.users)
-        .options(joinedload(Appointment.doctor).joinedload(Doctor.users))
-        .filter(
-            Appointment.patient_id == patient_id,
-            Appointment.status == AppStatus.Confirmed,
-            Appointment.date >= Today_date
+        # Fetch prescriptions
+        prescriptions_query = (
+            db.session.query(PatientMedicine)
+            .filter(PatientMedicine.patient_id == patient_id)
+            .options(joinedload(PatientMedicine.medicine_times))
         )
-        .all()
-    )
+        show_more_button = prescriptions_query.count() > 4
 
-    form = PatientHistoryForm()
-    if form.validate_on_submit():
-        if form.details.data:
-            file = form.details.data
-            unique_str = str(uuid.uuid4())[:8]
-            original_filename, extension = os.path.splitext(file.filename)
-            new_filename = (
-                f"{unique_str}_{secure_filename(original_filename)}{extension}"
-            )
+        form = PatientHistoryForm()
+        if form.validate_on_submit():
+            if form.details.data:
+                file = form.details.data
+                unique_str = str(uuid.uuid4())[:8]
+                original_filename, extension = os.path.splitext(file.filename)
+                new_filename = (
+                    f"{unique_str}_{secure_filename(original_filename)}{extension}"
+                )
 
-            file.save(
-                os.path.join(app.config['UPLOAD_FOLDER'], 'history_files', new_filename)
-            )
+                file.save(
+                    os.path.join(
+                        app.config['UPLOAD_FOLDER'], 'history_files', new_filename
+                    )
+                )
 
-            new_history = PatientHistory(
-                details=new_filename,
-                type=form.type.data,
-                addedBy=current_user.id,
-                patient_id=patient_id
-            )
-            db.session.add(new_history)
-            db.session.commit()
-            flash('History record added successfully', 'success')
-            return redirect(url_for('patient_dashboard', patient_id=patient_id))
-    if request.method == 'POST':
-        # Handle form submission if necessary
-        pass
-    specialties = Specialization.query.all()
-    # Fetch patient history with file paths
-    patient_history_query = PatientHistory.query.filter_by(patient_id=patient_id).all()
+                new_history = PatientHistory(
+                    details=new_filename,
+                    type=form.type.data,
+                    addedBy=current_user.id,
+                    patient_id=patient_id
+                )
+                db.session.add(new_history)
+                db.session.commit()
+                flash('History record added successfully', 'success')
+                return redirect(url_for('patient_dashboard', patient_id=patient_id))
+        # Fetch patient history with file paths
+        patient_history = (
+            PatientHistory.query.filter_by(patient_id=patient_id)
+            .options(joinedload(PatientHistory.user))
+            .all()
+        )
 
-    # Organize patient history data
-    patient_history = [
-        {
-            'details': history.details,
-            'type': history.type.value if history.type else 'Not Provided',
-            'added_by': history.user.name,
-            'file_link': url_for(
-                'static', filename=f'images/history_files/{history.details}'
-            )
-            if history.details
-            else None
-        }
-        for history in patient_history_query
-    ]
-    return render_template(
-        'patient-dashboard.html',
-        user_name=current_user.name,
-        patient=patient,
-        appointments=appointments,
-        appointment=appointment_data,
-        upcoming_appointments_count=upcoming_appointments_count,
-        month_appointments_count=month_appointments_count,
-        blood_group=blood_group,
-        allergy=allergy,
-        specialties=specialties,
-        prescriptions=limited_prescriptions,
-        show_more_button=show_more_button,
-        patient_history=patient_history,
-        form=form,
-        AppStatus=AppStatus
-    )
+        return render_template(
+            'patient-dashboard.html',
+            next_appointments=next_appointment_data.all(),
+            appointment=next_appointment_data.first(),
+            prescriptions=prescriptions_query.limit(4).all(),
+            show_more_button=show_more_button,
+            patient_history=patient_history,
+            form=form,
+            AppStatus=AppStatus
+        )
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 
 @app.route('/appointment_History', methods=['GET', 'POST'])
@@ -421,7 +355,6 @@ def allowed_photo_file(filename):
 @login_required
 @doctor_permission.require(http_exception=403)
 def upload_report():
-
     appointment_id = request.form.get('appointment_id')
     diagnosis = request.form.get('diagnosis')
     report_file = request.files.get('file')
@@ -458,7 +391,9 @@ def upload_report():
         db.session.commit()
 
         flash('Report uploaded successfully', 'success')
-        return redirect(url_for('appointment_History', patient_id = appointment.patient_id))
+        return redirect(
+            url_for('appointment_History', patient_id=appointment.patient_id)
+        )
     flash('Invalid file type. Only PDF files are allowed.')
     return redirect(request.url)
 
@@ -715,19 +650,20 @@ def doctor_appointments():
             is_available = f"{date} {timeslot[0]}" not in booked_timeslots
             available_timeslots.append((timeslot[0], timeslot[1], is_available))
         timeslots_by_date[date] = available_timeslots
-
     if request.method == 'POST':
         selected_timeslot = request.form.get('timeslot')
 
         if not selected_timeslot:
             flash('Please select a time slot before continuing.', 'primary')
             return redirect(request.url)
-
         try:
             date_str, start_time_str = selected_timeslot.split(' ', 1)
             start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
 
-            end_time = (datetime.combine(datetime.strptime(date_str, '%Y-%m-%d'), start_time) + duration).time()
+            end_time = (
+                datetime.combine(datetime.strptime(date_str, '%Y-%m-%d'), start_time)
+                + duration
+            ).time()
 
             session['doctor_id'] = doctor_id
             session['date'] = date_str
@@ -737,7 +673,6 @@ def doctor_appointments():
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
             return redirect(request.url)
-
     return render_template(
         'booking.html',
         form=form,
@@ -747,6 +682,7 @@ def doctor_appointments():
         specialization_name=specialization_name,
         other_doctors=other_doctors
     )
+
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
@@ -809,7 +745,6 @@ def patient_checkout():
                         role_to_create = UserRole(role_id=role, user=user_to_create)
                         db.session.add(patient_create)
                         db.session.add(role_to_create)
-
                     appointment_create = Appointment(
                         date=date.strftime('%Y-%m-%d'),
                         time=start_time.strftime('%H:%M:%S'),
@@ -823,76 +758,289 @@ def patient_checkout():
                     logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
 
                     message_body = f"""
+
+
+
                     <html>
+
+
+
                         <head>
+
+
+
                             <style>
+
+
+
                                 body {{
+
+
+
                                     font-family: Arial, sans-serif;
+
+
+
                                     font-size: 18px;
+
+
+
                                     margin: 0;
+
+
+
                                     padding: 0;
+
+
+
                                     background-color: #f4f4f4;
+
+
+
                                 }}
+
+
+
                                 .container {{
+
+
+
                                     width: 80%;
+
+
+
                                     margin: 20px auto;
+
+
+
                                     background-color: #fff;
+
+
+
                                     padding: 20px;
+
+
+
                                     border-radius: 10px;
+
+
+
                                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+
+
                                 }}
+
+
+
                                 .header {{
+
+
+
                                     background-color: #007bff;
+
+
+
                                     padding: 10px;
+
+
+
                                     text-align: center;
+
+
+
                                     border-radius: 10px 10px 0 0;
+
+
+
                                 }}
+
+
+
                                 .logo {{
+
+
+
                                     text-align: center;
+
+
+
                                     margin-bottom: 20px;
+
+
+
                                 }}
+
+
+
                                 .content {{
+
+
+
                                     padding: 20px;
+
+
+
                                 }}
+
+
+
                                 .footer {{
+
+
+
                                     text-align: left;
+
+
+
                                     margin-top: 20px;
+
+
+
                                     color: #777;
+
+
+
                                 }}
+
+
+
                                 a {{
+
+
+
                                     color: red;
+
+
+
                                 }}
+
+
+
                             </style>
+
+
+
                         </head>
+
+
+
                         <body>
+
+
+
                             <div class="container">
+
+
+
                                 <div class="header">
+
+
+
                                     <h2>Appointment Confirmation</h2>
+
+
+
                                 </div>
+
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
+
+
+
                                 <div class="content">
+
+
+
                                     <p>Dear {name},</p>
+
+
+
                                     <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
+
+
+
                                     <h3>Appointment Details:</h3>
+
+
+
                                     <ul>
+
+
+
                                         <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
+
+
+
                                         <li><strong>Time:</strong> from {start_time.strftime("%H:%M:%S")} to {end_time} </li>
+
+
+
                                         <li><strong>Doctor:</strong> {doctor_data.users.name}</li>
+
+
+
                                         <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
+
+
+
                                     </ul>
+
+
+
                                     <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
+
+
+
                                     <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
+
+
+
                                     <p>We look forward to seeing you and providing the care you need.</p>
+
+
+
                                     <a>{confirm_message}</a>
+
+
+
                                 </div>
+
+
+
                                 <div class="footer">
+
+
+
                                     <p>Best regards,</p>
+
+
+
                                     <p>{clinic_data.users.name}</p>
+
+
+
                                     <p>{clinic_data.phone}</p>
+
+
+
                                 </div>
+
+
+
                             </div>
+
+
+
                         </body>
+
+
+
                     </html>
+
+
+
                     """
 
                     message_create = Message(
@@ -953,7 +1101,6 @@ def patient_checkout():
                     session['clinic_id'] = clinic_data.id
 
                     return redirect(url_for('checkout_success'))
-
                 if checkout_form.errors != {}:
                     for err_msg in checkout_form.errors.values():
                         flash(
@@ -964,11 +1111,9 @@ def patient_checkout():
                         )
         else:
             flash('No doctor data found', 'danger')
-
     except Exception as e:
         db.session.rollback()
         flash(f'Something went wrong: {str(e)}', 'danger')
-
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -1030,2631 +1175,87 @@ def sendEmail():
                 msg['From'] = form.email_address.data
                 msg['To'] = email_address
                 msg['Subject'] = form.subject.data
-                message_body = f"""\
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                message_body = f"""<html>
 
                     <head>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             body {{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 font-family: Arial, sans-serif;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 font-size: 18px;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 margin: 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 padding: 0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 background-color: #f4f4f4;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             .container {{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 width: 80%;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 margin: 20px auto;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 background-color: #fff;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 padding: 20px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 border-radius: 10px;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             p{{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 font-size:16px;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             .logo {{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 text-align: center;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 margin-bottom: 20px;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             .content {{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 padding: 20px;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             }}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     </head>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                         <div class="container">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             <div class="content">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 <p>{form.message.data}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     </body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     </html>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            """
+                """
                 message = message_body
                 msg.attach(MIMEText(message, 'html'))
                 with open(logo_path, 'rb') as f:

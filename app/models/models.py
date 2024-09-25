@@ -63,11 +63,6 @@ def load_notification():
         g.notification_count = len(notification.filter_by(isRead=False).all()) | 0
 
 
-class CustomException(Exception):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
-
 @app.context_processor
 def inject_notification():
     return dict(

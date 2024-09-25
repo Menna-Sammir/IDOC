@@ -25,37 +25,43 @@ clinic_permission = Permission(RoleNeed('clinic'))
 @login_required
 @clinic_permission.require(http_exception=403)
 def clinic_dash():
-    clinic = Clinic.query.filter_by(user_id=current_user.id).first()
-    if clinic is None:
-        return translate('User is not a clinic'), 403
-    today = datetime.today().date()
-    current_time = datetime.now().time()
-    today_appointments = (
-        db.session.query(Appointment).filter_by(clinic_id=clinic.id, date=today).count()
-    )
-    total_appointments = (
-        db.session.query(Appointment).filter_by(clinic_id=clinic.id).count()
-    )
-    today = datetime.today().strftime('%Y-%m-%d')
+    try:
+        clinic = Clinic.query.filter_by(user_id=current_user.id).first()
+        if clinic is None:
+            return translate('User is not a clinic'), 403
+        today = datetime.today().date()
+        current_time = datetime.now().time()
+        today_appointments = (
+            db.session.query(Appointment)
+            .filter_by(clinic_id=clinic.id, date=today)
+            .count()
+        )
+        total_appointments = (
+            db.session.query(Appointment).filter_by(clinic_id=clinic.id).count()
+        )
+        today = datetime.today().strftime('%Y-%m-%d')
 
-    # Removed working_hours logic
-    is_open_today = None  # Or any other logic if applicable
+        # Removed working_hours logic
+        is_open_today = None  # Or any other logic if applicable
 
-    appointments = (
-        db.session.query(Appointment, Patient, Doctor)
-        .join(Patient, Appointment.patient_id == Patient.id)
-        .join(Doctor, Appointment.doctor_id == Doctor.id)
-        .filter(Appointment.clinic_id == clinic.id, Appointment.date >= today)
-        .all()
-    )
-    return render_template(
-        'clinic-dashboard.html',
-        clinic=clinic,
-        today_appointments=today_appointments,
-        total_appointments=total_appointments,
-        appointments=appointments,
-        clinic_id=clinic.id
-    )
+        appointments = (
+            db.session.query(Appointment, Patient, Doctor)
+            .join(Patient, Appointment.patient_id == Patient.id)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .filter(Appointment.clinic_id == clinic.id, Appointment.date >= today)
+            .all()
+        )
+        return render_template(
+            'clinic-dashboard.html',
+            clinic=clinic,
+            today_appointments=today_appointments,
+            total_appointments=total_appointments,
+            appointments=appointments,
+            clinic_id=clinic.id
+        )
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 
 @app.route('/calender', methods=['GET'], strict_slashes=False)
