@@ -1,12 +1,19 @@
 from app import app, db, socketio
+<<<<<<< HEAD
+from flask import render_template, redirect, url_for, flash, request
+=======
 from flask import render_template, redirect, url_for, flash, request, jsonify
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
 from app.views.forms.search_form import SearchForm
 from app.views.forms.email_form import EmailForm
+<<<<<<< HEAD
+=======
 from app.views.forms.Prescription_form import AddMedicineForm
 from sqlalchemy.orm import joinedload
 
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -17,6 +24,12 @@ from flask_socketio import emit, join_room, leave_room
 from app.views.forms.booking_form import AppointmentForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_
+<<<<<<< HEAD
+
+
+def convert_to_24_hour(time_str):
+    return datetime.strptime(time_str, '%I%p').time()
+=======
 from app import translate, get_locale
 import json
 from flask_babel import lazy_gettext as _, format_decimal
@@ -42,11 +55,41 @@ import uuid
 
 csrf = CSRFProtect(app)
 doctor_permission = Permission(RoleNeed('doctor'))
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
+<<<<<<< HEAD
+    form = SearchForm()
+    E_form = EmailForm()
+    form.specialization.choices = [('', 'Select a specialization')] + [
+        (s.id, s.specialization_name) for s in Specialization.query.all()
+    ]
+    form.governorate.choices = [('', 'Select a governorate')] + [
+        (g.id, g.governorate_name) for g in Governorate.query.all()
+    ]
+    specialties = Specialization.query.filter().all()
+    doctor = Doctor.query.filter().all()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            session['specialization_id'] = form.specialization.data
+            session['governorate_id'] = form.governorate.data
+            session['doctor_name'] = form.doctor_name.data
+            return redirect(url_for('search_doctor'))
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(
+                f'there was an error with creating a user: {err_msg}', category='danger'
+            )
+    return render_template(
+        'index.html', form=form, specialties=specialties, doctors=doctor, E_form=E_form
+    )
+
+
+# doctor search page
+=======
     try:
         form = SearchForm()
         E_form = EmailForm()
@@ -515,6 +558,7 @@ def update_appointment_status():
 
 
 #### doctor search page ####
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
     specialization_id = session.get('specialization_id', None)

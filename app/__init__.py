@@ -1,23 +1,41 @@
+<<<<<<< HEAD
+from flask import Flask, request
+=======
 from flask import Flask, request, redirect, url_for, session, flash, render_template
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from flask_bcrypt import Bcrypt
+<<<<<<< HEAD
+from flask_login import LoginManager, current_user
+=======
 from flask_login import LoginManager, login_required
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 from flask_principal import Principal
 import uuid
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO, disconnect
 from flask_cors import CORS
+<<<<<<< HEAD
+
+=======
 from flask_babel import Babel, format_number, format_decimal, format_currency, format_percent, format_scientific, format_timedelta
 import json
 from datetime import timedelta
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
+<<<<<<< HEAD
+# @socketio.on('disconnect request')
+# def disconnect_request():
+#     disconnect()
+
+=======
 
 # @socketio.on("logout")
 # def handle_logout():
@@ -28,6 +46,7 @@ CORS(app)
 
 babel = Babel(app)
 
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 IDOC_USER = os.getenv('IDOC_USER')
 IDOC_PWD = os.getenv('IDOC_PWD')
 IDOC_HOST = os.getenv('IDOC_HOST')
@@ -36,6 +55,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqldb://{IDOC_USER}:{IDOC_PWD}
 # app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{IDOC_USER}:{IDOC_PWD}@{IDOC_HOST}/{IDOC_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ad983778da711747f7cb3e3b'
+<<<<<<< HEAD
+=======
 app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'ar']
 
@@ -101,6 +122,7 @@ def inject_translations():
         'format_timedelta': format_timedelta
     }
 
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 db = SQLAlchemy(app)
@@ -120,10 +142,13 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 directory = 'app/static/images/'
 os.chmod(directory, 0o755)
 
+<<<<<<< HEAD
+=======
 ## upload pdfs
 app.config['PDF_UPLOAD_FOLDER'] = os.path.join('app', 'static', 'pdfs')
 os.makedirs(app.config['PDF_UPLOAD_FOLDER'], exist_ok=True)
 os.chmod(app.config['PDF_UPLOAD_FOLDER'], 0o755)
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 csrf = CSRFProtect(app)
 #Configure flask_principal
@@ -136,3 +161,8 @@ from app.views import doctor
 from app.views import admin
 from app.views import patient
 from app.views import clinic
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

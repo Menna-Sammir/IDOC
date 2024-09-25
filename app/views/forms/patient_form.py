@@ -6,7 +6,7 @@ import os
 from app import app, db, translate
 
 class PatientForm(FlaskForm):
-    
+
     def __init__(self, *args, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
         self.governorate.choices = [(g.id, g.governorate_name) for g in Governorate.query.all()]
@@ -17,7 +17,7 @@ class PatientForm(FlaskForm):
         email_address = User.query.filter_by(email=field.data).first()
         if email_address:
             raise ValidationError('Email address already exists!')
-        
+
     def validate_photo(self, field):
         allowed_extensions = {'png', 'jpg', 'jpeg'}
         if field.data:
@@ -29,7 +29,7 @@ class PatientForm(FlaskForm):
             filename = field.data.filename
             if '.' not in filename or filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
                 raise ValidationError('Unsupported file extension.')
-            
+
     firstname = StringField('First Name', validators=[Length(min=2, max=30), DataRequired()])
     lastname = StringField('Last Name', validators=[Length(min=2, max=70), DataRequired()])
     email = StringField('Email Address', validators=[Email(), DataRequired(), Length(max=50)])

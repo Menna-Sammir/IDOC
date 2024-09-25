@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# Ignore __pycache__ directories
+__pycache__/
+=======
 # .env
 # /app/__init__.py
 app/__pycache__/
@@ -5,3 +9,4 @@ app/__pycache__/
 *:[Zz]one.[Ii]dentifier
 bulk_commit.sh
 auto_commit.py
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
