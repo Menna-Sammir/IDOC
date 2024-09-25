@@ -3713,8 +3713,8 @@ def patient_setting():
                 file = request.files['photo']
                 print(file)
                 if 'photo' in request.files:
-                    unique_str = str(uuid.uuid4())[:8]
-                    original_filename, extension = os.path.splitext(file.filename)
+                    unique_str = str(uuid.uuid4())[:8] 
+                    _, extension = os.path.splitext(file.filename)
                     new_filename = (
                         f"{unique_str}_{current_user.name.replace(' ', '_')}{extension}"
                     )
