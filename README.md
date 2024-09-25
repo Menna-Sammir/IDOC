@@ -1,52 +1,42 @@
-<<<<<<< HEAD
+# IDOC - Intelligent Clinic Organizer and Controller
 
-# IDOC
+IDOC is an intelligent application designed to facilitate appointment scheduling with doctors and clinics. This project aims to provide users with a user-friendly interface for managing appointments and accessing healthcare services efficiently.
 
-iDoc is a comprehensive appointment scheduling platform designed for both patients and healthcare providers. It allows patients to easily search for and book appointments with doctors based on specialization, location, and availability. For healthcare providers, it offers a streamlined system to manage appointments and enhance communication with patients. iDoc is perfect for anyone looking to simplify the process of scheduling medical appointments and for clinics aiming to improve their service efficiency.
-The idea for iDoc originated from our experiences with the inefficiencies of scheduling healthcare appointments, such as long waits, difficulty finding slots, and miscommunication. We created iDoc to address these issues and provide a more efficient, user-friendly solution.
+## Table of Contents
 
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-![Home Page](https://github.com/manonaSamir/IDOC/blob/main/app/static/images/screencapture-localhost-5000-2024-06-12-14_02_53.png)
+## Features
 
+- **User Authentication**: Secure login and registration for patients and healthcare providers.
+- **Appointment Scheduling**: Easily book, reschedule, or cancel appointments with doctors and clinics.
+- **Doctor and Clinic Search**: Search for doctors and clinics based on specialty, location, and availability.
+- **Patient Dashboard**: View upcoming appointments, medical history, and manage personal information.
+- **Notifications**: Receive reminders and notifications for upcoming appointments.
 
-## Authors
+## Technologies Used
 
-- [@manonaSamir](https://github.com/manonaSamir)
-
-- [@fatmasoly](https://github.com/fatmasoly)
-
-- [@adhamelsayed2000](https://github.com/adhamelsayed2000)
-
-
-
-
-
-
-## Contributing
-
-Contributions are always welcome!
-
-We welcome contributions to enhance iDoc. To contribute, follow these steps:
-
-1- Fork the repository.
-
-2- Create a new branch (git checkout -b feature-branch).
-
-3- Make your changes and commit them (git commit -m 'Add new feature').
-
-4- Push to the branch (git push origin feature-branch).
-
-5- Open a pull request.
-
+- **Frontend**: Jinja - A templating engine for Python to create dynamic web pages.
+- **Backend**: Flask - A micro web framework for Python.
+- **Database**: MySQL - A popular open-source relational database for storing appointment and user data.
+- **ORM**: SQLAlchemy - A Python SQL toolkit and Object-Relational Mapping (ORM) system.
+- **Styling**: Bootstrap - A front-end framework for developing responsive web applications.
 
 ## Installation
 
-1- Clone the repository
+To set up the IDOC project locally, follow these steps:
 
-```bash
-git clone https://github.com/yourusername/idoc.git
-
-```
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Menna-Sammir/IDOC.git
+   ```
+   
 2- Navigate to the project directory
 
 ```bash
@@ -85,29 +75,10 @@ flask db upgrade
 
 7- Run the application
 ```bash
-flask run
+python3 app.py
 
 ```
-## Deployment
-
-Visit iDoc Landing Page
-```bash
-```
-
-
-
-## Tech Stack
-
-**Client:** Bootstrap 5, HTML5, JavaScript (ECMAScript 6), CSS3, jQuery
-
-
-**Server:** Python, Flask, SQLAlchemy, MySQL
-
-
-## Usage
-
-Usage
-
+# Usage
 Search for Doctors:
 
 Use the search functionality to find doctors based on specialization, location, and availability.
@@ -119,13 +90,26 @@ Clinics can view and manage their appointments.
 Real-time notifications for new appointments.
 
 
-## License
 
-This project is licensed under the MIT License. See the LICENSE file for more information.
+@Contributing
+Contributions are welcome! If you'd like to contribute to IDOC, please follow these steps:
+
+1- Fork the repository.
+2- Create a new branch (git checkout -b feature/YourFeature).
+3- Make your changes and commit them (git commit -m 'Add some feature').
+4- Push to the branch (git push origin feature/YourFeature).
+5- Open a pull request.
 
 
 
 
-=======
-# IDOC
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
+## Authors
+
+- [@Menna-Sammir](https://github.com/Menna-Sammir)
+
+- [@fatmasoly](https://github.com/fatmasoly)
+
+- [@adhamelsayed2000](https://github.com/adhamelsayed2000)
+
+
+![Home Page](https://github.com/manonaSamir/IDOC/blob/main/app/static/images/screencapture-localhost-5000-2024-06-12-14_02_53.png)
