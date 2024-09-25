@@ -54,13 +54,9 @@
                         >
                       </h3>
                       <div class="patient-details">
-                        <h5>
-                          <i class="fas fa-id-card-alt"></i> {{
-                          patient.patient_id }}
-                        </h5>
                         <h5 class="mb-0">
                           <i class="fas fa-map-marker-alt"></i> {{
-                          patient.address }}
+                            patient.address if patient.address else 'N/A'  }}
                         </h5>
                       </div>
                     </div>
@@ -69,28 +65,24 @@
                 <div class="patient-info">
                   <ul>
                     <li>
-                      <i class="fas fa-mobile"></i>
+                      <i class="fas fa-mobile"></i>Phone
                       <span>{{ patient.patient_phone }}</span>
                     </li>
                     <li>
                       <i class="fas fa-tint"></i
-                      ><span>{{ patient.blood_group }}</span>
-                    </li>
-                    <li>
-                      <i class="fas fa-allergies"></i>
-                      <span>{{ patient.allergy }}</span>
+                      >Blood Group<span>{{ patient.blood_group }}</span>
                     </li>
                     <li>
                       <i class="far fa-calendar-check"></i
-                      ><span>{{ patient.completed_count }}</span>
+                      >Completed Appts<span>{{ patient.completed_count }}</span>
                     </li>
                     <li>
-                      <i class="fas fa-calendar-plus"></i>
+                      <i class="fas fa-calendar-plus"></i>Confirmed Appts
                       <span>{{ patient.confirmed_count }}</span>
                     </li>
                     <li>
                       <i class="fas fa-calendar-times"></i
-                      ><span>{{ patient.canceled_count }}</span>
+                      >Canceled Appts<span>{{ patient.canceled_count }}</span>
                     </li>
                   </ul>
                 </div>

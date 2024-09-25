@@ -130,8 +130,7 @@
                             </td>
                             <td>${{ appointment.doctor.price }}</td>
                             <td>
-                              {% if current_user.doctor or (current_user.patient
-                              and appointment.status.name == 'Completed') %}
+                              {% if appointment.status.name == 'Completed' %}
                               <!-- Follow-up information -->
                               {% if appointment.follow_up %} {{
                               appointment.follow_up.strftime('%d %b %Y') }}<br />
@@ -140,7 +139,7 @@
                               endif %} {% else %} {{ translate('No Follow-Up')
                               }} {% endif %}
                             </td>
-                            {% if current_user.patient %}
+                            {% if current_user.patient or current_user.clinic %}
                             <td>
                               <!-- Appointment Status with dynamic badge color -->
                               {% if appointment.status.name == 'Cancelled' %}
@@ -358,6 +357,8 @@
               <!-- Prescription Tab: Displays patient's prescriptions -->
               <div class="tab-pane fade" id="pat_prescriptions">
                 <div class="text-right">
+                  {% if current_user.role == 'doctor' or current_user.role ==
+                  'patient' %}
                   <a
                     href="#"
                     class="add-new-btn"
@@ -365,6 +366,7 @@
                     data-target="#prescription_modal"
                     >{{ translate('Add Prescription') }}</a
                   >
+                  {% endif %}
                 </div>
                 <div
                   class="modal fade custom-modal"
@@ -521,7 +523,6 @@
               </div>
               <!-- /Prescription Tab -->
 
-              <!-- Medical Records Tab: Displays medical records for the patient -->
               <!-- Medical Records Tab -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">
@@ -568,7 +569,7 @@
                                   {% set base_path = 'static/images/doctors/' %}
                                   <img
                                     class="avatar-img rounded-circle"
-                                    src="{{base_path ~ appointment.doctor.photo}}"
+                                    src="{{base_path ~ appointment.doctor.users.photo}}"
                                     alt="User Image"
                                   />
                                 </a>
@@ -605,7 +606,7 @@
                                 <script>
                                   function printPDF(pdfUrl) {
                                     var iframe =
-                                      document.getElementById("pdfIframe");
+                                      document.getElementById('pdfIframe');
 
                                     iframe.src = pdfUrl;
 
@@ -634,11 +635,10 @@
                                 >
                                   <i class="fas fa-upload"></i> Report
                                 </a>
-                                {% endif %}
                               </div>
                             </td>
                           </tr>
-                          {% endfor %}
+                          {% endif %} {% endfor %}
                         </tbody>
                       </table>
                     </div>
@@ -887,23 +887,23 @@
 <script>
   function showEditForm(appointmentId, followUpDateTime) {
     const [date, time] = followUpDateTime
-      ? followUpDateTime.split(" ")
-      : ["", ""];
-    document.getElementById("appointment_id").value = appointmentId;
-    document.getElementById("follow_up_date").value = date || "";
-    document.getElementById("follow_up_time").value = time || "";
-    document.getElementById("editFollowUpModal").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
+      ? followUpDateTime.split(' ')
+      : ['', ''];
+    document.getElementById('appointment_id').value = appointmentId;
+    document.getElementById('follow_up_date').value = date || '';
+    document.getElementById('follow_up_time').value = time || '';
+    document.getElementById('editFollowUpModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
   }
 
   function hideEditForm() {
-    document.getElementById("editFollowUpModal").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
+    document.getElementById('editFollowUpModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
   }
 
   window.onclick = function (event) {
-    var modal = document.getElementById("editFollowUpModal");
-    var overlay = document.getElementById("overlay");
+    var modal = document.getElementById('editFollowUpModal');
+    var overlay = document.getElementById('overlay');
     if (event.target === modal || event.target === overlay) {
       hideEditForm();
     }
