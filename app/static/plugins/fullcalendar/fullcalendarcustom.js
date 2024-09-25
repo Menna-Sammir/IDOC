@@ -121,4 +121,3 @@ if ($("#calendar-appointment").length) {
     ($.CalendarApp = new CalendarApp());
   $.CalendarApp.init();
 }
-// function changelocale(language){
