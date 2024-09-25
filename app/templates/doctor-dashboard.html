@@ -230,7 +230,7 @@
                             </thead>
                             <tbody>
                               {% for appointment in all_appointments %}
-                              {% if appointment.date > date.today() %}
+                              {% if appointment.date > today %}
                               <tr>
                                 <td>
                                     <h2 class="table-avatar">
