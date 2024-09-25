@@ -27,7 +27,15 @@
     <div class="row">
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
         <!-- Profile Sidebar -->
-        {% block sidebar %} {% include 'base-doctor-side.html' %} {% endblock %}
+        {% if current_user.user_roles.role.role_name == 'Admin' %} {% block
+          Adminsidebar %} {% include 'base-admin-side.html' %} {% endblock %} {%
+          elif current_user.user_roles.role.role_name == 'clinic' %} {% block
+          clinicsidebar %} {% include 'base-clinic-side.html' %} {% endblock %} {%
+          elif current_user.user_roles.role.role_name == 'doctor' %} {% block
+          doctorsidebar %} {% include 'base-doctor-side.html' %} {% endblock %} {%
+          elif current_user.user_roles.role.role_name == 'patient' %} {% block
+          patientsidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+          {% endif %}
 
         <!-- /Profile Sidebar -->
       </div>
@@ -45,7 +53,7 @@
                       <img class="avatar-img rounded-circle" src="{{ base_path ~ patient.users.photo }}" alt="User Image"/>
                     </a>
                     <div class="profile-det-info">
-                      <h3><a href="{{ url_for('appointment_History', patient_id=patient.id) }}">{{ patient.user_name }}</a></h3>
+                      <h3><a href="{{ url_for('appointment_History', patient_id=patient.id) }}">{{ patient.users.name }}</a></h3>
                       <div class="patient-details">
                         <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ patient.address if patient.address else 'N/A' }}</h5>
                       </div>
