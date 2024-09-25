@@ -116,11 +116,6 @@ def patient_dashboard():
                 flash('Patient not found', 'danger')
                 return redirect(url_for('patient_dashboard'))
             patient_id = patient.id
-        # elif current_user.doctor:
-        #     patient_id = request.args.get('patient_id')
-        #     if not patient_id:
-        #         flash('Patient ID is missing.', 'danger')
-        #         return redirect(url_for('doctor_dash'))
         else:
             flash('Unauthorized access', 'danger')
             return redirect(url_for('home'))
@@ -276,7 +271,7 @@ def appointment_History():
                         )
                         db.session.add(Medicine_Times)
                 db.session.commit()
-                return redirect(url_for('appointment_History'))
+                return redirect(url_for('appointment_History', patient_id=patient_id))
             except Exception as e:
                 db.session.rollback()
                 flash(f'There was an error: {e}', category='danger')
@@ -334,8 +329,10 @@ def appointment_History():
         patient_history=patient_history,
         patient_histories=patient_histories,
         form=form,
-        Medicine_form=Medicine_form,
+        Medicine_form=Medicine_form
     )
+
+
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_file_EXTENSIONS = {'pdf'}
 
@@ -767,7 +764,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                     <html>
+
+
+
+
 
 
 
@@ -775,7 +780,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                             <style>
+
+
+
+
 
 
 
@@ -783,7 +796,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     font-family: Arial, sans-serif;
+
+
+
+
 
 
 
@@ -791,7 +812,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     margin: 0;
+
+
+
+
 
 
 
@@ -799,11 +828,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     background-color: #f4f4f4;
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -811,7 +852,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     width: 80%;
+
+
+
+
 
 
 
@@ -819,11 +868,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     background-color: #fff;
 
 
 
+
+
+
+
                                     padding: 20px;
+
+
+
+
 
 
 
@@ -831,11 +892,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -843,7 +916,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     background-color: #007bff;
+
+
+
+
 
 
 
@@ -851,7 +932,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     text-align: center;
+
+
+
+
 
 
 
@@ -859,7 +948,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -867,7 +964,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     text-align: center;
+
+
+
+
 
 
 
@@ -875,7 +980,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -883,11 +996,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     padding: 20px;
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -895,7 +1020,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     text-align: left;
+
+
+
+
 
 
 
@@ -903,11 +1036,23 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     color: #777;
 
 
 
+
+
+
+
                                 }}
+
+
+
+
 
 
 
@@ -915,7 +1060,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     color: red;
+
+
+
+
 
 
 
@@ -923,7 +1076,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                             </style>
+
+
+
+
 
 
 
@@ -931,7 +1092,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                         <body>
+
+
+
+
 
 
 
@@ -939,7 +1108,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 <div class="header">
+
+
+
+
 
 
 
@@ -947,7 +1124,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 </div>
+
+
+
+
 
 
 
@@ -955,7 +1140,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 <div class="content">
+
+
+
+
 
 
 
@@ -963,7 +1156,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>We are writing to confirm your upcoming appointment at {clinic_data.users.name}.</p>
+
+
+
+
 
 
 
@@ -971,7 +1172,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <ul>
+
+
+
+
 
 
 
@@ -979,7 +1188,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                         <li><strong>Time:</strong> from {start_time.strftime("%H:%M:%S")} to {end_time} </li>
+
+
+
+
 
 
 
@@ -987,7 +1204,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                         <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
+
+
+
+
 
 
 
@@ -995,7 +1220,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
+
+
+
+
 
 
 
@@ -1003,7 +1236,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>We look forward to seeing you and providing the care you need.</p>
+
+
+
+
 
 
 
@@ -1011,7 +1252,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                 </div>
+
+
+
+
 
 
 
@@ -1019,7 +1268,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>Best regards,</p>
+
+
+
+
 
 
 
@@ -1027,7 +1284,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                                     <p>{clinic_data.phone}</p>
+
+
+
+
 
 
 
@@ -1035,7 +1300,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                             </div>
+
+
+
+
 
 
 
@@ -1043,7 +1316,15 @@ def patient_checkout():
 
 
 
+
+
+
+
                     </html>
+
+
+
+
 
 
 
@@ -1183,83 +1464,163 @@ def sendEmail():
                 msg['Subject'] = form.subject.data
                 message_body = f"""<html>
 
+
+
                     <head>
+
+
 
                         <style>
 
+
+
                             body {{
+
+
 
                                 font-family: Arial, sans-serif;
 
+
+
                                 font-size: 18px;
+
+
 
                                 margin: 0;
 
+
+
                                 padding: 0;
+
+
 
                                 background-color: #f4f4f4;
 
+
+
                             }}
+
+
 
                             .container {{
 
+
+
                                 width: 80%;
+
+
 
                                 margin: 20px auto;
 
+
+
                                 background-color: #fff;
 
+
+
                                 padding: 20px;
+
+
 
                                 border-radius: 10px;
 
+
+
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
+
+
                             }}
+
+
 
                             p{{
 
+
+
                                 font-size:16px;
 
+
+
                             }}
+
+
 
                             .logo {{
 
+
+
                                 text-align: center;
+
+
 
                                 margin-bottom: 20px;
 
+
+
                             }}
+
+
 
                             .content {{
 
+
+
                                 padding: 20px;
+
+
 
                             }}
 
+
+
                         </style>
+
+
 
                     </head>
 
+
+
                     <body>
+
+
 
                         <div class="container">
 
+
+
                                 <img src="cid:logo_image" alt="Your Logo" width="200">
 
+
+
                             </div>
+
+
 
                             <div class="content">
 
+
+
                                 <p>{form.message.data}</p>
+
+
 
                             </div>
 
+
+
                         </div>
+
+
 
                     </body>
 
+
+
                     </html>
+
+
 
                 """
                 message = message_body

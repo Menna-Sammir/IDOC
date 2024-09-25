@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-/*
-Author       : Dreamguys
-Template Name: Doccure - Bootstrap Template
-Version      : 1.0
-*/
-
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 (function ($) {
   "use strict";
 
@@ -25,11 +16,7 @@ Version      : 1.0
     setTimeout(function () {
       $(".loader").fadeOut("slow");
       $(".main-wrapper").css("opacity", "1");
-<<<<<<< HEAD
-    }, 1000);
-=======
     }, 2500);
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
     // preview image after upload
     $(".upload").on("change", function (event) {
@@ -313,109 +300,6 @@ Version      : 1.0
     });
   }
 
-<<<<<<< HEAD
-  // Chat
-
-  var chatAppTarget = $(".chat-window");
-  (function () {
-    if ($(window).width() > 991) chatAppTarget.removeClass("chat-slide");
-
-    $(document).on(
-      "click",
-      ".chat-window .chat-users-list a.media",
-      function () {
-        if ($(window).width() <= 991) {
-          chatAppTarget.addClass("chat-slide");
-        }
-        return false;
-      }
-    );
-    $(document).on("click", "#back_user_list", function () {
-      if ($(window).width() <= 991) {
-        chatAppTarget.removeClass("chat-slide");
-      }
-      return false;
-    });
-  })();
-
-  // Circle Progress Bar
-
-  function animateElements() {
-    $(".circle-bar1").each(function () {
-      var elementPos = $(this).offset().top;
-      var topOfWindow = $(window).scrollTop();
-      var percent = $(this).find(".circle-graph1").attr("data-percent");
-      var animate = $(this).data("animate");
-      if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
-        $(this).data("animate", true);
-        $(this)
-          .find(".circle-graph1")
-          .circleProgress({
-            value: percent / 100,
-            size: 400,
-            thickness: 30,
-            fill: {
-              color: "#da3f81",
-            },
-          });
-      }
-    });
-    $(".circle-bar2").each(function () {
-      var elementPos = $(this).offset().top;
-      var topOfWindow = $(window).scrollTop();
-      var percent = $(this).find(".circle-graph2").attr("data-percent");
-      var animate = $(this).data("animate");
-      if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
-        $(this).data("animate", true);
-        $(this)
-          .find(".circle-graph2")
-          .circleProgress({
-            value: percent / 100,
-            size: 400,
-            thickness: 30,
-            fill: {
-              color: "#68dda9",
-            },
-          });
-      }
-    });
-    $(".circle-bar3").each(function () {
-      var elementPos = $(this).offset().top;
-      var topOfWindow = $(window).scrollTop();
-      var percent = $(this).find(".circle-graph3").attr("data-percent");
-      var animate = $(this).data("animate");
-      if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
-        $(this).data("animate", true);
-        $(this)
-          .find(".circle-graph3")
-          .circleProgress({
-            value: percent / 200,
-            size: 400,
-            thickness: 30,
-            fill: {
-              color: "#5ac9d0",
-            },
-          });
-      }
-    });
-  }
-
-  $('.nav-link').each(function() {
-    var $link = $(this);
-    var text = $link.text();
-    $link.empty();
-
-    $.each(text.split(''), function(index, char) {
-        var $span = $('<span>').text(char).css('animation-delay', (index * 0.1) + 's');
-        $link.append($span);
-    });
-});
-
-  if ($(".circle-bar").length > 0) {
-    animateElements();
-  }
-  $(window).scroll(animateElements);
-=======
 
   function changeFont(language) {
     if (language === "en") {
@@ -453,7 +337,6 @@ Version      : 1.0
   });
 
   $(window).scroll();
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   //   $(".alert")
   //     .fadeTo(2000, 500)
   //     .slideUp(1000, function () {
@@ -615,28 +498,6 @@ $(function () {
 });
 
 const timeslots = document.querySelectorAll(".timeslot");
-<<<<<<< HEAD
-timeslots.forEach((slot) => {
-  slot.addEventListener("click", () => {
-    timeslots.forEach((s) => s.classList.remove("active"));
-    slot.classList.add("active");
-    slot.querySelector("input[type='radio']").checked = true;
-  });
-});
-document
-  .getElementById("continue-button")
-  .addEventListener("click", function (event) {
-    var selectedTimeslot = document.querySelector(
-      'input[name="timeslot"]:checked'
-    );
-    if (!selectedTimeslot) {
-      document.getElementById("warning-message").style.display = "block";
-    } else {
-      document.getElementById("warning-message").style.display = "none";
-      document.getElementById("appointment-form").submit();
-    }
-  });
-=======
 if (timeslots) {
   timeslots.forEach((slot) => {
     slot.addEventListener("click", () => {
@@ -902,4 +763,3 @@ $(document).ready(function () {
     }
   });
 });
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

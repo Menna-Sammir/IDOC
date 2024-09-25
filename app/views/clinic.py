@@ -1,10 +1,4 @@
 from app import app, db
-<<<<<<< HEAD
-from flask import render_template
-from app.models.models import *
-from flask_principal import Permission, RoleNeed
-from flask_login import login_required, current_user
-=======
 from flask import render_template, redirect, url_for, flash
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
@@ -21,7 +15,6 @@ from werkzeug.utils import secure_filename
 import uuid
 import json
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))

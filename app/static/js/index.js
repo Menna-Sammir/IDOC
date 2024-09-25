@@ -1,6 +1,4 @@
 $(document).ready(function () {
-<<<<<<< HEAD
-=======
   $(".nav-link").each(function () {
     var direction = $("html").attr("lang");
     if (direction === "en") {
@@ -17,7 +15,6 @@ $(document).ready(function () {
     }
   });
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   var navbar = $(".navbar");
 
   function toggleNavbarBackground() {
