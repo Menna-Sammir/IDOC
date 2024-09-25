@@ -83,6 +83,8 @@ def doctor_dash():
             'doctor-dashboard.html',
             doctor=doctor,
             appointments=appointments.all(),
+            all_appointments=all_appointments,
+            today=date.today(),
             patient_count=patient_count,
             monthAppointments=monthAppointments,
             nextAppt=nextAppt,

@@ -334,7 +334,7 @@ def appointment_History():
         patient_history=patient_history,
         patient_histories=patient_histories,
         form=form,
-        Medicine_form=Medicine_form
+        Medicine_form=Medicine_form,
     )
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_file_EXTENSIONS = {'pdf'}
@@ -1314,7 +1314,7 @@ def patient_setting():
                 print(file)
                 if 'photo' in request.files:
                     unique_str = str(uuid.uuid4())[:8]
-                    original_filename, extension = os.path.splitext(file.filename)
+                    _, extension = os.path.splitext(file.filename)
                     new_filename = (
                         f"{unique_str}_{current_user.name.replace(' ', '_')}{extension}"
                     )
