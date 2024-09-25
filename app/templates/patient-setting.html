@@ -47,12 +47,6 @@
               method="POST"
               enctype="multipart/form-data"
             >
-            <form
-              id="patientForm"
-              action="{{ url_for('patient_setting') }}"
-              method="POST"
-              enctype="multipart/form-data"
-            >
               {{ form.hidden_tag() }} {{ form.csrf_token }}
               <input type="hidden" name="_method" value="PUT" />
 
