@@ -8,15 +8,6 @@
         <div class="col-md-12 col-12">
           <nav aria-label="breadcrumb" class="page-breadcrumb">
             <ol class="breadcrumb">
-<<<<<<< HEAD
-              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Dashboard
-              </li>
-            </ol>
-          </nav>
-          <h2 class="breadcrumb-title">Dashboard</h2>
-=======
               <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
               <li class="breadcrumb-item active" aria-current="page">
                 {{ translate('Dashboard') }}
@@ -24,17 +15,11 @@
             </ol>
           </nav>
           <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         </div>
       </div>
     </div>
   </div>
   <!-- /Breadcrumb -->
-<<<<<<< HEAD
-
-=======
-
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   <!-- Page Content -->
   <div class="content">
     <div class="container-fluid">
@@ -44,17 +29,8 @@
         {% block sidebar %} {% include 'base-admin-side.html' %} {% endblock %}
         <!-- /Profile Sidebar -->
         </div>
-<<<<<<< HEAD
-
-=======
-
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
-        <div class="col-md-7 col-lg-8 col-xl-9">
-          <div class="row">
-            <div class="col-md-12">
               <div class="card dash-card">
-                <div class="card-body">
-<<<<<<< HEAD
+
                   <div class="row">
                     <div class="col-md-12 col-lg-4">
                       <div class="dash-widget">
@@ -73,55 +49,6 @@
                         </div>
                       </div>
                     </div>
-
-                    <div class="col-md-12 col-lg-4">
-                      <div class="dash-widget">
-                        <div class="circle-bar circle-bar2">
-                          <div class="circle-graph2">
-
-                          </div>
-                        </div>
-                        <div class="dash-widget-info">
-
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-12 col-lg-4">
-                      <div class="dash-widget">
-                        <div class="circle-border-cyan" >
-
-                            <img
-                              src="static/img/clinic.png"
-                              class="img-fluid"
-                              alt="Patient" style="width:70px"
-                            />
-
-                        </div>
-                        <div class="dash-widget-info">
-                          <h6>Registered Clinics</h6>
-                          <h3>{{ clinic_count }}</h3>
-                          <p class="text-muted">Till Today</p>
-=======
-                  <div class="row justify-content-around align-items-top">
-                    <div class="col-md-12 col-lg-7 row justify-content-around">
-                      <div
-                        class="card col-md-3 d-flex justify-content-center doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div
-                              class="doctordash-back">
-                              <i class="fas fa-clinic-medical fa-2x text-cyan"></i>
-                            </div>
-                          </div>
-                          <div
-                            class="d-block mt-3 mb-1 doctor-title">
-                            <span>{{ translate('Clinics') }}</span>
-                          </div>
-                          <div class="d-block text-muted">
-                            {{ clinic_count }}
-                          </div>
-                        </div>
                       </div>
                       <div
                         class="card col-md-3 doctor-card">
@@ -174,7 +101,6 @@
                               <div class="digits"></div>
                             </div>
                           </div>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                         </div>
                       </div>
                     </div>
@@ -193,7 +119,6 @@
                   </div>
                   <div class="card-body">
                       <div class="table-responsive">
-                          <table class="table table-hover table-center mb-0" >
                               <thead>
                                   <tr>
                                       <th>{{ translate('Doctor Name') }}</th>
