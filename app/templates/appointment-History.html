@@ -357,8 +357,7 @@
               <!-- Prescription Tab: Displays patient's prescriptions -->
               <div class="tab-pane fade" id="pat_prescriptions">
                 <div class="text-right">
-                  {% if current_user.role == 'doctor' or current_user.role ==
-                  'patient' %}
+                  {% if current_user.user_roles.role.role_name == 'patient'  or  current_user.user_roles.role.role_name == 'doctor' %}
                   <a
                     href="#"
                     class="add-new-btn"
@@ -717,7 +716,7 @@
                           </td>
                           {% endif %}
                           </tr>
-                          
+
                         </tbody>
                       </table>
                     </div>
