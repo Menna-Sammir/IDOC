@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
+{% extends 'base.html' %} {% block title %} Clinic {{ translate('Dashboard') }}
 {% endblock %} {% block body %}
 
 <!-- Breadcrumb -->
@@ -38,7 +38,7 @@
         <!-- Basic Information -->
         <form method="POST" enctype="multipart/form-data">
           {{ user_form.hidden_tag() }} {{ user_form.csrf_token }} {{
-            clinic_form.hidden_tag() }} {{ clinic_form.csrf_token }}
+          clinic_form.hidden_tag() }} {{ clinic_form.csrf_token }}
           <div class="card">
             <div class="card-body">
               <div class="row form-row">
@@ -46,8 +46,8 @@
                   <div class="form-group">
                     <div class="change-avatar">
                       <div class="profile-img">
-                        {% if current_user.photo %}
-                        {% set base_path = 'static/images/clinic/' %}
+                        {% if current_user.photo %} {% set base_path =
+                        'static/images/clinic/' %}
                         <img
                           class="avatar-img rounded-circle"
                           src="{{base_path ~ current_user.photo}}"
@@ -80,9 +80,8 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    {{ clinic_form.name.label() }}
-                    {{
-                      clinic_form.name(class="form-control" )}}
+                    {{ clinic_form.name.label() }} {{
+                    clinic_form.name(class="form-control" )}}
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -94,22 +93,21 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     {{ clinic_form.phone.label() }} {{
-                      clinic_form.phone(class="form-control" )}}
+                    clinic_form.phone(class="form-control" )}}
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    {{ clinic_form.gov_id.label() }}
-                    {{ clinic_form.gov_id(class="form-control" )}}
+                    {{ clinic_form.gov_id.label() }} {{
+                    clinic_form.gov_id(class="form-control" )}}
                   </div>
                 </div>
                 <div class="col-md-12">
                   <div class="form-group">
-                    {{ clinic_form.address.label() }}
-                    {{ clinic_form.address(class="form-control",size=20  )}}
+                    {{ clinic_form.address.label() }} {{
+                    clinic_form.address(class="form-control",size=20 )}}
                   </div>
                 </div>
-
               </div>
             </div>
           </div>

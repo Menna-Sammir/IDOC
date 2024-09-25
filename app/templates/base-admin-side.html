@@ -1,8 +1,16 @@
 <div class="profile-sidebar">
   <div class="widget-profile pro-widget-content">
     <div class="profile-info-widget">
-      <p  class="booking-doc-img">
+      <p class="booking-doc-img">
+        {% if current_user.photo %}
         <img src="{{current_user.photo}}" alt="User Image" />
+        {% else %}
+        <img
+          class="avatar-img rounded-circle"
+          src="../static/img/user.svg"
+          alt="User Image"
+        />
+        {% endif %}
       </p>
       <div class="profile-det-info">
         <h3>{{current_user.name}}</h3>
@@ -24,7 +32,7 @@
             <span>{{ translate('Add Clinic') }}</span>
           </a>
         </li>
-        
+
         <li
           class="{{ 'active' if request.endpoint == 'all_patients' else '' }}"
         >
