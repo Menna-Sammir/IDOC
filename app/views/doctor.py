@@ -7,10 +7,6 @@ from datetime import date
 from app.models.models import *
 from flask_principal import Permission, RoleNeed
 from app.views.forms.booking_form import AppointmentForm
-<<<<<<< HEAD
-from flask_login import login_required, current_user
-
-=======
 from app.views.forms.auth_form import EditUserForm
 from app.views.forms.addDoctor_form import EditDoctorForm
 from app.views.forms.Prescription_form import AddMedicineForm, MedicineForm
@@ -19,19 +15,15 @@ from app import translate
 import os
 from werkzeug.utils import secure_filename
 import uuid
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
 
 
-<<<<<<< HEAD
-=======
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 # doctor dashboard page >>> view appointments today
@@ -39,46 +31,6 @@ def allowed_file(filename):
 @login_required
 @doctor_permission.require(http_exception=403)
 def doctor_dash():
-<<<<<<< HEAD
-    user_id = current_user.id
-    user = User.query.filter_by(id=user_id).first()
-    print('User:', user)
-
-    if user is None:
-        return 'User not found', 404
-    if not hasattr(user, 'doctor_id'):
-        return 'User is not a doctor', 403
-    doctor = Doctor.query.filter_by(id=user.doctor_id).first()
-
-    if doctor is None:
-        return 'Doctor not found', 404
-    form = AppointmentForm()
-    appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(asc(Appointment.time))
-    nextAppt = appointments.order_by(asc(Appointment.time)).first().id
-    monthAppointments = Appointment.query.filter(
-        func.extract('month', Appointment.date) == datetime.now().month
-    ).count()
-    patient_count = appointments.count()
-
-    if request.method == 'POST':
-        if 'seen' in request.form:
-            appointment_id = request.form.get('appointment_id')
-            appointment = Appointment.query.get(appointment_id)
-            if appointment:
-                appointment.seen = True
-                db.session.commit()
-                flash('Appointment marked as seen', category='success')
-                return redirect(url_for('doctor_dash'))
-    return render_template(
-        'doctor-dashboard.html',
-        doctor=doctor,
-        appointments=appointments.all(),
-        patient_count=patient_count,
-        monthAppointments=monthAppointments,
-        nextAppt = nextAppt,
-        form=form
-    )
-=======
     try:
         doctor = Doctor.query.filter_by(user_id=current_user.id).first()
         if doctor is None:
@@ -289,4 +241,3 @@ def patient_list():
         return translate('User is not a doctor or clinic'), 403
 
     return render_template('patient-list.html', doctor=doctor, patients=patients)
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

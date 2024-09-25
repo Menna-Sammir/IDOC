@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
-<<<<<<< HEAD
-{% block title %} Booking Success {% endblock %}
-=======
 {% block title %} {{ translate('Booking Success') }} {% endblock %}
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 {%block body %}
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -12,19 +8,11 @@
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
-<<<<<<< HEAD
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Booking</li>
-          </ol>
-        </nav>
-        <h2 class="breadcrumb-title">Booking</h2>
-=======
             <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ translate('Booking') }}</li>
           </ol>
         </nav>
         <h2 class="breadcrumb-title">{{ translate('Booking') }}</h2>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
       </div>
     </div>
   </div>
@@ -41,15 +29,6 @@
           <div class="card-body">
             <div class="success-cont">
               <i class="fas fa-check"></i>
-<<<<<<< HEAD
-              <h3>Appointment booked Successfully!</h3>
-              <p>
-                Appointment booked with <strong>{{doctor}}</strong><br />
-                on <strong>{{date}} {{time}}</strong>
-              </p>
-              <a href="{{ url_for('home') }}" class="btn btn-secondary view-inv-btn"
-                >Back to Home</a
-=======
               <h3>{{ translate('Appointment booked Successfully!') }}</h3>
               <p>
                 {{ translate('Appointment booked with') }} <strong>{{ translate(doctor) }}</strong><br />
@@ -57,7 +36,6 @@
               </p>
               <a href="{{ url_for('home') }}" class="btn btn-secondary view-inv-btn"
                 >{{ translate('Back to Home') }}</a
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
               >
             </div>
           </div>

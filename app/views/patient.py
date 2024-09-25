@@ -1,19 +1,12 @@
 from app import app, db, socketio
-<<<<<<< HEAD
-from flask import render_template, redirect, url_for, flash, request
-=======
 from flask import render_template, redirect, url_for, flash, request, jsonify
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 from app.models.models import *
 from app.views.forms.checkout_form import checkoutForm
 from app.views.forms.search_form import SearchForm
 from app.views.forms.email_form import EmailForm
-<<<<<<< HEAD
-=======
 from app.views.forms.Prescription_form import AddMedicineForm
 from sqlalchemy.orm import joinedload
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -24,12 +17,6 @@ from flask_socketio import emit, join_room, leave_room
 from app.views.forms.booking_form import AppointmentForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_
-<<<<<<< HEAD
-
-
-def convert_to_24_hour(time_str):
-    return datetime.strptime(time_str, '%I%p').time()
-=======
 from app import translate, get_locale
 import json
 from flask_babel import lazy_gettext as _, format_decimal
@@ -55,41 +42,11 @@ import uuid
 
 csrf = CSRFProtect(app)
 doctor_permission = Permission(RoleNeed('doctor'))
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
-<<<<<<< HEAD
-    form = SearchForm()
-    E_form = EmailForm()
-    form.specialization.choices = [('', 'Select a specialization')] + [
-        (s.id, s.specialization_name) for s in Specialization.query.all()
-    ]
-    form.governorate.choices = [('', 'Select a governorate')] + [
-        (g.id, g.governorate_name) for g in Governorate.query.all()
-    ]
-    specialties = Specialization.query.filter().all()
-    doctor = Doctor.query.filter().all()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            session['specialization_id'] = form.specialization.data
-            session['governorate_id'] = form.governorate.data
-            session['doctor_name'] = form.doctor_name.data
-            return redirect(url_for('search_doctor'))
-    if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(
-                f'there was an error with creating a user: {err_msg}', category='danger'
-            )
-    return render_template(
-        'index.html', form=form, specialties=specialties, doctors=doctor, E_form=E_form
-    )
-
-
-# doctor search page
-=======
     try:
         form = SearchForm()
         E_form = EmailForm()
@@ -558,7 +515,6 @@ def update_appointment_status():
 
 
 #### doctor search page ####
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 @app.route('/search_doctor', methods=['GET', 'POST'], strict_slashes=False)
 def search_doctor():
     specialization_id = session.get('specialization_id', None)
@@ -571,18 +527,11 @@ def search_doctor():
     form = AppointmentForm()
 
     query = (
-<<<<<<< HEAD
-        db.session.query(Doctor, Specialization, Clinic, Governorate)
-        .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
-        .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
-        .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
-=======
         db.session.query(Doctor, Specialization, Clinic, Governorate, User)
         .outerjoin(Specialization, Doctor.specialization_id == Specialization.id)
         .outerjoin(Clinic, Doctor.clinic_id == Clinic.id)
         .outerjoin(Governorate, Clinic.governorate_id == Governorate.id)
         .outerjoin(User, Doctor.user_id == User.id)
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     )
 
     if request.method == 'GET':
@@ -591,11 +540,7 @@ def search_doctor():
         if governorate_id:
             query = query.filter(Clinic.governorate_id == governorate_id)
         if doctor_name:
-<<<<<<< HEAD
-            query = query.filter(Doctor.name.ilike(f'%{doctor_name}%'))
-=======
             query = query.filter(User.name.ilike(f'%{doctor_name}%'))
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
 
@@ -609,21 +554,6 @@ def search_doctor():
         if selected_specializations:
             query = query.filter(Doctor.specialization_id.in_(selected_specializations))
         if selected_date:
-<<<<<<< HEAD
-            search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
-            subquery = (
-                db.session.query(Doctor.id)
-                .outerjoin(
-                    Appointment,
-                    and_(
-                        Doctor.id == Appointment.doctor_id,
-                        func.date(Appointment.date) == search_date
-                    )
-                )
-                .filter(Appointment.id == None)
-            )
-            query = query.filter(Doctor.id.in_(subquery))
-=======
             try:
                 search_date = datetime.strptime(selected_date, '%d/%m/%Y').date()
                 subquery = (
@@ -640,7 +570,6 @@ def search_doctor():
                 query = query.filter(Doctor.id.in_(subquery))
             except ValueError:
                 flash('Invalid date format', 'error')
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         specializations = Specialization.query.all()
         governorates = Governorate.query.all()
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
@@ -665,10 +594,6 @@ def doctor_appointments():
     form = AppointmentForm()
     doctor_id = request.args.get('doctor_id')
     doctor = Doctor.query.get_or_404(doctor_id)
-<<<<<<< HEAD
-    clinic = doctor.clinic
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     specialization_name = doctor.specialization.specialization_name
     other_doctors = (
         Doctor.query.filter(
@@ -677,66 +602,6 @@ def doctor_appointments():
         .limit(3)
         .all()
     )
-<<<<<<< HEAD
-    dates = []
-    for i in range(9):
-            date = datetime.now() + timedelta(days=i)
-            dates.append(
-                (date.strftime('%Y-%m-%d'), date.strftime('%a'), date.strftime('%d'))
-            )
-    timeslots_by_date = {}
-    for date in dates:
-        daily_timeslots = []
-        for hours in clinic.working_hours.split(','):
-            start_hour, end_hour = map(lambda x: x.strip(), hours.split('-'))
-            start_hour_24 = convert_to_24_hour(start_hour)
-            end_hour_24 = convert_to_24_hour(end_hour)
-            start_hour_int = start_hour_24.hour
-            end_hour_int = end_hour_24.hour
-            for hour in range(start_hour_int, end_hour_int):
-                start_time = datetime.strptime(f"{hour}:00", '%H:%M').time()
-                end_time = datetime.strptime(f"{hour + 1}:00", '%H:%M').time()
-                timeslot = f"{date[0]} {start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
-                daily_timeslots.append(
-                    (
-                        timeslot,
-                        f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
-                    )
-                )
-        existing_appointments = Appointment.query.filter_by(
-            doctor_id=doctor.id, date=date[0]
-        ).all()
-        booked_timeslots = [
-            f"{a.date.strftime('%Y-%m-%d')} {a.time.strftime('%H:%M')}-"
-            f"{(datetime.combine(a.date, a.time) + timedelta(hours=1)).time().strftime('%H:%M')}"
-            for a in existing_appointments
-        ]
-        available_timeslots = []
-        for timeslot in daily_timeslots:
-            if timeslot[0] in booked_timeslots:
-                available_timeslots.append((timeslot[0], timeslot[1], False))
-            else:
-                available_timeslots.append((timeslot[0], timeslot[1], True))
-        timeslots_by_date[date[0]] = available_timeslots
-    if request.method == 'POST':
-        selected_timeslot = request.form.get('timeslot')
-        if not selected_timeslot:
-            flash('Please select a time slot before continuing.', 'primary')
-            return redirect(request.url)
-
-        date_str, time_range = selected_timeslot.split()
-        start_time_str, end_time_str = time_range.split('-')
-        print(selected_timeslot)
-        print(date_str)
-        print(start_time_str)
-        print(end_time_str)
-        session['doctor_id'] = doctor_id
-        session['date'] = date_str
-        session['start_time'] = start_time_str
-        session['end_time'] = end_time_str
-        return redirect(url_for('patient_checkout'))
-
-=======
 
     # Generate upcoming dates with format (date, day_of_week, day_of_month)
     dates = [
@@ -814,17 +679,12 @@ def doctor_appointments():
         except ValueError:
             flash('Invalid time slot format. Please try again.', 'danger')
             return redirect(request.url)
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     return render_template(
         'booking.html',
         form=form,
         doctor=doctor,
         dates=dates,
         timeslots_by_date=timeslots_by_date,
-<<<<<<< HEAD
-        clinic=clinic,
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         specialization_name=specialization_name,
         other_doctors=other_doctors
     )
@@ -832,120 +692,6 @@ def doctor_appointments():
 
 @app.route('/checkout', methods=['GET', 'POST'], strict_slashes=False)
 def patient_checkout():
-<<<<<<< HEAD
-    checkout_form = checkoutForm()
-    doctor_id = session.get('doctor_id', None)
-    date_str = session.get('date', None)
-    start_time_str = session.get('start_time', None)
-    end_time_str = session.get('end_time', None)
-    date = datetime.strptime(date_str, '%Y-%m-%d')
-    start_time = datetime.strptime(start_time_str, '%H:%M').time()
-    end_time = datetime.strptime(end_time_str, '%H:%M').time()
-
-    doctor_data = Doctor.query.filter_by(id=doctor_id).first()
-    if doctor_data:
-        clinic_data = doctor_data.clinic
-        gov = clinic_data.governorate
-        if request.method == 'POST':
-            if checkout_form.validate_on_submit():
-                patient = Patient.query.filter_by(
-                    email=checkout_form.email_address.data
-                ).first()
-                if patient:
-                    patient_create = patient
-                else:
-                    patient_create = Patient(
-                        name=checkout_form.firstname.data
-                        + ' '
-                        + checkout_form.lastname.data,
-                        phone=checkout_form.phone.data,
-                        email=checkout_form.email_address.data
-                    )
-                appointment_create = Appointment(
-                    date=date.strftime('%Y-%m-%d'),
-                    time=start_time.strftime('%H:%M:%S'),
-                    status=True,
-                    seen=False,
-                    clinic_id=clinic_data.id,
-                    patient=patient_create,
-                    doctor_id=doctor_id
-                )
-                logo_path = os.path.join(app.root_path, 'static', 'img', 'logo.png')
-                message_create = Message(
-                    message_body=f"""\
-            <html>
-            <head>
-                <style>
-                    body {{
-                        font-family: Arial, sans-serif;
-                        font-size: 18px;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f4f4f4;
-                    }}
-                    .container {{
-                        width: 80%;
-                        margin: 20px auto;
-                        background-color: #fff;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                    }}
-                    .header {{
-                        background-color: #007bff;
-                        padding: 10px;
-                        text-align: center;
-                        border-radius: 10px 10px 0 0;
-                    }}
-                    .logo {{
-                        text-align: center;
-                        margin-bottom: 20px;
-                    }}
-                    .content {{
-                        padding: 20px;
-                    }}
-                    .footer {{
-                        text-align: left;
-                        margin-top: 20px;
-                        color: #777;
-                    }}
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h2>Appointment Confirmation</h2>
-                    </div>
-                        <img src="cid:logo_image" alt="Your Logo" width="200">
-                    </div>
-                    <div class="content">
-                        <p>Dear {patient_create.name},</p>
-                        <p>We are writing to confirm your upcoming appointment at {clinic_data.name}.</p>
-                        <h3>Appointment Details:</h3>
-                        <ul>
-                            <li><strong>Date:</strong> {date.strftime('%d %b %Y')}</li>
-                            <li><strong>Time:</strong>from {start_time.strftime("%H:%M:%S")} to {end_time.strftime("%H:%M:%S")}</li>
-                            <li><strong>Doctor:</strong> {doctor_data.name}</li>
-                            <li><strong>Location:</strong> {clinic_data.address}, {gov.governorate_name}</li>
-                        </ul>
-                        <p>Please arrive 10-15 minutes early to complete any necessary paperwork.</p>
-                        <p>If you need to reschedule or have any questions, feel free to contact us at {clinic_data.phone} or reply to this email.</p>
-                        <p>We look forward to seeing you and providing the care you need.</p>
-                    </div>
-                    <div class="footer">
-                        <p>Best regards,</p>
-                        <p>{clinic_data.name}</p>
-                        <p>{clinic_data.phone}</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """,
-                    appointment=appointment_create,
-                    status=False
-                )
-                try:
-=======
     try:
         checkout_form = checkoutForm()
         doctor_id = session.get('doctor_id', None)
@@ -1307,7 +1053,6 @@ def patient_checkout():
                         appointment=appointment_create, status=False
                     )
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                     server = smtplib.SMTP('smtp.gmail.com', 587)
                     server.starttls()
                     email_address = os.getenv('EMAIL_ADDRESS')
@@ -1316,15 +1061,10 @@ def patient_checkout():
                     msg = MIMEMultipart()
                     msg['From'] = email_address
                     msg['To'] = checkout_form.email_address.data
-<<<<<<< HEAD
-                    msg['Subject'] = f'Appointment Confirmation - {clinic_data.name}'
-                    message = message_create.message_body
-=======
                     msg[
                         'Subject'
                     ] = f'Appointment Confirmation - {clinic_data.users.name}'
                     message = message_body
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                     msg.attach(MIMEText(message, 'html'))
                     with open(logo_path, 'rb') as f:
                         logo_data = f.read()
@@ -1334,28 +1074,6 @@ def patient_checkout():
                     server.send_message(msg)
                     server.quit()
                     message_create.status = True
-<<<<<<< HEAD
-                except Exception as e:
-                    flash(f'something wrong', category='danger')
-                    print(str(e))
-                db.session.add(patient_create)
-                db.session.add(appointment_create)
-                db.session.add(message_create)
-                db.session.commit()
-                session['doctor'] = doctor_data.name
-                session['date'] = date.strftime('%d %b %Y')
-                session['start_time'] = start_time.strftime('%H:%M:%S')
-                session['clinic_id'] = clinic_data.id
-                return redirect(url_for('checkout_success'))
-            if checkout_form.errors != {}:
-                for err_msg in checkout_form.errors.values():
-                    flash(
-                        f'there was an error with creating a user: {err_msg}',
-                        category='danger'
-                    )
-    else:
-        flash(f'no doctor data found', category='danger')
-=======
 
                     notification_create = Notification(
                         clinic_id=clinic_data.id,
@@ -1402,7 +1120,6 @@ def patient_checkout():
     except Exception as e:
         db.session.rollback()
         flash(f'Something went wrong: {str(e)}', 'danger')
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     return render_template(
         'checkout.html',
         doctor=doctor_data,
@@ -1410,17 +1127,11 @@ def patient_checkout():
         gov=gov,
         date=date.strftime('%d %b %Y'),
         start_time=start_time.strftime('%H:%M'),
-<<<<<<< HEAD
-        end_time=end_time.strftime('%H:%M'),
-=======
         end_time=end_time,
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         form=checkout_form
     )
 
 
-<<<<<<< HEAD
-=======
 def send_appointment_notification(clinic_id, data):
     socketio.emit('appointment_notification', data, room=clinic_id)
 
@@ -1441,24 +1152,11 @@ def handle_disconnect():
         leave_room(clinic_id)
 
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 @app.route('/checkout-success', methods=['GET'], strict_slashes=False)
 def checkout_success():
     doctor = session.get('doctor', None)
     date = session.get('date', None)
     start_time = session.get('start_time', None)
-<<<<<<< HEAD
-    clinic_id = session.get('clinic_id', None)
-
-    if clinic_id:
-        socketio.emit(
-            'appointment_notification',
-            {'doctor': doctor, 'date': date, 'time': start_time},
-            room=clinic_id,
-            namespace='/'
-        )
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     session.pop('doctor', None)
     session.pop('date', None)
     session.pop('start_time', None)
@@ -1467,27 +1165,10 @@ def checkout_success():
     )
 
 
-<<<<<<< HEAD
-@socketio.on('connect')
-def handle_connect():
-    clinic_id = request.args.get('clinic_id')
-    if clinic_id:
-        join_room(clinic_id)
-        emit('connected', {'message': 'Connected to clinic ' + clinic_id})
-
-
-
-
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 @app.route('/email', methods=['POST'], strict_slashes=False)
 def sendEmail():
     form = EmailForm()
     if request.method == 'POST':
-<<<<<<< HEAD
-
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         if form.validate_on_submit():
             try:
                 server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -1500,50 +1181,6 @@ def sendEmail():
                 msg['From'] = form.email_address.data
                 msg['To'] = email_address
                 msg['Subject'] = form.subject.data
-<<<<<<< HEAD
-                message_body=f"""\
-                    <html>
-                    <head>
-                        <style>
-                            body {{
-                                font-family: Arial, sans-serif;
-                                font-size: 18px;
-                                margin: 0;
-                                padding: 0;
-                                background-color: #f4f4f4;
-                            }}
-                            .container {{
-                                width: 80%;
-                                margin: 20px auto;
-                                background-color: #fff;
-                                padding: 20px;
-                                border-radius: 10px;
-                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                            }}
-                            p{{
-                                font-size:16px;
-                            }}
-                            .logo {{
-                                text-align: center;
-                                margin-bottom: 20px;
-                            }}
-                            .content {{
-                                padding: 20px;
-                            }}
-                        </style>
-                    </head>
-                    <body>
-                        <div class="container">
-                                <img src="cid:logo_image" alt="Your Logo" width="200">
-                            </div>
-                            <div class="content">
-                                <p>{form.message.data}</p>
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-            """
-=======
                 message_body = f"""<html>
 
                     <head>
@@ -1625,7 +1262,6 @@ def sendEmail():
                     </html>
 
                 """
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                 message = message_body
                 msg.attach(MIMEText(message, 'html'))
                 with open(logo_path, 'rb') as f:
@@ -1634,10 +1270,6 @@ def sendEmail():
                 logo_part.add_header('Content-ID', '<logo_image>')
                 msg.attach(logo_part)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                 server.send_message(msg)
                 server.quit()
                 flash(f'email sent successfully', category='success')
@@ -1651,10 +1283,6 @@ def sendEmail():
             )
     return redirect(url_for('home'))
 
-<<<<<<< HEAD
-def send_appointment_notification(clinic_id, data):
-    socketio.emit('appointment_notification', data, room=clinic_id)
-=======
 
 ## patient setting to edit patient profile ###
 @app.route('/patient_setting', methods=['GET', 'PUT'])
@@ -1745,4 +1373,3 @@ def patient_setting():
     return render_template(
         'patient-setting.html', form=form, patient=patient, user=user
     )
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

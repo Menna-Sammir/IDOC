@@ -1,25 +1,18 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
-<<<<<<< HEAD
-from app.models.models import Specialization, Doctor, Clinic, Governorate
-=======
 from app.models.models import *
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 from flask_principal import Permission, RoleNeed
 from werkzeug.utils import secure_filename
 import uuid
 from app.views.forms.addClinic_form import ClinicForm
 from app.views.forms.addDoctor_form import DoctorForm
-<<<<<<< HEAD
-=======
 from app import translate
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import secrets
 import smtplib
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 import os
 
 
@@ -49,21 +42,14 @@ def admin_dash():
     clinic_details = db.session.query(Clinic).all()
     doctor_count = db.session.query(Doctor).count()
     clinic_count = db.session.query(Clinic).count()
-<<<<<<< HEAD
-=======
     patient_count = db.session.query(Patient).count()
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     return render_template(
         'admin-dashboard.html',
         doctor_details=doctor_details,
         clinic_details=clinic_details,
         doctor_count=doctor_count,
-<<<<<<< HEAD
-        clinic_count=clinic_count
-=======
         clinic_count=clinic_count,
         patient_count=patient_count
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     )
 
 
@@ -75,38 +61,6 @@ def admin_dash():
 def add_clinic():
     add_clinic_form = ClinicForm()
     govs = Governorate.query.filter().all()
-<<<<<<< HEAD
-    add_clinic_form.gov_id.choices = [('', 'Select a governorate')] + [
-        (gov.id, gov.governorate_name) for gov in govs
-    ]
-    if request.method == 'POST':
-        try:
-            clinic = Clinic.query.filter_by(
-                name=add_clinic_form.clinicName.data
-            ).first()
-
-            if clinic:
-                flash('clinic already exists!')
-            else:
-                if add_clinic_form.validate_on_submit():
-                    from_hour = add_clinic_form.fromHour.data.strftime('%H:%M %p')
-                    to_hour = add_clinic_form.toHour.data.strftime('%H:%M %p')
-                    Clinic_create = Clinic(
-                        name=add_clinic_form.clinicName.data,
-                        phone=add_clinic_form.phone.data,
-                        email=add_clinic_form.email_address.data,
-                        address=add_clinic_form.clinicAddress.data,
-                        working_hours=f' {from_hour} - {to_hour}',
-                        governorate_id=add_clinic_form.gov_id.data
-                    )
-
-                    if 'logo' not in request.files:
-                        flash('No file part')
-                        return redirect(request.url)
-                    file = request.files['logo']
-                    if file.filename == '':
-                        flash('No selected file')
-=======
     add_clinic_form.gov_id.choices = [('', translate('Select a governorate'))] + [
         (gov.id, translate(gov.governorate_name)) for gov in govs
     ]
@@ -142,16 +96,11 @@ def add_clinic():
                     file = request.files['logo']
                     if file.filename == '':
                         flash(translate('No selected file'))
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                         return redirect(request.url)
                     unique_str = str(uuid.uuid4())[:8]
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = f"{unique_str}_{add_clinic_form.clinicName.data.replace(' ', '_')}{extension}"
-<<<<<<< HEAD
-                    Clinic_create.photo = new_filename
-=======
                     user_to_create.photo = new_filename
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
                     if file and allowed_file(file.filename):
                         filename = secure_filename(new_filename)
@@ -160,13 +109,6 @@ def add_clinic():
                                 app.config['UPLOAD_FOLDER'], 'clinic', filename
                             )
                         )
-<<<<<<< HEAD
-                    db.session.add(Clinic_create)
-                    db.session.commit()
-                    return redirect(url_for('dashboard'))
-                if add_clinic_form.errors != {}:
-                    for err_msg in add_clinic_form.errors.values():
-=======
                     temp_password = secrets.token_urlsafe(8)
                     user_to_create.temp_pass = temp_password
                     db.session.add(user_to_create)
@@ -215,49 +157,29 @@ def add_clinic():
                 if add_clinic_form.errors != {}:
                     for err_msg in add_clinic_form.errors.values():
                         print('error', err_msg)
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                         flash(
                             f'there was an error with creating a user: {err_msg}',
                             category='danger'
                         )
         except Exception as e:
-<<<<<<< HEAD
-            flash(f'something wrong', category='danger')
-            print(str(e))
-=======
             db.session.rollback()
             raise e
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
 @login_required
-<<<<<<< HEAD
-@admin_permission.require(http_exception=403)
-=======
 @clinic_permission.require(http_exception=403)
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 @app.route(
     '/add_doctor', methods=['GET', 'POST'], strict_slashes=False, endpoint='add_doctor'
 )
 def add_doctor():
     add_doctor_form = DoctorForm()
-<<<<<<< HEAD
-    clinics = Clinic.query.filter().all()
-    specializations = Specialization.query.filter().all()
-    add_doctor_form.clinic_id.choices = [('', 'Select a clinic')] + [
-        (clinic.id, clinic.name) for clinic in clinics
-    ]
-    add_doctor_form.specialization_id.choices = [('', 'Select a specialization')] + [
-        (specialization.id, specialization.specialization_name)
-=======
     specializations = Specialization.query.filter().all()
 
     add_doctor_form.specialization_id.choices = [
         ('', translate('Select a specialization'))
     ] + [
         (specialization.id, translate(specialization.specialization_name))
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         for specialization in specializations
     ]
     if request.method == 'POST':
@@ -265,36 +187,6 @@ def add_doctor():
             doctor_name = (
                 add_doctor_form.firstname.data + ' ' + add_doctor_form.lastname.data
             )
-<<<<<<< HEAD
-            doctor = Doctor.query.filter_by(
-                name=doctor_name, clinic_id=add_doctor_form.clinic_id.data
-            ).first()
-
-            if doctor:
-                flash('doctor already exists!')
-            else:
-                try:
-                    clinic = Clinic.query.get(add_doctor_form.clinic_id.data).name
-                    Doctor_create = Doctor(
-                        name=doctor_name,
-                        phone=add_doctor_form.phone.data,
-                        email=add_doctor_form.email_address.data,
-                        price=add_doctor_form.price.data,
-                        specialization_id=add_doctor_form.specialization_id.data,
-                        clinic_id=add_doctor_form.clinic_id.data
-                    )
-                    if 'photo' not in request.files:
-                        flash('No file part')
-                        return redirect(request.url)
-                    file = request.files['photo']
-                    if file.filename == '':
-                        flash('No selected file')
-                        return redirect(request.url)
-                    unique_str = str(uuid.uuid4())[:8]
-                    original_filename, extension = os.path.splitext(file.filename)
-                    new_filename = f"{unique_str}_{clinic.replace(' ', '_')}_{doctor_name.replace(' ', '_')}{extension}"
-                    Doctor_create.photo = new_filename
-=======
             try:
                 if current_user.user_roles.role.role_name == 'clinic':
                     clinic = Clinic.query.filter_by(
@@ -329,7 +221,6 @@ def add_doctor():
                     original_filename, extension = os.path.splitext(file.filename)
                     new_filename = f"{unique_str}_{current_user.name.replace(' ', '_')}_{doctor_name.replace(' ', '_')}{extension}"
                     user_to_create.photo = new_filename
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                     if file and allowed_file(file.filename):
                         filename = secure_filename(new_filename)
                         file.save(
@@ -337,14 +228,6 @@ def add_doctor():
                                 app.config['UPLOAD_FOLDER'], 'doctors', filename
                             )
                         )
-<<<<<<< HEAD
-                    db.session.add(Doctor_create)
-                    db.session.commit()
-                    return redirect(url_for('dashboard'))
-                except Exception as e:
-                    flash(f'something wrong', category='danger')
-                    print(str(e))
-=======
                     doctor_role = Role.query.filter_by(
                         role_name='doctor'
                     ).first_or_404()
@@ -400,7 +283,6 @@ def add_doctor():
                 db.session.rollback()
                 raise e
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
@@ -408,8 +290,6 @@ def add_doctor():
                     category='danger'
                 )
     return render_template('add-doctor.html', form=add_doctor_form)
-<<<<<<< HEAD
-=======
 
 
 @app.route('/all_patients', methods=['GET'])
@@ -501,4 +381,3 @@ def all_appointments():
         return render_template('all-appointments.html', appointments=appointments)
     except Exception as e:
         raise e
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

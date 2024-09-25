@@ -1,204 +1,3 @@
-<<<<<<< HEAD
-{% extends 'base.html' %} {% block title %} Doctor Dashboard {% endblock %} {%
-block body %}
-
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar">
-  <div class="container-fluid">
-    <div class="row align-items-center">
-      <div class="col-md-12 col-12">
-        <nav aria-label="breadcrumb" class="page-breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">
-              Dashboard
-            </li>
-          </ol>
-        </nav>
-        <h2 class="breadcrumb-title">Dashboard</h2>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /Breadcrumb -->
-
-<!-- Page Content -->
-<div class="content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        <!-- Profile Sidebar -->
-        {% block sidebar %} {% include 'base-clinic-side.html' %} {% endblock %}
-        <!-- /Profile Sidebar -->
-      </div>
-
-      <div class="col-md-7 col-lg-8 col-xl-9">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card dash-card">
-              <div class="card-body">
-                <div class="row justify-content-between">
-                  <div class="col-md-6 col-lg-4">
-                    <h2>Good Morning ,</h2>
-                    <div>
-                      {% if is_open_today %}
-                      <span class="text-info"
-                        >The clinic in this time open</span
-                      >
-                      {% else %}
-                      <span class="text-danger">
-                        The clinic in this time closed <br />
-                        <i class="far fa-clock text-info"></i>
-                        <span class="text-info"
-                          >Working hours: {{ clinic.working_hours }}.</span
-                        >
-                      </span>
-                      {% endif %}
-                    </div>
-                    <div><span class="text-muted">have a nice day</span></div>
-                  </div>
-                  <div class="col-md-6 col-lg-4" style="position: relative">
-                    <img
-                     class="clinic-dash"
-                      width="290"
-                      src="../static/img/clinic-dash.png"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card dash-card">
-              <div class="card-body">
-                <div class="row justify-content-between align-items-center">
-                  <div class="col-md-12 col-lg-1 offset-lg-1">
-                    <div class="signboard outer d-md-flex d-sm-none">
-                      <div class="signboard front inner anim04c">
-                        <li class="year anim04c">
-                          <span></span>
-                        </li>
-                        <ul class="calendarMain anim04c">
-                          <li class="month anim04c">
-                            <span></span>
-                          </li>
-                          <li class="date anim04c">
-                            <span></span>
-                          </li>
-                          <li class="day anim04c">
-                            <span></span>
-                          </li>
-                        </ul>
-                        <li class="clock minute anim04c">
-                          <span></span>
-                        </li>
-                        <li class="calendarNormal date2 anim04c">
-                          <span></span>
-                        </li>
-                      </div>
-                      <div class="signboard left inner anim04c">
-                        <li class="clock hour anim04c">
-                          <span></span>
-                        </li>
-                        <li class="calendarNormal day2 anim04c">
-                          <span></span>
-                        </li>
-                      </div>
-                      <div class="signboard right inner anim04c">
-                        <li class="clock second anim04c">
-                          <span></span>
-                        </li>
-                        <li class="calendarNormal month2 anim04c">
-                          <span></span>
-                        </li>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row col-md-12 col-lg-9 offset-lg-1">
-                    <div class="col-md-12 col-lg-3">
-                      <div class="card clinic-card m-2">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div class="admin clinicdash-back">
-                              <i class="fas fa-calendar-day fa-2x text-lightcyan"></i>
-                            </div>
-                          </div>
-                          <div class="d-block mt-3 doctor-title">
-                            <span>Today Appt</span>
-                          </div>
-                          <div class="d-block text-muted">{{today_appointments}}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12 col-lg-3">
-                      <div class="card clinic-card m-2">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div class="admin clinicdash-back">
-                              <i class="fas fa-calendar-alt fa-2x text-lightcyan"></i>
-                            </div>
-                          </div>
-                          <div class="d-block mt-3 doctor-title">
-                            <span>Total Appt<span>
-                          </div>
-                          <div class="d-block text-muted">{{total_appointments}} </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12 col-lg-3">
-                      <div class="card clinic-card m-2">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div class="admin clinicdash-back">
-                              <i class="fas fa-user-md  fa-2x text-lightcyan"></i>
-                            </div>
-                          </div>
-                          <div class="d-block mt-3 doctor-title">
-                            <span>Total Doctor</span>
-                          </div>
-                          <div class="d-block text-muted">{{clinic.doctor_count()}}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12 col-lg-3">
-                      <div class="card clinic-card  m-2">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div class="admin clinicdash-back">
-                              <i class="fas fa-coins fa-2x text-lightcyan"></i>
-                            </div>
-                          </div>
-                          <div class="d-block mt-3 doctor-title">
-                            <span>Earning</span>
-                          </div>
-                          <div class="d-block text-muted">{{clinic.total_earnings()}} $</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12">
-              <h4 class="mb-4">Patient Appoinment</h4>
-              <div class="appointment-tab">
-                <!-- Appointment Tab -->
-                <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
-                  <li class="nav-item">
-                    <a
-                      class="nav-link active"
-                      href="#today-appointments"
-                      data-toggle="tab"
-                      >appointment</a
-                    >
-                  </li>
-                </ul>
-                <!-- /Appointment Tab -->
-
-                <div class="tab-content">
-=======
 {% extends 'base.html' %} {% block title %} {{ translate('Clinic Dashboard') }} {% endblock %} {%
   block body %}
 
@@ -393,7 +192,6 @@ block body %}
   <!-- /Appointment Tab -->
   <div class="tab-content">
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                   <!-- Today Appointment Tab -->
                   <div class="tab-pane active" id="today-appointments">
                     <div class="card card-table mb-0">
@@ -402,36 +200,6 @@ block body %}
                           <table class="table table-hover table-center mb-0">
                             <thead>
                               <tr>
-<<<<<<< HEAD
-                                <th>Patient Name</th>
-                                <th>Appt Date</th>
-                                <th class="text-center">Paid Amount</th>
-                                <th></th>
-
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {% for appointment, patient, doctor in
-                              appointments %}
-                              <tr>
-                                <td>
-                                  <h2 class="table-avatar">
-                                    <a href="#"
-                                      >{{ patient.name }}<span
-                                        >Dr. {{ doctor.name }}</span
-                                      ></a
-                                    >
-                                  </h2>
-                                </td>
-                                <td>
-                                  {{ appointment.date }}
-                                  <span class="d-block text-info"
-                                    >{{ appointment.time }}</span
-                                  >
-                                </td>
-                                <td class="text-center">
-                                  {{ appointment.doctor.price  }}$
-=======
                                 <th>{{ translate('Patient Name') }}</th>
                                 <th>{{ translate('Appt Date') }}</th>
                                 <th class="text-center">{{ translate('Paid Amount') }}</th>
@@ -467,7 +235,6 @@ block body %}
                                 </td>
                                 <td class="text-center">
                                   {{ translate(appointment.doctor.price) }}$
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                                 </td>
                                 <td>
                                   {% if appointment.seen == false %}
@@ -476,10 +243,6 @@ block body %}
                                   <i class="fas fa-check-circle text-success"></i>
                                   {% endif %}
                                 </td>
-<<<<<<< HEAD
-
-=======
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                               </tr>
                               {% endfor %}
                             </tbody>
@@ -489,8 +252,6 @@ block body %}
                     </div>
                   </div>
                   <!-- /Today Appointment Tab -->
-<<<<<<< HEAD
-=======
 
                   <!-- Upcoming Appointment Tab -->
                   <div class="tab-pane" id="upcoming-appointments">
@@ -556,7 +317,6 @@ block body %}
                 </div>
 
                   </div>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                 </div>
               </div>
             </div>
@@ -564,14 +324,6 @@ block body %}
         </div>
       </div>
     </div>
-<<<<<<< HEAD
-  </div>
-  <!-- /Page Content -->
-
-  {% endblock %}
-</div>
-=======
     <!-- /Page Content -->
 
     {% endblock %}
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-{% extends 'base.html' %} {% block title %} Admin Dashboard {% endblock %} {%
-  block body %}
-  
-=======
 {% extends 'base.html' %} {% block title %} {{ translate('Admin Dashboard') }} {% endblock %} {%
   block body %}
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   <!-- Breadcrumb -->
   <div class="breadcrumb-bar">
     <div class="container-fluid">
@@ -37,7 +31,7 @@
   </div>
   <!-- /Breadcrumb -->
 <<<<<<< HEAD
-  
+
 =======
 
 >>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
@@ -51,7 +45,7 @@
         <!-- /Profile Sidebar -->
         </div>
 <<<<<<< HEAD
-  
+
 =======
 
 >>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
@@ -79,20 +73,20 @@
                         </div>
                       </div>
                     </div>
-  
+
                     <div class="col-md-12 col-lg-4">
                       <div class="dash-widget">
                         <div class="circle-bar circle-bar2">
                           <div class="circle-graph2">
-                          
+
                           </div>
                         </div>
                         <div class="dash-widget-info">
-                         
+
                         </div>
                       </div>
                     </div>
-  
+
                     <div class="col-md-12 col-lg-4">
                       <div class="dash-widget">
                         <div class="circle-border-cyan" >
@@ -102,7 +96,7 @@
                               class="img-fluid"
                               alt="Patient" style="width:70px"
                             />
-                        
+
                         </div>
                         <div class="dash-widget-info">
                           <h6>Registered Clinics</h6>
@@ -189,29 +183,12 @@
               </div>
             </div>
           </div>
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
           <div class="row">
             <div class="col-md-12">
               <div class="appointment-tab">
                 <!-- Appointment Tab -->
                 <div class="card card-table flex-fill">
                   <div class="card-header">
-<<<<<<< HEAD
-                      <h4 class="card-title">Doctors List</h4>
-                  </div>
-                  <div class="card-body">
-                      <div class="table-responsive">
-                          <table class="table table-hover table-center mb-0">
-                              <thead>
-                                  <tr>
-                                      <th>Doctor Name</th>
-                                      <th>Speciality</th>
-                                      <th>Earned</th>
-=======
                       <h4 class="card-title">{{ translate('Doctors List') }}</h4>
                   </div>
                   <div class="card-body">
@@ -222,7 +199,6 @@
                                       <th>{{ translate('Doctor Name') }}</th>
                                       <th>{{ translate('Speciality') }}</th>
                                       <th>{{ translate('Earned') }}</th>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                                   </tr>
                               </thead>
                               <tbody>
@@ -231,22 +207,12 @@
                                       <td>
                                           <h2 class="table-avatar">
                                             {% set base_path = 'static/images/doctors/' %}
-<<<<<<< HEAD
-                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.photo}}" alt="User Image"></a>
-
-                                              <a href="#">Dr. {{ doctor.name }}</a>
-                                          </h2>
-                                      </td>
-                                      <td>{{ doctor.specialization.specialization_name }}</td>
-                                      <td>{{ doctor.total_earnings() }} $</td>
-                                     
-=======
                                             <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.users.photo}}" alt="User Image"></p>
 
                                               <p>
                                                 {{ translate('Dr.') }} {{ translate(doctor.users.name) }}
                                                 <span class="d-block text-info">
-                                                  {{ translate(doctor.clinic.users.name) }} 
+                                                  {{ translate(doctor.clinic.users.name) }}
                                                 </span>
                                               </p>
                                           </h2>
@@ -254,7 +220,6 @@
                                       <td>{{ translate(doctor.specialization.specialization_name) }}</td>
                                       <td>{{ translate(doctor.total_earnings()) }} $</td>
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                                   </tr>
                                   {% endfor %}
                               </tbody>
@@ -263,15 +228,6 @@
                   </div>
               </div>
               <!-- /Recent Orders -->
-<<<<<<< HEAD
-              
-      
-          
-              <!-- Recent Orders -->
-              <div class="card card-table">
-                  <div class="card-header">
-                    <h4 class="card-title">Clinics List</h4>
-=======
 
 
 
@@ -279,22 +235,15 @@
               <div class="card card-table">
                   <div class="card-header rounded-0 doctordash-back">
                     <h4 class="card-title">{{ translate('Clinics List') }}</h4>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                   </div>
                   <div class="card-body">
                       <div class="table-responsive">
                           <table class="table table-hover table-center mb-0">
                               <thead>
                                   <tr>
-<<<<<<< HEAD
-                                      <th>Clinic Name</th>
-                                      <th>Address</th>
-                                      <th>Phone</th>
-=======
                                       <th>{{ translate('Clinic Name') }}</th>
                                       <th>{{ translate('Address') }}</th>
                                       <th>{{ translate('Phone') }}</th>
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                                   </tr>
                               </thead>
                               <tbody>
@@ -303,21 +252,6 @@
                                       <td>
                                           <h2 class="table-avatar">
                                             {% set base_path = 'static/images/clinic/' %}
-<<<<<<< HEAD
-                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.photo}}" alt="User Image"></a>
-                                              <a href="profile.html">{{ clinic.name }}</a>
-                                          </h2>
-                                      </td>
-                                      <td>{{ clinic.address }}</td>
-                                       <td>
-                                          <h2 class="table-avatar">
-                                              <a>{{ clinic.phone }}</a>
-                                          </h2>
-                                      </td>
-                                     
-                                  </tr>
-                                  
-=======
                                             <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.users.photo}}" alt="User Image"></p>
                                               <p>{{ translate(clinic.users.name) }}</p>
                                           </h2>
@@ -331,7 +265,6 @@
 
                                   </tr>
 
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                                   </tr>
                                   {% endfor %}
                               </tbody>
@@ -349,9 +282,4 @@
     </div>
   </div>
   <!-- /Page Content -->
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   {% endblock %}
