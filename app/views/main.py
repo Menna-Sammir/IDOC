@@ -207,31 +207,31 @@ def reset_password(email):
         raise e
 
 
-# @app.errorhandler(Exception)
-# def handle_exception(e):
-#     return render_template('error.html', error_message=str(e), error_code=500), 500
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return render_template('error.html', error_message=str(e), error_code=500), 500
 
 
-# @app.errorhandler(403)
-# def permission_denied(e):
-#     return (
-#         render_template(
-#             'error.html',
-#             error_message="You don't have permission to access this page",
-#             error_code=403
-#         ),
-#         403
-#     )
+@app.errorhandler(403)
+def permission_denied(e):
+    return (
+        render_template(
+            'error.html',
+            error_message="You don't have permission to access this page",
+            error_code=403
+        ),
+        403
+    )
 
 
-# @app.route('/error', methods=['GET'])
-# def ErrorPage():
-#     return render_template('error.html')
+@app.route('/error', methods=['GET'])
+def ErrorPage():
+    return render_template('error.html')
 
 
-# @app.route('/<path:path>')
-# def catch_all(path):
-#     return (
-#         render_template('error.html', error_message='Page Not Found', error_code=404),
-#         404
-#     )
+@app.route('/<path:path>')
+def catch_all(path):
+    return (
+        render_template('error.html', error_message='Page Not Found', error_code=404),
+        404
+    )
