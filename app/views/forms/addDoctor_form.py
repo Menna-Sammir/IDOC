@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import Length, Email, DataRequired, ValidationError
 from flask_wtf.file import FileField
+<<<<<<< HEAD
 from flask_wtf.csrf import CSRFProtect
 from app.models.models import *
 
@@ -14,11 +15,28 @@ class DoctorForm(FlaskForm):
         clinic = Clinic.query.filter_by(id= clinic_id.data).first()
         if clinic:
             raise ValidationError('clinic already exists!')
+=======
+from wtforms_components import TimeField
+from flask_wtf.csrf import CSRFProtect
+from app.models.models import User
+from app import translate
+from datetime import datetime, timedelta, time
+
+
+csrf = CSRFProtect()
+
+class DoctorForm(FlaskForm):
+    def validate_email_address(self, email_address_to_check):
+        email_address = User.query.filter_by(email=email_address_to_check.data).first()
+        if email_address:
+            raise ValidationError(translate('email address already exists!'))
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
     def file_size_check(self, photo):
         allowed_extensions = {'png', 'jpg', 'jpeg'}
         if photo.data:
             if len(photo.data.read()) > 2 * 1024 * 1024:
+<<<<<<< HEAD
                 raise ValidationError('File size must be less than 2MB.')
             photo.data.seek(0)
             filename = photo.data.filename
@@ -34,3 +52,76 @@ class DoctorForm(FlaskForm):
     clinic_id = SelectField(label='clinic', validators=[DataRequired()])
     specialization_id = SelectField(label='Specialization', validators=[DataRequired()])
     submit = SubmitField(label='Add Doctor')
+=======
+                raise ValidationError(translate('File size must be less than 2MB.'))
+            photo.data.seek(0)
+            filename = photo.data.filename
+            if '.' not in filename or filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
+                raise ValidationError(translate('Unsupported file extension.'))
+
+    firstname = StringField(validators=[Length(min=2, max=30), DataRequired()])
+    lastname = StringField(validators=[Length(min=2, max=70), DataRequired()])
+    price = StringField(validators=[Length(min=2, max=90), DataRequired()])
+    email_address = StringField(validators=[Email(), DataRequired(), Length(max=50)])
+    phone = StringField(validators=[Length(min=0, max=11)])
+    photo = FileField(validators=[DataRequired(), file_size_check])
+    # clinic_id = SelectField(validators=[DataRequired()])
+    specialization_id = SelectField(validators=[DataRequired()])
+    fromHour = TimeField(validators=[DataRequired()])
+    toHour = TimeField(validators=[DataRequired()])
+    IDNum = StringField(validators=[Length(min=6, max=10), DataRequired()])
+    # to do
+    time_options = [('', 'Select Time')] + [(15, '15 min'), (30, '30 min'), (45, '45 min'), (60, '60 min')]
+    duration = SelectField('Select Time', choices=time_options)
+    submit = SubmitField()
+
+    def __init__(self, *args, **kwargs):
+        super(DoctorForm, self).__init__(*args, **kwargs)
+        self.translate()
+
+    def translate(self):
+        self.firstname.label.text = translate('First Name')
+        self.lastname.label.text = translate('Last Name')
+        self.price.label.text = translate('pricing')
+        self.email_address.label.text = translate('Email Address')
+        self.phone.label.text = translate('Phone')
+        self.fromHour.label.text = translate('From')
+        self.duration.label.text = translate('Dia Duration')
+        self.toHour.label.text = translate('To')
+        self.photo.label.text = translate('Doctor Image')
+        self.IDNum.label.text = translate('ID Num')
+
+        self.specialization_id.label.text = translate('Specialization')
+        self.submit.label.text = translate('Add Doctor')
+
+
+
+class EditDoctorForm(FlaskForm):
+    firstname = StringField(validators=[Length(min=2, max=30), DataRequired()])
+    lastname = StringField(validators=[Length(min=2, max=70), DataRequired()])
+    price = StringField(validators=[Length(min=2, max=90), DataRequired()])
+    phone = StringField(validators=[Length(min=0, max=11)])
+    specialization_id = SelectField(validators=[DataRequired()])
+    From_working_hours = TimeField(validators=[DataRequired()])
+    To_working_hours = TimeField(validators=[DataRequired()])
+    iDNum = StringField(validators=[Length(min=6, max=10), DataRequired()])
+    time_options = [('', 'Select Time')] + [(15, '15 min'), (30, '30 min'), (45, '45 min'), (60, '60 min')]
+    duration = SelectField('Select Time', choices=time_options)
+    submit = SubmitField()
+
+    def __init__(self, *args, **kwargs):
+        super(EditDoctorForm, self).__init__(*args, **kwargs)
+        self.translate()
+
+    def translate(self):
+        self.price.label.text = translate('pricing')
+        self.phone.label.text = translate('Phone')
+        self.From_working_hours.label.text = translate('From')
+        self.duration.label.text = translate('Dia Duration')
+        self.To_working_hours.label.text = translate('To')
+        self.iDNum.label.text = translate('ID Num')
+        self.specialization_id.label.text = translate('Specialization')
+        self.submit.label.text = translate('Add Doctor')
+
+
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

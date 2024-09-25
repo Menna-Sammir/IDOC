@@ -1,0 +1,913 @@
+{% extends 'base.html' %} {% block title %} Doctor {{ translate('Dashboard') }}
+{% endblock %} {% block body %}
+
+<!-- Breadcrumb: Navigation to indicate user's current location in the application -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">{{ translate('Home') }}</li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Dashboard') }}
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content: Main container for the dashboard content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Profile Sidebar: Sidebar navigation for different roles (Admin, Doctor, Patient, etc.) -->
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        {% if current_user.user_roles.role.role_name == 'Admin' %} {% block
+        Adminsidebar %} {% include 'base-admin-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'clinic' %} {% block
+        clinicsidebar %} {% include 'base-clinic-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'doctor' %} {% block
+        doctorsidebar %} {% include 'base-doctor-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'patient' %} {% block
+        patientsidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+        {% endif %}
+      </div>
+      <!-- / Profile Sidebar -->
+
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="card">
+          <div class="card-body pt-0">
+            <!-- Tab Menu: Navigation tabs for different sections like Appointments, Prescriptions, Medical Records, etc. -->
+            <nav class="user-tabs mb-4">
+              <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    href="#pat_appointments"
+                    data-toggle="tab"
+                    >{{ translate('Appointments') }}</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    href="#pat_prescriptions"
+                    data-toggle="tab"
+                    >{{ translate('Prescriptions') }}</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    href="#pat_medical_records"
+                    data-toggle="tab"
+                    ><span class="med-records"
+                      >{{ translate('Medical Records') }}</span
+                    ></a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#lab_Ray_files" data-toggle="tab"
+                    >{{ translate('Lab - X-Ray Files') }}</a
+                  >
+                </li>
+              </ul>
+            </nav>
+            <!-- /Tab Menu -->
+
+            <!-- Tab Content: Display content based on the selected tab -->
+            <div class="tab-content pt-0">
+              <!-- Appointment Tab: Shows details of the patient's appointments -->
+              <div id="pat_appointments" class="tab-pane fade show active">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>{{ translate('Doctor') }}</th>
+                            <th>{{ translate('Appt Date') }}</th>
+                            <th>{{ translate('Amount') }}</th>
+                            <th>{{ translate('Follow Up') }}</th>
+                            <th>{{ translate('Status') }}</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Loop through appointments and display each one -->
+                          {% for appointment in appointments %}
+                          <tr>
+                            <td>
+                              <h2 class="table-avatar">
+                                <div class="avatar avatar-sm mr-2">
+                                  {% set base_path = 'static/images/doctors/' %}
+                                  <!-- Doctor's image -->
+                                  <img
+                                    class="avatar-img rounded-circle"
+                                    src="{{ base_path ~ appointment.doctor.users.photo }}"
+                                    alt="User Image"
+                                  />
+                                </div>
+                                <p class="mt-2">
+                                  {{ appointment.doctor.users.name }}<span
+                                    >{{
+                                    appointment.doctor.specialization.specialization_name
+                                    }}</span
+                                  >
+                                </p>
+                              </h2>
+                            </td>
+                            <td>
+                              {{ appointment.date }}
+                              <span class="d-block text-info"
+                                >{{ appointment.time_range }}</span
+                              >
+                            </td>
+                            <td>${{ appointment.doctor.price }}</td>
+                            <td>
+                              {% if appointment.status.name == 'Completed' %}
+                              <!-- Follow-up information -->
+                              {% if appointment.follow_up %} {{
+                              appointment.follow_up.strftime('%d %b %Y') }}<br />
+                              {{ appointment.follow_up.strftime('%I:%M %p') }}
+                              {% else %} {{ translate('No Follow-Up') }} {%
+                              endif %} {% else %} {{ translate('No Follow-Up')
+                              }} {% endif %}
+                            </td>
+                            {% if current_user.patient or current_user.clinic %}
+                            <td>
+                              <!-- Appointment Status with dynamic badge color -->
+                              {% if appointment.status.name == 'Cancelled' %}
+                              <span
+                                class="badge badge-pill bg-danger position-relative d-inline"
+                                >Cancelled</span
+                              >
+                              {% elif appointment.status.name == 'Pending' %}
+                              <span
+                                class="badge badge-pill bg-info position-relative d-inline"
+                                >Pending</span
+                              >
+                              {% elif appointment.status.name == 'Completed' %}
+                              <span
+                                class="badge badge-pill bg-success position-relative d-inline"
+                                >Completed</span
+                              >
+                              {% else %}
+                              <span
+                                class="badge badge-pill bg-secondary position-relative d-inline"
+                                >{{ appointment.status.name }}</span
+                              >
+                              {% endif %}
+                            </td>
+                            {% endif %}
+
+                            <!-- Dropdown for doctors to change appointment status -->
+                            {% if current_user.doctor %}
+                            <td>
+                              {% set status_class = { 'Pending':
+                              'bg-warning-light', 'Confirmed':
+                              'bg-success-light', 'Cancelled':
+                              'bg-danger-light', 'Completed': 'bg-primary-light'
+                              }[appointment.status.name] %}
+                              <div class="status-dropdown">
+                                <button
+                                  class="btn dropdown-toggle badge badge-pill {{ status_class }} status-badge"
+                                  type="button"
+                                  id="dropdownMenuButton"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                                  data-appointment-id="{{ appointment.id }}"
+                                >
+                                  {{ translate(appointment.status.name) }}
+                                </button>
+                                <div
+                                  class="dropdown-menu"
+                                  aria-labelledby="dropdownMenuButton"
+                                >
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Pending"
+                                    style="
+                                      background-color: rgba(255, 193, 7, 0.1);
+                                      color: #ffc107;
+                                    "
+                                  >
+                                    {{ translate('Pending') }}
+                                  </button>
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Confirmed"
+                                    style="
+                                      background-color: rgba(40, 167, 69, 0.1);
+                                      color: #28a745;
+                                    "
+                                  >
+                                    {{ translate('Confirmed') }}
+                                  </button>
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Cancelled"
+                                    style="
+                                      background-color: rgba(220, 53, 69, 0.1);
+                                      color: #dc3545;
+                                    "
+                                  >
+                                    {{ translate('Cancelled') }}
+                                  </button>
+                                  <button
+                                    class="dropdown-item"
+                                    data-status="Completed"
+                                    style="
+                                      background-color: rgba(
+                                        108,
+                                        117,
+                                        125,
+                                        0.1
+                                      );
+                                      color: #6c757d;
+                                    "
+                                  >
+                                    {{ translate('Completed') }}
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td class="text-right">
+                              <div class="table-action">
+                                <!-- Options for printing, viewing, and editing appointments -->
+                                <a
+                                  href="javascript:void(0);"
+                                  class="btn btn-sm bg-primary-light"
+                                  onclick="showEditForm('{{ appointment.id }}')"
+                                  ><i class="far fa-edit"></i> {{
+                                  translate('Edit') }}</a
+                                >
+                              </div>
+
+                              <!-- Overlay and Modal for editing follow-up -->
+                              <div
+                                id="overlay"
+                                class="overlay"
+                                style="display: none"
+                              ></div>
+                              <div
+                                id="editFollowUpModal"
+                                class="modal"
+                                tabindex="-1"
+                                role="dialog"
+                                style="display: none"
+                              >
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">
+                                        {{ translate('Edit Follow-Up') }}
+                                      </h5>
+                                      <button
+                                        type="button"
+                                        class="close"
+                                        aria-label="Close"
+                                        onclick="hideEditForm()"
+                                      >
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <form
+                                        method="POST"
+                                        action="{{ url_for('update_follow_up') }}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          id="appointment_id"
+                                          name="appointment_id"
+                                        />
+                                        <input
+                                          type="hidden"
+                                          name="csrf_token"
+                                          value="{{ csrf_token() }}"
+                                        />
+                                        <input
+                                          type="hidden"
+                                          name="patient_id"
+                                          value="{{ patient.id }}"
+                                        />
+                                        <div class="form-group">
+                                          <label for="follow_up_date"
+                                            >{{ translate('Date') }}</label
+                                          >
+                                          <input
+                                            type="date"
+                                            id="follow_up_date"
+                                            name="follow_up_date"
+                                            class="form-control"
+                                          />
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="follow_up_time"
+                                            >{{ translate('Time') }}</label
+                                          >
+                                          <input
+                                            type="time"
+                                            id="follow_up_time"
+                                            name="follow_up_time"
+                                            class="form-control"
+                                          />
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                          >
+                                            {{ translate('Save Follow-Up') }}
+                                          </button>
+                                          <button
+                                            type="button"
+                                            class="btn btn-secondary"
+                                            onclick="hideEditForm()"
+                                          >
+                                            {{ translate('Cancel') }}
+                                          </button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- /Overlay and Modal for editing follow-up -->
+                            </td>
+                            {% endif %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Appointment Tab -->
+
+              <!-- Prescription Tab: Displays patient's prescriptions -->
+              <div class="tab-pane fade" id="pat_prescriptions">
+                <div class="text-right">
+                  {% if current_user.user_roles.role.role_name == 'patient'  or  current_user.user_roles.role.role_name == 'doctor' %}
+                  <a
+                    href="#"
+                    class="add-new-btn"
+                    data-toggle="modal"
+                    data-target="#prescription_modal"
+                    >{{ translate('Add Prescription') }}</a
+                  >
+                  {% endif %}
+                </div>
+                <div
+                  class="modal fade custom-modal"
+                  id="prescription_modal"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true"
+                >
+                  <div
+                    class="modal-dialog modal-dialog-centered modal-lg"
+                    role="document"
+                    style="min-width: 80%"
+                  >
+                    <div class="modal-content mb-0" style="min-width: inherit">
+                      <div class="modal-header">
+                        <h3 class="modal-title">
+                          {{ translate('Medical Records') }}
+                        </h3>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+
+                      <div class="modal-body">
+                        <!-- Add Item: Allows user to add multiple prescription items -->
+                        <div class="add-more-item text-right">
+                          <a href="#" id="add-more-item"
+                            ><i class="fas fa-plus-circle"></i> {{
+                            translate('Add Item') }}</a
+                          >
+                        </div>
+
+                        <div class="row justify-content-center">
+                          <!-- Prescription Form -->
+                          <div class="table-responsive p-2">
+                            <form method="POST">
+                              {{ Medicine_form.hidden_tag() }} {{
+                              Medicine_form.csrf_token }} {{
+                              Medicine_form.patient_id }}
+                              <table class="table table-hover table-center">
+                                <thead>
+                                  <tr>
+                                    <th style="min-width: 200px">
+                                      {{ translate('Name') }}
+                                    </th>
+                                    <th style="min-width: 100px">
+                                      {{ translate('Quantity') }}
+                                    </th>
+                                    <th style="min-width: 100px">
+                                      {{ translate('Time') }}
+                                    </th>
+                                    <th style="min-width: 80px"></th>
+                                  </tr>
+                                </thead>
+                                <tbody id="items-container">
+                                  {% for item in Medicine_form.items %}
+                                  <tr>
+                                    <td>
+                                      {{ item.form.name(class_="form-control")
+                                      }}
+                                    </td>
+                                    <td>
+                                      {{
+                                      item.form.quantity(class_="form-control")
+                                      }}
+                                    </td>
+                                    <td>
+                                      <!-- Loop through times of the day for prescription -->
+                                      {% for subfield in item.form.time_of_day
+                                      %}
+                                      <div class="form-check form-check-inline">
+                                        {{ subfield(class_="form-check-input")
+                                        }} {{ subfield.label(class_="mb-0") }}
+                                      </div>
+                                      {% endfor %}
+                                    </td>
+                                    <td>
+                                      <a
+                                        href="#"
+                                        class="btn bg-danger-light trash"
+                                        ><i class="far fa-trash-alt"></i
+                                      ></a>
+                                    </td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+
+                              <!-- Form submit and reset buttons -->
+                              <div class="col-md-6">
+                                <div class="submit-section">
+                                  <button
+                                    type="submit"
+                                    class="btn btn-primary submit-btn"
+                                  >
+                                    {{ translate('Save') }}
+                                  </button>
+                                  <button
+                                    type="reset"
+                                    class="btn btn-secondary submit-btn"
+                                  >
+                                    {{ translate('Clear') }}
+                                  </button>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                          <!-- /Prescription Form -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Display list of prescriptions -->
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>{{ translate('Date') }}</th>
+                            <th>{{ translate('Name') }}</th>
+                            <th>{{ translate('Quantity') }}</th>
+                            <th>{{ translate('Time of Day') }}</th>
+                            <th>{{ translate('Created by') }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Loop through patient medicines and display each one -->
+                          {% for medicine in patient_medicines %}
+                          <tr>
+                            <td>{{ medicine.Date }}</td>
+                            <td>{{ medicine.medName }}</td>
+                            <td>{{ medicine.Quantity }}</td>
+                            <td>
+                              {% for time in medicine.medicine_times %}{{
+                              time.time_of_day.name }} | {% endfor %}
+                            </td>
+                            <td>{{ medicine.user.name }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Prescription Tab -->
+
+              <!-- Medical Records Tab -->
+              <div id="pat_medical_records" class="tab-pane fade">
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Appt Date</th>
+                            <!-- <th>Diagnosis</th> -->
+                            <th>Attachment</th>
+                            <th>Created by</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for appointment in appointments %}
+                          <tr>
+                            <td>
+                              {{ appointment.date }}
+                              <span class="d-block text-info"
+                                >{{ appointment.time_range }}</span
+                              >
+                            </td>
+                            <!-- <td>{{ appointment.Diagnosis }}</td> -->
+                            <td style="text-wrap: wrap">
+                              {% if appointment.Report %}
+                              <a
+                                href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
+                                target="_blank"
+                              >
+                                {{ appointment.Report }}
+                              </a>
+                              {% else %} No attachment {% endif %}
+                            </td>
+
+                            <td>
+                              {% if appointment.Report %}
+                              <h2 class="table-avatar">
+                                <a
+                                  href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}"
+                                  class="avatar avatar-sm mr-2"
+                                >
+                                  {% set base_path = 'static/images/doctors/' %}
+                                  <img
+                                    class="avatar-img rounded-circle"
+                                    src="{{base_path ~ appointment.doctor.users.photo}}"
+                                    alt="User Image"
+                                  />
+                                </a>
+                                <a
+                                  href="{{ url_for('doctor_profile', user_id=appointment.doctor.users.id) }}"
+                                >
+                                  {{ appointment.doctor.users.name }}
+                                  <span
+                                    >{{
+                                    appointment.doctor.specialization.specialization_name
+                                    }}</span
+                                  >
+                                </a>
+                              </h2>
+                              {% else %} No doctor assigned {% endif %}
+                            </td>
+
+                            <td class="text-right">
+                              <div class="table-action">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="btn btn-sm bg-primary-light"
+                                  onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')"
+                                >
+                                  <i class="fas fa-print"></i> Print
+                                </a>
+
+                                <iframe
+                                  id="pdfIframe"
+                                  style="display: none"
+                                  frameborder="0"
+                                ></iframe>
+
+                                <script>
+                                  function printPDF(pdfUrl) {
+                                    var iframe =
+                                      document.getElementById('pdfIframe');
+
+                                    iframe.src = pdfUrl;
+
+                                    iframe.onload = function () {
+                                      iframe.focus();
+                                      iframe.contentWindow.print();
+                                    };
+                                  }
+                                </script>
+
+                                <a
+                                  href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
+                                  class="btn btn-sm bg-info-light"
+                                  target="_blank"
+                                >
+                                  <i class="far fa-eye"></i> View
+                                </a>
+                                {% if current_user.user_roles.role.role_name ==
+                                'doctor' %}
+                                <a
+                                  href="javascript:void(0);"
+                                  class="btn btn-sm bg-primary-light"
+                                  data-toggle="modal"
+                                  data-target="#add_medical_reports"
+                                  data-appointment-id="{{ appointment.id }}"
+                                >
+                                  <i class="fas fa-upload"></i> Report
+                                </a>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endif %} {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Medical Records Tab -->
+
+              <!-- Lab/Ray Files Tab: Shows attached lab and X-ray files for the patient -->
+              <div id="lab_Ray_files" class="tab-pane fade">
+                <div class="text-right mb-2">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-toggle="modal"
+                    data-target="#exampleModal"
+                  >
+                    <i class="fas fa-cloud-upload-alt"></i> {{ translate('Upload
+                    File') }}
+                  </button>
+                </div>
+                <div class="card card-table mb-0">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>{{ translate('File Type') }}</th>
+                            <th>{{ translate('Created by') }}</th>
+                            <th>{{ translate('Attachment') }}</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Loop through patient history and display lab/X-ray files -->
+                          {% if patient_history %} {% for history in
+                          patient_history %} {% if history.file_link %}
+                          <tr>
+                            <td>
+                              <span class="d-block text-info"
+                                >{{ history.type }}</span
+                              >
+                            </td>
+                            <td>{{ history.added_by }}</td>
+                            <td>
+                              {% if history.file_link %}
+                              <a href="{{ history.file_link }}" target="_blank"
+                                >{{ history.file_link | basename }}</a
+                              >
+                              {% else %} {{ translate('No attachment') }} {%
+                              endif %}
+                            </td>
+                            <td class="text-right">
+                              <div class="table-action">
+                                <a
+                                  href="{{ history.file_link }}"
+                                  download
+                                  class="btn btn-sm bg-primary-light print-btn"
+                                  ><i class="fas fa-print"></i> {{
+                                  translate('Print') }}</a
+                                >
+                                <a
+                                  href="{{ history.file_link }}"
+                                  class="btn btn-sm bg-info-light"
+                                  target="_blank"
+                                  ><i class="far fa-eye"></i> {{
+                                  translate('View') }}</a
+                                >
+                              </div>
+                            </td>
+                            {% endif %} {% endfor %} {% else %}
+                          <td
+                            class="w-100 h-100 d-flex justify-content-center align-items-center"
+                          >
+                            {{ translate('No file attached.') }}
+                          </td>
+                          {% endif %}
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Lab/Ray Files Tab -->
+
+              <!-- Modal for uploading new lab/X-ray files -->
+              <div
+                class="modal fade"
+                id="exampleModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">
+                        {{ translate('Add Attachment') }}
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                          <label for="details">{{ form.details.label }}</label>
+                          {{ form.details(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                          <label for="type">{{ form.type.label }}</label>
+                          {{ form.type(class="form-control") }}
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                          >
+                            {{ translate('Close') }}
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                            {{ translate('Submit') }}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /Modal for uploading new lab/X-ray files -->
+
+              <!-- Modal for adding medical reports -->
+              <div
+                class="modal fade custom-modal"
+                id="add_medical_reports"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="add_medical_reports_label"
+                aria-hidden="true"
+              >
+                <div
+                  class="modal-dialog modal-dialog-centered modal-lg"
+                  role="document"
+                >
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="add_medical_reports_label">
+                        {{ translate('Report') }}
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <form
+                      action="{{ url_for('upload_report') }}"
+                      method="POST"
+                      enctype="multipart/form-data"
+                    >
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label>{{ translate('Diagnosis') }}</label>
+                          <textarea
+                            name="diagnosis"
+                            class="form-control"
+                            required
+                          ></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label>{{ translate('Upload File') }}</label>
+                          <input
+                            type="file"
+                            name="file"
+                            class="form-control"
+                            accept=".pdf"
+                            required
+                          />
+                        </div>
+
+                        <input
+                          type="hidden"
+                          name="csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <input
+                          type="hidden"
+                          name="appointment_id"
+                          id="appointment_id"
+                          value=""
+                        />
+                        <input
+                          type="hidden"
+                          name="patient_id"
+                          id="patient_id"
+                          value=""
+                        />
+                        <div class="submit-section text-center">
+                          <button
+                            type="submit"
+                            class="btn btn-primary submit-btn"
+                          >
+                            {{ translate('Submit') }}
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-secondary submit-btn"
+                            data-dismiss="modal"
+                          >
+                            {{ translate('Cancel') }}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!-- /Modal for adding medical reports -->
+            </div>
+            <!-- /Tab Content -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for rescheduling appointments -->
+    <div id="reschedule-modal" style="display: none">
+      <!-- Modal content will be loaded dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- Script for showing and hiding follow-up edit form -->
+<script>
+  function showEditForm(appointmentId, followUpDateTime) {
+    const [date, time] = followUpDateTime
+      ? followUpDateTime.split(' ')
+      : ['', ''];
+    document.getElementById('appointment_id').value = appointmentId;
+    document.getElementById('follow_up_date').value = date || '';
+    document.getElementById('follow_up_time').value = time || '';
+    document.getElementById('editFollowUpModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  }
+
+  function hideEditForm() {
+    document.getElementById('editFollowUpModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  window.onclick = function (event) {
+    var modal = document.getElementById('editFollowUpModal');
+    var overlay = document.getElementById('overlay');
+    if (event.target === modal || event.target === overlay) {
+      hideEditForm();
+    }
+  };
+</script>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+
+    </style>
+            <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            themeSystem: 'Litera',
+            eventContent: function(arg) {
+                let event = arg.event;
+                let img = event.extendedProps.img ? '<img src="' + event.extendedProps.img + '" alt="Doctor Image"/>' : '';
+                let doctor_patient = event.extendedProps.doctor ? '<div class="ml-2"><div class="fc-event-title d-block">' + event.extendedProps.doctor + '</div><p class="fc-event-title d-block text-muted m-0">' + event.extendedProps.patient +'</p></div>' : '';
+                return { html:img + doctor_patient  };
+            }
+        });
+
+        fetchAndUpdateCalendar();
+
+        // Handle 'Today' button click event
+        $('#today-button').on('click', function() {
+            calendar.today();
+        });
+        });
+    </script>
+</head>
+<body>
+    <div id='calendar'></div>
+</body>
+</html>
