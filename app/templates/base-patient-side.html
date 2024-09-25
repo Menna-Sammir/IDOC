@@ -1,0 +1,81 @@
+<div class="profile-sidebar">
+  <div class="widget-profile pro-widget-content">
+    <div class="profile-info-widget">
+      <p  class="booking-doc-img">
+        {% set base_path = 'static/images/patients/' %}
+        <img
+          class="avatar-img rounded-circle"
+          src="{{ base_path ~ current_user.photo}}"
+          alt="User Image"
+      /></p>
+      <div class="profile-det-info">
+        <h3>{{ current_user.name }}</h3>
+
+        <div class="patient-details">
+          <p>
+            <strong><i class="fas fa-allergies"></i></strong> {{
+            translate(current_user.patient[0].allergy.value) }}
+          </p>
+          <h5 class="mb-0">
+            <span
+              class="{{ 'activated' if current_user.patient[0].users.activated else 'not-activated' }}"
+            >
+              <i class="fas fa-user-check"></i> {{ 'Activated' if
+              current_user.patient[0].users.activated else 'Not Activated' }}
+            </span>
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-widget">
+    <nav class="dashboard-menu">
+      <ul>
+        {% if current_user.patient %}
+        <li
+          class="{{ 'active' if request.endpoint == 'patient_dashboard' else '' }}"
+        >
+          <a href="{{ url_for('patient_dashboard') }}">
+            <i class="fas fa-columns"></i>
+            <span>{{ translate('Dashboard') }}</span>
+          </a>
+        </li>
+        {% endif %}
+        <li
+          class="{{ 'active' if request.endpoint == 'appointment_History' else '' }}"
+        >
+          <a href="{{ url_for('appointment_History') }}">
+            <i class="fas fa-bookmark"></i>
+            <span>{{ translate('appointment History') }}</span>
+          </a>
+        </li>
+        {% if current_user.patient %}
+        <li
+          class="{{ 'active' if request.endpoint == 'patient_setting' else '' }}"
+        >
+          <a href="{{ url_for('patient_setting') }}">
+            <i class="fas fa-user-cog"></i>
+            <span>{{ translate('Profile Settings') }}</span>
+          </a>
+        </li>
+
+        <li
+          class="{{ 'active' if request.endpoint == 'change_password' else '' }}"
+        >
+          <a href="{{url_for('change_password')}}">
+            <i class="fas fa-lock"></i>
+            <span>{{ translate('Change Password') }}</span>
+          </a>
+        </li>
+
+        <li class="{{ 'active' if request.endpoint == 'logout_page' else '' }}">
+          <a href="{{ url_for('logout_page') }}">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>{{ translate('Logout') }}</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>

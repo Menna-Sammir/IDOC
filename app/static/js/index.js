@@ -1,4 +1,23 @@
 $(document).ready(function () {
+<<<<<<< HEAD
+=======
+  $(".nav-link").each(function () {
+    var direction = $("html").attr("lang");
+    if (direction === "en") {
+      var $link = $(this);
+      var text = $link.text();
+      $link.empty();
+
+      $.each(text.split(""), function (index, char) {
+        var $span = $("<span>")
+          .text(char)
+          .css("animation-delay", index * 0.1 + "s");
+        $link.append($span);
+      });
+    }
+  });
+
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   var navbar = $(".navbar");
 
   function toggleNavbarBackground() {

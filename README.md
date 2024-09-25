@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # IDOC
 
@@ -125,3 +126,6 @@ This project is licensed under the MIT License. See the LICENSE file for more in
 
 
 
+=======
+# IDOC
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

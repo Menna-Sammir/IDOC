@@ -28,7 +28,11 @@ def create_specialties():
         ('Radiology', 'static/img/specialities/radiology.png'),
         ('Rheumatology', 'static/img/specialities/rheumatology.png'),
         ('Surgery', 'static/img/specialities/surgery.png'),
+<<<<<<< HEAD
         ('Emergency Medicin', 'static/img/specialities/emergency-medicin.png'),
+=======
+        ('Emergency Medicin', 'static/img/specialities/emergency-medicine.png'),
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         ('Urology', 'static/img/specialities/urology.png')
     ]
 

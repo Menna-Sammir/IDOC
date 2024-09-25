@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <title>IDOC</title>
+
+    {% block head %} {% include 'base-css.html' %} {% endblock %}
+  </head>
+  <body class="error-page">
+    {% block alert %} {% include 'base-alert.html' %} {% endblock %}
+
+    <div class="loader">
+      {% block loading %} {% include 'base-loading.html' %} {% endblock %}
+    </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <div class="error-box">
+        <h1>{{error_code}}</h1>
+        <h3 class="h2 mb-3">
+          <i class="fas fa-exclamation-triangle"></i> Oops! there was an error.
+        </h3>
+        <p class="h4 font-weight-normal">{{ error_message }}</p>
+        <a href="{{ url_for('home') }}" class="btn btn-error">Back to Home</a>
+      </div>
+    </div>
+    <!-- /Main Wrapper -->
+
+    <!-- jQuery -->
+    {% block js %} {% include 'base-js.html' %} {% endblock %}
+  </body>
+</html>

@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 /*
 Author       : Dreamguys
 Template Name: Doccure - Bootstrap Template
 Version      : 1.0
 */
 
+=======
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 (function ($) {
   "use strict";
 
@@ -22,7 +25,11 @@ Version      : 1.0
     setTimeout(function () {
       $(".loader").fadeOut("slow");
       $(".main-wrapper").css("opacity", "1");
+<<<<<<< HEAD
     }, 1000);
+=======
+    }, 2500);
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
     // preview image after upload
     $(".upload").on("change", function (event) {
@@ -306,6 +313,7 @@ Version      : 1.0
     });
   }
 
+<<<<<<< HEAD
   // Chat
 
   var chatAppTarget = $(".chat-window");
@@ -407,6 +415,45 @@ Version      : 1.0
     animateElements();
   }
   $(window).scroll(animateElements);
+=======
+
+  function changeFont(language) {
+    if (language === "en") {
+      $("body").css("font-family", "Poppins, sans-serif");
+      // $("html").css("direction", "ltr");
+    } else if (language === "ar") {
+      $("body").css("font-family", "Cairo, sans-serif");
+      // $("html").css("direction", "rtl");
+    }
+  }
+
+  function setLanguage(language) {
+    $.ajax({
+      url: "/set_language",
+      type: "GET",
+      data: { language: language },
+      success: function () {
+        changeFont(language);
+        location.reload();
+      },
+    });
+  }
+
+  var currentLang = $("html").attr("lang");
+
+  changeFont(currentLang);
+  $("#language-select .dropdown-item").on("click", function () {
+    var language = $(this).data("lang");
+    setLanguage(language);
+    var dir = language == "ar" ? "rtl" : "ltr";
+    $("#calendar").fullCalendar("option", {
+      locale: language,
+      dir: dir,
+    });
+  });
+
+  $(window).scroll();
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
   //   $(".alert")
   //     .fadeTo(2000, 500)
   //     .slideUp(1000, function () {
@@ -568,6 +615,7 @@ $(function () {
 });
 
 const timeslots = document.querySelectorAll(".timeslot");
+<<<<<<< HEAD
 timeslots.forEach((slot) => {
   slot.addEventListener("click", () => {
     timeslots.forEach((s) => s.classList.remove("active"));
@@ -588,3 +636,270 @@ document
       document.getElementById("appointment-form").submit();
     }
   });
+=======
+if (timeslots) {
+  timeslots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+      timeslots.forEach((s) => s.classList.remove("active"));
+      slot.classList.add("active");
+      slot.querySelector("input[type='radio']").checked = true;
+    });
+  });
+  var continueButton = document.getElementById("continue-button");
+  if (continueButton) {
+    document
+      .getElementById("continue-button")
+      .addEventListener("click", function (event) {
+        var selectedTimeslot = document.querySelector(
+          'input[name="timeslot"]:checked'
+        );
+        if (!selectedTimeslot) {
+          document.getElementById("warning-message").style.display = "block";
+        } else {
+          document.getElementById("warning-message").style.display = "none";
+          document.getElementById("appointment-form").submit();
+        }
+      });
+  }
+  AOS.init();
+
+  $(window).scroll(function () {
+    if ($(this).scrollTop() > 20) {
+      $("#backToTop").fadeIn();
+    } else {
+      $("#backToTop").fadeOut();
+    }
+  });
+
+  // Click event to scroll to top
+  $("#backToTop").click(function () {
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    return false;
+  });
+}
+
+// view all notifications (delete and mark as read) to be continued...
+$(document).ready(function () {
+  let unreadCount = parseInt($("#notification-count").text(), 10);
+
+  $(".mark-read-btn").on("click", function (event) {
+    event.preventDefault();
+
+    const notificationId = $(this).data("id");
+    console.log("Notification ID:", notificationId);
+
+    const button = $(this);
+
+    $.ajax({
+      type: "POST",
+      url: `/mark_as_read/${notificationId}`,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"),
+      },
+      success: function (data) {
+        console.log("AJAX request successful", data);
+
+        if (data.success) {
+          const notificationRow = button.closest("tr");
+          if (notificationRow.length) {
+            notificationRow.removeClass("unread-notification");
+            $("#read-notifications-body").append(notificationRow);
+            notificationRow.find(".mark-read-btn").remove();
+            notificationRow
+              .find(".delete-btn")
+              .removeClass("bg-success-light")
+              .addClass("bg-danger-light")
+              .html('<i class="fas fa-times"></i> Delete');
+
+            unreadCount -= 1;
+            updateNotificationCount();
+          } else {
+            console.error("Notification row not found.");
+          }
+        } else {
+          console.error("Error marking notification as read:", data.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("AJAX request failed with status:", status);
+        console.error("Response text:", xhr.responseText);
+        console.error("Error:", error);
+      },
+    });
+  });
+
+  function updateNotificationCount() {
+    $("#notification-count").text(unreadCount);
+    if (unreadCount === 0) {
+      $("#notification-count").css("display", "inline").text("0");
+    }
+  }
+});
+
+// update patient profile
+$("#patientForm").on("submit", function (event) {
+  event.preventDefault();
+
+  let formData = new FormData(this);
+
+  $.ajax({
+    url: "/patient_setting",
+    type: "PUT",
+    data: formData,
+    processData: false,
+    contentType: false,
+    headers: {
+      "X-CSRFToken": "{{ form.csrf_token._value() }}",
+    },
+    success: function (data) {
+      if (data.status === "success") {
+        location.reload();
+      } else if (data.errors) {
+        $.each(data.errors, function (field, error) {
+          console.log(`Error in ${field}: ${error}`);
+        });
+      } else {
+        console.log(data.message);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error:", error);
+    },
+  });
+});
+
+$(document).ready(function () {
+  $("#add-more-item").click(function (e) {
+    e.preventDefault();
+    // Get the number of existing items
+    var count = $("#items-container tr").length;
+
+    // Clone the last item row
+    var newItem = $("#items-container tr:last").clone();
+
+    // Clear input values in the cloned row
+    newItem.find('input:not([type="checkbox"])').val("");
+
+    newItem.find('input[type="checkbox"]').prop("checked", false);
+
+    // Update the name and id attributes for each form element in the new item row
+    newItem.find("input, select, label").each(function () {
+      var name = $(this).attr("name");
+      if (name) {
+        var newName = name.replace(/\d+/, count);
+        $(this).attr("name", newName);
+      }
+
+      var id = $(this).attr("id");
+      if (id) {
+        var newId = id.replace(/\d+/, count);
+        $(this).attr("id", newId);
+      }
+
+      var forAttr = $(this).attr("for");
+      if (forAttr) {
+        var newFor = forAttr.replace(/\d+/, count);
+        $(this).attr("for", newFor);
+      }
+    });
+
+    // Append the new item row to the items container
+    $("#items-container").append(newItem);
+  });
+
+  // Remove a row when the trash button is clicked
+  $("#items-container").on("click", ".trash", function (e) {
+    e.preventDefault();
+    $(this).closest("tr").remove();
+  });
+});
+
+// update appointment status
+$(document).ready(function () {
+  $(".status-dropdown .dropdown-item").click(function () {
+    const newStatus = $(this).data("status");
+    const dropdownButton = $(this)
+      .closest(".status-dropdown")
+      .find(".status-badge");
+    const appointmentId = dropdownButton.data("appointment-id");
+    const csrfToken = $('meta[name="csrf-token"]').attr("content");
+
+    console.log("Sending AJAX request with:", {
+      appointment_id: appointmentId,
+      new_status: newStatus,
+      csrf_token: csrfToken,
+    });
+
+    $.ajax({
+      url: "/update_appointment_status",
+      method: "POST",
+      data: {
+        appointment_id: appointmentId,
+        new_status: newStatus,
+        csrf_token: csrfToken,
+      },
+      success: function (response) {
+        if (response.success) {
+          const badge = $(
+            `.status-badge[data-appointment-id="${appointmentId}"]`
+          );
+          badge
+            .text(newStatus)
+            .removeClass("bg-warning-light bg-success-light bg-danger-light")
+            .addClass(`bg-${getStatusColor(newStatus)}-light`);
+        } else {
+          alert("Failed to update status. Please try again.");
+        }
+      },
+      error: function (xhr, status, error) {
+        alert("An error occurred. Please try again.");
+        console.error("Error:", status, error);
+      },
+    });
+  });
+});
+
+function getStatusColor(status) {
+  switch (status) {
+    case "Pending":
+      return "warning";
+    case "Confirmed":
+      return "success";
+    case "Cancelled":
+      return "danger";
+    case "Completed":
+      return "primary";
+    default:
+      return "warning";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  $("#add_medical_reports").on("show.bs.modal", function (event) {
+    var button = $(event.relatedTarget);
+    var appointmentId = button.data("appointment-id");
+    var patientId = button.data("patient-id");
+    var diagnosis = button.data("diagnosis");
+
+    var modal = $(this);
+    modal.find("#appointment_id").val(appointmentId);
+    modal.find("#patient_id").val(patientId);
+    modal.find("#modal_diagnosis").val(diagnosis);
+  });
+});
+
+$(document).ready(function () {
+  $(".print-btn").on("click", function () {
+    var reportUrl = $(this).data("report-url");
+    if (reportUrl) {
+      var printWindow = window.open(reportUrl, "_blank");
+      printWindow.onload = function () {
+        printWindow.print();
+      };
+    } else {
+      alert("No report available to print.");
+    }
+  });
+});
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

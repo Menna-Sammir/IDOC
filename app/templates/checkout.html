@@ -1,34 +1,59 @@
 {% extends 'base.html' %}
+<<<<<<< HEAD
 {% block title %} Checkout {% endblock %}
 {% block body %}
 <!-- Breadcrumb -->
+=======
+{% block title %} {{ translate('Checkout') }} {% endblock %}
+{% block body %}
+<!-- Breadcrumb Section: Shows the page navigation and current location on the website -->
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 <div class="breadcrumb-bar">
   <div class="container-fluid">
     <div class="row align-items-center">
       <div class="col-md-12 col-12">
         <nav aria-label="breadcrumb" class="page-breadcrumb">
           <ol class="breadcrumb">
+<<<<<<< HEAD
             <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">Checkout</li>
           </ol>
         </nav>
         <h2 class="breadcrumb-title">Checkout</h2>
+=======
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ translate('Checkout') }}</li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">{{ translate('Checkout') }}</h2>
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
       </div>
     </div>
   </div>
 </div>
+<<<<<<< HEAD
 <!-- /Breadcrumb -->
 
 <!-- Page Content -->
 <div class="content">
   <div class="container">
     <div class="row">
+=======
+<!-- /Breadcrumb Section -->
+
+<!-- Page Content Section -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Left Section: Main checkout form for personal information -->
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
       <div class="col-md-7 col-lg-8">
         <div class="card">
           <div class="card-body">
             <!-- Checkout Form -->
             <form method="POST">
               {{ form.hidden_tag() }}
+<<<<<<< HEAD
               <!-- Personal Information -->
               <div class="info-widget">
                 <h4 class="card-title">Personal Information</h4>
@@ -60,10 +85,44 @@
                       {{ form.phone.label() }}
                       {{
                       form.phone(class="form-control")}}
+=======
+              
+              <!-- Personal Information Section -->
+              <div class="info-widget">
+                <h4 class="card-title">{{ translate('Personal Information') }}</h4>
+                <div class="row">
+                  <!-- First Name Input -->
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.firstname.label() }}
+                      {{ form.firstname(class="form-control" )}}
+                    </div>
+                  </div>
+                  <!-- Last Name Input -->
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.lastname.label() }}
+                      {{ form.lastname(class="form-control")}}
+                    </div>
+                  </div>
+                  <!-- Email Address Input -->
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.email_address.label() }}
+                      {{ form.email_address(class="form-control")}}
+                    </div>
+                  </div>
+                  <!-- Phone Input -->
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group card-label">
+                      {{ form.phone.label() }}
+                      {{ form.phone(class="form-control")}}
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                     </div>
                   </div>
                 </div>
               </div>
+<<<<<<< HEAD
               <!-- /Personal Information -->
 
               <!-- Submit Section -->
@@ -71,11 +130,21 @@
                 {{ form.submit(class="btn btn-secondary submit-btn")}}
               </div>
               <!-- /Submit Section -->
+=======
+              <!-- /Personal Information Section -->
+
+              <!-- Submit Button Section -->
+              <div class="submit-section mt-4">
+                {{ form.submit(class="btn btn-secondary submit-btn")}}
+              </div>
+              <!-- /Submit Button Section -->
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
             </form>
             <!-- /Checkout Form -->
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 
       <div class="col-md-5 col-lg-4 theiaStickySidebar">
         <!-- Booking Summary -->
@@ -98,10 +167,34 @@
                 <div class="clinic-details">
                   <p class="doc-location">
                     <i class="fas fa-map-marker-alt"></i> {{clinic.address}}, {{gov.governorate_name}}, Egypt
+=======
+      <!-- /Left Section -->
+
+      <!-- Right Section: Booking summary showing doctor and clinic details -->
+      <div class="col-md-5 col-lg-4 theiaStickySidebar">
+        <div class="card booking-card">
+          <div class="card-header">
+            <h4 class="card-title">{{ translate('Booking Summary') }}</h4>
+          </div>
+          <div class="card-body">
+            <!-- Doctor Information Section -->
+            <div class="booking-doc-info">
+              <p class="booking-doc-img">
+                {% set base_path = 'static/images/doctors/' %}
+                <img src="{{base_path ~ doctor.users.photo}}" alt="User Image" />
+              </p>
+              <div class="booking-info">
+                <h4>Dr. {{doctor.users.name}}</h4>
+                <h5>{{clinic.users.name}}</h5>
+                <div class="clinic-details">
+                  <p class="doc-location">
+                    <i class="fas fa-map-marker-alt"></i> {{ translate(clinic.address) }}, {{ translate(gov.governorate_name) }}, Egypt
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                   </p>
                 </div>
               </div>
             </div>
+<<<<<<< HEAD
             <!-- Booking Doctor Info -->
 
             <div class="booking-summary">
@@ -118,11 +211,34 @@
                     <li>
                       <span>Total</span>
                       <span class="total-cost">${{doctor.price}}</span>
+=======
+            <!-- /Doctor Information Section -->
+
+            <!-- Booking Summary Details Section -->
+            <div class="booking-summary">
+              <div class="booking-item-wrap">
+                <!-- Appointment Date and Time -->
+                <ul class="booking-date mt-3">
+                  <li>{{ translate('Date') }} <span>{{ translate(date) }}</span></li>
+                  <li>{{ translate('Time') }} <span>{{ translate('from') }} {{ translate(start_time) }} {{ translate('to') }} {{ translate(end_time) }}</span></li>
+                </ul>
+                <!-- Consultation Fee -->
+                <ul class="booking-fee">
+                  <li>{{ translate('Consulting Fee') }} <span>${{ translate(doctor.price) }}</span></li>
+                </ul>
+                <!-- Total Cost Summary -->
+                <div class="booking-total">
+                  <ul class="booking-total-list">
+                    <li>
+                      <span>{{ translate('Total') }}</span>
+                      <span class="total-cost">${{ translate(doctor.price) }}</span>
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
+<<<<<<< HEAD
           </div>
         </div>
         <!-- /Booking Summary -->
@@ -133,3 +249,15 @@
 <!-- /Page Content -->
 {% endblock %}
 <!-- Footer -->
+=======
+            <!-- /Booking Summary Details Section -->
+          </div>
+        </div>
+      </div>
+      <!-- /Right Section -->
+    </div>
+  </div>
+</div>
+<!-- /Page Content Section -->
+{% endblock %}
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

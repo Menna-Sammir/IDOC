@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request, current_app
 from app.models.models import *
@@ -7,6 +8,39 @@ from sqlalchemy import not_
 from flask_principal import Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed
 from app import socketio
 
+=======
+from app import app, db, socketio
+from flask import (
+    render_template,
+    redirect,
+    url_for,
+    flash,
+    request,
+    current_app,
+    session
+)
+from app.models.models import *
+from werkzeug.exceptions import HTTPException
+from app.views.forms.auth_form import (
+    LoginForm,
+    RegisterForm,
+    ChangePasswordForm,
+    ResetPasswordForm,
+    AppointmentForm
+)
+from flask_login import login_user, logout_user, login_required, current_user
+from sqlalchemy import not_
+from flask_principal import (
+    Permission,
+    RoleNeed,
+    Identity,
+    AnonymousIdentity,
+    identity_changed
+)
+from flask_socketio import disconnect
+from datetime import datetime, timedelta
+from sqlalchemy import asc
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 admin_permission = Permission(RoleNeed('Admin'))
@@ -15,6 +49,7 @@ clinic_permission = Permission(RoleNeed('clinic'))
 
 
 @app.route('/register', methods=['GET', 'POST'], strict_slashes=False)
+<<<<<<< HEAD
 def doctor_signup_page():
     form = RegisterDocForm()
     users = (
@@ -135,18 +170,115 @@ def login_page():
                     category='danger'
                 )
     return render_template('login.html', form=form)
+=======
+def signup_page():
+    try:
+        form = RegisterForm()
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                user = User.query.filter_by(name=form.username.data).first()
+                if not user:
+                    user_to_create = User(
+                        name=form.username.data,
+                        email=form.email_address.data,
+                        password_hash=form.password1.data,
+                        activated=True
+                    )
+                    patient_create = Patient(phone=form.phone.data, users=user_to_create)
+                    patient_role = Role.query.filter_by(role_name='patient').first_or_404()
+                    role_to_create = UserRole(role_id=patient_role.id, user=user_to_create)
+                    db.session.add(user_to_create)
+                    db.session.add(role_to_create)
+                    db.session.add(patient_create)
+                    db.session.commit()
+                    login_user(user_to_create)
+                    flash(
+                        f'account created Success! You are logged in as: {user_to_create.name}',
+                        category='success'
+                    )
+                    return redirect(url_for('patient_dashboard'))
+                flash(f'this account already exists', category='danger')
+            if form.errors != {}:
+                for err_msg in form.errors.values():
+                    flash(
+                        f'there was an error with creating a user: {err_msg}',
+                        category='danger'
+                    )
+        return render_template('signup.html', form=form)
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+
+@app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
+def login_page():
+    try:
+        form = LoginForm()
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                attempted_user = User.query.filter_by(email=form.email_address.data).first()
+                if not attempted_user:
+                    attempted_user = (
+                        Doctor.query.filter_by(iDNum=form.email_address.data).first().users
+                    )
+                if attempted_user.activated or not attempted_user.temp_password:
+                    if attempted_user and attempted_user.check_password_correction(
+                        attempted_password=form.password.data
+                    ):
+                        login_user(attempted_user)
+                        identity_changed.send(
+                            current_app._get_current_object(),
+                            identity=Identity(attempted_user.id)
+                        )
+                        flash(
+                            f'Success! You are logged in as: {attempted_user.name}',
+                            category='success'
+                        )
+                        if attempted_user.user_roles.role.role_name == 'Admin':
+                            return redirect(url_for('dashboard'))
+                        elif attempted_user.user_roles.role.role_name == 'doctor':
+                            return redirect(url_for('doctor_dash'))
+                        elif attempted_user.user_roles.role.role_name == 'clinic':
+                            return redirect(url_for('clinic_dash'))
+                        elif attempted_user.user_roles.role.role_name == 'patient':
+                            return redirect(url_for('patient_dashboard'))
+                        return redirect(url_for('home_page'))
+                    else:
+                        flash('user name and password are not match', category='danger')
+                else:
+                    flash(f'please check your mail to get password', category='warning')
+            if form.errors != {}:
+                for err_msg in form.errors.values():
+                    flash(
+                        f'there was an error with creating a user: {err_msg}',
+                        category='danger'
+                    )
+        return render_template('login.html', form=form)
+    except Exception as e:
+        db.session.rollback()
+        raise e
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 
 @app.route('/logout', methods=['GET', 'POST'], strict_slashes=False)
 def logout_page():
+<<<<<<< HEAD
     print(f"User before logout: {current_user}")
     logout_user()
     print(f"User after logout: {current_user}")
+=======
+    logout_user()
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     identity_changed.send(
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
     flash('You have been logged out!', category='info')
+<<<<<<< HEAD
+=======
+    session.pop('clinic_id', None)
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
     socketio.emit('disconnect request')
     return redirect(url_for('login_page'))
 
@@ -159,6 +291,7 @@ def logout_page():
 )
 @login_required
 def change_password():
+<<<<<<< HEAD
     form = ChangePasswordForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -182,9 +315,98 @@ def change_password():
                     category='danger'
                 )
     return render_template('change-password.html', form=form)
+=======
+    try:
+        form = ChangePasswordForm()
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                if current_user.check_password_correction(form.current_password.data):
+                    current_user.password_hash = form.new_password.data
+                    db.session.commit()
+                    flash('Your password has been updated!', 'success')
+                    if current_user.user_roles.role.role_name == 'Admin':
+                        return redirect(url_for('admin_dash'))
+                    elif current_user.user_roles.role.role_name == 'doctor':
+                        return redirect(url_for('doctor_dash'))
+                    elif current_user.user_roles.role.role_name == 'clinic':
+                        return redirect(url_for('clinic_dash'))
+                    elif current_user.user_roles.role.role_name == 'patient':
+                        return redirect(url_for('patient_dashboard'))
+                    return redirect(url_for('home_page'))
+                else:
+                    flash('Current password is incorrect.', 'danger')
+            if form.errors != {}:
+                for err_msg in form.errors.values():
+                    flash(
+                        f'there was an error with creating a user: {err_msg}',
+                        category='danger'
+                    )
+        return render_template('change-password.html', form=form)
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+@app.route('/reset_password/<email>', methods=['GET', 'POST'])
+def reset_password(email):
+    try:
+        user = User.query.filter_by(email=email).first_or_404()
+        form = ResetPasswordForm()
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                temp_password = form.Temp_password.data
+                if user.temp_password_correction(attempted_password=temp_password):
+                    user.password_hash = form.new_password.data
+                    user.temp_password = None
+                    user.activated = True
+                    db.session.commit()
+                    flash('Your password has been updated!', 'success')
+                    return redirect(url_for('login_page'))
+                else:
+                    flash('Invalid temporary password.', 'danger')
+            if form.errors != {}:
+                for err_msg in form.errors.values():
+                    flash(
+                        f'there was an error with creating a user: {err_msg}',
+                        category='danger'
+                    )
+        return render_template('reset_password.html', email=email, form=form)
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return render_template('error.html', error_message=str(e), error_code=500), 500
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
 
 
 @app.errorhandler(403)
 def permission_denied(e):
+<<<<<<< HEAD
     return 'Permission Denied', 403
 
+=======
+    return (
+        render_template(
+            'error.html',
+            error_message="You don't have permission to access this page",
+            error_code=403
+        ),
+        403
+    )
+
+
+@app.route('/error', methods=['GET'])
+def ErrorPage():
+    return render_template('error.html')
+
+
+@app.route('/<path:path>')
+def catch_all(path):
+    return (
+        render_template('error.html', error_message='Page Not Found', error_code=404),
+        404
+    )
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291

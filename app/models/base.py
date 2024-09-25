@@ -21,7 +21,11 @@ class BaseModel(db.Model):
         classes = {"User": User, "Doctor": Doctor, "Patient": Patient,
                    "Appointment": Appointment, "Clinic": Clinic,
                    "Message": Message, "Specialization": Specialization,
+<<<<<<< HEAD
                    "Governorate": Governorate, "Role": Role}
+=======
+                   "Governorate": Governorate, "Role": Role, "UserRole": UserRole, "PatientHistory":PatientHistory, PatientMedicine: "PatientMedicine", MedicineTimes:"MedicineTimes"}
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         records = {}
         if cls is None:
             for class_name, model_class in classes.items():
@@ -40,7 +44,11 @@ class BaseModel(db.Model):
         classes = {"User": User, "Doctor": Doctor, "Patient": Patient,
                    "Appointment": Appointment, "Clinic": Clinic,
                    "Message": Message, "Specialization": Specialization,
+<<<<<<< HEAD
                    "Governorate": Governorate, "Role": Role}
+=======
+                   "Governorate": Governorate, "Role": Role, "UserRole": UserRole, "PatientHistory": PatientHistory, PatientMedicine: "PatientMedicine", MedicineTimes:"MedicineTimes"}
+>>>>>>> 43f670543734e42f1cbe595ce9a8b1d215f97291
         if cls:
             return db.session.query(cls).count()
         return sum(db.session.query(cls).count() for cls in classes.values())
