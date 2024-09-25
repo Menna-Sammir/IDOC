@@ -27,8 +27,15 @@
     <div class="row">
       <!-- Profile Sidebar: Sidebar navigation for different roles (Admin, Doctor, Patient, etc.) -->
       <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-        {% block sidebar %} {% include 'base-patient-side.html' %} {% endblock
-        %}
+        {% if current_user.user_roles.role.role_name == 'Admin' %} {% block
+        Adminsidebar %} {% include 'base-admin-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'clinic' %} {% block
+        clinicsidebar %} {% include 'base-clinic-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'doctor' %} {% block
+        doctorsidebar %} {% include 'base-doctor-side.html' %} {% endblock %} {%
+        elif current_user.user_roles.role.role_name == 'patient' %} {% block
+        patientsidebar %} {% include 'base-patient-side.html' %} {% endblock %}
+        {% endif %}
       </div>
       <!-- / Profile Sidebar -->
 
@@ -123,8 +130,7 @@
                             </td>
                             <td>${{ appointment.doctor.price }}</td>
                             <td>
-                              {% if current_user.doctor or (current_user.patient
-                              and appointment.status.name == 'Completed') %}
+                              {% if appointment.status.name == 'Completed' %}
                               <!-- Follow-up information -->
                               {% if appointment.follow_up %} {{
                               appointment.follow_up.strftime('%d %b %Y') }}<br />
@@ -133,7 +139,7 @@
                               endif %} {% else %} {{ translate('No Follow-Up')
                               }} {% endif %}
                             </td>
-                            {% if current_user.patient %}
+                            {% if current_user.patient or current_user.clinic %}
                             <td>
                               <!-- Appointment Status with dynamic badge color -->
                               {% if appointment.status.name == 'Cancelled' %}
@@ -351,6 +357,7 @@
               <!-- Prescription Tab: Displays patient's prescriptions -->
               <div class="tab-pane fade" id="pat_prescriptions">
                 <div class="text-right">
+                  {% if current_user.user_roles.role.role_name == 'patient'  or  current_user.user_roles.role.role_name == 'doctor' %}
                   <a
                     href="#"
                     class="add-new-btn"
@@ -358,6 +365,7 @@
                     data-target="#prescription_modal"
                     >{{ translate('Add Prescription') }}</a
                   >
+                  {% endif %}
                 </div>
                 <div
                   class="modal fade custom-modal"
@@ -514,7 +522,7 @@
               </div>
               <!-- /Prescription Tab -->
 
-              <!-- Medical Records Tab: Displays medical records for the patient -->
+              <!-- Medical Records Tab -->
               <div id="pat_medical_records" class="tab-pane fade">
                 <div class="card card-table mb-0">
                   <div class="card-body">
@@ -522,33 +530,32 @@
                       <table class="table table-hover table-center mb-0">
                         <thead>
                           <tr>
-                            <th>{{ translate('Appt Date') }}</th>
-                            <th>{{ translate('Diagnosis') }}</th>
-                            <th>{{ translate('Attachment') }}</th>
-                            <th>{{ translate('Created by') }}</th>
+                            <th>Appt Date</th>
+                            <!-- <th>Diagnosis</th> -->
+                            <th>Attachment</th>
+                            <th>Created by</th>
                             <th></th>
                           </tr>
                         </thead>
                         <tbody>
-                          <!-- Loop through appointments and display diagnosis and report attachments -->
                           {% for appointment in appointments %}
                           <tr>
                             <td>
-                              {{ appointment.date }}<span
-                                class="d-block text-info"
+                              {{ appointment.date }}
+                              <span class="d-block text-info"
                                 >{{ appointment.time_range }}</span
                               >
                             </td>
-                            <td>{{ appointment.Diagnosis }}</td>
-                            <td>
+                            <!-- <td>{{ appointment.Diagnosis }}</td> -->
+                            <td style="text-wrap: wrap">
                               {% if appointment.Report %}
                               <a
                                 href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
                                 target="_blank"
-                                >{{ appointment.Report }}</a
                               >
-                              {% else %} {{ translate('No attachment') }} {%
-                              endif %}
+                                {{ appointment.Report }}
+                              </a>
+                              {% else %} No attachment {% endif %}
                             </td>
 
                             <td>
@@ -561,7 +568,7 @@
                                   {% set base_path = 'static/images/doctors/' %}
                                   <img
                                     class="avatar-img rounded-circle"
-                                    src="{{base_path ~ appointment.doctor.photo}}"
+                                    src="{{base_path ~ appointment.doctor.users.photo}}"
                                     alt="User Image"
                                   />
                                 </a>
@@ -576,21 +583,18 @@
                                   >
                                 </a>
                               </h2>
-                              {% else %} {{ translate('No doctor assigned') }}
-                              {% endif %}
+                              {% else %} No doctor assigned {% endif %}
                             </td>
 
-                            <!-- Options for printing or viewing report -->
                             <td class="text-right">
                               <div class="table-action">
-                                {% if appointment.Report %}
                                 <a
                                   href="javascript:void(0);"
                                   class="btn btn-sm bg-primary-light"
                                   onclick="printPDF('{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}')"
-                                  ><i class="fas fa-print"></i> {{
-                                  translate('Print') }}</a
                                 >
+                                  <i class="fas fa-print"></i> Print
+                                </a>
 
                                 <iframe
                                   id="pdfIframe"
@@ -601,8 +605,10 @@
                                 <script>
                                   function printPDF(pdfUrl) {
                                     var iframe =
-                                      document.getElementById("pdfIframe");
+                                      document.getElementById('pdfIframe');
+
                                     iframe.src = pdfUrl;
+
                                     iframe.onload = function () {
                                       iframe.focus();
                                       iframe.contentWindow.print();
@@ -614,23 +620,20 @@
                                   href="{{ url_for('static', filename='pdfs/' ~ appointment.Report) }}"
                                   class="btn btn-sm bg-info-light"
                                   target="_blank"
-                                  ><i class="far fa-eye"></i> {{
-                                  translate('View') }}</a
                                 >
-
-                                {% if current_user.doctor %}
+                                  <i class="far fa-eye"></i> View
+                                </a>
+                                {% if current_user.user_roles.role.role_name ==
+                                'doctor' %}
                                 <a
                                   href="javascript:void(0);"
                                   class="btn btn-sm bg-primary-light"
                                   data-toggle="modal"
                                   data-target="#add_medical_reports"
                                   data-appointment-id="{{ appointment.id }}"
-                                  data-patient-id="{{ patient.id }}"
                                 >
-                                  <i class="fas fa-upload"></i> {{
-                                  translate('Report') }}
+                                  <i class="fas fa-upload"></i> Report
                                 </a>
-                                {% endif %}
                               </div>
                             </td>
                           </tr>
@@ -713,7 +716,7 @@
                           </td>
                           {% endif %}
                           </tr>
-                          
+
                         </tbody>
                       </table>
                     </div>
@@ -884,23 +887,23 @@
 <script>
   function showEditForm(appointmentId, followUpDateTime) {
     const [date, time] = followUpDateTime
-      ? followUpDateTime.split(" ")
-      : ["", ""];
-    document.getElementById("appointment_id").value = appointmentId;
-    document.getElementById("follow_up_date").value = date || "";
-    document.getElementById("follow_up_time").value = time || "";
-    document.getElementById("editFollowUpModal").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
+      ? followUpDateTime.split(' ')
+      : ['', ''];
+    document.getElementById('appointment_id').value = appointmentId;
+    document.getElementById('follow_up_date').value = date || '';
+    document.getElementById('follow_up_time').value = time || '';
+    document.getElementById('editFollowUpModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
   }
 
   function hideEditForm() {
-    document.getElementById("editFollowUpModal").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
+    document.getElementById('editFollowUpModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
   }
 
   window.onclick = function (event) {
-    var modal = document.getElementById("editFollowUpModal");
-    var overlay = document.getElementById("overlay");
+    var modal = document.getElementById('editFollowUpModal');
+    var overlay = document.getElementById('overlay');
     if (event.target === modal || event.target === overlay) {
       hideEditForm();
     }

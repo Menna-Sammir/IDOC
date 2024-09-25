@@ -10105,3 +10105,57 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid #056ad77a;
   box-shadow: #056ad75e 0px 3px 8px;
 }
+
+
+
+.error-page {
+  background-image: url("../img/error.png");
+  height: 500px;
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-size: 35%;
+  align-items: center;
+  justify-content: center;
+  color: #1f1f1f;
+  display: flex;
+}
+
+.error-page .main-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+  justify-content: center;
+  width: 100%;
+  min-height: unset;
+}
+
+.error-box {
+  margin: 0 auto;
+  max-width: 480px;
+  padding: 1.875rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+.error-box h1 {
+  color: #00d0f1;
+  font-size: 10em;
+}
+
+.error-box p {
+  margin-bottom: 1.875rem;
+}
+
+.error-box .btn {
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  min-width: 200px;
+  padding: 10px 20px;
+}
+
+.btn-error {
+  background-color: #00d0f1;
+  border: 1px solid #00d0f1;
+  color: #fff;
+}

@@ -93,14 +93,14 @@
             title="{{ appointment.date }} {{ appointment.time_range }}"
           >
             <div>
-              <p class="mb-1">Dr. {{ appointment.doctor_name }}</p>
+              <p class="mb-1">Dr. {{ appointment.doctor.users.name }}</p>
               <div class="text-muted">
-                {{ appointment.doctor_specialization }}
+                {{ appointment.doctor.specialization.specialization_name }}
               </div>
               <span class="text-secondary">{{ appointment.date }}</span>
               <p class="mb-2">
                 <i class="far fa-clock"></i> {{ appointment.time_range }} - {{
-                appointment.duration }}
+                  appointment.doctor.duration.minute }} min
               </p>
             </div>
           </div>
@@ -124,7 +124,9 @@
             </span>
             <div>
               <h4>{{ translate('Blood Type') }}</h4>
-              <span class="text-center">{{ patient.blood_group.value }}</span>
+              <span class="text-center"
+                >{{ current_user.patient[0].blood_group.value }}</span
+              >
             </div>
           </div>
 
@@ -133,7 +135,7 @@
             class="col-md-4 align-items-center card p-4 m-2 text-center ques-card"
           >
             <p class="text-left" style="font-weight: 400">
-              {{patient.get_advice()}}
+              {{current_user.patient[0].get_advice()}}
             </p>
           </div>
         </div>
@@ -168,10 +170,11 @@
                     <i class="fas fa-pills"></i>
                   </div>
                   <div>
-                    <h5 class="text-muted mb-0">{{ prescription.name }}</h5>
+                    <h5 class="text-muted mb-0">{{ prescription.medName }}</h5>
                     <p class="text-muted mb-0">
-                      {{ prescription.quantity }} :{{ prescription.times_of_day
-                      | join(', ') }}
+                      {{ prescription.Quantity }} : {{
+                      prescription.medicine_times |
+                      map(attribute='time_of_day.name') | join(', ') }}
                     </p>
                   </div>
                 </div>
@@ -222,14 +225,16 @@
                 <div
                   class="d-flex flex-wrap justify-content-between align-items-center"
                 >
-                  {% if patient_history %} {% set counter = 1 %} {% for history
-                  in patient_history %} {% if history.file_link and history.type
-                  == "Lab" %}
+                  {% if patient_history %}
+
+                  {% for history
+                  in patient_history %} {% if history.details and
+                  history.type.name == "Lab" %}
                   <div>
                     <div
                       class="d-inline-block text-center mr-2 mb-2 px-2"
                       style="
-                        background-color: rgb(187, 233, 248);
+                        background-color: #bbe9f891;
                         color: rgb(4, 179, 238);
                         border-radius: 10px;
                       "
@@ -237,12 +242,13 @@
                       <i class="fas fa-vial"></i>
                     </div>
                     <a
-                      href="{{ history.file_link }}"
+                      href="url_for( 'static',
+                      filename=f'images/history_files/{{history.details}}' )"
                       download
                       class="text-decoration-none text-black"
                       style="font-size: 16px"
                     >
-                      Lab-{{ counter }}
+                      Lab- {{ loop.index }}
                     </a>
                   </div>
                   <div
@@ -250,11 +256,12 @@
                     style="color: lightblue"
                     data-toggle="tooltip"
                     data-placement="right"
-                    title="{{ history.added_by }}"
+                    title="{{ history.user.name }}"
                   >
                     <i class="fas fa-info" style="font-size: 14px"></i>
                   </div>
-                  {% endif %} {% endfor %} {% else %}
+                  {% endif %}  {% endfor %} {%
+                  else %}
                   <p
                     class="w-100 h-100 d-flex justify-content-center align-items-center"
                   >
@@ -270,14 +277,14 @@
                 <div
                   class="d-flex flex-wrap justify-content-between align-items-center"
                 >
-                  {% if patient_history %} {% set counter = 1 %} {% for history
-                  in patient_history %} {% if history.file_link and history.type
+                  {% if patient_history %} {% for history
+                  in patient_history %} {% if history.details and history.type.value
                   == "X-ray" %}
                   <div>
                     <div
                       class="d-inline-block text-center mr-2 mb-2 px-2"
                       style="
-                        background-color: rgb(187, 233, 248);
+                        background-color: #bbe9f891;
                         color: rgb(4, 179, 238);
                         border-radius: 10px;
                       "
@@ -285,12 +292,13 @@
                       <i class="fas fa-x-ray"></i>
                     </div>
                     <a
-                      href="{{ history.file_link }}"
+                      href="url_for( 'static',
+                      filename=f'images/history_files/{{history.details}}' )"
                       download
                       class="text-decoration-none text-black"
                       style="font-size: 16px"
                     >
-                      X-RAY-{{ counter }}
+                      X-RAY-{{ loop.index }}
                     </a>
                   </div>
                   <div
@@ -298,7 +306,7 @@
                     style="color: lightblue"
                     data-toggle="tooltip"
                     data-placement="right"
-                    title="{{ history.added_by }}"
+                    title="{{ history.user.name }}"
                   >
                     <i class="fas fa-info" style="font-size: 14px"></i>
                   </div>
@@ -354,7 +362,8 @@
                           </thead>
                           <tbody>
                             {% set confirmed_appointments = [] %} {% for
-                            appointment in appointments %} {% if
+                            appointment in next_appointments %}
+                            {% if
                             appointment.status.name == 'Confirmed' and not
                             appointment.seen %} {% set confirmed_appointments =
                             confirmed_appointments + [appointment] %}

@@ -31,49 +31,66 @@ def allowed_file(filename):
 @login_required
 @doctor_permission.require(http_exception=403)
 def doctor_dash():
-    doctor = Doctor.query.filter_by(user_id=current_user.id).first()
-    print(doctor)
-    if doctor is None:
-        return translate('User is not a doctor'), 403
-    form = AppointmentForm()
-    appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(
-        asc(Appointment.time)
-    )
-    all_appointments = Appointment.query.order_by(
-    asc(Appointment.date), asc(Appointment.time)
-    ).all()
-    if appointments.all():
-        nextAppt = appointments.order_by(asc(Appointment.time)).first().id
-    else:
-        nextAppt = None
-    monthAppointments = Appointment.query.filter(
-        Appointment.doctor_id == doctor.id, 
-        func.extract('month', Appointment.date) == datetime.now().month
-    ).count()
-    patient_count = appointments.count()
+    try:
+        doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+        if doctor is None:
+            return translate('User is not a doctor'), 403
+        form = AppointmentForm()
+        appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(
+            asc(Appointment.time)
+        )
+        if appointments.all():
+            nextAppt = appointments.order_by(asc(Appointment.time)).first().id
+        else:
+            nextAppt = None
+        monthAppointments = Appointment.query.filter(
+            Appointment.doctor_id == doctor.id,
+            func.extract('month', Appointment.date) == datetime.now().month
+        ).count()
+        patient_count = appointments.count()
+        doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+        print(doctor)
+        if doctor is None:
+            return translate('User is not a doctor'), 403
+        form = AppointmentForm()
+        appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(
+            asc(Appointment.time)
+        )
+        all_appointments = Appointment.query.order_by(
+        asc(Appointment.date), asc(Appointment.time)
+        ).all()
+        if appointments.all():
+            nextAppt = appointments.order_by(asc(Appointment.time)).first().id
+        else:
+            nextAppt = None
+        monthAppointments = Appointment.query.filter(
+            Appointment.doctor_id == doctor.id,
+            func.extract('month', Appointment.date) == datetime.now().month
+        ).count()
+        patient_count = appointments.count()
+        if request.method == 'POST':
+            if 'seen' in request.form:
+                appointment_id = request.form.get('appointment_id')
+                appointment = Appointment.query.get(appointment_id)
+                if appointment:
+                    appointment.seen = True
+                    appointment.status = AppStatus.Completed.value
+                    db.session.commit()
+                    flash('Appointment marked as seen and status updated to Completed', category='success')
+                    return redirect(url_for('doctor_dash'))
 
-    if request.method == 'POST':
-        if 'seen' in request.form:
-            appointment_id = request.form.get('appointment_id')
-            appointment = Appointment.query.get(appointment_id)
-            if appointment:
-                appointment.seen = True
-                appointment.status = AppStatus.Completed.value
-                db.session.commit()
-                flash('Appointment marked as seen and status updated to Completed', category='success')
-                return redirect(url_for('doctor_dash'))
-
-    return render_template(
-        'doctor-dashboard.html',
-        doctor=doctor,
-        appointments=appointments.all(),
-        patient_count=patient_count,
-        monthAppointments=monthAppointments,
-        nextAppt=nextAppt,
-        form=form,
-        all_appointments=all_appointments,
-        date=date
-    )
+        return render_template(
+            'doctor-dashboard.html',
+            doctor=doctor,
+            appointments=appointments.all(),
+            patient_count=patient_count,
+            monthAppointments=monthAppointments,
+            nextAppt=nextAppt,
+            form=form
+        )
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 
 @app.route('/doctor_profile', methods=['GET', 'POST'])
@@ -184,7 +201,8 @@ def add_prescription():
             return redirect(url_for('add_prescription'))
         except Exception as e:
             db.session.rollback()
-            flash(f'There was an error: {e}', category='danger')
+            raise e
+
 
     if form.errors != {}:
         for err_msg in form.errors.values():
@@ -196,19 +214,30 @@ def add_prescription():
 ### patient list
 @app.route('/patient_list', methods=['GET', 'POST'])
 @login_required
-@doctor_permission.require(http_exception=403)
 def patient_list():
+    clinic = Clinic.query.filter_by(user_id=current_user.id).first()
     doctor = Doctor.query.filter_by(user_id=current_user.id).first()
-    if doctor is None:
-        return translate('User is not a doctor'), 403
 
-    appointments = Appointment.query.filter_by(doctor_id=doctor.id).all()
-    patient_ids = set(appointment.patient_id for appointment in appointments)
+    if clinic:
+        patients = (
+            db.session.query(Patient, User)
+            .join(User, Patient.user_id == User.id)
+            .join(Appointment, Appointment.patient_id == Patient.id)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .filter(Doctor.clinic_id == clinic.id)
+            .distinct(Patient.id)
+            .all()
+        )
+    elif doctor:
+        patients = (
+            db.session.query(Patient, User)
+            .join(User, Patient.user_id == User.id)
+            .join(Appointment, Appointment.patient_id == Patient.id)
+            .filter(Appointment.doctor_id == doctor.id)
+            .distinct(Patient.id)
+            .all()
+        )
+    else:
+        return translate('User is not a doctor or clinic'), 403
 
-    patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
-
-    for patient in patients:
-        user = User.query.filter_by(id=patient.user_id).first()
-        patient.user_name = user.name if user else 'Unknown'
-
-    return render_template('patient-list.html', doctor=doctor, patients=patients, appointments=appointments)
+    return render_template('patient-list.html', doctor=doctor, patients=patients)

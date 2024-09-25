@@ -15,6 +15,7 @@ import secrets
 import smtplib
 import os
 
+
 admin_permission = Permission(RoleNeed('Admin'))
 doctor_permission = Permission(RoleNeed('doctor'))
 clinic_permission = Permission(RoleNeed('clinic'))
@@ -161,8 +162,8 @@ def add_clinic():
                             category='danger'
                         )
         except Exception as e:
-            flash(f'something wrong', category='danger')
-            print('Exception', e)
+            db.session.rollback()
+            raise e
     return render_template('add-clinic.html', form=add_clinic_form)
 
 
@@ -188,7 +189,9 @@ def add_doctor():
             )
             try:
                 if current_user.user_roles.role.role_name == 'clinic':
-                    clinic = Clinic.query.filter_by(user_id=current_user.id).first_or_404()
+                    clinic = Clinic.query.filter_by(
+                        user_id=current_user.id
+                    ).first_or_404()
                     doc_dur = int(add_doctor_form.duration.data)
                     user_to_create = User(
                         name=doctor_name,
@@ -202,10 +205,10 @@ def add_doctor():
                         duration=str(doc_dur * 100),
                         price=add_doctor_form.price.data,
                         specialization_id=add_doctor_form.specialization_id.data,
-                        isAdv = False,
+                        isAdv=False,
                         clinic_id=clinic.id,
                         iDNum=add_doctor_form.IDNum.data,
-                        users = user_to_create
+                        users=user_to_create
                     )
                     if 'photo' not in request.files:
                         flash(translate('No file part'))
@@ -277,8 +280,9 @@ def add_doctor():
                     )
                     return redirect(url_for('clinic_dash'))
             except Exception as e:
-                print(str(e))
-                flash(f'something wrong', category='danger')
+                db.session.rollback()
+                raise e
+
         if add_doctor_form.errors != {}:
             for err_msg in add_doctor_form.errors.values():
                 flash(
@@ -286,64 +290,94 @@ def add_doctor():
                     category='danger'
                 )
     return render_template('add-doctor.html', form=add_doctor_form)
+
+
 @app.route('/all_patients', methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def all_patients():
-    # Query to fetch all patients with their details
-    patients = db.session.query(
-        Patient.id.label('patient_id'),
-        User.name.label('patient_name'),
-        User.photo.label('patient_photo'),
-        Patient.phone.label('patient_phone'),
-        Patient.blood_group.label('blood_group'),
-        Patient.allergy.label('allergy')
-    ).join(User, Patient.user_id == User.id).all()
+    try:
+        # Query to fetch all patients with their details
+        patients = (
+            db.session.query(
+                Patient.id.label('patient_id'),
+                User.name.label('patient_name'),
+                User.photo.label('patient_photo'),
+                Patient.phone.label('patient_phone'),
+                Patient.blood_group.label('blood_group'),
+                Patient.allergy.label('allergy'),
+                Patient.address.label('address')
+            )
+            .join(User, Patient.user_id == User.id)
+            .all()
+        )
 
-    # Initialize a list to hold patient data
-    patient_data = []
+        # Initialize a list to hold patient data
+        patient_data = []
 
-    # Loop through each patient to get appointment counts
-    for patient in patients:
-        # Fetch appointment counts by status
-        completed_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='completed').count()
-        confirmed_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='confirmed').count()
-        canceled_count = db.session.query(Appointment).filter_by(patient_id=patient.patient_id, status='cancelled').count()
+        # Loop through each patient to get appointment counts
+        for patient in patients:
+            # Fetch appointment counts by status
+            completed_count = (
+                db.session.query(Appointment)
+                .filter_by(patient_id=patient.patient_id, status='completed')
+                .count()
+            )
+            confirmed_count = (
+                db.session.query(Appointment)
+                .filter_by(patient_id=patient.patient_id, status='confirmed')
+                .count()
+            )
+            canceled_count = (
+                db.session.query(Appointment)
+                .filter_by(patient_id=patient.patient_id, status='cancelled')
+                .count()
+            )
 
-        # Use .value to extract the value from Enum fields
-        blood_group = patient.blood_group.value if patient.blood_group else 'Unknown'
-        allergy = patient.allergy.value.replace('_', ' ') if patient.allergy else 'No Allergy'
+            # Use .value to extract the value from Enum fields
+            blood_group = (
+                patient.blood_group.value if patient.blood_group else 'Unknown'
+            )
+            allergy = (
+                patient.allergy.value.replace('_', ' ')
+                if patient.allergy
+                else 'No Allergy'
+            )
 
-        # Add patient details and appointment counts to the list
-        patient_data.append({
-            'patient_id': patient.patient_id,
-            'patient_name': patient.patient_name,
-            'patient_photo': patient.patient_photo,
-            'patient_phone': patient.patient_phone,
-            'blood_group': blood_group,
-            'allergy': allergy,
-            'completed_count': completed_count,
-            'confirmed_count': confirmed_count,
-            'canceled_count': canceled_count
-        })
+            # Add patient details and appointment counts to the list
+            patient_data.append(
+                {
+                    'patient_id': patient.patient_id,
+                    'patient_name': patient.patient_name,
+                    'patient_photo': patient.patient_photo,
+                    'patient_phone': patient.patient_phone,
+                    'blood_group': blood_group,
+                    'allergy': allergy,
+                    'address': patient.address,
+                    'completed_count': completed_count,
+                    'confirmed_count': confirmed_count,
+                    'canceled_count': canceled_count
+                }
+            )
+        return render_template('all-patients.html', patient_data=patient_data)
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
-    return render_template('all-patients.html', patient_data=patient_data)
 
 @app.route('/all_appointments', methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def all_appointments():
-    # Query to fetch all appointments
-    appointments = db.session.query(
-        Appointment,
-        Doctor,
-        Clinic,
-        Patient,
-        User
-    ).join(Patient, Appointment.patient_id == Patient.id)\
-     .join(User, Patient.user_id == User.id)\
-     .join(Doctor, Appointment.doctor_id == Doctor.id)\
-     .join(Clinic, Appointment.clinic_id == Clinic.id)\
-     .all()
-
-    return render_template('all-appointments.html', appointments=appointments)
+    try:
+        appointments = (
+            db.session.query(Appointment, Doctor, Clinic, Patient, User)
+            .join(Patient, Appointment.patient_id == Patient.id)
+            .join(User, Patient.user_id == User.id)
+            .join(Doctor, Appointment.doctor_id == Doctor.id)
+            .join(Clinic, Appointment.clinic_id == Clinic.id)
+            .all()
+        )
+        return render_template('all-appointments.html', appointments=appointments)
+    except Exception as e:
+        raise e

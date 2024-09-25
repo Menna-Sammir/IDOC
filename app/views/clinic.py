@@ -40,9 +40,6 @@ def clinic_dash():
 
     today_appointments_count = Appointment.query.filter_by(clinic_id=clinic.id, date=today).count()
 
-    # Removed working_hours logic
-    is_open_today = None  # Or any other logic if applicable
-
     today_appointments = (
         db.session.query(Appointment, Patient, Doctor)
         .join(Patient, Appointment.patient_id == Patient.id)

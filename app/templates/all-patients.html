@@ -43,7 +43,7 @@
                       {% set base_path = 'static/images/patients/' %}
                       <img
                         class="avatar-img rounded-circle"
-                        src="{{ base_path ~ patient.patient_photo }}"  
+                        src="{{ base_path ~ patient.patient_photo }}"
                         alt="User Image"
                       />
                     </div>
@@ -73,16 +73,12 @@
                 <div class="patient-info">
                   <ul>
                     <li>
-                      <i class="fas fa-mobile"></i>
+                      <i class="fas fa-mobile"></i>Phone
                       <span>{{ patient.patient_phone }}</span>
                     </li>
                     <li>
                       <i class="fas fa-tint"></i
-                      ><span>{{ patient.blood_group }}</span>
-                    </li>
-                    <li>
-                      <i class="fas fa-allergies"></i>
-                      <span>{{ patient.allergy }}</span>
+                      >Blood Group<span>{{ patient.blood_group }}</span>
                     </li>
                   </ul>
                 </div>
@@ -94,6 +90,7 @@
       </div>
     </div>
     <!-- /Page Content -->
+  </div>
     {% endblock %}
   </div>
 </div>
