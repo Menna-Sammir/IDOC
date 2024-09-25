@@ -122,6 +122,9 @@
                     >{{ translate('Today') }}</a
                   >
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link ml-3" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
+                </li>
               </ul>
               <!-- /Appointment Tab -->
 
@@ -129,7 +132,7 @@
                 <!-- Today Appointment Tab -->
                 <div class="tab-content">
                   <!-- Today Appointment Tab -->
-                  <div class="tab-pane show active" id="upcoming-appointments">
+                  <div class="tab-pane show active" id="Today-appointments">
                     <div class="card card-table mb-0">
                       <div class="card-body">
                         <div class="table-responsive">
@@ -212,6 +215,80 @@
                       </div>
                     </div>
                   </div>
+                  <div class="tab-pane show" id="upcoming-appointments">
+                    <div class="card card-table mb-0">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover table-center mb-0">
+                            <thead>
+                              <tr>
+                                <th>{{ translate('Patient Name') }}</th>
+                                <th>{{ translate('Appt Date') }}</th>
+                                <th>{{ translate('Phone') }}</th>
+                                <th>{{ translate('Status') }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for appointment in all_appointments %}
+                              {% if appointment.date > date.today() %}
+                              <tr>
+                                <td>
+                                    <h2 class="table-avatar">
+                                    <div class="avatar avatar-sm mr-2">
+                                      {% set base_path = 'static/images/patients/' %}
+                                      <img
+                                        class="avatar-img rounded-circle"
+                                        src="{{ base_path ~ appointment.patient.users.photo }}"
+                                        alt="User Image"
+                                      />
+                                    </div>
+                                    <p class="mt-2">
+                                      {{ appointment.patient.users.name }}
+                                      <span>{{ appointment.appointment_id }}</span>
+                                    </p>
+                                  </h2>
+                                </td>
+                                <td>
+                                  {{ appointment.date }}
+                                  <span class="d-block text-info">
+                                    {{ appointment.time.strftime('%I:%M %p') }}
+                                  </span>
+                                </td>
+                                <td>{{ appointment.patient.phone }}</td>
+                                <td class="text-centre">
+                                    <!-- Appointment Status with dynamic badge color -->
+                                    {% if appointment.status.name == 'Cancelled' %}
+                                    <span
+                                      class="badge badge-pill bg-danger position-relative d-inline"
+                                      >Cancelled</span
+                                    >
+                                    {% elif appointment.status.name == 'Pending' %}
+                                    <span
+                                      class="badge badge-pill bg-info position-relative d-inline"
+                                      >Pending</span
+                                    >
+                                    {% elif appointment.status.name == 'Completed' %}
+                                    <span
+                                      class="badge badge-pill bg-success position-relative d-inline"
+                                      >Completed</span
+                                    >
+                                    {% else %}
+                                    <span
+                                      class="badge badge-pill bg-secondary position-relative d-inline"
+                                      >{{ appointment.status.name }}</span
+                                    >
+                                    {% endif %}
+                                </td>
+                              </tr>
+                              {% endif %}
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <!-- /Today Appointment Tab -->
                 </div>
               </div>

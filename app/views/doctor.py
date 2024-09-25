@@ -48,6 +48,26 @@ def doctor_dash():
             func.extract('month', Appointment.date) == datetime.now().month
         ).count()
         patient_count = appointments.count()
+    doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    print(doctor)
+    if doctor is None:
+        return translate('User is not a doctor'), 403
+    form = AppointmentForm()
+    appointments = Appointment.query.filter_by(date=date.today(), seen=False).order_by(
+        asc(Appointment.time)
+    )
+    all_appointments = Appointment.query.order_by(
+    asc(Appointment.date), asc(Appointment.time)
+    ).all()
+    if appointments.all():
+        nextAppt = appointments.order_by(asc(Appointment.time)).first().id
+    else:
+        nextAppt = None
+    monthAppointments = Appointment.query.filter(
+        Appointment.doctor_id == doctor.id,
+        func.extract('month', Appointment.date) == datetime.now().month
+    ).count()
+    patient_count = appointments.count()
 
         if request.method == 'POST':
             if 'seen' in request.form:
@@ -73,6 +93,17 @@ def doctor_dash():
         db.session.rollback()
         raise e
 
+    return render_template(
+        'doctor-dashboard.html',
+        doctor=doctor,
+        appointments=appointments.all(),
+        patient_count=patient_count,
+        monthAppointments=monthAppointments,
+        nextAppt=nextAppt,
+        form=form,
+        all_appointments=all_appointments,
+        date=date
+    )
 
 
 @app.route('/doctor_profile', methods=['GET', 'POST'])

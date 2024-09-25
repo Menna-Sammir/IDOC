@@ -300,7 +300,6 @@ def appointment_History():
                         app.config['UPLOAD_FOLDER'], 'history_files', new_filename
                     )
                 )
-
                 new_history = PatientHistory(
                     details=new_filename,
                     type=form.type.data,

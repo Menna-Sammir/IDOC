@@ -709,14 +709,15 @@
                                 >
                               </div>
                             </td>
-                          </tr>
-                          {% endif %} {% endfor %} {% else %}
-                          <p
+                            {% endif %} {% endfor %} {% else %}
+                          <td
                             class="w-100 h-100 d-flex justify-content-center align-items-center"
                           >
                             {{ translate('No file attached.') }}
-                          </p>
+                          </td>
                           {% endif %}
+                          </tr>
+                          
                         </tbody>
                       </table>
                     </div>
