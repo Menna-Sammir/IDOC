@@ -17,3 +17,4 @@ Flask-SocketIO==5.3.6
 Flask-Session
 Flask-Babel
 flask_cors
+gunicorn
