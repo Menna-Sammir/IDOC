@@ -1,105 +1,102 @@
-{% extends 'base.html' %} {% block title %} {{ translate('Admin Dashboard') }} {% endblock %} {%
-  block body %}
+{% extends 'base.html' %} {% block title %} {{ translate('Admin Dashboard') }}
+{% endblock %} {% block body %}
 
-  <!-- Breadcrumb -->
-  <div class="breadcrumb-bar">
-    <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col-md-12 col-12">
-          <nav aria-label="breadcrumb" class="page-breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{{ url_for('home') }}">{{ translate('Home') }}</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                {{ translate('Dashboard') }}
-              </li>
-            </ol>
-          </nav>
-          <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
-        </div>
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-12 col-12">
+        <nav aria-label="breadcrumb" class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('home') }}">{{ translate('Home') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ translate('Dashboard') }}
+            </li>
+          </ol>
+        </nav>
+        <h2 class="breadcrumb-title">{{ translate('Dashboard') }}</h2>
       </div>
     </div>
   </div>
-  <!-- /Breadcrumb -->
-  <!-- Page Content -->
-  <div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-          <!-- Profile Sidebar -->
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+        <!-- Profile Sidebar -->
         {% block sidebar %} {% include 'base-admin-side.html' %} {% endblock %}
         <!-- /Profile Sidebar -->
-        </div>
-              <div class="card dash-card">
+      </div>
 
-                  <div class="row">
-                    <div class="col-md-12 col-lg-4">
-                      <div class="dash-widget">
-
-                          <div class="circle-border-pink">
-                            <img
-                              src="static/img/medical-team.png"
-                              width="60"
-                              alt="patient"
-                            />
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card dash-card">
+              <div class="card-body">
+                <div class="row justify-content-around align-items-top">
+                  <div class="col-md-12 col-lg-7 row justify-content-around">
+                    <div
+                      class="card col-md-3 d-flex justify-content-center doctor-card"
+                    >
+                      <div class="card-body text-center px-0">
+                        <div class="d-block">
+                          <div class="doctordash-back">
+                            <i
+                              class="fas fa-clinic-medical fa-2x text-cyan"
+                            ></i>
+                          </div>
                         </div>
-                        <div class="dash-widget-info">
-                          <h6>Registered Doctors</h6>
-                          <h3>{{ doctor_count }}</h3>
-                          <p class="text-muted">Till Today</p>
+                        <div class="d-block mt-3 mb-1 doctor-title">
+                          <span>{{ translate('Clinics') }}</span>
+                        </div>
+                        <div class="d-block text-muted">{{ clinic_count }}</div>
+                      </div>
+                    </div>
+                    <div class="card col-md-3 doctor-card">
+                      <div class="card-body text-center px-0">
+                        <div class="d-block">
+                          <div class="admin doctordash-back">
+                            <i class="fas fa-user-md fa-2x text-cyan"></i>
+                          </div>
+                        </div>
+                        <div class="d-block mt-3 doctor-title">
+                          <span>{{ translate('Doctors') }}</span>
+                        </div>
+                        <div class="d-block text-muted">
+                          {{ translate(doctor_count) }}
                         </div>
                       </div>
                     </div>
-                      </div>
-                      <div
-                        class="card col-md-3 doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div
-                              class="admin doctordash-back">
-                              <i class="fas fa-user-md  fa-2x text-cyan"></i>
-                            </div>
-                          </div>
-                          <div
-                            class="d-block mt-3 doctor-title">
-                            <span>{{ translate('Doctors') }}</span>
-                          </div>
-                          <div class="d-block text-muted">
-                            {{ translate(doctor_count) }}
+                    <div class="card col-md-3 doctor-card">
+                      <div class="card-body text-center px-0">
+                        <div class="d-block">
+                          <div class="doctordash-back">
+                            <i class="fas fa-user-injured fa-2x text-cyan"></i>
                           </div>
                         </div>
-                      </div>
-                      <div
-                        class="card col-md-3 doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div class="d-block">
-                            <div
-                              class="doctordash-back">
-
-                              <i
-                                class="fas fa-user-injured fa-2x text-cyan"></i>
-                            </div>
-                          </div>
-                          <div
-                            class="d-block mt-3 mb-1 doctor-title">
-                            <span>{{ translate('patient') }}</span>
-                          </div>
-                          <div class="d-block text-muted">
-                             {{ patient_count }}
-                          </div>
+                        <div class="d-block mt-3 mb-1 doctor-title">
+                          <span>{{ translate('patient') }}</span>
+                        </div>
+                        <div class="d-block text-muted">
+                          {{ patient_count }}
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-12 col-lg-5">
-                      <div
-                        class="card doctor-card">
-                        <div class="card-body text-center px-0">
-                          <div id="clock" class="light">
-                            <div class="display">
-                              <div class="weekdays"></div>
-                              <div class="ampm"></div>
-                              <div class="alarm"></div>
-                              <div class="digits"></div>
-                            </div>
+                  </div>
+                  <div class="col-md-12 col-lg-5">
+                    <div class="card doctor-card">
+                      <div class="card-body text-center px-0">
+                        <div id="clock" class="light">
+                          <div class="display">
+                            <div class="weekdays"></div>
+                            <div class="ampm"></div>
+                            <div class="alarm"></div>
+                            <div class="digits"></div>
                           </div>
                         </div>
                       </div>
@@ -109,102 +106,118 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="appointment-tab">
-                <!-- Appointment Tab -->
-                <div class="card card-table flex-fill">
-                  <div class="card-header">
-                      <h4 class="card-title">{{ translate('Doctors List') }}</h4>
-                  </div>
-                  <div class="card-body">
-                      <div class="table-responsive">
-                              <thead>
-                                  <tr>
-                                      <th>{{ translate('Doctor Name') }}</th>
-                                      <th>{{ translate('Speciality') }}</th>
-                                      <th>{{ translate('Earned') }}</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                {% for doctor in doctor_details %}
-                                  <tr>
-                                      <td>
-                                          <h2 class="table-avatar">
-                                            {% set base_path = 'static/images/doctors/' %}
-                                            <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ doctor.users.photo}}" alt="User Image"></p>
+        </div>
 
-                                              <p>
-                                                {{ translate('Dr.') }} {{ translate(doctor.users.name) }}
-                                                <span class="d-block text-info">
-                                                  {{ translate(doctor.clinic.users.name) }}
-                                                </span>
-                                              </p>
-                                          </h2>
-                                      </td>
-                                      <td>{{ translate(doctor.specialization.specialization_name) }}</td>
-                                      <td>{{ translate(doctor.total_earnings()) }} $</td>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="appointment-tab">
+              <!-- Appointment Tab -->
+              <div class="card card-table flex-fill">
+                <div class="card-header">
+                  <h4 class="card-title">{{ translate('Doctors List') }}</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0">
+                      <thead>
+                        <tr>
+                          <th>{{ translate('Doctor Name') }}</th>
+                          <th>{{ translate('Speciality') }}</th>
+                          <th>{{ translate('Earned') }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for doctor in doctor_details %}
+                        <tr>
+                          <td>
+                            <h2 class="table-avatar">
+                              {% set base_path = 'static/images/doctors/' %}
+                              <p class="avatar avatar-sm mr-2">
+                                <img
+                                  class="avatar-img rounded-circle"
+                                  src="{{base_path ~ doctor.users.photo}}"
+                                  alt="User Image"
+                                />
+                              </p>
 
-                                  </tr>
-                                  {% endfor %}
-                              </tbody>
-                          </table>
-                      </div>
+                              <p>
+                                {{ translate('Dr.') }} {{
+                                translate(doctor.users.name) }}
+                                <span class="d-block text-info">
+                                  {{ translate(doctor.clinic.users.name) }}
+                                </span>
+                              </p>
+                            </h2>
+                          </td>
+                          <td>
+                            {{
+                            translate(doctor.specialization.specialization_name)
+                            }}
+                          </td>
+                          <td>{{ translate(doctor.total_earnings()) }} $</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
                   </div>
+                </div>
               </div>
               <!-- /Recent Orders -->
-
-
 
               <!-- Recent Orders -->
               <div class="card card-table">
-                  <div class="card-header rounded-0 doctordash-back">
-                    <h4 class="card-title">{{ translate('Clinics List') }}</h4>
+                <div class="card-header rounded-0 doctordash-back">
+                  <h4 class="card-title">{{ translate('Clinics List') }}</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0">
+                      <thead>
+                        <tr>
+                          <th>{{ translate('Clinic Name') }}</th>
+                          <th>{{ translate('Address') }}</th>
+                          <th>{{ translate('Phone') }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for clinic in clinic_details %}
+                        <tr>
+                          <td>
+                            <h2 class="table-avatar">
+                              {% set base_path = 'static/images/clinic/' %}
+                              <p class="avatar avatar-sm mr-2">
+                                <img
+                                  class="avatar-img rounded-circle"
+                                  src="{{base_path ~ clinic.users.photo}}"
+                                  alt="User Image"
+                                />
+                              </p>
+                              <p>{{ translate(clinic.users.name) }}</p>
+                            </h2>
+                          </td>
+                          <td class="text-wrap">
+                            {{ translate(clinic.address) }}
+                          </td>
+                          <td>
+                            <h2 class="table-avatar">
+                              <a>{{ translate(clinic.phone) }}</a>
+                            </h2>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
                   </div>
-                  <div class="card-body">
-                      <div class="table-responsive">
-                          <table class="table table-hover table-center mb-0">
-                              <thead>
-                                  <tr>
-                                      <th>{{ translate('Clinic Name') }}</th>
-                                      <th>{{ translate('Address') }}</th>
-                                      <th>{{ translate('Phone') }}</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                {% for clinic in clinic_details %}
-                                  <tr>
-                                      <td>
-                                          <h2 class="table-avatar">
-                                            {% set base_path = 'static/images/clinic/' %}
-                                            <p class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{base_path ~ clinic.users.photo}}" alt="User Image"></p>
-                                              <p>{{ translate(clinic.users.name) }}</p>
-                                          </h2>
-                                      </td>
-                                      <td class="text-wrap">{{ translate(clinic.address) }}</td>
-                                       <td>
-                                          <h2 class="table-avatar">
-                                              <a>{{ translate(clinic.phone) }}</a>
-                                          </h2>
-                                      </td>
-
-                                  </tr>
-
-                                  </tr>
-                                  {% endfor %}
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-              <!-- /Recent Orders -->
                 </div>
               </div>
+              <!-- /Recent Orders -->
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- /Page Content -->
-  {% endblock %}
+</div>
+<!-- /Page Content -->
+
+{% endblock %}
