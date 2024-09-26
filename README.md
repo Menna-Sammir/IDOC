@@ -78,16 +78,13 @@ flask db upgrade
 python3 app.py
 
 ```
-# Usage
-Search for Doctors:
 
-Use the search functionality to find doctors based on specialization, location, and availability.
-Book appointments directly through the platform.
+## Usage
 
-Clinic Dashboard:
+1. Navigate to the live application at [IDOC Deployment](https://idoc-89560fa1.koyeb.app/).
+2. Register for a new account or log in if you already have one.
+3. Use the dashboard to book, view, and manage appointments with doctors and clinics.
 
-Clinics can view and manage their appointments.
-Real-time notifications for new appointments.
 
 
 
